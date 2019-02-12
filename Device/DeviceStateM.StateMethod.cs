@@ -72,6 +72,8 @@ namespace Device
 
             // 更新水槽温度值
             UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();   // 温度超出界限
         }
 
         /// <summary>
@@ -102,6 +104,8 @@ namespace Device
 
             // 更新水槽温度值
             UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();   // 温度超出界限
 
 
             // 如果 temperaturePointList 为空
@@ -216,6 +220,9 @@ namespace Device
 
             // 更新水槽温度值
             UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();   // 温度超出界限
+            ErrorCheckTempNotUp();  // 温度不升高
 
 
             // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
@@ -319,6 +326,9 @@ namespace Device
 
             // 更新水槽温度值
             UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();       // 温度超出界限
+            ErrorCheckTempNotDown();    // 温度不降低
 
 
             // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
@@ -414,6 +424,11 @@ namespace Device
 
             // 更新水槽温度值
             UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();       // 温度超出界限
+            ErrorCheckBasis();          // 当前温度偏离温度设定点过大
+            ErrorCheckTempFlucLarge();  // 波动度过大
+
 
             // 判断 - 控温状态下，温度波动度满足判断条件（5 分钟 0.001），则立即进入稳定状态
             bool steady = tpDeviceM.checkFlucSeconds(_thresholdParameters.steadyTimeSec, _thresholdParameters.flucValue);
@@ -509,6 +524,11 @@ namespace Device
 
             // 更新水槽温度值
             UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();       // 温度超出界限
+            ErrorCheckBasis();          // 当前温度与设定温度点偏离过大
+            ErrorCheckTempFlucLarge();  // 波动度过大
+
 
             // 判断 - 测温电桥温度值的波动度满足条件（2 分钟 0.001），则进入测量状态
             if (currentTemptPointState.stateCounts > _thresholdParameters.bridgeSteadyTimeSec / tpDeviceM.readTempIntervalSec)
@@ -558,6 +578,8 @@ namespace Device
 
             // 更新水槽温度值
             UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();   // 温度超出界限
 
             // measure
 

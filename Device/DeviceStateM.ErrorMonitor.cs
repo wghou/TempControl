@@ -120,6 +120,8 @@ namespace Device
 
 
 
+        ////////////////////////////////////////
+
         /// <summary>
         /// 故障判断 - 温度超出界限
         /// </summary>
@@ -176,7 +178,6 @@ namespace Device
             return;
         }
 
-
         /// <summary>
         /// 故障判断 - 温度波动度过大 - 检测到故障则返回 true
         /// </summary>
@@ -201,7 +202,6 @@ namespace Device
 
             return;
         }
-
 
         /// <summary>
         /// 故障判断 - 温度没有上升 - 检测到故障则返回 true
