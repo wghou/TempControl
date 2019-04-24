@@ -218,5 +218,10 @@ namespace Device
 
             TimerTickEvent?.Invoke();
         }
+
+        public void startTimeStep()
+        {
+            _tickTimer.Start();
+        }
     }
 }

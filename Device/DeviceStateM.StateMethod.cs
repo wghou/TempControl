@@ -71,9 +71,9 @@ namespace Device
             Debug.WriteLine("IdleTick: " + tic.ToString() + " ms");
 
             // 更新水槽温度值
-            UpdateTemptValue();
+            //UpdateTemptValue();
             // error check
-            ErrorCheckOutRange();   // 温度超出界限
+           // ErrorCheckOutRange();   // 温度超出界限
         }
 
         /// <summary>
@@ -167,30 +167,13 @@ namespace Device
         private void TempUpEntry()
         {
             // 升温
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.Elect] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
+            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
-            // 循环
-            if (this.currentTemptPointState.stateTemp > _thresholdParameters.subCoolAndCircleShutdownThr)
-            {
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = false;
-            }
-            else
-            {
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = true;
-            }
-
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterIn] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterOut] = false;
 
             // 将继电器状态写入下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            RelayProtocol.Err_r ryErr = ryDevice.UpdateStatusToDeviceReturnErr();
-            if (ryErr != RelayProtocol.Err_r.NoError)
+            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
+            if (ryErr != RelayDevice.Err_r.NoError)
                 SetErrorStatus(ErrorCode.RelayError);
 
 
@@ -253,52 +236,33 @@ namespace Device
             Debug.WriteLine("TempDown Entry.");
 
 
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.Elect] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainCoolF] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCoolF] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterIn] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterOut] = false;
+            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
-            // 最高优先级
-            // 当主槽温度设定点高于 xx（可设定） 时，4、5（辅槽制冷、辅槽循环）不开
-            if (this.currentTemptPointState.stateTemp > _thresholdParameters.subCoolAndCircleShutdownThr)
+
+            // 如果辅槽制冷本身就是打开的，则不操作
+            if (ryDevice.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
             {
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = false;
+
             }
-            // 如果主槽温度设定点低于 xx （可设定）时，4、5（辅槽制冷、辅槽循环）打开
+            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
             else
             {
-                // 如果辅槽制冷本身就是打开的，则不操作
-                if (ryDevice.ryStatus[(int)RelayProtocol.Cmd_r.SubCool] == true)
+                if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
                 {
-
+                    // 暂时先保持关闭，等待满 10 分钟后再打开
+                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+                    ryDevice.subCoolWaiting = true;
                 }
-                // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
                 else
                 {
-                    if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
-                    {
-                        // 暂时先保持关闭，等待满 10 分钟后再打开
-                        ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
-                        ryDevice.subCoolWaiting = true;
-                    }
-                    else
-                    {
-                        ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = true;
-                    }
+                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
                 }
-
             }
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayProtocol.Err_r ryErr = ryDevice.UpdateStatusToDeviceReturnErr();
-            if (ryErr != RelayProtocol.Err_r.NoError)
+            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
+            if (ryErr != RelayDevice.Err_r.NoError)
                 SetErrorStatus(ErrorCode.RelayError);
 
             // 设置主槽 / 辅槽控温设备的参数
@@ -360,54 +324,34 @@ namespace Device
 
             // 首次进入该状态，应改变相应的继电器状态
             //  1 2 3 4 5 
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.Elect] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterIn] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterOut] = false;
+            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
 
-            // 最高优先级
-            // 当主槽温度设定点高于 xx（可设定） 时，4、5（辅槽制冷、辅槽循环）不开
-            if (currentTemptPointState.stateTemp > _thresholdParameters.subCoolAndCircleShutdownThr)
+            // 如果辅槽制冷本身就是打开的，则不操作
+            if (ryDevice.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
             {
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = false;
+
             }
-            // 如果主槽温度设定点低于 xx （可设定）时，4、5（辅槽制冷、辅槽循环）打开
+            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
             else
             {
-                // 如果辅槽制冷本身就是打开的，则不操作
-                if (ryDevice.ryStatus[(int)RelayProtocol.Cmd_r.SubCool] == true)
+                if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
                 {
-
+                    // 暂时先保持关闭，等待满 10 分钟后再打开
+                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+                    ryDevice.subCoolWaiting = true;
                 }
-                // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
                 else
                 {
-                    if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
-                    {
-                        // 暂时先保持关闭，等待满 10 分钟后再打开
-                        ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
-                        ryDevice.subCoolWaiting = true;
-                    }
-                    else
-                    {
-                        ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = true;
-                    }
+                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
                 }
-
             }
 
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayProtocol.Err_r ryErr = ryDevice.UpdateStatusToDeviceReturnErr();
-            if (ryErr != RelayProtocol.Err_r.NoError)
+            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
+            if (ryErr != RelayDevice.Err_r.NoError)
                 SetErrorStatus(ErrorCode.RelayError);
         }
 
@@ -460,53 +404,34 @@ namespace Device
 
             // 首次进入该状态，应改变相应的继电器状态
             // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.Elect] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubHeat] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterIn] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterOut] = false;
+            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
 
-            // 最高优先级
-            // 当主槽温度设定点高于 xx（可设定） 时，4、5（辅槽制冷、辅槽循环）不开
-            if (currentTemptPointState.stateTemp > _thresholdParameters.subCoolAndCircleShutdownThr)
+            // 如果辅槽制冷本身就是打开的，则不操作
+            if (ryDevice.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
             {
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
-                ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = false;
+
             }
-            // 如果主槽温度设定点低于 xx （可设定）时，4、5（辅槽制冷、辅槽循环）打开
+            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
             else
             {
-                // 如果辅槽制冷本身就是打开的，则不操作
-                if (ryDevice.ryStatus[(int)RelayProtocol.Cmd_r.SubCool] == true)
+                if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
                 {
-
+                    // 暂时先保持关闭，等待满 10 分钟后再打开
+                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+                    ryDevice.subCoolWaiting = true;
                 }
-                // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
                 else
                 {
-                    if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
-                    {
-                        // 暂时先保持关闭，等待满 10 分钟后再打开
-                        ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
-                        ryDevice.subCoolWaiting = true;
-                    }
-                    else
-                    {
-                        ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = true;
-                    }
+                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
                 }
             }
 
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayProtocol.Err_r ryErr = ryDevice.UpdateStatusToDeviceReturnErr();
-            if (ryErr != RelayProtocol.Err_r.NoError)
+            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
+            if (ryErr != RelayDevice.Err_r.NoError)
                 SetErrorStatus(ErrorCode.RelayError);
         }
 
@@ -640,20 +565,12 @@ namespace Device
             Debug.WriteLine("Stop Entry.");
 
             // 关闭除总电源外的所有继电器
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.Elect] = true;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainHeat] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubHeat] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCool] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCircle] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.MainCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.SubCoolF] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterIn] = false;
-            ryDevice.ryStatusToSet[(int)RelayProtocol.Cmd_r.WaterOut] = false;
+            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 FlowControlFaultOccurEvent 事件通知主界面提示错误
-            RelayProtocol.Err_r ryErr = ryDevice.UpdateStatusToDeviceReturnErr();
-            if (ryErr != RelayProtocol.Err_r.NoError)
+            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
+            if (ryErr != RelayDevice.Err_r.NoError)
                 SetErrorStatus(ErrorCode.RelayError);
 
         }

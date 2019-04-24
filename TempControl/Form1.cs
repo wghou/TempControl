@@ -24,10 +24,34 @@ namespace TempControl
             _timer.Interval = 4000;
             _timer.Tick += _timer_Tick;
             _timer.Start();
+
+            _device.startTimeStep();
         }
 
         private void _timer_Tick(object sender, EventArgs e)
         {
+            
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            backgroundWorker1.DoWork += BackgroundWorker1_DoWork;
+            timer1.Interval = 200;
+            timer1.Tick += Timer1_Tick;
+            timer1.Start();
+        }
+
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            this.backgroundWorker1.RunWorkerAsync();
+        }
+
+        private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+           
+
+
             
         }
     }

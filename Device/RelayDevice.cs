@@ -4,17 +4,47 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Threading;
+using Modbus.Data;
+using Modbus.Device;
+using Modbus.Utility;
+using System.IO.Ports;
+using System.IO.Ports;
 
 namespace Device
 {
+    /// <summary>
+    /// 标控自动化科技
+    /// 远程IO模块 8输入/8输出
+    /// https://item.taobao.com/item.htm?spm=a1z0k.6846577.0.0.1d078eadcPgGKr&id=553199470529&_u=t2dmg8j26111
+    /// </summary>
     public class RelayDevice
     {
-        // 继电器设备
-        #region Memebers
-        // 设备
-        public string ryDeviceName = string.Empty;
-        public string ryDevicePortName = string.Empty;
-        RelayProtocol ryDeviceProtocol = new RelayProtocol();
+        /// <summary>串口</summary>
+        private SerialPort sPort;
+        public string ryDevicePortName;
+        private IModbusSerialMaster master;
+        private byte slaveId = 1;
+        ushort startAddress = 0;
+        /// <summary>串口读-写时间间隔</summary>
+        private const int intervalOfWR = 20;
+
+        public enum Cmd_r : int
+        {
+            OUT_0 = 0,
+            OUT_1 = 1,
+            OUT_2 = 2,
+            OUT_3 = 3,
+            OUT_4 = 4,
+            OUT_5 = 5,
+            OUT_6 = 6,
+            OUT_7 = 7
+        }
+
+        public enum Err_r : int
+        {
+            NoError = 0,
+            ComError = 1
+        }
         /// <summary>
         /// Relay 设备各继电器状态
         /// </summary>
@@ -39,35 +69,52 @@ namespace Device
         /// 设备线程锁，同一时间只允许单一线程访问设备资源（串口 / 数据）
         /// </summary>
         private object ryLocker = new object();
-        #endregion
-
-        #region Event
-        public delegate void StatusUpdateEventHandler(RelayProtocol.Err_r err);
-        /// <summary>
-        /// 向下位机写入继电器状态完成事件
-        /// </summary>
-        public event StatusUpdateEventHandler StatusUpdateToDeviceEvent;
-        #endregion
 
 
-        #region Methods
-        /// <summary>
-        /// 继电器设备初始化
-        /// </summary>
-        /// <param name="init">初始化状态，false 则表示关闭设备</param>
-        public bool SetDevicePortName(string portName)
+        public RelayDevice()
         {
-            // 线程锁
-            lock (ryLocker)
+            sPort = new SerialPort()
             {
-                // 设置设备串口
-                bool err = ryDeviceProtocol.SetPort(portName);
-                // 如果设置成功，则保存端口名称
-                if(err)
-                    ryDevicePortName = portName;
-                return err;
-            }
+                ReadTimeout = 200,
+                WriteTimeout = 200,
+                BaudRate = 9600,
+                NewLine = "\r\n"
+            };
+            master = ModbusSerialMaster.CreateRtu(sPort);
+        }
 
+        public bool SetPortName(string portName)
+        {
+            ryDevicePortName = portName;
+
+            try
+            {
+                // 先主动关闭串口
+                try { sPort.Close(); } catch { }
+
+                string[] portNames = SerialPort.GetPortNames();
+                if (portNames.Contains(portName.ToUpper()))
+                {
+                    sPort.PortName = portName;
+                }
+                else
+                {
+                    return false;
+                }
+                // 串口打开 / 关闭测试
+                if (!sPort.IsOpen)
+                    sPort.Open();
+                Thread.Sleep(intervalOfWR);
+                if (sPort.IsOpen)
+                    sPort.Close();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("继电器设备新建串口时发生异常：" + ex.Message);
+                return false;
+            }
         }
 
 
@@ -77,14 +124,18 @@ namespace Device
         /// <param name="cmd"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public RelayProtocol.Err_r SelfCheckOneByOne(RelayProtocol.Cmd_r cmd, bool status)
+        public Err_r SelfCheck(Tuple<Cmd_r, bool> cmd)
         {
-            RelayProtocol.Err_r err = RelayProtocol.Err_r.NoError;
-            err = ryDeviceProtocol.WriteRelayStatus(cmd, status);
-
-            // 记录辅槽制冷的关闭时间
-            if (cmd == RelayProtocol.Cmd_r.SubCool && status == false)
-                subCoolCloseTime = DateTime.Now;
+            Err_r err = Err_r.NoError;
+            try
+            {
+                master.WriteSingleCoil(slaveId, (ushort)(startAddress + cmd.Item1), cmd.Item2);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                err = Err_r.ComError;
+            }
 
             return err;
         }
@@ -94,240 +145,63 @@ namespace Device
         /// 继电器设备自检
         /// </summary>
         /// <returns></returns>
-        public RelayProtocol.Err_r SelfCheck()
+        public Err_r SelfCheck(List<Tuple<Cmd_r, bool>> cmdList)
         {
-            RelayProtocol.Err_r err = RelayProtocol.Err_r.NoError;
+            Err_r err = Err_r.NoError;
             /////////////////////////////////////////////////////////////////////////
-            // 打开总电源开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.Elect, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开主槽控温开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.MainHeat, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开辅槽控温开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubHeat, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开辅槽制冷源开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubCool, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开辅槽循环开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubCircle, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开主槽快冷开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.MainCoolF, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开辅槽快冷开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubCoolF, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开海水进开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.WaterIn, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 打开海水出开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.WaterOut, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-
-            /////////////////////////////////////////////////////////////////////////
-            // 关闭海水出开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.WaterOut, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 关闭海水进开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.WaterIn, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 关闭辅槽快冷开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubCoolF, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 关闭主槽快冷开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.MainCoolF, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 关闭辅槽循环开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubCircle, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 关闭辅槽制冷源开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubCool, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            // 记录辅槽制冷关闭时间
-            subCoolCloseTime = DateTime.Now;
-            Thread.Sleep(1000);
-            // 关闭辅槽控温开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.SubHeat, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 关闭主槽控温开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.MainHeat, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-            // 关闭总电源开关
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.Elect, false);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-            Thread.Sleep(1000);
-
-            //////////////////////////
-            // 最后，打开总电源
-            err = ryDeviceProtocol.WriteRelayStatus(RelayProtocol.Cmd_r.Elect, true);
-            if (err != RelayProtocol.Err_r.NoError)
-                return err;
-
-            return RelayProtocol.Err_r.NoError;
-        }
-
-
-        /// <summary>
-        /// 将 ryStatusToSet[] 中的继电器状态更新到设备硬件中；
-        /// 如果发生了错误，则触发设备错误事件（未实现）
-        /// </summary>
-        public void UpdateStatusToDevice()
-        {
-            RelayProtocol.Err_r err = RelayProtocol.Err_r.NoError;
-            lock(ryLocker)
+            foreach(var cmd in cmdList)
             {
-                // 遍历枚举类型 RelayProtocol.Cmd_r 中所有的值
-                foreach(RelayProtocol.Cmd_r cmd in Enum.GetValues(typeof(RelayProtocol.Cmd_r)))
+                try
                 {
-                    // 如果要设置的继电器状态与当前状态相同，则跳过
-                    if (ryStatus[(int)cmd] == ryStatusToSet[(int)cmd])
-                        continue;
+                    // open the serial port
+                    if (!sPort.IsOpen) sPort.Open();
 
-                    err = ryDeviceProtocol.WriteRelayStatus(cmd, ryStatusToSet[(int)cmd]);
-                    // 暂停一段时间
-                    Thread.Sleep(20);
-                    // 调试信息
-                    Debug.WriteLineIf(err == RelayProtocol.Err_r.NoError, "继电器 " + cmd.ToString() + " 状态更新成功!  " + ryStatusToSet[(int)cmd].ToString());
-                    Debug.WriteLineIf(err != RelayProtocol.Err_r.NoError, "继电器 " + cmd.ToString() + " 状态更新失败!  " + err.ToString());
-
-                    // 如果正确关闭了辅槽制冷，则记录其关闭时间
-                    if (cmd == RelayProtocol.Cmd_r.SubCool && ryStatusToSet[(int)cmd] == false && err == RelayProtocol.Err_r.NoError)
-                    {
-                        subCoolCloseTime = DateTime.Now;
-                        subCoolWaiting = false;
-                    }
-
-                    if (err == RelayProtocol.Err_r.NoError)
-                    {
-                        // 设置继电器状态成功，更新 ryStatus[] 中的值
-                        ryStatus[(int)cmd] = ryStatusToSet[(int)cmd];
-                    }
-                    else
-                    {
-                        // 设置继电器状态失败，结束 for 循环
-                        break;
-                    }
+                    master.WriteSingleCoil(slaveId, (ushort)(startAddress + cmd.Item1), cmd.Item2);
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    err = Err_r.ComError;
+                    break;
                 }
 
-                // 改进
-#if false
-                for (int i = 0; i < 9; i++)
-                {
-                    // 如果要设置的继电器状态与当前状态相同，则跳过
-                    if (ryStatus[i] == ryStatusToSet[i])
-                        continue;
-
-                    // 设置继电器状态
-                    
-                    err = ryDeviceProtocol.WriteRelayStatus((RelayProtocol.Cmd_r)i, ryStatusToSet[i]);
-                    // 调试信息
-                    Debug.WriteLineIf(err == RelayProtocol.Err_r.NoError, "继电器 " + ryName[i] + " 状态更新成功!  " + ryStatusToSet[i].ToString());
-                    Debug.WriteLineIf(err != RelayProtocol.Err_r.NoError, "继电器 " + ryName[i] + " 状态更新失败!  " + err.ToString());
-
-                    if (err == RelayProtocol.Err_r.NoError)
-                    {
-                        // 设置继电器状态成功，更新 ryStatus[] 中的值
-                        ryStatus[i] = ryStatusToSet[i];
-                    }  
-                    else
-                    {
-                        // 设置继电器状态失败，结束 for 循环
-                        break;
-                    }
-                }
-#endif
-
+                Thread.Sleep(1000);
             }
-
-
-            // 触发设备错误事件，并返回设置错误信息
-            StatusUpdateToDeviceEvent(err);
-        }
-
-
-        public RelayProtocol.Err_r UpdateStatusToDeviceReturnErr()
-        {
-            RelayProtocol.Err_r err = RelayProtocol.Err_r.NoError;
-            lock (ryLocker)
-            {
-                // 遍历枚举类型 RelayProtocol.Cmd_r 中所有的值
-                foreach (RelayProtocol.Cmd_r cmd in Enum.GetValues(typeof(RelayProtocol.Cmd_r)))
-                {
-                    // 如果要设置的继电器状态与当前状态相同，则跳过
-                    if (ryStatus[(int)cmd] == ryStatusToSet[(int)cmd])
-                        continue;
-
-                    err = ryDeviceProtocol.WriteRelayStatus(cmd, ryStatusToSet[(int)cmd]);
-                    // 暂停一段时间
-                    Thread.Sleep(20);
-                    // 调试信息
-                    Debug.WriteLineIf(err == RelayProtocol.Err_r.NoError, "继电器 " + cmd.ToString() + " 状态更新成功!  " + ryStatusToSet[(int)cmd].ToString());
-                    Debug.WriteLineIf(err != RelayProtocol.Err_r.NoError, "继电器 " + cmd.ToString() + " 状态更新失败!  " + err.ToString());
-
-                    // 如果正确关闭了辅槽制冷，则记录其关闭时间
-                    if (cmd == RelayProtocol.Cmd_r.SubCool && ryStatusToSet[(int)cmd] == false && err == RelayProtocol.Err_r.NoError)
-                    {
-                        subCoolCloseTime = DateTime.Now;
-                        subCoolWaiting = false;
-                    }
-                        
-
-                    if (err == RelayProtocol.Err_r.NoError)
-                    {
-                        // 设置继电器状态成功，更新 ryStatus[] 中的值
-                        ryStatus[(int)cmd] = ryStatusToSet[(int)cmd];
-                    }
-                    else
-                    {
-                        // 设置继电器状态失败，结束 for 循环
-                        break;
-                    }
-                }
-            }
-
-
-            // 触发设备错误事件，并返回设置错误信息
-            StatusUpdateToDeviceEvent(err);
 
             return err;
         }
 
-        #endregion
+        public Err_r UpdateStatusToDevice()
+        {
+            Err_r err = Err_r.NoError;
+
+            // 遍历枚举类型 RelayProtocol.Cmd_r 中所有的值
+            foreach (Cmd_r cmd in Enum.GetValues(typeof(Cmd_r)))
+            {
+                // 如果要设置的继电器状态与当前状态相同，则跳过
+                if (ryStatus[(int)cmd] == ryStatusToSet[(int)cmd])
+                    continue;
+
+                try
+                {
+                    // open the serial port
+                    if (!sPort.IsOpen) sPort.Open();
+
+                    master.WriteSingleCoil(slaveId, (ushort)(startAddress + cmd), ryStatusToSet[(int)cmd]);
+
+                    // 设置继电器状态成功，更新 ryStatus[] 中的值
+                    ryStatus[(int)cmd] = ryStatusToSet[(int)cmd];
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    err = Err_r.ComError;
+                    break;
+                }
+            }
+
+            return err;
+        }
+
     }
 }

@@ -55,20 +55,7 @@ namespace Device
         /// <summary>
         /// 设备错误状态
         /// </summary>
-        private Dictionary<ErrorCode, uint> _deviceErrorMonitor;
-
-
-        /// <summary>
-        /// 配置设备错误状态
-        /// </summary>
-        private void ConfigErrorMonitor()
-        {
-            _deviceErrorMonitor = new Dictionary<ErrorCode, uint>();
-
-            // 清空错误状态
-            ResetErrorStatus();
-        }
-
+        private Dictionary<ErrorCode, uint> _deviceErrorMonitor = new Dictionary<ErrorCode, uint>();
 
         /// <summary>
         /// 清空错误状态
