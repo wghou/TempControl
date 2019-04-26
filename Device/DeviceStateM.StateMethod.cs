@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Stateless;
 using System.Diagnostics;
+using System.Timers;
 
 namespace Device
 {
@@ -13,6 +14,38 @@ namespace Device
     /// </summary>
     public partial class DeviceStateM
     {
+        /// <summary>
+        /// Device State Mechine 自带时钟事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _stepTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            _machine.Fire(_TickTrigger, 5000);
+
+
+            // 定时器事件
+            TimerTickEvent?.Invoke();
+
+
+            // 全局错误信息 - 事件
+            uint errCnt = CheckErrorStatus();
+            if(errCnt!=0 && errCnt != lastErrCnt)
+            {
+                ErrorStatusChangedEvent?.Invoke(_deviceErrorMonitor);
+            }
+            lastErrCnt = errCnt;
+        }
+
+        /// <summary>
+        /// 启动定时器
+        /// </summary>
+        public void startTimeStep()
+        {
+            _tickTimer.Start();
+        }
+
+
         /// <summary>
         /// 状态转变事件函数
         /// </summary>
@@ -23,7 +56,7 @@ namespace Device
             State source = act.Source;
             State dest = act.Destination;
 
-            StateChangeEvent?.Invoke(dest);
+            StateChangedEvent?.Invoke(dest);
         }
 
         /// <summary>
@@ -52,6 +85,31 @@ namespace Device
                 return false;
         }
 
+        /// <summary>
+        /// Idle Entry
+        /// </summary>
+        private void UndefineEntry()
+        {
+            Debug.WriteLine("Undefine Entry.");
+        }
+
+        /// <summary>
+        /// Idle Tick
+        /// </summary>
+        /// <param name="tic"> 时间步长 </param>
+        private void UndefineTick(int tic)
+        {
+            Debug.WriteLine("UndefineTick: " + tic.ToString() + " ms");
+            // do nothing
+        }
+
+        /// <summary>
+        /// Idle Exit
+        /// </summary>
+        private void UndefineExit()
+        {
+            Debug.WriteLine("Undefine Exit.");
+        }
 
 
         /// <summary>
@@ -71,9 +129,9 @@ namespace Device
             Debug.WriteLine("IdleTick: " + tic.ToString() + " ms");
 
             // 更新水槽温度值
-            //UpdateTemptValue();
+            UpdateTemptValue();
             // error check
-           // ErrorCheckOutRange();   // 温度超出界限
+            ErrorCheckOutRange();   // 温度超出界限
         }
 
         /// <summary>
@@ -83,7 +141,6 @@ namespace Device
         {
             Debug.WriteLine("Idle Exit.");
         }
-
 
 
         /// <summary>
@@ -172,9 +229,7 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
-            if (ryErr != RelayDevice.Err_r.NoError)
-                SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDevice(true);
 
 
             // 设置主槽 / 辅槽控温设备的参数
@@ -182,10 +237,7 @@ namespace Device
 
             // 将参数更新到下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            TempProtocol.Err_t tpErr = TempProtocol.Err_t.NoError;
-            tpErr = tpDeviceM.UpdateParamToDeviceReturnErr();
-            if (tpErr != TempProtocol.Err_t.NoError)
-                SetErrorStatus(ErrorCode.TemptError);
+            WriteTempDevice(true);
 
             Debug.WriteLine("TempUp Entry.");
         }
@@ -261,9 +313,7 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
-            if (ryErr != RelayDevice.Err_r.NoError)
-                SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDevice(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
@@ -271,10 +321,7 @@ namespace Device
 
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            TempProtocol.Err_t tpErr = TempProtocol.Err_t.NoError;
-            tpErr = tpDeviceM.UpdateParamToDeviceReturnErr();
-            if (tpErr != TempProtocol.Err_t.NoError)
-                SetErrorStatus(ErrorCode.TemptError);
+            WriteTempDevice(true);
         }
 
         /// <summary>
@@ -350,9 +397,7 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
-            if (ryErr != RelayDevice.Err_r.NoError)
-                SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDevice(true);
         }
 
         /// <summary>
@@ -430,9 +475,7 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
-            if (ryErr != RelayDevice.Err_r.NoError)
-                SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDevice(true);
         }
 
 
@@ -569,9 +612,7 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 FlowControlFaultOccurEvent 事件通知主界面提示错误
-            RelayDevice.Err_r ryErr = ryDevice.UpdateStatusToDevice();
-            if (ryErr != RelayDevice.Err_r.NoError)
-                SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDevice(true);
 
         }
 

@@ -56,8 +56,10 @@ namespace Device
         FinishedAll,
         /// <summary> 强制停止 </summary>
         ForceStop,
-        /// <summary> 出现未定义 </summary>
-        UndefineOccur
+        /// <summary> 电源打开 </summary>
+        ElectOn,
+        /// <summary> 电源关闭 </summary>
+        ElectOff
     }
 
 
@@ -84,21 +86,6 @@ namespace Device
         /// </summary>
         private Timer _tickTimer;
 
-        //
-        public delegate void TimerTickEventHandler();
-        /// <summary>
-        /// 时刻触发事件
-        /// </summary>
-        public event TimerTickEventHandler TimerTickEvent;
-
-
-        // 
-        public delegate void StateChangeEventHandler(State st);
-        /// <summary>
-        /// 状态改变事件
-        /// </summary>
-        public event StateChangeEventHandler StateChangeEvent;
-
 
         /// <summary>
         /// 配置 stateless 状态机
@@ -106,7 +93,7 @@ namespace Device
         private void ConfigStateless()
         {
             // new object
-            _machine = new StateMachine<State, Trigger>(State.Idle);
+            _machine = new StateMachine<State, Trigger>(State.Undefine);
             _nextPointTrigger = _machine.SetTriggerParameters<float>(Trigger.NextTemptPoint);
             _TickTrigger = _machine.SetTriggerParameters<int>(Trigger.TimerTick);
 
@@ -115,6 +102,14 @@ namespace Device
 
             // on unhandled trigger
             _machine.OnUnhandledTrigger(OnUnhandledTrigger);
+
+            // State.Undefine
+            // 
+            _machine.Configure(State.Undefine)
+                .OnEntry(t => UndefineEntry())
+                .OnExit(t => UndefineExit())
+                .InternalTransition(_TickTrigger, (tic, t) => UndefineTick(tic))
+                .Permit(Trigger.ElectOn, State.Idle);
 
 
             // State.Idle
@@ -204,24 +199,6 @@ namespace Device
             _tickTimer.Interval = 5000; // 5s
             _tickTimer.AutoReset = true;
             _tickTimer.Elapsed += _stepTimer_Elapsed;
-        }
-
-
-        /// <summary>
-        /// Device State Mechine 自带时钟事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _stepTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            _machine.Fire(_TickTrigger, 5000);
-
-            TimerTickEvent?.Invoke();
-        }
-
-        public void startTimeStep()
-        {
-            _tickTimer.Start();
         }
     }
 }

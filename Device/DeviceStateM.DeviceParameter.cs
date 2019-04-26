@@ -215,61 +215,6 @@ namespace Device
 
 
 
-        //////////////////////////////////////////
-        // public interface
-
-        /// <summary> 设置继电器设备状态 - 委托 </summary>
-        private delegate void RySetHandler();
-        /// <summary>读取温控设备参数 - 委托 - 用于开辟新的线程读取设备参数 </summary>
-        private delegate void TempGetSetParamHandler();
-        /// <summary>
-        /// 设置继电器状态
-        /// </summary>
-        /// <param name="cmd"> 继电器命令 </param>
-        /// <param name="st"> 继电器状态 </param>
-        public void SetRyStatus(RelayDevice.Cmd_r cmd, bool st)
-        {
-            // 异步调用 RelayDevice 函数，设置继电器状态
-            // 结果会触发 继电器设置事件 处理函数
-            ryDevice.ryStatusToSet[(int)cmd] = st;
-           // RySetHandler setRyStatus = new RySetHandler(ryDevice.UpdateStatusToDevice);
-           //setRyStatus.BeginInvoke(null, null);
-        }
-
-
-        /// <summary>
-        /// 从下位机读取温度参数
-        /// </summary>
-        public void ReadTpParam()
-        {
-            // 从硬件设备读取参数
-            TempGetSetParamHandler getTempParam = new TempGetSetParamHandler(tpDeviceM.UpdateParamFromDevice);
-            getTempParam.BeginInvoke(null, null);
-        }
-
-
-        /// <summary>
-        /// 向下位机写入温度参数
-        /// </summary>
-        /// <param name="paramCache"> 温度参数 - 长度为 7 </param>
-        public void SetTpParam(float[] paramCache)
-        {
-            if(paramCache.Length !=7)
-            {
-                _deviceErrorMonitor[ErrorCode.CodeError]++;
-                Debug.WriteLine("paramCache 长度错误.");
-                return;
-            }
-
-            // 将参数写入温控设备缓存
-            paramCache.CopyTo(tpDeviceM.tpParamToSet, 0);
-
-            // 向硬件设备更新参数
-            TempGetSetParamHandler setTempParam = new TempGetSetParamHandler(tpDeviceM.UpdateParamToDevice);
-            setTempParam.BeginInvoke(null, null);
-        }
-
-
         /////////////////////
         // private mathod
 

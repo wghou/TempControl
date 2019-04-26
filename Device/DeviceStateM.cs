@@ -86,25 +86,6 @@ namespace Device
 
         public bool SelfCheck()
         {
-            List<Tuple<RelayDevice.Cmd_r, bool>> slfChkList
-                = new List<Tuple<RelayDevice.Cmd_r, bool>>(){
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_0, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_1, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_2, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_3, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_4, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_5, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_6, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_7, true),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_7, false),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_6, false),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_5, false),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_4, false),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_3, false),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_2, false),
-                    new Tuple<RelayDevice.Cmd_r, bool>(RelayDevice.Cmd_r.OUT_1, false)
-                };
-            ryDevice.SelfCheck(slfChkList);
             return true;
         }
     }

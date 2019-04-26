@@ -8,7 +8,6 @@ using Modbus.Data;
 using Modbus.Device;
 using Modbus.Utility;
 using System.IO.Ports;
-using System.IO.Ports;
 
 namespace Device
 {

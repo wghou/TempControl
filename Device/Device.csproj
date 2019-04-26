@@ -49,6 +49,7 @@
     <Compile Include="DeviceStateM.cs" />
     <Compile Include="DeviceStateM.DeviceParameter.cs" />
     <Compile Include="DeviceStateM.ErrorMonitor.cs" />
+    <Compile Include="DeviceStateM.Event.cs" />
     <Compile Include="DeviceStateM.Interface.cs" />
     <Compile Include="DeviceStateM.Stateless.cs" />
     <Compile Include="DeviceStateM.StateMethod.cs" />

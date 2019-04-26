@@ -4,6 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// Error Monitor 的逻辑
+// 对硬件执行读写操作时，操作完成后，生成结果、错误信息
+// 1 - 触发 TempDevice / RelayDevice UPdatedEvent，向主界面传递 结果/ 错误信息，用于更新界面信息
+// 2 - 判断标志位，可选择在 ErrorStatusMonitor 中记录错误信息，并触发 ErrorStatusChangedEvent
+//
 namespace Device
 {
     public enum ErrorCode : int
@@ -56,6 +62,7 @@ namespace Device
         /// 设备错误状态
         /// </summary>
         private Dictionary<ErrorCode, uint> _deviceErrorMonitor = new Dictionary<ErrorCode, uint>();
+        private uint lastErrCnt = 0;
 
         /// <summary>
         /// 清空错误状态

@@ -45,19 +45,6 @@ namespace Device
         private object tpLocker = new object();
         #endregion
 
-        #region Event
-        public delegate void ParamUpdatedEventHandler(TempProtocol.Err_t err);
-        /// <summary>
-        /// 温控设备向下位机写入参数完成事件
-        /// </summary>
-        public event ParamUpdatedEventHandler ParamUpdatedToDeviceEvent;
-        /// <summary>
-        /// 温控设备从下位机读取参数完成事件
-        /// </summary>
-        public event ParamUpdatedEventHandler ParamUpdatedFromDeviceEvent;
-        #endregion
-
-
 
         #region Public Methods
 
@@ -126,54 +113,11 @@ namespace Device
 
 
         /// <summary>
-        /// 将 tpParamToSet[] 中的参数值写入下位机；
-        /// 如发生错误，则立即停止并触发参数写入事件（附带错误信息）；
-        /// 如成功，则触发参数写入事件（附带 NoError 信息）
-        /// </summary>
-        public void UpdateParamToDevice()
-        {
-            TempProtocol.Err_t err = TempProtocol.Err_t.NoError;
-
-            // 更新硬件设备参数
-            lock(tpLocker)
-            {
-                for ( int i = 0; i < 7; i++)
-                {
-                    // 如果参数未改变，则跳过
-                    if (Math.Abs(tpParam[i] - tpParamToSet[i]) < 10e-5)
-                        continue;
-
-                    // 向设备写入参数
-                    err = tpDevice.SendData((TempProtocol.Cmd_t)i, tpParamToSet[i]);
-
-                    // 调试信息
-                    Debug.WriteLineIf(err == TempProtocol.Err_t.NoError, "温控设备参数设置成功!  " + tpParamNames[i] + ": " + tpParam[i].ToString());
-                    Debug.WriteLineIf(err != TempProtocol.Err_t.NoError, "温控设备参数设置失败!  " + tpParamNames[i] + ": " + err.ToString());
-
-                    // 如发生错误，则结束 for 循环
-                    if (err != TempProtocol.Err_t.NoError)
-                        break;
-
-                    // 将更新后的参数值写入 tpParam[] 中
-                    tpParam[i] = tpParamToSet[i];
-                }
-            }
-            
-            // 说明：
-            // 参数更新函数主要面向 FormSetting 窗口，分别设置主槽 / 辅槽的控温参数
-            // 所以事件 / 错误直接在 TempDevice 中处理，并不会返回到 Devices 中
-
-            // 结果处理 - 事件
-            ParamUpdatedToDeviceEvent(err);
-        }
-
-
-        /// <summary>
         /// 将参数更新入下位机，返回错误状态，触发温度参数更新事件；
         /// 
         /// </summary>
         /// <returns></returns>
-        public TempProtocol.Err_t UpdateParamToDeviceReturnErr()
+        public TempProtocol.Err_t UpdateParamToDevice()
         {
             TempProtocol.Err_t err = TempProtocol.Err_t.NoError;
 
@@ -201,14 +145,6 @@ namespace Device
                     tpParam[i] = tpParamToSet[i];
                 }
             }
-
-            // 说明：
-            // 参数更新函数主要面向 FormSetting 窗口，分别设置主槽 / 辅槽的控温参数
-            // 所以事件 / 错误直接在 TempDevice 中处理，并不会返回到 Devices 中
-
-            // 结果处理 - 事件
-            ParamUpdatedToDeviceEvent(err);
-
             return err;
         }
 
@@ -218,7 +154,7 @@ namespace Device
         /// 如发生错误，则立即停止并触发参数读取事件（附带错误信息）
         /// 如读取成功，则触发参数读取事件（附带 NoError 信息）
         /// </summary>
-        public void UpdateParamFromDevice()
+        public TempProtocol.Err_t UpdateParamFromDevice()
         {
             TempProtocol.Err_t err = TempProtocol.Err_t.NoError;
 
@@ -243,12 +179,7 @@ namespace Device
                 }
             }
 
-            // 说明：
-            // 参数更新函数主要面向 FormSetting 窗口，分别设置主槽 / 辅槽的控温参数
-            // 所以事件 / 错误直接在 TempDevice 中处理，并不会返回到 Devices 中
-
-            // 结果处理 - 事件
-            ParamUpdatedFromDeviceEvent(err);
+            return err;
         }
 
 
