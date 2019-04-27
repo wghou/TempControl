@@ -35,7 +35,6 @@ namespace Device
         public float tpPowerShow = 0.0f;
         public List<float> temperatures = new List<float>();
         private int tempMaxLen = 1000;
-        public int readTempIntervalSec = 2000;
 
         // 用于显示温度曲线的，只保存最新的数据，可以被清空
         public object tpShowLocker = new object();
@@ -376,10 +375,10 @@ namespace Device
         /// <param name="secends">时间长度 / 秒</param>
         /// <param name="crt">波动度阈值</param>
         /// <returns></returns>
-        public bool checkFlucSeconds(int secends,float crt)
+        public bool checkFlucCount(int cnt,float crt)
         {
             float fluc = 0.0f;
-            if (!GetFluc(secends / readTempIntervalSec, out fluc))
+            if (!GetFluc(cnt, out fluc))
                 return false;
             else
                 return fluc < crt;

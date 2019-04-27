@@ -81,6 +81,8 @@ namespace TempControl
                 .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromSeconds(1).Ticks)
                 .Y(dateModel => dateModel.Value);
 
+            cartesianChart.BackColor = Color.AliceBlue;
+
             cartesianChart.Series = new SeriesCollection(dayConfig)
             {
                 new LineSeries
@@ -98,20 +100,22 @@ namespace TempControl
                 MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(10).Ticks) / TimeSpan.FromSeconds(1).Ticks,
                 MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks,
                 LabelFormatter = value => new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks)).ToString("t"),
+                FontSize = 15,
             });
-            
+
             cartesianChart.AxisY.Add(new Axis
             {
-                //IsMerged = true,
+                IsMerged = true,
                 Separator = new Separator
                 {
                     StrokeThickness = 1,
-                    StrokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 2 }),
+                    StrokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 3 }),
                     Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 79, 86))
                 },
                 Title = "温度值",
                 Position = AxisPosition.LeftBottom,
-                LabelFormatter = value => value.ToString("F4") + "℃",
+                LabelFormatter = value => value.ToString("F3") + "℃",
+                FontSize = 15,
             });
         }
 
@@ -155,7 +159,24 @@ namespace TempControl
         // Button Click 事件
         private void checkBox_auto_Click(object sender, EventArgs e)
         {
+            bool fmExit = false;
+            foreach (Form fm in Application.OpenForms)
+            {
+                if (fm.Name == "FormAutoSet")
+                {
+                    fm.WindowState = FormWindowState.Normal;
+                    fm.BringToFront();
+                    fmExit = true;
+                }
+            }
 
+            if (!fmExit)
+            {
+                FormAutoSet fm = new FormAutoSet(_device);
+                //fm.SetAutoButtonEvent += SetAutoButton;
+                fm.Name = "FormAutoSet";
+                fm.Show();
+            }
         }
 
         private void checkBox_exit_Click(object sender, EventArgs e)
@@ -167,6 +188,31 @@ namespace TempControl
             }
             //_device.WriteRelayDevice(false);
             this.Close();
+        }
+
+        private void checkBox_debug_Click(object sender, EventArgs e)
+        {
+            bool formExist = false;
+            foreach (Form fm in Application.OpenForms)
+            {
+                if (fm.Name == "FormDebug")
+                {
+                    // Avoid form being minimized
+                    fm.WindowState = FormWindowState.Normal;
+
+                    fm.BringToFront();
+                    formExist = true;
+                }
+            }
+
+            if (!formExist)
+            {
+                FormDebug fm = new FormDebug(_device._runningParameters);
+                fm.Name = "FormDebug";
+                fm.Text = "调试参数设置";
+                //fm.Location = new System.Drawing.Point(600,300);
+                fm.Show();
+            }
         }
     }
 }

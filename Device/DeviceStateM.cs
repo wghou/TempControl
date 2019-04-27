@@ -51,7 +51,7 @@ namespace Device
                 // 主槽控温设备
                 confOK &= tpDeviceM.SetDevicePortName(Utils.IniReadWrite.INIGetStringValue(configFilePath, "PortName", "tempMain", "COM1"));
                 // 温度读取时间间隔
-                tpDeviceM.readTempIntervalSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "ReadIntervalSec", "2"));
+                _runningParameters.readTempIntervalSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "ReadIntervalSec", "2"));
                 Debug.WriteLineIf(!confOK, "配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                 Debug.WriteLineIf(confOK, "配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
                 if (!confOK)
@@ -77,7 +77,7 @@ namespace Device
             // 从配置文件中读取参数
             if (confOK == true)
             {
-                confOK = _thresholdParameters.ReadValueConfig(configFilePath);
+                confOK = _runningParameters.ReadValueConfig(configFilePath);
             }
 
             return confOK;

@@ -69,6 +69,7 @@ namespace Device
         /// 状态机
         /// </summary>
         StateMachine<State, Trigger> _machine;
+        public State _state = State.Undefine;
 
         /// <summary>
         /// 下一温度设定点 - 带参数 float
@@ -93,7 +94,7 @@ namespace Device
         private void ConfigStateless()
         {
             // new object
-            _machine = new StateMachine<State, Trigger>(State.Undefine);
+            _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);
             _nextPointTrigger = _machine.SetTriggerParameters<float>(Trigger.NextTemptPoint);
             _TickTrigger = _machine.SetTriggerParameters<int>(Trigger.TimerTick);
 

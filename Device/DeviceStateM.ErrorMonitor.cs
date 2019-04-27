@@ -124,7 +124,7 @@ namespace Device
             if (tpDeviceM.temperatures.Count == 0) return;
 
             // 判断控温槽温度是否越过了界限
-            if (tpDeviceM.temperatures.Last() > _thresholdParameters.tempMaxValue || tpDeviceM.temperatures.Last() < _thresholdParameters.tempMinValue)
+            if (tpDeviceM.temperatures.Last() > _runningParameters.tempMaxValue || tpDeviceM.temperatures.Last() < _runningParameters.tempMinValue)
             {
                 SetErrorStatus(ErrorCode.TempOutRange);
             }
@@ -139,7 +139,7 @@ namespace Device
             if (tpDeviceM.temperatures.Count == 0) return;
 
             // 判断温度偏离设定点
-            if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) > _thresholdParameters.tempBiasFaultThr)
+            if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) > _runningParameters.tempBiasFaultThr)
             {
                 SetErrorStatus(ErrorCode.TempBasis);
             }
@@ -158,7 +158,7 @@ namespace Device
 
             // 故障判断 - 温度不下降 / 温度持续上升
             // 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
-            int count = _thresholdParameters.tempNotUpOrDownFaultTimeSec / tpDeviceM.readTempIntervalSec;
+            int count = _runningParameters.tempNotUpOrDownFaultTimeSec / _runningParameters.readTempIntervalSec;
             if (currentTemptPointState.stateCounts < count)
                 return;
 
@@ -168,7 +168,7 @@ namespace Device
             if (tpDeviceM.temperatures.Count > count)
             {
                 // 如果count 个之前的温度值减去当前温度 小于 0.4 ，说明温度没有下降
-                if (tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] - tpDeviceM.temperatures.Last() < _thresholdParameters.tempNotUpOrDwonFaultThr)
+                if (tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] - tpDeviceM.temperatures.Last() < _runningParameters.tempNotUpOrDwonFaultThr)
                     SetErrorStatus(ErrorCode.TempNotDown);
             }
 
@@ -185,7 +185,7 @@ namespace Device
             if (tpDeviceM.temperatures.Count == 0) return;
 
             // 进入某一状态后，等待 flucFaultTimeSec 再判断波动度 flucFaultThr
-            int count = _thresholdParameters.flucFaultTimeSec / tpDeviceM.readTempIntervalSec;
+            int count = _runningParameters.flucFaultTimeSec / _runningParameters.readTempIntervalSec;
             if (currentTemptPointState.stateCounts < count)
                 return;
 
@@ -194,7 +194,7 @@ namespace Device
             //int count = 1 * 10 * 1000 / tpDeviceM.readTempInterval;
             float fluc = 0.0f;
             // 如果获取波动度大于 0.4，说明波动度过大
-            if (tpDeviceM.GetFluc(count, out fluc) && fluc > _thresholdParameters.flucFaultThr)
+            if (tpDeviceM.GetFluc(count, out fluc) && fluc > _runningParameters.flucFaultThr)
             {
                 SetErrorStatus(ErrorCode.TempFlucLarge);
             }
@@ -213,7 +213,7 @@ namespace Device
 
             // 故障判断 - 温度不升高 / 温度持续下降
             // 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
-            int count = _thresholdParameters.tempNotUpOrDownFaultTimeSec / tpDeviceM.readTempIntervalSec;
+            int count = _runningParameters.tempNotUpOrDownFaultTimeSec / _runningParameters.readTempIntervalSec;
             if (currentTemptPointState.stateCounts < count)
                 return;
 
@@ -223,7 +223,7 @@ namespace Device
             if (tpDeviceM.temperatures.Count > count)
             {
                 // 如果count 个之前的温度值 减去 当前温度，小于 0.4 ，说明温度没有上升
-                if (tpDeviceM.temperatures.Last() - tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] < _thresholdParameters.tempNotUpOrDwonFaultThr)
+                if (tpDeviceM.temperatures.Last() - tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] < _runningParameters.tempNotUpOrDwonFaultThr)
                     SetErrorStatus(ErrorCode.TempNotUp);
             }
 

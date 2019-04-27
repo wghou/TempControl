@@ -196,8 +196,14 @@ namespace Device
             }
             else
             {
+                if (tpDeviceM.temperatures.Count == 0)
+                {
+                    _machine.Fire(Trigger.ForceStop);
+                    return;
+                }
+
                 // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
-                if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _thresholdParameters.controlTempThr)
+                if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
                     // 状态 - 控温
                     _machine.Fire(Trigger.StartControl);
@@ -231,8 +237,8 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            WriteRelayDevice(true);
-
+            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            if(err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
 
             // 设置主槽 / 辅槽控温设备的参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
@@ -315,7 +321,8 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            WriteRelayDevice(true);
+            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
 
             // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
@@ -399,7 +406,8 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            WriteRelayDevice(true);
+            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
         }
 
         /// <summary>
@@ -422,13 +430,13 @@ namespace Device
 
 
             // 判断 - 控温状态下，温度波动度满足判断条件（5 分钟 0.001），则立即进入稳定状态
-            bool steady = tpDeviceM.checkFlucSeconds(_thresholdParameters.steadyTimeSec, _thresholdParameters.flucValue);
+            bool steady = tpDeviceM.checkFlucCount(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
             if (steady)
             {
                 // 进入下一个状态，下一个状态应该是 稳定
                 currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.AchieveSteady);
-                Utils.Logger.Sys((_thresholdParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _thresholdParameters.flucValue.ToString("0.0000") + "℃");
+                Utils.Logger.Sys((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
             }
         }
 
@@ -477,7 +485,8 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            WriteRelayDevice(true);
+            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
         }
 
 
@@ -501,7 +510,7 @@ namespace Device
 
 
             // 判断 - 测温电桥温度值的波动度满足条件（2 分钟 0.001），则进入测量状态
-            if (currentTemptPointState.stateCounts > _thresholdParameters.bridgeSteadyTimeSec / tpDeviceM.readTempIntervalSec)
+            if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
                 // 电桥自检正常。。。
                 //if (tpBridge.tpBridgeReadInterval < 1) tpBridge.tpBridgeReadInterval = 1;
@@ -512,7 +521,7 @@ namespace Device
                     currentTemptPointState.stateCounts = 0;
                     _machine.Fire(Trigger.StartMeasure);
 
-                    Utils.Logger.Sys((_thresholdParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _thresholdParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
+                    Utils.Logger.Sys((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
                 }
             }
         }
@@ -580,7 +589,7 @@ namespace Device
             if (i == temperaturePointList.Count)
             {
                 // 控制状态序列为空，说明实验已经结束了
-                if (shutDownComputer == true)
+                if (_runningParameters.shutDownComputer == true)
                 {
                     _machine.Fire(Trigger.ForceStop);
                 }
@@ -614,7 +623,8 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 FlowControlFaultOccurEvent 事件通知主界面提示错误
-            WriteRelayDevice(true);
+            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
 
         }
 

@@ -29,9 +29,20 @@ namespace Device
             }
         }
 
+        public void StartAutoControl()
+        {
+            if (_state != State.Idle) return;
+            _machine.Fire(Trigger.StartAutoStep);
+        }
+
+        public void StopAutoControl()
+        {
+            _machine.Fire(Trigger.SuspendAutoControl);
+        }
+
 
         /// <summary>
-        /// 写入继电器状态 - 需异步调用
+        /// 写入继电器状态 - 需异步调用 - 外部接口，禁止内部调用
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void WriteRelayDevice(bool cntErr)

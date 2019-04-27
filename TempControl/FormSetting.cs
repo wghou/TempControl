@@ -138,9 +138,9 @@ namespace TempControl
             }
 
             // 限制温度点的设置范围
-            if (paramCache[0] > devicesAll._thresholdParameters.tempMaxValue || paramCache[0] < devicesAll._thresholdParameters.tempMinValue)
+            if (paramCache[0] > devicesAll._runningParameters.tempMaxValue || paramCache[0] < devicesAll._runningParameters.tempMinValue)
             {
-                MessageBox.Show("温度点超出界限 ( " + devicesAll._thresholdParameters.tempMinValue.ToString("0.0000") + " - " + devicesAll._thresholdParameters.tempMaxValue.ToString("0.0000") + " )，请检查!");
+                MessageBox.Show("温度点超出界限 ( " + devicesAll._runningParameters.tempMinValue.ToString("0.0000") + " - " + devicesAll._runningParameters.tempMaxValue.ToString("0.0000") + " )，请检查!");
                 return;
             }
 

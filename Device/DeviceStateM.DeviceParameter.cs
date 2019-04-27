@@ -37,9 +37,12 @@ namespace Device
         public UInt32 stateCounts = 0;
     }
 
-    public class ThresholdParamStruct
+    public class RunningParamStruct
     {
-        
+        /// <summary>
+        /// 读取控温板时间间隔 Second
+        /// </summary>
+        public int readTempIntervalSec = 5;
         /// <summary>
         /// 稳定时间 second
         /// </summary>
@@ -105,6 +108,28 @@ namespace Device
         /// 是否禁用总电源按键
         /// </summary>
         public bool ryElecEnable = false;
+
+        /// <summary>
+        /// 实验完成后是否关闭计算机
+        /// </summary>
+        public bool shutDownComputer = false;
+
+        /// <summary>
+        /// 控温板 1 端口
+        /// </summary>
+        public string portTp1 = "COM0";
+        /// <summary>
+        /// 控温板 2 端口
+        /// </summary>
+        public string portTp2 = "COM1";
+        /// <summary>
+        /// 继电器 1 端口
+        /// </summary>
+        public string portRy1 = "COM2";
+        /// <summary>
+        /// 继电器 2 端口
+        /// </summary>
+        public string portRy2 = "COM3";
 
 
         public bool ReadValueConfig(string configFilePath)
@@ -203,15 +228,11 @@ namespace Device
         public TemptPointStruct currentTemptPointState = new TemptPointStruct();
 
         /// <summary>
-        /// 实验完成后是否关闭计算机
-        /// </summary>
-        public bool shutDownComputer = false;
-        /// <summary>
         /// 锁 - 保证自动控制流程步骤执行的时候，相应资源（例如 currentState autoStart controlFlowList etc. ）不会被访问
         /// </summary>
         public Object stepLocker = new Object();
 
-        public ThresholdParamStruct _thresholdParameters = new ThresholdParamStruct();
+        public RunningParamStruct _runningParameters = new RunningParamStruct();
 
 
 

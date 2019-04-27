@@ -23,7 +23,9 @@ namespace TempControl
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 波动度
-                this.label_fluc.Text = "主控温槽波动度: " + "fluc";
+                float fluc = 0.0f;
+                _device.tpDeviceM.GetFlucDurCountOrLess(_device._runningParameters.steadyTimeSec / _device._runningParameters.readTempIntervalSec, out fluc);
+                this.label_fluc.Text = "波动度: " + fluc.ToString("0.0000")+ "℃/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
 
                 // 功率系数
                 label_powerM.Text = this._device.tpDeviceM.tpPowerShow.ToString("0") + "%";
