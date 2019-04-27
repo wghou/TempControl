@@ -14,6 +14,8 @@ namespace Device
         // 设备
         public string tpDeviceName = string.Empty;
         public string tpDevicePortName = string.Empty;
+        /// <summary> 当前控温板通讯状态 / true - 正常 / false - 错误 </summary>
+        public bool currentComStatus = true;
         private TempProtocol tpDevice = new TempProtocol();
         /// <summary>
         /// 设备参数值 - 7个
@@ -107,6 +109,11 @@ namespace Device
                     Thread.Sleep(100);
                 }
             }
+
+            // 当前通讯状态
+            if (err == TempProtocol.Err_t.NoError) currentComStatus = true;
+            else currentComStatus = false;
+
             // 从温控设备读取全部参数值，返回错误标志
             return err;
         }
@@ -144,6 +151,10 @@ namespace Device
                     // 将更新后的参数值写入 tpParam[] 中
                     tpParam[i] = tpParamToSet[i];
                 }
+
+                // 当前通讯状态
+                if (err == TempProtocol.Err_t.NoError) currentComStatus = true;
+                else currentComStatus = false;
             }
             return err;
         }
@@ -177,6 +188,10 @@ namespace Device
                     // 如果没有发生错误，则在上位机更新数据
                     tpParam[i] = val;
                 }
+
+                // 当前通讯状态
+                if (err == TempProtocol.Err_t.NoError) currentComStatus = true;
+                else currentComStatus = false;
             }
 
             return err;
@@ -210,6 +225,10 @@ namespace Device
                     else
                         val = 0.0f;
                 }
+
+                // 当前通讯状态
+                if (err == TempProtocol.Err_t.NoError) currentComStatus = true;
+                else currentComStatus = false;
             }
 
             // 返回错误标志
@@ -247,6 +266,10 @@ namespace Device
                     else
                         val = 0.0f;
                 }
+
+                // 当前通讯状态
+                if (err == TempProtocol.Err_t.NoError) currentComStatus = true;
+                else currentComStatus = false;
             }
 
             // 返回错误标志
@@ -278,6 +301,10 @@ namespace Device
                     // 如发生错误，则返回上一个时刻的功率显示值
                     val = tpPowerShow;
                 }
+
+                // 当前通讯状态
+                if (err == TempProtocol.Err_t.NoError) currentComStatus = true;
+                else currentComStatus = false;
             }
 
             // 返回错误标志

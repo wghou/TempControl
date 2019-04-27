@@ -8,7 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LiveCharts;
+using LiveCharts.Configurations;
 using LiveCharts.Wpf;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace TempControl
 {
@@ -16,12 +18,26 @@ namespace TempControl
     {
         private Device.DeviceStateM _device;
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxs = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
-        private Timer _timer;
-        
+
+        // 闪烁等
+        Bitmap mBmp;
+        private bool flp = false;
+        private Timer timPic = new Timer();
+
+        Bitmap mBmpRelayRed;
+        Bitmap mBmpRelayGreen;
+
+        public class DateModel
+        {
+            public System.DateTime DateTime { get; set; }
+            public double Value { get; set; }
+        }
+
 
         public FormMain()
         {
             InitializeComponent();
+
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ry0;
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ry1;
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ry2;
@@ -31,41 +47,18 @@ namespace TempControl
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ry6;
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ry7;
 
-            cartesianChart.Series = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Title = "水槽温度",
-                    Values = new ChartValues<double>{1,2,3,4}
-                }
-            };
-            //cartesianChart.AxisX.Add(new Axis
-            //{
-            //    Separator = new Separator
-            //    {
-            //        Step = TimeSpan.FromSeconds(30).Ticks,
-            //        IsEnabled = false
-            //    }
-            //});
-            cartesianChart.AxisY.Add(new Axis
-            {
-                Title = "温度值",
-                LabelFormatter = value => value.ToString("F4") + "℃"
-            });
+            InitLiveCharts();
 
             _device = new Device.DeviceStateM();
-            _timer = new Timer();
-            _timer.Interval = 4000;
-            _timer.Tick += _timer_Tick;
-            _timer.Start();
 
-            _device.startTimeStep();
+
+            // 用于状态指示灯
+            mBmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            timPic.Interval = 500;
+            timPic.Tick += TimPic_Tick;
+            timPic.Start();
         }
 
-        private void _timer_Tick(object sender, EventArgs e)
-        {
-            
-        }
 
         private void Form1_Shown(object sender, EventArgs e)
         {
@@ -75,8 +68,77 @@ namespace TempControl
             timer1.Start();
 
             RegistEventHandler();
+            _device.Configure();
+            _device.startTimeStep();
         }
 
+
+        //////////////////////////////////////////////////
+        // 初始化曲线图
+        private void InitLiveCharts()
+        {
+            var dayConfig = Mappers.Xy<DateModel>()
+                .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromSeconds(1).Ticks)
+                .Y(dateModel => dateModel.Value);
+
+            cartesianChart.Series = new SeriesCollection(dayConfig)
+            {
+                new LineSeries
+                {
+                    Title = "水槽温度",
+                    Values = new ChartValues<DateModel>{ },
+                    LineSmoothness = 0, // 0 straight lines, 1 really smooth lines
+                    //PointGeometry = null,
+                    //PointGeometrySize = 0,
+                    Fill = Brushes.Transparent,
+                }
+            };
+            cartesianChart.AxisX.Add(new Axis
+            {
+                MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(10).Ticks) / TimeSpan.FromSeconds(1).Ticks,
+                MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks,
+                LabelFormatter = value => new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks)).ToString("t"),
+            });
+            
+            cartesianChart.AxisY.Add(new Axis
+            {
+                //IsMerged = true,
+                Separator = new Separator
+                {
+                    StrokeThickness = 1,
+                    StrokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 2 }),
+                    Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 79, 86))
+                },
+                Title = "温度值",
+                Position = AxisPosition.LeftBottom,
+                LabelFormatter = value => value.ToString("F4") + "℃",
+            });
+        }
+
+
+        ///////////////////////////////////////////////////
+        // 控温板通讯指示灯闪烁
+        private void TimPic_Tick(object sender, EventArgs e)
+        {
+            Graphics mGhp = Graphics.FromImage(mBmp);
+            mGhp.Clear(SystemColors.Control);
+            if (flp)
+            {
+                mGhp.Clear(SystemColors.Control);
+                flp = false;
+            }
+            else
+            {
+                mGhp.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
+                flp = true;
+            }
+
+            pictureBox1.Image = mBmp;
+        }
+
+
+        ////////////////////////////////////////////////////
+        // 界面启动后，延迟执行的操作，比如自检
         private void Timer1_Tick(object sender, EventArgs e)
         {
             timer1.Stop();
@@ -86,6 +148,25 @@ namespace TempControl
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             
+        }
+
+
+        ///////////////////////////////////////////////////////////
+        // Button Click 事件
+        private void checkBox_auto_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox_exit_Click(object sender, EventArgs e)
+        {
+            // 关闭所有继电器
+            for(int i = 0; i < 8; i++)
+            {
+                _device.ryDevice.ryStatusToSet[i] = false;
+            }
+            //_device.WriteRelayDevice(false);
+            this.Close();
         }
     }
 }

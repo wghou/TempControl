@@ -121,6 +121,8 @@ namespace Device
         /// </summary>
         private void ErrorCheckOutRange()
         {
+            if (tpDeviceM.temperatures.Count == 0) return;
+
             // 判断控温槽温度是否越过了界限
             if (tpDeviceM.temperatures.Last() > _thresholdParameters.tempMaxValue || tpDeviceM.temperatures.Last() < _thresholdParameters.tempMinValue)
             {
@@ -134,13 +136,12 @@ namespace Device
         /// <returns></returns>
         private void ErrorCheckBasis()
         {
+            if (tpDeviceM.temperatures.Count == 0) return;
+
             // 判断温度偏离设定点
-            if (tpDeviceM.temperatures.Count != 0)
+            if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) > _thresholdParameters.tempBiasFaultThr)
             {
-                if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) > _thresholdParameters.tempBiasFaultThr)
-                {
-                    SetErrorStatus(ErrorCode.TempBasis);
-                }
+                SetErrorStatus(ErrorCode.TempBasis);
             }
 
             return;
@@ -153,6 +154,8 @@ namespace Device
         /// <returns></returns>
         private void ErrorCheckTempNotDown()
         {
+            if (tpDeviceM.temperatures.Count == 0) return;
+
             // 故障判断 - 温度不下降 / 温度持续上升
             // 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
             int count = _thresholdParameters.tempNotUpOrDownFaultTimeSec / tpDeviceM.readTempIntervalSec;
@@ -179,6 +182,8 @@ namespace Device
         /// <returns></returns>
         private void ErrorCheckTempFlucLarge()
         {
+            if (tpDeviceM.temperatures.Count == 0) return;
+
             // 进入某一状态后，等待 flucFaultTimeSec 再判断波动度 flucFaultThr
             int count = _thresholdParameters.flucFaultTimeSec / tpDeviceM.readTempIntervalSec;
             if (currentTemptPointState.stateCounts < count)
@@ -204,6 +209,8 @@ namespace Device
         /// <returns></returns>
         private void ErrorCheckTempNotUp()
         {
+            if (tpDeviceM.temperatures.Count == 0) return;
+
             // 故障判断 - 温度不升高 / 温度持续下降
             // 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
             int count = _thresholdParameters.tempNotUpOrDownFaultTimeSec / tpDeviceM.readTempIntervalSec;

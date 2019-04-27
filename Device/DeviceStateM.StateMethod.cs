@@ -43,6 +43,8 @@ namespace Device
         public void startTimeStep()
         {
             _tickTimer.Start();
+
+            _machine.Fire(Trigger.ElectOn);
         }
 
 

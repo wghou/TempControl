@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace TempControl
@@ -30,12 +31,24 @@ namespace TempControl
                 // 温度显示值
                 if (this._device.tpDeviceM.temperatures.Count != 0)
                     label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.0000") + "℃";
+
+                // 更新温度曲线
+                if(this._device.tpDeviceM.temperatures.Count != 0)
+                {
+                    double tpValue = this._device.tpDeviceM.temperatures.Last();
+                    this.cartesianChart.Series[0].Values.Add(new DateModel { DateTime = System.DateTime.Now, Value = tpValue });
+                    if (this.cartesianChart.Series[0].Values.Count == 100) this.cartesianChart.Series[0].Values.RemoveAt(0);
+                }
+                cartesianChart.AxisX[0].MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(10).Ticks) / TimeSpan.FromSeconds(1).Ticks;
+                cartesianChart.AxisX[0].MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks;
             }));
         }
 
         private void _device_ErrorStatusChangedEvent(System.Collections.Generic.Dictionary<Device.ErrorCode, uint> errDict)
         {
-            throw new System.NotImplementedException();
+            // wghou
+            //throw new System.NotImplementedException();
+            Debug.WriteLine("Error occur.");
         }
 
         private void _device_StateChangedEvent(Device.State st)
