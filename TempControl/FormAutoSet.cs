@@ -227,7 +227,7 @@ namespace TempControl
                 if (paramList.Count == 0)
                 {
                     flowStart = false;
-                    SetAutoButtonEvent(false);
+                    SetAutoButtonEvent?.Invoke(false);
                     this.checkBox_start.Checked = false;
                     this.checkBox_start.Text = "开始";
                     return;
@@ -492,6 +492,8 @@ namespace TempControl
         // 重新编辑按键
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex == -1) return;
+
             // 如果已经开始自动控温流程，则无法编辑
             if (flowStart)
                 return;

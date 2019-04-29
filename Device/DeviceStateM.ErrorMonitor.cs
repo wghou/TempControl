@@ -51,6 +51,10 @@ namespace Device
         /// </summary>
         TempParamSetError,
         /// <summary>
+        /// 测温电桥错误
+        /// </summary>
+        BridgeError,
+        /// <summary>
         /// 其他错误
         /// </summary>
         CodeError
@@ -62,6 +66,7 @@ namespace Device
         /// 设备错误状态
         /// </summary>
         private Dictionary<ErrorCode, uint> _deviceErrorMonitor = new Dictionary<ErrorCode, uint>();
+        private object _errLocker = new object();
         private uint lastErrCnt = 0;
 
         /// <summary>
@@ -69,9 +74,12 @@ namespace Device
         /// </summary>
         public void ResetErrorStatus()
         {
-            foreach (ErrorCode item in Enum.GetValues(typeof(ErrorCode)))
+            lock (_errLocker)
             {
-                _deviceErrorMonitor[item] = 0;
+                foreach (ErrorCode item in Enum.GetValues(typeof(ErrorCode)))
+                {
+                    _deviceErrorMonitor[item] = 0;
+                }
             }
         }
 
@@ -81,15 +89,14 @@ namespace Device
         /// <returns></returns>
         public uint CheckErrorStatus()
         {
-            // bug
-            // 如果 _deviceErrorMonitor 未初始化，读取会出现异常 
-
             uint err = 0;
-            foreach (ErrorCode item in Enum.GetValues(typeof(ErrorCode)))
+            lock (_errLocker)
             {
-                err += _deviceErrorMonitor[item];
+                foreach (ErrorCode item in Enum.GetValues(typeof(ErrorCode)))
+                {
+                    err += _deviceErrorMonitor[item];
+                }
             }
-
             return err;
         }
 
@@ -98,20 +105,22 @@ namespace Device
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public uint GetErrorStatus(ErrorCode item)
+        public Dictionary<ErrorCode, uint> GetErrorStatus()
         {
-            // bug
-            // 如果 _deviceErrorMonitor 未初始化，读取会出现异常
-
-            return _deviceErrorMonitor[item];
+            lock (_errLocker)
+            {
+                return _deviceErrorMonitor;
+            }
         }
 
 
         private void SetErrorStatus(ErrorCode err)
         {
-            _deviceErrorMonitor[err]++;
+            lock (_errLocker)
+            {
+                _deviceErrorMonitor[err]++;
+            }
         }
-
 
 
         ////////////////////////////////////////

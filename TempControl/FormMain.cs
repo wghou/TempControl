@@ -16,7 +16,7 @@ namespace TempControl
 {
     public partial class FormMain : Form
     {
-        private Device.DeviceStateM _device;
+        private Device.DeviceStateM _device = new Device.DeviceStateM();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxs = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
 
         // 闪烁等
@@ -47,10 +47,8 @@ namespace TempControl
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ry6;
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ry7;
 
+            // 初始化绘图曲线
             InitLiveCharts();
-
-            _device = new Device.DeviceStateM();
-
 
             // 用于状态指示灯
             mBmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -68,8 +66,6 @@ namespace TempControl
             timer1.Start();
 
             RegistEventHandler();
-            _device.Configure();
-            _device.startTimeStep();
         }
 
 
@@ -97,10 +93,11 @@ namespace TempControl
             };
             cartesianChart.AxisX.Add(new Axis
             {
-                MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(10).Ticks) / TimeSpan.FromSeconds(1).Ticks,
+                MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(20).Ticks) / TimeSpan.FromSeconds(1).Ticks,
                 MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks,
                 LabelFormatter = value => new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks)).ToString("t"),
-                FontSize = 15,
+                FontSize = 16,
+                Foreground = System.Windows.Media.Brushes.Black,
             });
 
             cartesianChart.AxisY.Add(new Axis
@@ -114,8 +111,9 @@ namespace TempControl
                 },
                 Title = "温度值",
                 Position = AxisPosition.LeftBottom,
-                LabelFormatter = value => value.ToString("F3") + "℃",
+                LabelFormatter = value => value.ToString("F2") + "℃",
                 FontSize = 15,
+                Foreground = System.Windows.Media.Brushes.Black,
             });
         }
 
@@ -151,7 +149,20 @@ namespace TempControl
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            
+            bool confDevice = _device.Configure();
+            if (confDevice == false)
+            {
+                if (DialogResult.Yes == MessageBox.Show("设备端口错误，是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    this.BeginInvoke(new EventHandler(delegate
+                    {
+                        this.Close();
+                    }));
+                    
+                    return;
+                }
+            }
+            _device.startTimeStep();
         }
 
 
@@ -181,12 +192,21 @@ namespace TempControl
 
         private void checkBox_exit_Click(object sender, EventArgs e)
         {
+            if(MessageBox.Show("是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) 
+                != DialogResult.Yes)
+            {
+                return;
+            }
+
             // 关闭所有继电器
             for(int i = 0; i < 8; i++)
             {
                 _device.ryDevice.ryStatusToSet[i] = false;
             }
-            //_device.WriteRelayDevice(false);
+            // bug
+            // 如果在退出程序的时候，继电器读写错误，则无法处理该异常
+            //_device.RelayDeviceStatusUpdatedEvent -= _device_RelayDeviceStatusUpdatedEvent;
+            _device.WriteRelayDevice(false);
             this.Close();
         }
 

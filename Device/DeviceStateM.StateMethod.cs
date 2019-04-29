@@ -30,7 +30,7 @@ namespace Device
 
             // 全局错误信息 - 事件
             uint errCnt = CheckErrorStatus();
-            if(errCnt!=0 && errCnt != lastErrCnt)
+            if(errCnt !=0 && errCnt != lastErrCnt)
             {
                 ErrorStatusChangedEvent?.Invoke(_deviceErrorMonitor);
             }

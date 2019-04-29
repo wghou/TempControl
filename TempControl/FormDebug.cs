@@ -54,19 +54,21 @@ namespace TempControl
             textBox3.Text = paramAll.flucValue.ToString("0.0000");
             textBox4.Text = paramAll.controlTempThr.ToString("0.0000");
             textBox5.Text = paramAll.tempNotUpOrDownFaultTimeSec.ToString("0");
-            //textBox6.Text = paramAll.tempNotUpOrDwonFaultThrHigh.ToString("0.0000");
+            textBox6.Text = paramAll.tempNotUpOrDwonFaultThr.ToString("0.0000");
             textBox7.Text = paramAll.flucFaultTimeSec.ToString("0");
             textBox8.Text = paramAll.flucFaultThr.ToString("0.0000");
             textBox9.Text = paramAll.tempBiasFaultThr.ToString("0.0000");
             textBox10.Text = paramAll.tempMaxValue.ToString("0.0000");
             textBox11.Text = paramAll.tempMinValue.ToString("0.0000");
+            textBox12.Text = "0";
+            textBox13.Text = "0";
             //textBox12.Text = paramAll.tpBridge.tpBridgeChannel.ToString("0");
             //textBox13.Text = paramAll.tpBridge.tpBridgeReadInterval.ToString("0");
-            //textBox14.Text = paramAll.subCoolAndCircleShutdownThr.ToString("0.0000");
-            textBox15.Text = paramAll.tempDownCoolFShoutdownDevision.ToString("0.0000");
-            textBox16.Text = paramAll.tempDownCoolFShoutdownHot.ToString("0.0000");
-            textBox17.Text = paramAll.tempDownCoolFShoutdownCool.ToString("0.0000");
-            //textBox18.Text = paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000");
+            textBox14.Text = paramAll.subCoolAndCircleShutdownThr.ToString("0.0000");
+            textBox15.Text = paramAll.tempDownCoolFShutdownDevision.ToString("0.0000");
+            textBox16.Text = paramAll.tempDownCoolFShutdownHot.ToString("0.0000");
+            textBox17.Text = paramAll.tempDownCoolFShutdownCool.ToString("0.0000");
+            textBox18.Text = paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000");
 
             comboBox_sort.SelectedIndex = paramAll.sort == "ascend" ? 0 : 1;
             comboBox_elect.SelectedIndex = paramAll.ryElecEnable == true ? 0 : 1;
@@ -110,9 +112,9 @@ namespace TempControl
             //paramAll.tpBridge.tpBridgeChannel = (int)paramCache[11];
             //paramAll.tpBridge.tpBridgeReadInterval = (int)paramCache[12];
             // paramAll.subCoolAndCircleShutdownThr = paramCache[13];
-            paramAll.tempDownCoolFShoutdownDevision = paramCache[14];
-            paramAll.tempDownCoolFShoutdownHot = paramCache[15];
-            paramAll.tempDownCoolFShoutdownCool = paramCache[16];
+            paramAll.tempDownCoolFShutdownDevision = paramCache[14];
+            paramAll.tempDownCoolFShutdownHot = paramCache[15];
+            paramAll.tempDownCoolFShutdownCool = paramCache[16];
             //paramAll.tempNotUpOrDwonFaultThrHigh = paramCache[17];
 
             if (comboBox_sort.SelectedIndex == 0)
@@ -151,9 +153,9 @@ namespace TempControl
             //Utils.IniReadWrite.INIWriteValue(configFilePath, "TpBridge", "tpBridgeChannel", paramAll.tpBridge.tpBridgeChannel.ToString("0"));
             //Utils.IniReadWrite.INIWriteValue(configFilePath, "TpBridge", "tpBridgeReadInterval", paramAll.tpBridge.tpBridgeReadInterval.ToString("0"));
             //Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "subCircleShutdownThr", paramAll.subCoolAndCircleShutdownThr.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownDevision", paramAll.tempDownCoolFShoutdownDevision.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownHot", paramAll.tempDownCoolFShoutdownHot.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownCool", paramAll.tempDownCoolFShoutdownCool.ToString("0.0000"));
+            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownDevision", paramAll.tempDownCoolFShutdownDevision.ToString("0.0000"));
+            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownHot", paramAll.tempDownCoolFShutdownHot.ToString("0.0000"));
+            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownCool", paramAll.tempDownCoolFShutdownCool.ToString("0.0000"));
 
             Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", paramAll.sort);
             if (paramAll.ryElecEnable) Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", "Enable");
@@ -176,9 +178,9 @@ namespace TempControl
             //textBox12.Text = paramAll.tpBridge.tpBridgeChannel.ToString("0");
             //textBox13.Text = paramAll.tpBridge.tpBridgeReadInterval.ToString("0");
             //textBox14.Text = paramAll.subCoolAndCircleShutdownThr.ToString("0.0000");
-            textBox15.Text = paramAll.tempDownCoolFShoutdownDevision.ToString("0.0000");
-            textBox16.Text = paramAll.tempDownCoolFShoutdownHot.ToString("0.0000");
-            textBox17.Text = paramAll.tempDownCoolFShoutdownCool.ToString("0.0000");
+            textBox15.Text = paramAll.tempDownCoolFShutdownDevision.ToString("0.0000");
+            textBox16.Text = paramAll.tempDownCoolFShutdownHot.ToString("0.0000");
+            textBox17.Text = paramAll.tempDownCoolFShutdownCool.ToString("0.0000");
             //textBox18.Text = paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000");
 
             if (paramAll.sort == "ascend")

@@ -275,6 +275,7 @@
             // checkBox_auto
             // 
             this.checkBox_auto.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_auto.AutoCheck = false;
             this.checkBox_auto.Location = new System.Drawing.Point(413, 465);
             this.checkBox_auto.Name = "checkBox_auto";
             this.checkBox_auto.Size = new System.Drawing.Size(136, 50);

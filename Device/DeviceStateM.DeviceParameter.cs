@@ -29,13 +29,12 @@ namespace Device
         /// 主槽控温表参数 - 7个
         /// </summary>
         public float[] paramM = new float[7];
-
-
         /// <summary>
         /// 进入该状态计时
         /// </summary>
         public UInt32 stateCounts = 0;
     }
+
 
     public class RunningParamStruct
     {
@@ -68,6 +67,10 @@ namespace Device
         /// </summary>
         public float tempNotUpOrDwonFaultThr = 0.4f;
         /// <summary>
+        /// 温度不升 / 不降故障温度阈值 2
+        /// </summary>
+        public float tempNotUpOrDwonFaultThrLow = 0.2f;
+        /// <summary>
         /// 波动度过大故障判断时间
         /// </summary>
         public int flucFaultTimeSec = 120;
@@ -88,17 +91,21 @@ namespace Device
         /// </summary>
         public float tempMinValue = -2.0f;
         /// <summary>
+        /// 辅槽制冷关闭阈值
+        /// </summary>
+        public float subCoolAndCircleShutdownThr = 36.0f;
+        /// <summary>
         /// 降温时，主槽快冷关闭，温度判定范围划分
         /// </summary>
-        public float tempDownCoolFShoutdownDevision = 12.5f;
+        public float tempDownCoolFShutdownDevision = 12.5f;
         /// <summary>
         /// 主槽快冷关 - 高温时阈值
         /// </summary>
-        public float tempDownCoolFShoutdownHot = 0.4f;
+        public float tempDownCoolFShutdownHot = 0.4f;
         /// <summary>
         /// 主槽快冷关 - 低温时阈值
         /// </summary>
-        public float tempDownCoolFShoutdownCool = 0.2f;
+        public float tempDownCoolFShutdownCool = 0.2f;
 
         /// <summary>
         /// 温度点排序 - 升序 / 降序
@@ -108,7 +115,6 @@ namespace Device
         /// 是否禁用总电源按键
         /// </summary>
         public bool ryElecEnable = false;
-
         /// <summary>
         /// 实验完成后是否关闭计算机
         /// </summary>
@@ -134,9 +140,6 @@ namespace Device
 
         public bool ReadValueConfig(string configFilePath)
         {
-            // 配置成功标志位
-            bool confOK = true;
-
             try
             {
                 // 如果配置文件不存在，则新建
@@ -144,62 +147,76 @@ namespace Device
                 {
 
                     // 相关参数
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "SteadyTimeSec", "300");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "bridgeSteadyTimeSec", "120");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "FlucValue", "0.001");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "controlTempThr", "0.4");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDownFaultTimeSec", "600");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThr", "0.4");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucFaultTimeSec", "120");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucFaultThr", "0.4");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempBiasFaultThr", "2");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempMaxValue", "40");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempMinValue", "-2");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownDevision", "12.5");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownHot", "0.4");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownCool", "0.2");
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "readTempIntervalSec", readTempIntervalSec.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "steadyTimeSec", steadyTimeSec.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "bridgeSteadyTimeSec", bridgeSteadyTimeSec.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucValue", flucValue.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "controlTempThr", controlTempThr.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDownFaultTimeSec", tempNotUpOrDownFaultTimeSec.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThr", tempNotUpOrDwonFaultThr.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThrLow", tempNotUpOrDwonFaultThrLow.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucFaultTimeSec", flucFaultTimeSec.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucFaultThr", flucFaultThr.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempBiasFaultThr", tempBiasFaultThr.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempMaxValue", tempMaxValue.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempMinValue", tempMinValue.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "subCoolAndCircleShutdownThr", subCoolAndCircleShutdownThr.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownDevision", tempDownCoolFShutdownDevision.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString());
 
                     // 一些其他的调试参数
                     // 升序还是降序
                     Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", "descend");
                     Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", "Disable");
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "shutDownComputer", "Disable");
+
+                    // 端口
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp1", "COM0");
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp2", "COM1");
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy1", "COM2");
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy2", "COM3");
 
                 }
 
-
                 ////////////////////////////////////////
                 // 参数设置
-                // 设置定时器更新时间
-                //tpTemperatureUpdateTimer.Interval = tpDeviceM.readTempIntervalSec * 1000;
-                // 从配置文件读取 稳定时间 / 波动度需满足的条件
-                steadyTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "SteadyTimeSecond", "300"));
-                bridgeSteadyTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "bridgeSteadyTimeSec", "120"));
-                flucValue = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "FlucValue", "0.001"));
-                controlTempThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "controlTempThr", "0.4"));
-                tempNotUpOrDownFaultTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempNotUpOrDownFaultTimeSec", "600"));
-                tempNotUpOrDwonFaultThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThr", "0.4"));
-                //tempNotUpOrDwonFaultThrLow = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThrLow", "0.2"));
-                flucFaultTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "flucFaultTimeSec", "120"));
-                flucFaultThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "flucFaultThr", "0.4"));
-                tempBiasFaultThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempBiasFaultThr", "2"));
-                tempMaxValue = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempMaxValue", "40"));
-                tempMinValue = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempMinValue", "-2"));
-                tempDownCoolFShoutdownDevision = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShoutdownDevision", "12.5"));
-                tempDownCoolFShoutdownHot = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShoutdownHot", "0.4"));
-                tempDownCoolFShoutdownCool = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShoutdownCool", "0.2"));
+                readTempIntervalSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "readTempIntervalSec", readTempIntervalSec.ToString()));
+                steadyTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "SteadyTimeSecond", steadyTimeSec.ToString()));
+                bridgeSteadyTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "bridgeSteadyTimeSec", bridgeSteadyTimeSec.ToString()));
+                flucValue = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "FlucValue", flucValue.ToString()));
+                controlTempThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "controlTempThr", controlTempThr.ToString()));
+                tempNotUpOrDownFaultTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempNotUpOrDownFaultTimeSec", tempNotUpOrDownFaultTimeSec.ToString()));
+                tempNotUpOrDwonFaultThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThr", tempNotUpOrDwonFaultThr.ToString()));
+                tempNotUpOrDwonFaultThrLow = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThrLow", tempNotUpOrDwonFaultThrLow.ToString()));
+                flucFaultTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "flucFaultTimeSec", flucFaultTimeSec.ToString()));
+                flucFaultThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "flucFaultThr", flucFaultThr.ToString()));
+                tempBiasFaultThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempBiasFaultThr", tempBiasFaultThr.ToString()));
+                tempMaxValue = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempMaxValue", tempMaxValue.ToString()));
+                tempMinValue = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempMinValue", tempMinValue.ToString()));
+                subCoolAndCircleShutdownThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "subCoolAndCircleShutdownThr", subCoolAndCircleShutdownThr.ToString()));
+                tempDownCoolFShutdownDevision = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString()));
+                tempDownCoolFShutdownHot = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString()));
+                tempDownCoolFShutdownCool = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString()));
 
-                // 默认降序
-                sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", "descend");
-                if (Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable") ryElecEnable = true;
-                else ryElecEnable = false;
+                // 其他
+                sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
+                ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
+                shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
+
+                // 端口
+                portTp1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp1", portTp1);
+                portTp2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp2", portTp2);
+                portRy1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy1", portRy1);
+                portRy2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy2", portRy2);
             }
             catch (Exception ex)
             {
                 Utils.Logger.Sys("从配置文件读取参数过程中发生异常：" + ex.Message.ToString());
-                confOK = false;
+                return false;
             }
 
-            return confOK;
+            return true;
         }
     }
 

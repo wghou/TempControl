@@ -35,31 +35,30 @@ namespace Device
             // 配置成功标志位
             bool confOK = true;
 
+            // 读取配置运行参数
+            if (_runningParameters.ReadValueConfig(configFilePath) == false) Debug.WriteLine("读取配置文件错误，使用默认参数运行。");
+
             try
             {
-                // 如果配置文件不存在，则新建
-                if (!File.Exists(configFilePath))
-                {
-                    // 设备端口号
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "PortName", "tempMain", "COM1");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "PortName", "relay", "COM2");
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "PortName", "sensor", "COM3");
-                }
-
                 //////////////////////////////////////////
                 // 配置参数
                 // 主槽控温设备
-                confOK &= tpDeviceM.SetDevicePortName(Utils.IniReadWrite.INIGetStringValue(configFilePath, "PortName", "tempMain", "COM1"));
-                // 温度读取时间间隔
-                _runningParameters.readTempIntervalSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "ReadIntervalSec", "2"));
+                confOK &= tpDeviceM.SetDevicePortName(_runningParameters.portTp1);
                 Debug.WriteLineIf(!confOK, "配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                 Debug.WriteLineIf(confOK, "配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
                 if (!confOK)
                     Utils.Logger.Sys("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
 
 
+                if(tpDeviceM.UpdateParamFromDevice()!= TempProtocol.Err_t.NoError)
+                {
+                    confOK = false;
+                    Utils.Logger.Sys("从主槽控温设备读取参数失败！");
+                }
+
+
                 // 继电器设备
-                confOK &= ryDevice.SetPortName(Utils.IniReadWrite.INIGetStringValue(configFilePath, "PortName", "relay", "COM3"));
+                confOK &= ryDevice.SetPortName(_runningParameters.portRy1);
                 Debug.WriteLineIf(!confOK, "配置继电器设备失败! 端口号: " + ryDevice.ryDevicePortName);
                 Debug.WriteLineIf(confOK, "配置继电器设备成功! 端口号: " + ryDevice.ryDevicePortName);
                 if (!confOK)
@@ -72,13 +71,6 @@ namespace Device
             }
 
             Debug.WriteLineIf(confOK, "设备串口配置成功!");
-
-
-            // 从配置文件中读取参数
-            if (confOK == true)
-            {
-                confOK = _runningParameters.ReadValueConfig(configFilePath);
-            }
 
             return confOK;
         }
