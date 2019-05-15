@@ -72,6 +72,12 @@
     <Compile Include="FormAutoSet.Designer.cs">
       <DependentUpon>FormAutoSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormChart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormChart.Designer.cs">
+      <DependentUpon>FormChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormDebug.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -16,6 +16,7 @@ namespace Device
         public string tpDevicePortName = string.Empty;
         /// <summary> 当前控温板通讯状态 / true - 正常 / false - 错误 </summary>
         public bool currentComStatus = true;
+        public bool Enable = true;
         private TempProtocol tpDevice = new TempProtocol();
         /// <summary>
         /// 设备参数值 - 7个
@@ -48,6 +49,31 @@ namespace Device
 
 
         #region Public Methods
+        /// <summary>
+        /// 设置端口号并连接设备
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <returns></returns>
+        public bool ConfigSyn(string portName)
+        {
+            // 当 Enable == False 时，返回 true
+            // 设置端口号
+            if (SetDevicePortName(portName) == false) {
+                Debug.WriteLine("配置主槽控温设备失败! 端口号: " + portName);
+                currentComStatus = false;
+                return !Enable;
+            }
+
+            // 更新参数
+            if (UpdateParamFromDevice() != TempProtocol.Err_t.NoError){
+                Debug.WriteLine("从主槽控温设备读取参数失败！");
+                currentComStatus = false;
+                return !Enable;
+            }
+
+            currentComStatus = true;
+            return true;
+        }
 
         /// <summary>
         /// 温控设备初始化，并设置串口名称

@@ -11,8 +11,9 @@ namespace TempControl
     {
         void RegistEventHandler()
         {
-            _device.RelayDeviceStatusUpdatedEvent += _device_RelayDeviceStatusUpdatedEvent;
-            _device.TempDeviceParamUpdatedEvent += _device_TempDeviceParamUpdatedEvent;
+            _device.RelayDeviceMStatusUpdatedEvent += _device_RelayDeviceMStatusUpdatedEvent;
+            _device.RelayDeviceSStatusUpdatedEvent += _device_RelayDeviceSStatusUpdatedEvent;
+            _device.TempDeviceMParamUpdatedEvent += _device_TempDeviceParamUpdatedEvent;
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEvent += _device_TimerTickEvent;
@@ -26,21 +27,27 @@ namespace TempControl
                 // 波动度
                 float fluc = 0.0f;
                 _device.tpDeviceM.GetFlucDurCountOrLess(_device._runningParameters.steadyTimeSec / _device._runningParameters.readTempIntervalSec, out fluc);
-                this.label_fluc.Text = "波动度: " + fluc.ToString("0.0000")+ "℃/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
+                this.label_fluc.Text = "波动度: " + fluc.ToString("0.0000") + "℃/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
 
-                // 功率系数
+                // 主槽功率系数
                 label_powerM.Text = this._device.tpDeviceM.tpPowerShow.ToString("0") + "%";
-                
-                // 温度显示值
+
+                // 主槽温度显示值
                 if (this._device.tpDeviceM.temperatures.Count != 0)
                     label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.0000") + "℃";
 
-                // 温度设定值
+                // 主槽温度设定值
                 label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
 
-                // 曲线
-                tempPic.Image = mDrawChart.Draw();
+                // 辅槽功率系数
+                label_powerS.Text = this._device.tpDeviceS.tpPowerShow.ToString("0") + "%";
 
+                // 辅槽温度显示值
+                if (this._device.tpDeviceS.temperatures.Count != 0)
+                    label_tempS.Text = this._device.tpDeviceS.temperatures.Last().ToString("0.0000") + "℃";
+
+                // 辅槽温度设定值
+                label_tempSetS.Text = this._device.tpDeviceS.tpParam[0].ToString("0.0000") + "℃";
             }));
         }
 
@@ -79,9 +86,7 @@ namespace TempControl
                 // 出现错误时，如果是首次出现，则新建 Alarm 窗口并弹出，但如果窗口已经存在，则只闪烁任务栏提示
                 if (formExist)
                 {
-                    IntPtr hwnd = FindWindow("FormAlarm", null);
-                    if (hwnd != null)
-                        FlashWindowEx(hwnd, flashType.FLASHW_TIMER);
+                    
                 }
                 else
                 {
@@ -110,98 +115,49 @@ namespace TempControl
             }));
         }
 
-        private void _device_RelayDeviceStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
+        private void _device_RelayDeviceMStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
         {
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 按钮状态
-                foreach(var cmd in Enum.GetValues(typeof(Device.RelayDevice.Cmd_r)))
+                foreach (var chk in this.dictCheckBoxsRyM)
                 {
-                    this.dictCheckBoxs[(Device.RelayDevice.Cmd_r)cmd].Checked = ryStatus[(int)cmd];
+                    chk.Value.Checked = ryStatus[(int)chk.Key];
+                }
+
+                // 如果禁用 ry2 ，则将全部 16 个按键作为 ry1 使用
+                if (this.checkBox_ryEn2.Checked == false)
+                {
+                    foreach (var chk in this.dictCheckBoxsRyS)
+                    {
+                        chk.Value.Checked = ryStatus[(int)chk.Key + 8];
+                    }
                 }
             }));
 
             if(err != Device.RelayDevice.Err_r.NoError)
             {
-                MessageBox.Show("继电器设置错误！");
+                MessageBox.Show("继电器模块 1 设置错误！");
             }
         }
 
-        #region 实现窗口闪烁
-
-        [DllImport("user32.dll")]
-        public static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
-
-        /// <summary>
-        /// 闪烁类型
-        /// </summary>
-        public enum flashType : uint
+        private void _device_RelayDeviceSStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
         {
-            FLASHW_STOP = 0,    //停止闪烁
-            FALSHW_CAPTION = 1, //只闪烁标题
-            FLASHW_TRAY = 2,    //只闪烁任务栏
-            FLASHW_ALL = 3,     //标题和任务栏同时闪烁
-            FLASHW_PARAM1 = 4,
-            FLASHW_PARAM2 = 12,
-            FLASHW_TIMER = FLASHW_TRAY | FLASHW_PARAM1,     //无条件闪烁任务栏直到发送停止标志或者窗口被激活，如果未激活，停止时高亮
-            FLASHW_TIMERNOFG = FLASHW_TRAY | FLASHW_PARAM2  //未激活时闪烁任务栏直到发送停止标志或者窗体被激活，停止后高亮
+            if (this.checkBox_ryEn2.Checked == false) return;
 
-            // https://msdn.microsoft.com/en-us/library/ms679348
-            //FLASHW_ALL = 0x00000003,        // Flash both the window caption and taskbar button. This is equivalent to setting the FLASHW_CAPTION | FLASHW_TRAY flags.
-            //FLASHW_CAPTION = 0x00000001,    // Flash the window caption.
-            //FLASHW_STOP = 0,                // Stop flashing. The system restores the window to its original state.
-            //FLASHW_TIMER = 0x00000004,      // Flash continuously, until the FLASHW_STOP flag is set.
-            //FLASHW_TIMERNOFG = 0x0000000C,  // Flash continuously until the window comes to the foreground.
-            //FLASHW_TRAY =0x00000002,        // Flash the taskbar button.
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                // 按钮状态
+                foreach (var chk in this.dictCheckBoxsRyS)
+                {
+                    chk.Value.Checked = ryStatus[(int)chk.Key];
+                }
+            }));
+
+            if (err != Device.RelayDevice.Err_r.NoError)
+            {
+                MessageBox.Show("继电器模块 2 设置错误！");
+            }
         }
-
-        /// <summary>
-        /// 包含系统应在指定时间内闪烁窗口次数和闪烁状态的信息
-        /// </summary>
-        public struct FLASHWINFO
-        {
-            /// <summary>
-            /// 结构大小
-            /// </summary>
-            public uint cbSize;
-            /// <summary>
-            /// 要闪烁或停止的窗口句柄
-            /// </summary>
-            public IntPtr hwnd;
-            /// <summary>
-            /// 闪烁的类型
-            /// </summary>
-            public uint dwFlags;
-            /// <summary>
-            /// 闪烁窗口的次数
-            /// </summary>
-            public uint uCount;
-            /// <summary>
-            /// 窗口闪烁的频度，毫秒为单位；若该值为0，则为默认图标的闪烁频度
-            /// </summary>
-            public uint dwTimeout;
-        }
-
-        /// <summary>
-        /// 闪烁窗口
-        /// </summary>
-        /// <param name="hWnd">窗口句柄</param>
-        /// <param name="type">闪烁类型</param>
-        /// <returns></returns>
-        public static bool FlashWindowEx(IntPtr hWnd, flashType type)
-        {
-            FLASHWINFO fInfo = new FLASHWINFO();
-            fInfo.cbSize = Convert.ToUInt32(Marshal.SizeOf(fInfo));
-            fInfo.hwnd = hWnd;//要闪烁的窗口的句柄，该窗口可以是打开的或最小化的
-            fInfo.dwFlags = (uint)type;//闪烁的类型
-            //fInfo.uCount = UInt32.MaxValue;//闪烁窗口的次数
-            fInfo.uCount = 5;//闪烁窗口的次数
-            fInfo.dwTimeout = 0; //窗口闪烁的频度，毫秒为单位；若该值为0，则为默认图标的闪烁频度
-            return FlashWindowEx(ref fInfo);
-        }
-
-        [DllImport("user32.dll", EntryPoint = "FindWindow")]
-        private extern static IntPtr FindWindow(string lpClassName, string lpWindowName);
-        #endregion
     }
 }

@@ -31,11 +31,11 @@ namespace TempControl
         private float startHor;
         private float endHor;
         //private const float spaceLeft = 105;
-        private const float spaceLeft = 69;
+        private const float spaceLeft = 79;
         private const float spaceRight = 25;
         private const float spaceTop = 25;
         private const float spaceBottom = 25;
-        private const float startText = 10;
+        private const float startText = 30;
 
         // Color parameters
         private Color backColor = Color.Black;
@@ -52,7 +52,7 @@ namespace TempControl
 
         // Time line
         private const int timeColInt = 2;           // Time interval to tag time on x-Axis
-        private int tempChartFixLen = 361;    // Count of point used in chart, 
+        private const int tempChartFixLen = 601;    // Count of point used in chart, 
                                                     // 661 is suitable for 800*? chart
                                                     // Use for saving temperature data only for chart drawing
         private List<float> tempListForChart;// 所有要绘制的温度数据
@@ -68,7 +68,7 @@ namespace TempControl
         /// <param name="width">width of chart</param>
         /// <param name="colNum">Column number of chart</param>
         /// <param name="rowNum">Row number of chart</param>
-        public DrawChart(Device.TempDevice dev, Device.RunningParamStruct devicePm, int height, int width, int colNum = 6, int rowNum = 7)
+        public DrawChart(Device.TempDevice dev, Device.RunningParamStruct devicePm, int height, int width, int colNum, int rowNum)
         {
             tpDevice = dev;
             runningParam = devicePm;
@@ -77,8 +77,6 @@ namespace TempControl
             this.width = width;
             this.colNum = colNum;
             this.rowNum = rowNum;
-
-            tempChartFixLen = colNum * 60 + 1;
 
             CalcSize();
             PutOnColor();
@@ -132,7 +130,7 @@ namespace TempControl
         /// </summary>
         private void MoveTempLocal()
         {
-            lock (tpDevice.tpShowLocker)
+            lock(tpDevice.tpShowLocker)
             {
                 // 将温度数据从 Device.TempDevice.temperatures 中读取到 tempListForChart 中
                 if (tpDevice.temperaturesShow.Count < tempChartFixLen)
@@ -155,7 +153,7 @@ namespace TempControl
 
                 // 为了保证每格的最小分辨率为0.001,要处理一下
                 // wghou -> 分辨率改为 0.0001
-                if (digits == 3)
+                if(digits == 3)
                 {
                     max = (float)Math.Round(max, 3);
                     min = (float)Math.Round(min, 3);
@@ -173,7 +171,7 @@ namespace TempControl
                     //int tms = (int)((marg + 0.001f * (rowNum - 1)) / (0.001f * rowNum));
                     int tms = (int)Math.Ceiling(marg / (0.001f * rowNum));
                     if (tms == 0) tms = 1;
-                    max = (float)Math.Round(min + marg / 2 + tms * 0.001f * rowNum / 2, 3);
+                    max = (float)Math.Round(min + marg/2 + tms*0.001f*rowNum/2, 3);
                     min = (float)(max - tms * 0.001f * rowNum);
                 }
                 else
@@ -290,7 +288,7 @@ namespace TempControl
             }
 #endif
             // wghou -> 分辨率改为 0.0001
-            if (digits == 3)
+            if(digits==3)
             {
                 float max3f = (float)Math.Round(max, digits);
                 float step3f = (float)Math.Round(margin / rowNum, digits);
@@ -316,7 +314,7 @@ namespace TempControl
             }
 
 
-
+            
             #endregion
 
             // 将温度数据绘制到图表中
@@ -328,10 +326,7 @@ namespace TempControl
                     startHor + (i + 1), startVer + (tempListForChart[i + 1] - min) / margin * spaceVer);
             }
 #endif
-            float interval = spaceHor / (tempChartFixLen - 1);
-
-
-
+            float interval = spaceHor / (tempChartFixLen -1 );
             // wghou 20180109
             // 关于温度分辨率的调整
 #if false
@@ -345,7 +340,7 @@ namespace TempControl
             for (int i = 0; i < tempListForChart.Count - 1; i++)
             {
                 temperatureFirst = (float)Math.Round(tempListForChart[i], digits);
-                temperatureNext = (float)Math.Round(tempListForChart[i + 1], digits);
+                temperatureNext = (float)Math.Round(tempListForChart[i +1], digits);
                 mGhp.DrawLine(mLinePen, startHor + i * interval, endVer - (temperatureFirst - min) / margin * spaceVer,
                     startHor + (i + 1) * interval, endVer - (temperatureNext - min) / margin * spaceVer);
             }
@@ -358,9 +353,9 @@ namespace TempControl
             for (int i = 0; i < timeTags.Count; i++)
             {
                 mGhp.DrawString(String.Format("{0:D2}:{1:D2}", timeTags[i][0], timeTags[i][1]),
-                    mFont, mBrush, startHor + i * timeColInt * colInterval - 15, endVer + 5);
+                    mFont, mBrush, startHor + i * timeColInt * colInterval - 15, endVer + 10);
             }
-            #endregion
+#endregion
 
             return mBmp;
         }
@@ -381,6 +376,6 @@ namespace TempControl
             if (mGhp != null)
                 mGhp.Dispose();
         }
-        #endregion
+#endregion
     }
 }

@@ -27,6 +27,12 @@ namespace Device
         /// <summary>串口读-写时间间隔</summary>
         private const int intervalOfWR = 20;
 
+        /// <summary>
+        /// 继电器断网保护功能，如果勾选，则需要持续与继电器通讯
+        /// </summary>
+        public bool DisconnectProtect = false;
+        public bool Enable = true;
+
         public enum Cmd_r : int
         {
             OUT_0 = 0,
@@ -36,7 +42,15 @@ namespace Device
             OUT_4 = 4,
             OUT_5 = 5,
             OUT_6 = 6,
-            OUT_7 = 7
+            OUT_7 = 7,
+            OUT_8 = 8,
+            OUT_9 = 9,
+            OUT_10 = 10,
+            OUT_11 = 11,
+            OUT_12 = 12,
+            OUT_13 = 13,
+            OUT_14 = 14,
+            OUT_15 = 15
         }
 
         public enum Err_r : int
@@ -84,6 +98,7 @@ namespace Device
 
         public bool SetPortName(string portName)
         {
+            // 当 Enable == false 时，返回 true
             ryDevicePortName = portName;
 
             try
@@ -98,7 +113,7 @@ namespace Device
                 }
                 else
                 {
-                    return false;
+                    return !Enable;
                 }
                 // 串口打开 / 关闭测试
                 if (!sPort.IsOpen)
@@ -112,7 +127,7 @@ namespace Device
             catch (Exception ex)
             {
                 Debug.WriteLine("继电器设备新建串口时发生异常：" + ex.Message);
-                return false;
+                return !Enable;
             }
         }
 
@@ -199,6 +214,28 @@ namespace Device
                 }
             }
 
+            return err;
+        }
+
+        public Err_r ConnectWithDevice()
+        {
+            Err_r err = Err_r.NoError;
+
+            if (Enable == false) return err;
+            
+            try
+            {
+                // open the serial port
+                if (!sPort.IsOpen) sPort.Open();
+
+                master.WriteMultipleCoils(slaveId, startAddress, ryStatusToSet);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                err = Err_r.ComError;
+                Debug.WriteLine("主机与继电器设备连接失败。");
+            }
             return err;
         }
 

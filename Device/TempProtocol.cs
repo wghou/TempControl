@@ -19,7 +19,7 @@ namespace Device
         private const Parity parity = Parity.None;
         private const int readBufferSize = 64;
         private const int writeBufferSize = 64;
-        private const int readTimeout = 500;
+        private const int readTimeout = 200;
         /// <summary>串口</summary>
         private SerialPort sPort = new SerialPort()
         {

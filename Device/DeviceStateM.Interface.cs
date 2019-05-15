@@ -42,14 +42,16 @@ namespace Device
 
 
         /// <summary>
-        /// 写入继电器状态 - 需异步调用 - 外部接口，禁止内部调用
+        /// 写入继电器 1 状态 - 需异步调用 - 外部接口，禁止内部调用
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
-        public void WriteRelayDevice(bool cntErr)
+        public void WriteRelayDeviceM(bool cntErr)
         {
-            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            if (ryDeviceM.Enable == false) return;
 
-            RelayDeviceStatusUpdatedEvent?.Invoke(err, ryDevice.ryStatus);
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+
+            RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
 
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
@@ -61,14 +63,35 @@ namespace Device
 
 
         /// <summary>
-        /// 写入控温板参数 - 需要异步调用
+        /// 写入继电器 2 状态 - 需异步调用 - 外部接口，禁止内部调用
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
-        public void WriteTempDevice(bool cntErr)
+        public void WriteRelayDeviceS(bool cntErr)
+        {
+            if (ryDeviceS.Enable == false) return;
+
+            RelayDevice.Err_r err = ryDeviceS.UpdateStatusToDevice();
+
+            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
+
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (cntErr && err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+        }
+
+
+        /// <summary>
+        /// 写入控温板 1 参数 - 需要异步调用
+        /// </summary>
+        /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
+        public void WriteTempDeviceM(bool cntErr)
         {
             TempProtocol.Err_t err = tpDeviceM.UpdateParamToDevice();
 
-            TempDeviceParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
 
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
@@ -80,14 +103,56 @@ namespace Device
 
 
         /// <summary>
-        /// 读取控温板参数 - 需要异步调用
+        /// 读取控温板 1 参数 - 需要异步调用
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
-        public void ReadTempDevice(bool cntErr)
+        public void ReadTempDeviceM(bool cntErr)
         {
             TempProtocol.Err_t err = tpDeviceM.UpdateParamFromDevice();
 
-            TempDeviceParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (cntErr && err != TempProtocol.Err_t.NoError)
+            {
+                SetErrorStatus(ErrorCode.TemptError);
+            }
+        }
+
+
+        /// <summary>
+        /// 写入控温板 2 参数 - 需要异步调用
+        /// </summary>
+        /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
+        public void WriteTempDeviceS(bool cntErr)
+        {
+            if (tpDeviceS.Enable == false) return;
+
+            TempProtocol.Err_t err = tpDeviceS.UpdateParamToDevice();
+
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
+
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (cntErr && err != TempProtocol.Err_t.NoError)
+            {
+                SetErrorStatus(ErrorCode.TempParamSetError);
+            }
+        }
+
+
+        /// <summary>
+        /// 读取控温板 2 参数 - 需要异步调用
+        /// </summary>
+        /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
+        public void ReadTempDeviceS(bool cntErr)
+        {
+            if (tpDeviceS.Enable == false) return;
+
+            TempProtocol.Err_t err = tpDeviceS.UpdateParamFromDevice();
+
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
 
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态

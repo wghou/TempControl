@@ -40,33 +40,40 @@ namespace Device
             // 读取配置运行参数
             if (_runningParameters.ReadValueConfig(configFilePath) == false) Debug.WriteLine("读取配置文件错误，使用默认参数运行。");
 
-            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
+            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 500;
 
             try
             {
                 //////////////////////////////////////////
                 // 配置参数
                 // 主槽控温设备
-                confOK &= tpDeviceM.SetDevicePortName(_runningParameters.portTp1);
+                confOK &= tpDeviceM.ConfigSyn(_runningParameters.portTp1);
                 Debug.WriteLineIf(!confOK, "配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                 Debug.WriteLineIf(confOK, "配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
                 if (!confOK)
                     Utils.Logger.Sys("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
 
-
-                if(tpDeviceM.UpdateParamFromDevice()!= TempProtocol.Err_t.NoError)
-                {
-                    confOK = false;
-                    Utils.Logger.Sys("从主槽控温设备读取参数失败！");
-                }
-
-
-                // 继电器设备
-                confOK &= ryDevice.SetPortName(_runningParameters.portRy1);
-                Debug.WriteLineIf(!confOK, "配置继电器设备失败! 端口号: " + ryDevice.ryDevicePortName);
-                Debug.WriteLineIf(confOK, "配置继电器设备成功! 端口号: " + ryDevice.ryDevicePortName);
+                // 辅槽控温设备
+                confOK &= tpDeviceS.ConfigSyn(_runningParameters.portTp2);
+                Debug.WriteLineIf(!confOK, "配置辅槽控温设备失败! 端口号: " + tpDeviceS.tpDevicePortName);
+                Debug.WriteLineIf(confOK, "配置辅槽控温设备成功! 端口号: " + tpDeviceS.tpDevicePortName);
                 if (!confOK)
-                    Utils.Logger.Sys("配置继电器设备失败! 端口号: " + ryDevice.ryDevicePortName);
+                    Utils.Logger.Sys("配置辅槽控温设备失败! 端口号: " + tpDeviceS.tpDevicePortName);
+
+
+                // 继电器设备 1
+                confOK &= ryDeviceM.SetPortName(_runningParameters.portRy1);
+                Debug.WriteLineIf(!confOK, "配置继电器设备 1 失败! 端口号: " + ryDeviceM.ryDevicePortName);
+                Debug.WriteLineIf(confOK, "配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                if (!confOK)
+                    Utils.Logger.Sys("配置继电器设备 1 失败! 端口号: " + ryDeviceM.ryDevicePortName);
+
+                // 继电器设备 2
+                confOK &= ryDeviceS.SetPortName(_runningParameters.portRy2);
+                Debug.WriteLineIf(!confOK, "配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
+                Debug.WriteLineIf(confOK, "配置继电器设备 2 成功! 端口号: " + ryDeviceS.ryDevicePortName);
+                if (!confOK)
+                    Utils.Logger.Sys("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
             }
             catch (Exception ex)
             {
