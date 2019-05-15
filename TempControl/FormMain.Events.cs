@@ -38,20 +38,16 @@ namespace TempControl
                 // 温度设定值
                 label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
 
-                // 更新温度曲线
-                if(this._device.tpDeviceM.temperatures.Count != 0)
-                {
-                    double tpValue = this._device.tpDeviceM.temperatures.Last();
-                    this.cartesianChart.Series[0].Values.Add(new DateModel { DateTime = System.DateTime.Now, Value = tpValue });
-                    if (this.cartesianChart.Series[0].Values.Count == 300) this.cartesianChart.Series[0].Values.RemoveAt(0);
-                }
-                cartesianChart.AxisX[0].MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(20).Ticks) / TimeSpan.FromSeconds(1).Ticks;
-                cartesianChart.AxisX[0].MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks;
+                // 曲线
+                tempPic.Image = mDrawChart.Draw();
+
             }));
         }
 
         private void _device_ErrorStatusChangedEvent(System.Collections.Generic.Dictionary<Device.ErrorCode, uint> errDict)
         {
+            return;
+
             // 警告信息及处理时间
             int errTm = 600;
             this.BeginInvoke(new EventHandler(delegate

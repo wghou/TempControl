@@ -21,6 +21,9 @@ namespace Device
         /// <param name="e"></param>
         private void _stepTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            // 参数可能会更改，确保每次定时器事件都更新一下
+            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
+
             _machine.Fire(_TickTrigger, 5000);
 
 

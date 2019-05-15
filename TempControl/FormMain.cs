@@ -19,6 +19,9 @@ namespace TempControl
         private Device.DeviceStateM _device = new Device.DeviceStateM();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxs = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
 
+        // 曲线
+        DrawChart mDrawChart;
+
         // 闪烁等
         Bitmap mBmp;
         private bool flp = false;
@@ -47,8 +50,9 @@ namespace TempControl
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ry6;
             dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ry7;
 
-            // 初始化绘图曲线
-            InitLiveCharts();
+            // 曲线
+            mDrawChart = new DrawChart(_device.tpDeviceM, _device._runningParameters, tempPic.Height, tempPic.Width, 6, 7);
+            tempPic.Image = mDrawChart.Draw();
 
             // 用于状态指示灯
             mBmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -68,56 +72,6 @@ namespace TempControl
             RegistEventHandler();
         }
 
-
-        //////////////////////////////////////////////////
-        // 初始化曲线图
-        private void InitLiveCharts()
-        {
-            var dayConfig = Mappers.Xy<DateModel>()
-                .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromSeconds(1).Ticks)
-                .Y(dateModel => dateModel.Value);
-
-            cartesianChart.BackColor = Color.AliceBlue;
-
-            cartesianChart.Series = new SeriesCollection(dayConfig)
-            {
-                new LineSeries
-                {
-                    Title = "水槽温度",
-                    Values = new ChartValues<DateModel>{ },
-                    LineSmoothness = 0, // 0 straight lines, 1 really smooth lines
-                    //PointGeometry = null,
-                    //PointGeometrySize = 0,
-                    Fill = Brushes.Transparent,
-                }
-            };
-            cartesianChart.AxisX.Add(new Axis
-            {
-                MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(20).Ticks) / TimeSpan.FromSeconds(1).Ticks,
-                MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks,
-                LabelFormatter = value => new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks)).ToString("t"),
-                FontSize = 16,
-                Foreground = System.Windows.Media.Brushes.Black,
-            });
-
-            cartesianChart.AxisY.Add(new Axis
-            {
-                IsMerged = true,
-                Separator = new Separator
-                {
-                    StrokeThickness = 1,
-                    StrokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 3 }),
-                    Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 79, 86))
-                },
-                Title = "温度值",
-                Position = AxisPosition.LeftBottom,
-                LabelFormatter = value => value.ToString("F2") + "℃",
-                FontSize = 15,
-                Foreground = System.Windows.Media.Brushes.Black,
-            });
-        }
-
-
         ///////////////////////////////////////////////////
         // 控温板通讯指示灯闪烁
         private void TimPic_Tick(object sender, EventArgs e)
@@ -136,6 +90,9 @@ namespace TempControl
             }
 
             pictureBox1.Image = mBmp;
+
+            TimeSpan tmSpan = DateTime.Now - _device.startTime;
+            this.label_time.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
         }
 
 
@@ -152,15 +109,15 @@ namespace TempControl
             bool confDevice = _device.Configure();
             if (confDevice == false)
             {
-                if (DialogResult.Yes == MessageBox.Show("设备端口错误，是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                this.BeginInvoke(new EventHandler(delegate
                 {
-                    this.BeginInvoke(new EventHandler(delegate
+                    if (DialogResult.Yes == MessageBox.Show("设备端口错误，是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
                         this.Close();
-                    }));
-                    
-                    return;
-                }
+                        return;
+                    }
+                }));
+                
             }
             _device.startTimeStep();
         }
@@ -170,6 +127,8 @@ namespace TempControl
         // Button Click 事件
         private void checkBox_auto_Click(object sender, EventArgs e)
         {
+            return;
+
             bool fmExit = false;
             foreach (Form fm in Application.OpenForms)
             {
@@ -234,5 +193,67 @@ namespace TempControl
                 fm.Show();
             }
         }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            mDrawChart.Dispose();
+        }
+
+        private void checkBox_clc_Click(object sender, EventArgs e)
+        {
+            lock (_device.tpDeviceM.tpShowLocker)
+            {
+                _device.tpDeviceM.temperaturesShow.Clear();
+            }
+            tempPic.Image = mDrawChart.Draw();
+        }
+
+        ////////////////////////////////////////////////////
+        //// 初始化曲线图
+        //private void InitLiveCharts()
+        //{
+        //    var dayConfig = Mappers.Xy<DateModel>()
+        //        .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromSeconds(1).Ticks)
+        //        .Y(dateModel => dateModel.Value);
+
+        //    cartesianChart.BackColor = Color.AliceBlue;
+
+        //    cartesianChart.Series = new SeriesCollection(dayConfig)
+        //    {
+        //        new LineSeries
+        //        {
+        //            Title = "水槽温度",
+        //            Values = new ChartValues<DateModel>{ },
+        //            LineSmoothness = 0, // 0 straight lines, 1 really smooth lines
+        //            //PointGeometry = null,
+        //            //PointGeometrySize = 0,
+        //            Fill = Brushes.Transparent,
+        //        }
+        //    };
+        //    cartesianChart.AxisX.Add(new Axis
+        //    {
+        //        MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(20).Ticks) / TimeSpan.FromSeconds(1).Ticks,
+        //        MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks,
+        //        LabelFormatter = value => new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks)).ToString("t"),
+        //        FontSize = 16,
+        //        Foreground = System.Windows.Media.Brushes.Black,
+        //    });
+
+        //    cartesianChart.AxisY.Add(new Axis
+        //    {
+        //        IsMerged = true,
+        //        Separator = new Separator
+        //        {
+        //            StrokeThickness = 1,
+        //            StrokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 3 }),
+        //            Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 79, 86))
+        //        },
+        //        Title = "温度值",
+        //        Position = AxisPosition.LeftBottom,
+        //        LabelFormatter = value => value.ToString("F2") + "℃",
+        //        FontSize = 15,
+        //        Foreground = System.Windows.Media.Brushes.Black,
+        //    });
+        //}
     }
 }

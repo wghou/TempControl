@@ -59,6 +59,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DrawChart.cs" />
     <Compile Include="FormAlarm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -232,6 +232,11 @@ namespace Device
         /// </summary>
         public TempDevice tpDeviceM = new TempDevice() { tpDeviceName = "主槽控温设备" };
 
+        /// <summary>
+        /// 系统开始运行的时间
+        /// </summary>
+        public DateTime startTime = new DateTime();
+
 
         /// <summary>
         /// 系统自动状态下，完成整个实验所需的温度点序列 - 

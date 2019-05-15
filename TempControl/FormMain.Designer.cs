@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.cartesianChart = new LiveCharts.WinForms.CartesianChart();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label_tempM = new System.Windows.Forms.Label();
@@ -53,17 +52,12 @@
             this.checkBox_auto = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.checkBox_debug = new System.Windows.Forms.CheckBox();
+            this.tempPic = new System.Windows.Forms.PictureBox();
+            this.checkBox_clc = new System.Windows.Forms.CheckBox();
+            this.label_time = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tempPic)).BeginInit();
             this.SuspendLayout();
-            // 
-            // cartesianChart
-            // 
-            this.cartesianChart.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.cartesianChart.Location = new System.Drawing.Point(12, 225);
-            this.cartesianChart.Name = "cartesianChart";
-            this.cartesianChart.Size = new System.Drawing.Size(385, 290);
-            this.cartesianChart.TabIndex = 1;
-            this.cartesianChart.Text = "温度值曲线";
             // 
             // label_tempM
             // 
@@ -139,9 +133,9 @@
             // checkBox_ry0
             // 
             this.checkBox_ry0.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry0.Location = new System.Drawing.Point(413, 197);
+            this.checkBox_ry0.Location = new System.Drawing.Point(519, 197);
             this.checkBox_ry0.Name = "checkBox_ry0";
-            this.checkBox_ry0.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry0.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry0.TabIndex = 7;
             this.checkBox_ry0.Text = "继电器 0";
             this.checkBox_ry0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -151,9 +145,9 @@
             // checkBox_ry4
             // 
             this.checkBox_ry4.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry4.Location = new System.Drawing.Point(595, 197);
+            this.checkBox_ry4.Location = new System.Drawing.Point(637, 197);
             this.checkBox_ry4.Name = "checkBox_ry4";
-            this.checkBox_ry4.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry4.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry4.TabIndex = 8;
             this.checkBox_ry4.Text = "继电器 4";
             this.checkBox_ry4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -163,9 +157,9 @@
             // checkBox_ry1
             // 
             this.checkBox_ry1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry1.Location = new System.Drawing.Point(413, 264);
+            this.checkBox_ry1.Location = new System.Drawing.Point(519, 264);
             this.checkBox_ry1.Name = "checkBox_ry1";
-            this.checkBox_ry1.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry1.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry1.TabIndex = 9;
             this.checkBox_ry1.Text = "继电器 1";
             this.checkBox_ry1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -175,9 +169,9 @@
             // checkBox_ry5
             // 
             this.checkBox_ry5.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry5.Location = new System.Drawing.Point(595, 264);
+            this.checkBox_ry5.Location = new System.Drawing.Point(637, 264);
             this.checkBox_ry5.Name = "checkBox_ry5";
-            this.checkBox_ry5.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry5.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry5.TabIndex = 10;
             this.checkBox_ry5.Text = "继电器 5";
             this.checkBox_ry5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -187,9 +181,9 @@
             // checkBox_ry2
             // 
             this.checkBox_ry2.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry2.Location = new System.Drawing.Point(413, 331);
+            this.checkBox_ry2.Location = new System.Drawing.Point(519, 331);
             this.checkBox_ry2.Name = "checkBox_ry2";
-            this.checkBox_ry2.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry2.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry2.TabIndex = 11;
             this.checkBox_ry2.Text = "继电器 2";
             this.checkBox_ry2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -199,9 +193,9 @@
             // checkBox_ry6
             // 
             this.checkBox_ry6.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry6.Location = new System.Drawing.Point(595, 331);
+            this.checkBox_ry6.Location = new System.Drawing.Point(637, 331);
             this.checkBox_ry6.Name = "checkBox_ry6";
-            this.checkBox_ry6.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry6.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry6.TabIndex = 12;
             this.checkBox_ry6.Text = "继电器 6";
             this.checkBox_ry6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -211,9 +205,9 @@
             // checkBox_ry3
             // 
             this.checkBox_ry3.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry3.Location = new System.Drawing.Point(413, 398);
+            this.checkBox_ry3.Location = new System.Drawing.Point(519, 398);
             this.checkBox_ry3.Name = "checkBox_ry3";
-            this.checkBox_ry3.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry3.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry3.TabIndex = 13;
             this.checkBox_ry3.Text = "继电器 3";
             this.checkBox_ry3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -223,9 +217,9 @@
             // checkBox_ry7
             // 
             this.checkBox_ry7.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ry7.Location = new System.Drawing.Point(595, 398);
+            this.checkBox_ry7.Location = new System.Drawing.Point(637, 398);
             this.checkBox_ry7.Name = "checkBox_ry7";
-            this.checkBox_ry7.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_ry7.Size = new System.Drawing.Size(94, 50);
             this.checkBox_ry7.TabIndex = 14;
             this.checkBox_ry7.Text = "继电器 7";
             this.checkBox_ry7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -263,9 +257,9 @@
             this.checkBox_exit.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_exit.AutoCheck = false;
             this.checkBox_exit.ForeColor = System.Drawing.Color.Red;
-            this.checkBox_exit.Location = new System.Drawing.Point(595, 465);
+            this.checkBox_exit.Location = new System.Drawing.Point(637, 465);
             this.checkBox_exit.Name = "checkBox_exit";
-            this.checkBox_exit.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_exit.Size = new System.Drawing.Size(94, 50);
             this.checkBox_exit.TabIndex = 18;
             this.checkBox_exit.Text = "退出系统";
             this.checkBox_exit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -276,9 +270,9 @@
             // 
             this.checkBox_auto.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_auto.AutoCheck = false;
-            this.checkBox_auto.Location = new System.Drawing.Point(413, 465);
+            this.checkBox_auto.Location = new System.Drawing.Point(519, 465);
             this.checkBox_auto.Name = "checkBox_auto";
-            this.checkBox_auto.Size = new System.Drawing.Size(136, 50);
+            this.checkBox_auto.Size = new System.Drawing.Size(94, 50);
             this.checkBox_auto.TabIndex = 17;
             this.checkBox_auto.Text = "自动";
             this.checkBox_auto.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -306,18 +300,52 @@
             this.checkBox_debug.UseVisualStyleBackColor = true;
             this.checkBox_debug.Click += new System.EventHandler(this.checkBox_debug_Click);
             // 
+            // tempPic
+            // 
+            this.tempPic.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.tempPic.Location = new System.Drawing.Point(12, 223);
+            this.tempPic.Name = "tempPic";
+            this.tempPic.Size = new System.Drawing.Size(480, 249);
+            this.tempPic.TabIndex = 21;
+            this.tempPic.TabStop = false;
+            // 
+            // checkBox_clc
+            // 
+            this.checkBox_clc.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_clc.AutoCheck = false;
+            this.checkBox_clc.Location = new System.Drawing.Point(363, 482);
+            this.checkBox_clc.Name = "checkBox_clc";
+            this.checkBox_clc.Size = new System.Drawing.Size(104, 33);
+            this.checkBox_clc.TabIndex = 22;
+            this.checkBox_clc.Text = "清空曲线";
+            this.checkBox_clc.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_clc.UseVisualStyleBackColor = true;
+            this.checkBox_clc.Click += new System.EventHandler(this.checkBox_clc_Click);
+            // 
+            // label_time
+            // 
+            this.label_time.AutoSize = true;
+            this.label_time.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_time.Location = new System.Drawing.Point(35, 490);
+            this.label_time.Name = "label_time";
+            this.label_time.Size = new System.Drawing.Size(77, 14);
+            this.label_time.TabIndex = 23;
+            this.label_time.Text = "控温时间：";
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(754, 532);
+            this.ClientSize = new System.Drawing.Size(751, 530);
             this.ControlBox = false;
+            this.Controls.Add(this.label_time);
+            this.Controls.Add(this.checkBox_clc);
+            this.Controls.Add(this.tempPic);
             this.Controls.Add(this.checkBox_debug);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.checkBox_exit);
             this.Controls.Add(this.checkBox_auto);
             this.Controls.Add(this.checkBox_logM);
             this.Controls.Add(this.checkBox_paramM);
-            this.Controls.Add(this.cartesianChart);
             this.Controls.Add(this.checkBox_ry7);
             this.Controls.Add(this.checkBox_ry3);
             this.Controls.Add(this.checkBox_ry6);
@@ -337,15 +365,16 @@
             this.MinimizeBox = false;
             this.Name = "FormMain";
             this.Text = "自动控温系统";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tempPic)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private LiveCharts.WinForms.CartesianChart cartesianChart;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label label_tempM;
@@ -369,6 +398,9 @@
         private System.Windows.Forms.CheckBox checkBox_auto;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.CheckBox checkBox_debug;
+        private System.Windows.Forms.PictureBox tempPic;
+        private System.Windows.Forms.CheckBox checkBox_clc;
+        private System.Windows.Forms.Label label_time;
     }
 }
 
