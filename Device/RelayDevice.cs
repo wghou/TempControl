@@ -205,6 +205,8 @@ namespace Device
 
                     // 设置继电器状态成功，更新 ryStatus[] 中的值
                     ryStatus[(int)cmd] = ryStatusToSet[(int)cmd];
+
+                    sPort.Close();
                 }
                 catch (Exception ex)
                 {
@@ -227,8 +229,11 @@ namespace Device
             {
                 // open the serial port
                 if (!sPort.IsOpen) sPort.Open();
+                bool[] st = new bool[8];
+                Array.Copy(ryStatus, st, 8);
+                master.WriteMultipleCoils(slaveId, startAddress, st);
 
-                master.WriteMultipleCoils(slaveId, startAddress, ryStatusToSet);
+                sPort.Close();
             }
             catch (Exception ex)
             {

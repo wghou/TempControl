@@ -26,6 +26,8 @@ namespace Device
             _tickTimer.Interval = _runningParameters.readTempIntervalSec * 500;
             disconnectProtectFlip = !disconnectProtectFlip;
 
+            Console.WriteLine("connect...");
+
             if (ryDeviceM.DisconnectProtect == true) {
                 RelayDevice.Err_r err = ryDeviceM.ConnectWithDevice();
                 if(err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
