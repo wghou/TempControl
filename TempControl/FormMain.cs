@@ -139,7 +139,11 @@ namespace TempControl
                     }
                     _device.startTimeStep();
                 }));
-            } 
+            }
+            else
+            {
+                _device.startTimeStep();
+            }
         }
 
 
