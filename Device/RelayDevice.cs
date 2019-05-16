@@ -244,5 +244,42 @@ namespace Device
             return err;
         }
 
+        public bool closeDevice()
+        {
+            bool rlt = true;
+            try
+            {
+                // open the serial port
+                if (!sPort.IsOpen) sPort.Open();
+                bool[] st = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+                master.WriteMultipleCoils(slaveId, startAddress, st);
+
+                sPort.Close();
+            }
+            catch (Exception ex)
+            {
+                rlt = false;
+                Debug.WriteLine("关闭继电器设备失败 - 16。");
+            }
+
+            try
+            {
+                // open the serial port
+                if (!sPort.IsOpen) sPort.Open();
+                bool[] st = { false, false, false, false, false, false, false, false };
+                master.WriteMultipleCoils(slaveId, startAddress, st);
+
+                sPort.Close();
+            }
+            catch (Exception ex)
+            {
+                rlt = false;
+                Debug.WriteLine("关闭继电器设备失败 - 8。");
+            }
+
+            return rlt;
+
+        }
+
     }
 }

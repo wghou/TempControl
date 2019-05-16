@@ -178,14 +178,8 @@ namespace TempControl
             }
 
             // 关闭所有继电器
-            for(int i = 0; i < 8; i++)
-            {
-                _device.ryDeviceM.ryStatusToSet[i] = false;
-            }
-            // bug
-            // 如果在退出程序的时候，继电器读写错误，则无法处理该异常
-            //_device.RelayDeviceStatusUpdatedEvent -= _device_RelayDeviceStatusUpdatedEvent;
-            _device.WriteRelayDeviceM(false);
+            _device.ryDeviceM.closeDevice();
+            _device.ryDeviceS.closeDevice();
             this.Close();
         }
 
