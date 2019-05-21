@@ -197,9 +197,14 @@ namespace Device
 
             // 设置定时器
             _tickTimer = new Timer();
-            _tickTimer.Interval = 2500; // 默认 5s
+            _tickTimer.Interval = 5000; // 默认 5s
             _tickTimer.AutoReset = true;
             _tickTimer.Elapsed += _stepTimer_Elapsed;
+
+            _ryConnectTimer = new Timer();
+            _ryConnectTimer.Interval = 4000;
+            _ryConnectTimer.AutoReset = true;
+            _ryConnectTimer.Elapsed += _ryConnectTimer_Elapsed;
         }
     }
 }

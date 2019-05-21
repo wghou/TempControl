@@ -40,7 +40,7 @@ namespace Device
             // 读取配置运行参数
             if (_runningParameters.ReadValueConfig(configFilePath) == false) Debug.WriteLine("读取配置文件错误，使用默认参数运行。");
 
-            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 500;
+            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
 
             try
             {

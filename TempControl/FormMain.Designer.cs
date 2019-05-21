@@ -717,6 +717,8 @@
             // checkBox_tempS
             // 
             this.checkBox_tempS.AutoSize = true;
+            this.checkBox_tempS.Checked = true;
+            this.checkBox_tempS.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_tempS.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.checkBox_tempS.Location = new System.Drawing.Point(373, 485);
             this.checkBox_tempS.Name = "checkBox_tempS";

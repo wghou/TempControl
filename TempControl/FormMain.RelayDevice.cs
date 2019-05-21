@@ -15,11 +15,14 @@ namespace TempControl
 
         private void checkBox_ryEn2_CheckedChanged(object sender, EventArgs e)
         {
-            _device.ryDeviceS.Enable = this.checkBox_ryEn2.Checked;
             if (this.checkBox_ryEn2.Checked) {
+                _device.ryDeviceS.Enable = true;
+                _device.ryDeviceM.numCoils = 8;
                 this.groupBox_ry2.Text = "继电器模块 2";
             }
             else {
+                _device.ryDeviceS.Enable = false;
+                _device.ryDeviceM.numCoils = 16;
                 this.groupBox_ry2.Text = "继电器模块 1 (备用)";
             }
         }

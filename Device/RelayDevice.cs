@@ -26,6 +26,7 @@ namespace Device
         ushort startAddress = 0;
         /// <summary>串口读-写时间间隔</summary>
         private const int intervalOfWR = 20;
+        public int numCoils = 8;
 
         /// <summary>
         /// 继电器断网保护功能，如果勾选，则需要持续与继电器通讯
@@ -94,6 +95,7 @@ namespace Device
                 NewLine = "\r\n"
             };
             master = ModbusSerialMaster.CreateRtu(sPort);
+            master.Transport.Retries = 1;
         }
 
         public bool SetPortName(string portName)
@@ -189,70 +191,53 @@ namespace Device
         {
             Err_r err = Err_r.NoError;
 
-            // 遍历枚举类型 RelayProtocol.Cmd_r 中所有的值
-            foreach (Cmd_r cmd in Enum.GetValues(typeof(Cmd_r)))
+            lock (ryLocker)
             {
-                // 如果要设置的继电器状态与当前状态相同，则跳过
-                if (ryStatus[(int)cmd] == ryStatusToSet[(int)cmd])
-                    continue;
-
                 try
                 {
                     // open the serial port
                     if (!sPort.IsOpen) sPort.Open();
 
-                    master.WriteSingleCoil(slaveId, (ushort)(startAddress + cmd), ryStatusToSet[(int)cmd]);
+                    bool[] st = new bool[numCoils];
+                    Array.Copy(ryStatusToSet, st, numCoils);
+                    master.WriteMultipleCoils(slaveId, startAddress, st);
 
-                    // 设置继电器状态成功，更新 ryStatus[] 中的值
-                    ryStatus[(int)cmd] = ryStatusToSet[(int)cmd];
+                    Array.Copy(ryStatusToSet, ryStatus, numCoils);
 
                     sPort.Close();
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
                     err = Err_r.ComError;
-                    break;
                 }
-            }
-
-            return err;
-        }
-
-        public Err_r ConnectWithDevice()
-        {
-            Err_r err = Err_r.NoError;
-
-            if (Enable == false) return err;
-            
-            try
-            {
-                // open the serial port
-                if (!sPort.IsOpen) sPort.Open();
-                bool[] st = new bool[8];
-                Array.Copy(ryStatus, st, 8);
-                master.WriteMultipleCoils(slaveId, startAddress, st);
-
-                sPort.Close();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                err = Err_r.ComError;
-                Debug.WriteLine("主机与继电器设备连接失败。");
+                
             }
             return err;
         }
+
 
         public bool closeDevice()
         {
+            if (Enable == false) return true;
+
+
             bool rlt = true;
             try
             {
                 // open the serial port
                 if (!sPort.IsOpen) sPort.Open();
-                bool[] st = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-                master.WriteMultipleCoils(slaveId, startAddress, st);
+
+                if(numCoils == 8)
+                {
+                    bool[] st = { false, false, false, false, false, false, false, false};
+                    master.WriteMultipleCoils(slaveId, startAddress, st);
+                }
+                else
+                {
+                    bool[] st = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+                    master.WriteMultipleCoils(slaveId, startAddress, st);
+                }
 
                 sPort.Close();
             }
@@ -261,22 +246,6 @@ namespace Device
                 rlt = false;
                 Debug.WriteLine("关闭继电器设备失败 - 16。");
             }
-
-            try
-            {
-                // open the serial port
-                if (!sPort.IsOpen) sPort.Open();
-                bool[] st = { false, false, false, false, false, false, false, false };
-                master.WriteMultipleCoils(slaveId, startAddress, st);
-
-                sPort.Close();
-            }
-            catch (Exception ex)
-            {
-                rlt = false;
-                Debug.WriteLine("关闭继电器设备失败 - 8。");
-            }
-
             return rlt;
 
         }

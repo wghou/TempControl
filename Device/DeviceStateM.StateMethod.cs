@@ -14,7 +14,6 @@ namespace Device
     /// </summary>
     public partial class DeviceStateM
     {
-        private bool disconnectProtectFlip = true;
         /// <summary>
         /// Device State Mechine 自带时钟事件
         /// </summary>
@@ -23,27 +22,16 @@ namespace Device
         private void _stepTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // 参数可能会更改，确保每次定时器事件都更新一下
-            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 500;
-            disconnectProtectFlip = !disconnectProtectFlip;
+            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
 
-            Console.WriteLine("connect...");
-
-            if (ryDeviceM.DisconnectProtect == true) {
-                RelayDevice.Err_r err = ryDeviceM.ConnectWithDevice();
-                if(err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
-            }
-
-            if (ryDeviceS.DisconnectProtect == true)
-            {
-                RelayDevice.Err_r err = ryDeviceS.ConnectWithDevice();
-                if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
-            }
-            Debug.WriteLine("timer.tick");
-            if (disconnectProtectFlip == false) return;
+            // 更新水槽温度值
+            UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();   // 温度超出界限
 
 
             // 驱动状态机执行流程
-            _machine.Fire(_TickTrigger, 5000);
+            _machine.Fire(_TickTrigger, _runningParameters.readTempIntervalSec * 1000);
 
    
             // 定时器事件
@@ -59,12 +47,29 @@ namespace Device
             lastErrCnt = errCnt;
         }
 
+        private void _ryConnectTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (ryDeviceM.DisconnectProtect == true)
+            {
+                RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+                if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            }
+
+            if (ryDeviceS.DisconnectProtect == true)
+            {
+                RelayDevice.Err_r err = ryDeviceS.UpdateStatusToDevice();
+                if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            }
+        }
+
         /// <summary>
         /// 启动定时器
         /// </summary>
         public void startTimeStep()
         {
             _tickTimer.Start();
+
+           // _ryConnectTimer.Start();
 
             _machine.Fire(Trigger.ElectOn);
         }
@@ -158,11 +163,6 @@ namespace Device
         private void IdleTick(int tic)
         {
             Debug.WriteLine("IdleTick: " + tic.ToString() + " ms");
-
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
         }
 
         /// <summary>
@@ -189,12 +189,6 @@ namespace Device
         private void StartTick(int tic)
         {
             Debug.WriteLine("StartTick: " + tic.ToString() + " ms");
-
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
-
 
             // 如果 temperaturePointList 为空
             if (temperaturePointList.Count == 0)
@@ -297,10 +291,6 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
             ErrorCheckTempNotUp();  // 温度不升高
 
 
@@ -386,10 +376,7 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
             // error check
-            ErrorCheckOutRange();       // 温度超出界限
             ErrorCheckTempNotDown();    // 温度不降低
 
 
@@ -463,10 +450,7 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
             // error check
-            ErrorCheckOutRange();       // 温度超出界限
             ErrorCheckBasis();          // 当前温度偏离温度设定点过大
             ErrorCheckTempFlucLarge();  // 波动度过大
 
@@ -543,10 +527,7 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
             // error check
-            ErrorCheckOutRange();       // 温度超出界限
             ErrorCheckBasis();          // 当前温度与设定温度点偏离过大
             ErrorCheckTempFlucLarge();  // 波动度过大
 
@@ -596,11 +577,6 @@ namespace Device
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
-
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
 
             // measure
 

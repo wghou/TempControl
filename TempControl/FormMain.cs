@@ -182,7 +182,9 @@ namespace TempControl
             }
 
             // 关闭所有继电器
+            _device.ryDeviceM.ryStatusToSet = new bool[16];
             _device.ryDeviceM.closeDevice();
+            _device.ryDeviceS.ryStatusToSet = new bool[16];
             _device.ryDeviceS.closeDevice();
             this.Close();
         }
