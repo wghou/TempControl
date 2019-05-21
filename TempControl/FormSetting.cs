@@ -51,9 +51,15 @@ namespace TempControl
         private void FormSetting_Load(object sender, EventArgs e)
         {
             // 注册温控设备参数更新 / 设置事件处理函数
-            this.devicesAll.TempDeviceParamUpdatedEvent += DevicesAll_TempDeviceParamUpdatedEvent;
-
-
+            if (this.Name == "FormSettingM")
+            {
+                this.devicesAll.TempDeviceMParamUpdatedEvent += DevicesAll_TempDeviceParamUpdatedEvent;
+            }
+            else
+            {
+                this.devicesAll.TempDeviceSParamUpdatedEvent += DevicesAll_TempDeviceParamUpdatedEvent;
+            }
+            
             // 从硬件设备读取参数
             //TempGetSetParamHandler getTempParam = new TempGetSetParamHandler(this.tpDev.UpdateParamFromDevice);
             //getTempParam.BeginInvoke(null, null);
@@ -96,7 +102,14 @@ namespace TempControl
         private void FormSetting_FormClosed(object sender, FormClosedEventArgs e)
         {
             // 注销温控设备参数更新 / 设置事件处理函数
-            this.devicesAll.TempDeviceParamUpdatedEvent -= DevicesAll_TempDeviceParamUpdatedEvent;
+            if (this.Name == "FormSettingM")
+            {
+                this.devicesAll.TempDeviceMParamUpdatedEvent -= DevicesAll_TempDeviceParamUpdatedEvent;
+            }
+            else
+            {
+                this.devicesAll.TempDeviceSParamUpdatedEvent -= DevicesAll_TempDeviceParamUpdatedEvent;
+            }
         }
 
 
@@ -108,7 +121,16 @@ namespace TempControl
         private void BntRead_Click(object sender, EventArgs e)
         {
             // 从硬件设备读取参数
-            TempGetSetParamHandler getTempParam = new TempGetSetParamHandler(this.devicesAll.ReadTempDevice);
+            TempGetSetParamHandler getTempParam;
+            if (this.Name == "FormSettingM")
+            {
+                getTempParam = new TempGetSetParamHandler(this.devicesAll.ReadTempDeviceM);
+            }
+            else
+            {
+                getTempParam = new TempGetSetParamHandler(this.devicesAll.ReadTempDeviceS);
+            }
+            
             getTempParam.BeginInvoke(false, null, null);
 
             Utils.Logger.Op("点击 查询参数 按键，从 " + tpDev.tpDeviceName + " 中读取温控设备的参数!");
@@ -148,7 +170,15 @@ namespace TempControl
             paramCache.CopyTo(tpDev.tpParamToSet, 0);
 
             // 向硬件设备更新参数
-            TempGetSetParamHandler setTempParam = new TempGetSetParamHandler(this.devicesAll.WriteTempDevice);
+            TempGetSetParamHandler setTempParam;
+            if (this.Name == "FormSettingM")
+            {
+                setTempParam = new TempGetSetParamHandler(this.devicesAll.WriteTempDeviceM);
+            }
+            else
+            {
+                setTempParam = new TempGetSetParamHandler(this.devicesAll.WriteTempDeviceS);
+            }
             setTempParam.BeginInvoke(false, null, null);
 
             Utils.Logger.Op("点击 更新参数 按键，向 " + tpDev.tpDeviceName + " 中写入温控设备的参数!");

@@ -35,16 +35,24 @@ namespace Device
         //
         public delegate void TempDeviceParamUpdatedEventHandler(Device.TempProtocol.Err_t err, float[] param);
         /// <summary>
-        /// 控温板参数更新事件 - 写入/读取
+        /// 主槽控温板参数更新事件 - 写入/读取
         /// </summary>
-        public event TempDeviceParamUpdatedEventHandler TempDeviceParamUpdatedEvent;
+        public event TempDeviceParamUpdatedEventHandler TempDeviceMParamUpdatedEvent;
+        /// <summary>
+        /// 辅槽控温板参数更新事件 - 写入/读取
+        /// </summary>
+        public event TempDeviceParamUpdatedEventHandler TempDeviceSParamUpdatedEvent;
 
 
         //
         public delegate void RelayDeviceStatusUpdatedEventHandler(Device.RelayDevice.Err_r err, bool[] ryStatus);
         /// <summary>
-        /// 继电器状态更新事件
+        /// 继电器模块 1 状态更新事件
         /// </summary>
-        public event RelayDeviceStatusUpdatedEventHandler RelayDeviceStatusUpdatedEvent;
+        public event RelayDeviceStatusUpdatedEventHandler RelayDeviceMStatusUpdatedEvent;
+        /// <summary>
+        /// 继电器模块 2 状态更新事件
+        /// </summary>
+        public event RelayDeviceStatusUpdatedEventHandler RelayDeviceSStatusUpdatedEvent;
     }
 }

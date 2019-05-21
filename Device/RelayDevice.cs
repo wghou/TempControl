@@ -26,6 +26,13 @@ namespace Device
         ushort startAddress = 0;
         /// <summary>串口读-写时间间隔</summary>
         private const int intervalOfWR = 20;
+        public int numCoils = 8;
+
+        /// <summary>
+        /// 继电器断网保护功能，如果勾选，则需要持续与继电器通讯
+        /// </summary>
+        public bool DisconnectProtect = false;
+        public bool Enable = true;
 
         public enum Cmd_r : int
         {
@@ -36,7 +43,15 @@ namespace Device
             OUT_4 = 4,
             OUT_5 = 5,
             OUT_6 = 6,
-            OUT_7 = 7
+            OUT_7 = 7,
+            OUT_8 = 8,
+            OUT_9 = 9,
+            OUT_10 = 10,
+            OUT_11 = 11,
+            OUT_12 = 12,
+            OUT_13 = 13,
+            OUT_14 = 14,
+            OUT_15 = 15
         }
 
         public enum Err_r : int
@@ -80,10 +95,12 @@ namespace Device
                 NewLine = "\r\n"
             };
             master = ModbusSerialMaster.CreateRtu(sPort);
+            master.Transport.Retries = 1;
         }
 
         public bool SetPortName(string portName)
         {
+            // 当 Enable == false 时，返回 true
             ryDevicePortName = portName;
 
             try
@@ -98,7 +115,7 @@ namespace Device
                 }
                 else
                 {
-                    return false;
+                    return !Enable;
                 }
                 // 串口打开 / 关闭测试
                 if (!sPort.IsOpen)
@@ -112,7 +129,7 @@ namespace Device
             catch (Exception ex)
             {
                 Debug.WriteLine("继电器设备新建串口时发生异常：" + ex.Message);
-                return false;
+                return !Enable;
             }
         }
 
@@ -174,32 +191,63 @@ namespace Device
         {
             Err_r err = Err_r.NoError;
 
-            // 遍历枚举类型 RelayProtocol.Cmd_r 中所有的值
-            foreach (Cmd_r cmd in Enum.GetValues(typeof(Cmd_r)))
+            lock (ryLocker)
             {
-                // 如果要设置的继电器状态与当前状态相同，则跳过
-                if (ryStatus[(int)cmd] == ryStatusToSet[(int)cmd])
-                    continue;
-
                 try
                 {
                     // open the serial port
                     if (!sPort.IsOpen) sPort.Open();
 
-                    master.WriteSingleCoil(slaveId, (ushort)(startAddress + cmd), ryStatusToSet[(int)cmd]);
+                    bool[] st = new bool[numCoils];
+                    Array.Copy(ryStatusToSet, st, numCoils);
+                    master.WriteMultipleCoils(slaveId, startAddress, st);
 
-                    // 设置继电器状态成功，更新 ryStatus[] 中的值
-                    ryStatus[(int)cmd] = ryStatusToSet[(int)cmd];
+                    Array.Copy(ryStatusToSet, ryStatus, numCoils);
+
+                    sPort.Close();
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
                     err = Err_r.ComError;
-                    break;
                 }
+                
             }
-
             return err;
+        }
+
+
+        public bool closeDevice()
+        {
+            if (Enable == false) return true;
+
+
+            bool rlt = true;
+            try
+            {
+                // open the serial port
+                if (!sPort.IsOpen) sPort.Open();
+
+                if(numCoils == 8)
+                {
+                    bool[] st = { false, false, false, false, false, false, false, false};
+                    master.WriteMultipleCoils(slaveId, startAddress, st);
+                }
+                else
+                {
+                    bool[] st = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+                    master.WriteMultipleCoils(slaveId, startAddress, st);
+                }
+
+                sPort.Close();
+            }
+            catch (Exception ex)
+            {
+                rlt = false;
+                Debug.WriteLine("关闭继电器设备失败 - 16。");
+            }
+            return rlt;
+
         }
 
     }

@@ -131,9 +131,9 @@ namespace ComTest
             {
                 sPortTm.Open();
                 sPortTs.Open();
-                sPortRy.Open();
-                sPortSr.Open();
-                sPortBg.Open();
+                //sPortRy.Open();
+                //sPortSr.Open();
+                //sPortBg.Open();
             }
             catch(Exception ex)
             {

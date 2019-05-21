@@ -7,9 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LiveCharts;
-using LiveCharts.Configurations;
-using LiveCharts.Wpf;
 using Brushes = System.Windows.Media.Brushes;
 
 namespace TempControl
@@ -17,13 +14,12 @@ namespace TempControl
     public partial class FormMain : Form
     {
         private Device.DeviceStateM _device = new Device.DeviceStateM();
-        private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxs = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
-
-        // 曲线
-        DrawChart mDrawChart;
+        private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyM = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
+        private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyS = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
 
         // 闪烁等
-        Bitmap mBmp;
+        Bitmap mBmpM;
+        Bitmap mBmpS;
         private bool flp = false;
         private Timer timPic = new Timer();
 
@@ -41,21 +37,27 @@ namespace TempControl
         {
             InitializeComponent();
 
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ry0;
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ry1;
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ry2;
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ry3;
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ry4;
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ry5;
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ry6;
-            dictCheckBoxs[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ry7;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryM0;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryM1;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryM2;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryM3;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryM4;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryM5;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryM6;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryM7;
 
-            // 曲线
-            mDrawChart = new DrawChart(_device.tpDeviceM, _device._runningParameters, tempPic.Height, tempPic.Width, 6, 7);
-            tempPic.Image = mDrawChart.Draw();
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryS0;
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryS1;
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryS2;
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryS3;
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryS4;
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryS5;
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryS6;
+            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryS7;
 
             // 用于状态指示灯
-            mBmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            mBmpM = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            mBmpS = new Bitmap(pictureBox2.Width, pictureBox2.Height);
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
@@ -76,23 +78,24 @@ namespace TempControl
         // 控温板通讯指示灯闪烁
         private void TimPic_Tick(object sender, EventArgs e)
         {
-            Graphics mGhp = Graphics.FromImage(mBmp);
-            mGhp.Clear(SystemColors.Control);
+            Graphics mGhp1 = Graphics.FromImage(mBmpM);
+            Graphics mGhp2 = Graphics.FromImage(mBmpS);
+            mGhp1.Clear(SystemColors.Control);
             if (flp)
             {
-                mGhp.Clear(SystemColors.Control);
+                mGhp1.Clear(SystemColors.Control);
+                mGhp2.Clear(SystemColors.Control);
                 flp = false;
             }
             else
             {
-                mGhp.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
+                mGhp1.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
+                mGhp2.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
                 flp = true;
             }
 
-            pictureBox1.Image = mBmp;
-
-            TimeSpan tmSpan = DateTime.Now - _device.startTime;
-            this.label_time.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
+            pictureBox1.Image = mBmpM;
+            pictureBox2.Image = mBmpS;
         }
 
 
@@ -106,6 +109,24 @@ namespace TempControl
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                _device.tpDeviceS.Enable = checkBox_tempS.Checked;
+                this.groupBox_tempS.Enabled = checkBox_tempS.Checked;
+
+                _device.ryDeviceM.Enable = true;
+                _device.ryDeviceS.Enable = this.checkBox_ryEn2.Checked;
+                if (this.checkBox_ryEn2.Checked) {
+                    this.groupBox_ry2.Text = "继电器模块 2";
+                }
+                else {
+                    this.groupBox_ry2.Text = "继电器模块 1 (备用)";
+                }
+
+                _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
+                _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
+            }));
+
             bool confDevice = _device.Configure();
             if (confDevice == false)
             {
@@ -116,10 +137,13 @@ namespace TempControl
                         this.Close();
                         return;
                     }
+                    _device.startTimeStep();
                 }));
-                
             }
-            _device.startTimeStep();
+            else
+            {
+                _device.startTimeStep();
+            }
         }
 
 
@@ -158,14 +182,10 @@ namespace TempControl
             }
 
             // 关闭所有继电器
-            for(int i = 0; i < 8; i++)
-            {
-                _device.ryDevice.ryStatusToSet[i] = false;
-            }
-            // bug
-            // 如果在退出程序的时候，继电器读写错误，则无法处理该异常
-            //_device.RelayDeviceStatusUpdatedEvent -= _device_RelayDeviceStatusUpdatedEvent;
-            _device.WriteRelayDevice(false);
+            _device.ryDeviceM.ryStatusToSet = new bool[16];
+            _device.ryDeviceM.closeDevice();
+            _device.ryDeviceS.ryStatusToSet = new bool[16];
+            _device.ryDeviceS.closeDevice();
             this.Close();
         }
 
@@ -194,66 +214,60 @@ namespace TempControl
             }
         }
 
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        private void checkBox_curveM_Click(object sender, EventArgs e)
         {
-            mDrawChart.Dispose();
-        }
-
-        private void checkBox_clc_Click(object sender, EventArgs e)
-        {
-            lock (_device.tpDeviceM.tpShowLocker)
+            bool formExist = false;
+            foreach (Form fm in Application.OpenForms)
             {
-                _device.tpDeviceM.temperaturesShow.Clear();
+                if (fm.Name == "FormChartM")
+                {
+                    // Avoid form being minimized
+                    fm.WindowState = FormWindowState.Normal;
+                    fm.Location = new System.Drawing.Point(10, 12);
+                    fm.BringToFront();
+                    formExist = true;
+                }
             }
-            tempPic.Image = mDrawChart.Draw();
+
+            if (!formExist)
+            {
+                FormChart fm = new FormChart(_device, _device.tpDeviceM);
+                fm.Location = new System.Drawing.Point(10, 12);
+                fm.Name = "FormChartM";
+                fm.Text = "主槽温度曲线";
+                fm.Show();
+            }
+
+            Utils.Logger.Sys("打开主槽控温设备温度曲线界面!");
+            Utils.Logger.Op("打开主槽控温设备温度曲线界面!");
         }
 
-        ////////////////////////////////////////////////////
-        //// 初始化曲线图
-        //private void InitLiveCharts()
-        //{
-        //    var dayConfig = Mappers.Xy<DateModel>()
-        //        .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromSeconds(1).Ticks)
-        //        .Y(dateModel => dateModel.Value);
+        private void checkBox_curveS_Click(object sender, EventArgs e)
+        {
+            bool formExist = false;
+            foreach (Form fm in Application.OpenForms)
+            {
+                if (fm.Name == "FormChartS")
+                {
+                    // Avoid form being minimized
+                    fm.WindowState = FormWindowState.Normal;
+                    fm.Location = new System.Drawing.Point(10, 12);
+                    fm.BringToFront();
+                    formExist = true;
+                }
+            }
 
-        //    cartesianChart.BackColor = Color.AliceBlue;
+            if (!formExist)
+            {
+                FormChart fm = new FormChart(_device, _device.tpDeviceS);
+                fm.Location = new System.Drawing.Point(10, 12);
+                fm.Name = "FormChartS";
+                fm.Text = "辅槽温度曲线";
+                fm.Show();
+            }
 
-        //    cartesianChart.Series = new SeriesCollection(dayConfig)
-        //    {
-        //        new LineSeries
-        //        {
-        //            Title = "水槽温度",
-        //            Values = new ChartValues<DateModel>{ },
-        //            LineSmoothness = 0, // 0 straight lines, 1 really smooth lines
-        //            //PointGeometry = null,
-        //            //PointGeometrySize = 0,
-        //            Fill = Brushes.Transparent,
-        //        }
-        //    };
-        //    cartesianChart.AxisX.Add(new Axis
-        //    {
-        //        MinValue = (DateTime.Now.Ticks - TimeSpan.FromMinutes(20).Ticks) / TimeSpan.FromSeconds(1).Ticks,
-        //        MaxValue = (DateTime.Now.Ticks) / TimeSpan.FromSeconds(1).Ticks,
-        //        LabelFormatter = value => new DateTime((long)(value * TimeSpan.FromSeconds(1).Ticks)).ToString("t"),
-        //        FontSize = 16,
-        //        Foreground = System.Windows.Media.Brushes.Black,
-        //    });
-
-        //    cartesianChart.AxisY.Add(new Axis
-        //    {
-        //        IsMerged = true,
-        //        Separator = new Separator
-        //        {
-        //            StrokeThickness = 1,
-        //            StrokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 3 }),
-        //            Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(64, 79, 86))
-        //        },
-        //        Title = "温度值",
-        //        Position = AxisPosition.LeftBottom,
-        //        LabelFormatter = value => value.ToString("F2") + "℃",
-        //        FontSize = 15,
-        //        Foreground = System.Windows.Media.Brushes.Black,
-        //    });
-        //}
+            Utils.Logger.Sys("打开辅槽控温设备温度曲线界面!");
+            Utils.Logger.Op("打开辅槽控温设备温度曲线界面!");
+        }
     }
 }

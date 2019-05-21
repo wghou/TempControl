@@ -24,9 +24,16 @@ namespace Device
             // 参数可能会更改，确保每次定时器事件都更新一下
             _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
 
-            _machine.Fire(_TickTrigger, 5000);
+            // 更新水槽温度值
+            UpdateTemptValue();
+            // error check
+            ErrorCheckOutRange();   // 温度超出界限
 
 
+            // 驱动状态机执行流程
+            _machine.Fire(_TickTrigger, _runningParameters.readTempIntervalSec * 1000);
+
+   
             // 定时器事件
             TimerTickEvent?.Invoke();
 
@@ -40,12 +47,29 @@ namespace Device
             lastErrCnt = errCnt;
         }
 
+        private void _ryConnectTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (ryDeviceM.DisconnectProtect == true)
+            {
+                RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+                if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            }
+
+            if (ryDeviceS.DisconnectProtect == true)
+            {
+                RelayDevice.Err_r err = ryDeviceS.UpdateStatusToDevice();
+                if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            }
+        }
+
         /// <summary>
         /// 启动定时器
         /// </summary>
         public void startTimeStep()
         {
             _tickTimer.Start();
+
+           // _ryConnectTimer.Start();
 
             _machine.Fire(Trigger.ElectOn);
         }
@@ -83,6 +107,13 @@ namespace Device
         private bool nextPointDown(float tpPoint)
         {
             Debug.WriteLine("Next point: " + tpPoint.ToString());
+
+            if(tpDeviceM.temperatures.Count == 0)
+            {
+                Debug.WriteLine("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
+                SetErrorStatus(ErrorCode.CodeError);
+                return true;
+            }
 
             if (tpPoint < tpDeviceM.temperatures.Last())
                 return true;
@@ -132,11 +163,6 @@ namespace Device
         private void IdleTick(int tic)
         {
             Debug.WriteLine("IdleTick: " + tic.ToString() + " ms");
-
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
         }
 
         /// <summary>
@@ -163,12 +189,6 @@ namespace Device
         private void StartTick(int tic)
         {
             Debug.WriteLine("StartTick: " + tic.ToString() + " ms");
-
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
-
 
             // 如果 temperaturePointList 为空
             if (temperaturePointList.Count == 0)
@@ -235,20 +255,27 @@ namespace Device
         private void TempUpEntry()
         {
             // 升温
-            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
 
             // 将继电器状态写入下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
             if(err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
 
             // 设置主槽 / 辅槽控温设备的参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-
             // 将参数更新到下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            WriteTempDevice(true);
+            WriteTempDeviceM(true);
+
+            if (tpDeviceS.Enable == true)
+            {
+                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
+                // 将参数更新到下位机
+                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
+                WriteTempDeviceS(true);
+            }
 
             Debug.WriteLine("TempUp Entry.");
         }
@@ -264,10 +291,6 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
             ErrorCheckTempNotUp();  // 温度不升高
 
 
@@ -296,44 +319,50 @@ namespace Device
         /// </summary>
         private void TempDownEntry()
         {
-            Debug.WriteLine("TempDown Entry.");
-
-
-            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
 
             // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDevice.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
+            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
             {
 
             }
             // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
             else
             {
-                if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
+                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
                 {
                     // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDevice.subCoolWaiting = true;
+                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+                    ryDeviceM.subCoolWaiting = true;
                 }
                 else
                 {
-                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
                 }
             }
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
             if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
 
             // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            WriteTempDevice(true);
+            WriteTempDeviceM(true);
+
+            if (tpDeviceS.Enable == true)
+            {
+                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
+                // 将参数更新到下位机
+                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
+                WriteTempDeviceS(true);
+            }
+
+            Debug.WriteLine("TempDown Entry.");
         }
 
         /// <summary>
@@ -347,10 +376,7 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
             // error check
-            ErrorCheckOutRange();       // 温度超出界限
             ErrorCheckTempNotDown();    // 温度不降低
 
 
@@ -383,33 +409,33 @@ namespace Device
 
             // 首次进入该状态，应改变相应的继电器状态
             //  1 2 3 4 5 
-            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
 
             // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDevice.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
+            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
             {
 
             }
             // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
             else
             {
-                if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
+                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
                 {
                     // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDevice.subCoolWaiting = true;
+                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+                    ryDeviceM.subCoolWaiting = true;
                 }
                 else
                 {
-                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
                 }
             }
 
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
             if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
         }
 
@@ -424,10 +450,7 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
             // error check
-            ErrorCheckOutRange();       // 温度超出界限
             ErrorCheckBasis();          // 当前温度偏离温度设定点过大
             ErrorCheckTempFlucLarge();  // 波动度过大
 
@@ -462,33 +485,33 @@ namespace Device
 
             // 首次进入该状态，应改变相应的继电器状态
             // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
-            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
 
             // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDevice.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
+            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
             {
 
             }
             // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
             else
             {
-                if ((DateTime.Now - ryDevice.subCoolCloseTime).TotalMinutes < ryDevice.waitingTime)
+                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
                 {
                     // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDevice.subCoolWaiting = true;
+                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+                    ryDeviceM.subCoolWaiting = true;
                 }
                 else
                 {
-                    ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
                 }
             }
 
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
             if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
         }
 
@@ -504,10 +527,7 @@ namespace Device
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
-            // 更新水槽温度值
-            UpdateTemptValue();
             // error check
-            ErrorCheckOutRange();       // 温度超出界限
             ErrorCheckBasis();          // 当前温度与设定温度点偏离过大
             ErrorCheckTempFlucLarge();  // 波动度过大
 
@@ -557,11 +577,6 @@ namespace Device
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
-
-            // 更新水槽温度值
-            UpdateTemptValue();
-            // error check
-            ErrorCheckOutRange();   // 温度超出界限
 
             // measure
 
@@ -622,11 +637,11 @@ namespace Device
             Debug.WriteLine("Stop Entry.");
 
             // 关闭除总电源外的所有继电器
-            ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 FlowControlFaultOccurEvent 事件通知主界面提示错误
-            RelayDevice.Err_r err = ryDevice.UpdateStatusToDevice();
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
             if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
 
         }

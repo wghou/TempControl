@@ -409,6 +409,7 @@
             // 
             // button_checkDataBase
             // 
+            this.button_checkDataBase.Enabled = false;
             this.button_checkDataBase.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button_checkDataBase.Location = new System.Drawing.Point(265, 369);
             this.button_checkDataBase.Name = "button_checkDataBase";
@@ -421,6 +422,7 @@
             // 
             // button_writeDataBase
             // 
+            this.button_writeDataBase.Enabled = false;
             this.button_writeDataBase.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button_writeDataBase.Location = new System.Drawing.Point(401, 368);
             this.button_writeDataBase.Name = "button_writeDataBase";

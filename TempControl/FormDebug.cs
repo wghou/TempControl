@@ -47,7 +47,8 @@ namespace TempControl
             comboBox_ry1.Items.AddRange(portNames);
             comboBox_ry2.Items.AddRange(portNames);
         }
-        private void FormDebug_Load(object sender, EventArgs e)
+
+        private void loadFromParam()
         {
             textBox1.Text = paramAll.steadyTimeSec.ToString("0");
             textBox2.Text = paramAll.bridgeSteadyTimeSec.ToString("0");
@@ -75,7 +76,11 @@ namespace TempControl
             comboBox_tp1.SelectedIndex = comboBox_tp1.Items.IndexOf(paramAll.portTp1);
             comboBox_tp2.SelectedIndex = comboBox_tp2.Items.IndexOf(paramAll.portTp2);
             comboBox_ry1.SelectedIndex = comboBox_ry1.Items.IndexOf(paramAll.portRy1);
-            comboBox_ry2.SelectedIndex = comboBox_ry2.Items.IndexOf(paramAll.portRy1);
+            comboBox_ry2.SelectedIndex = comboBox_ry2.Items.IndexOf(paramAll.portRy2);
+        }
+        private void FormDebug_Load(object sender, EventArgs e)
+        {
+            loadFromParam();
         }
 
 
@@ -103,7 +108,7 @@ namespace TempControl
             paramAll.flucValue = paramCache[2];
             paramAll.controlTempThr = paramCache[3];
             paramAll.tempNotUpOrDownFaultTimeSec = (int)paramCache[4];
-            //paramAll.tempNotUpOrDwonFaultThrHigh = paramCache[5];
+            paramAll.tempNotUpOrDwonFaultThr = paramCache[5];
             paramAll.flucFaultTimeSec = (int)paramCache[6];
             paramAll.flucFaultThr = paramCache[7];
             paramAll.tempBiasFaultThr = paramCache[8];
@@ -111,11 +116,11 @@ namespace TempControl
             paramAll.tempMinValue = paramCache[10];
             //paramAll.tpBridge.tpBridgeChannel = (int)paramCache[11];
             //paramAll.tpBridge.tpBridgeReadInterval = (int)paramCache[12];
-            // paramAll.subCoolAndCircleShutdownThr = paramCache[13];
+            paramAll.subCoolAndCircleShutdownThr = paramCache[13];
             paramAll.tempDownCoolFShutdownDevision = paramCache[14];
             paramAll.tempDownCoolFShutdownHot = paramCache[15];
             paramAll.tempDownCoolFShutdownCool = paramCache[16];
-            //paramAll.tempNotUpOrDwonFaultThrHigh = paramCache[17];
+            paramAll.tempNotUpOrDwonFaultThrLow = paramCache[17];
 
             if (comboBox_sort.SelectedIndex == 0)
             {
@@ -135,72 +140,28 @@ namespace TempControl
                 paramAll.ryElecEnable = false;
             }
 
+            paramAll.portTp1 = comboBox_tp1.SelectedItem.ToString();
+            paramAll.portTp2 = comboBox_tp2.SelectedItem.ToString();
+            paramAll.portRy1 = comboBox_ry1.SelectedItem.ToString();
+            paramAll.portRy2 = comboBox_ry2.SelectedItem.ToString();
+
+
             // 写入到文本中
             // 相关参数
-            string configFilePath = @"./config.ini";
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "SteadyTimeSec", paramAll.steadyTimeSec.ToString("0"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "bridgeSteadyTimeSec", paramAll.bridgeSteadyTimeSec.ToString("0"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "FlucValue", paramAll.flucValue.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "controlTempThr", paramAll.controlTempThr.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDownFaultTimeSec", paramAll.tempNotUpOrDownFaultTimeSec.ToString("0"));
-            //Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThrHigh", paramAll.tempNotUpOrDwonFaultThrHigh.ToString("0.0000"));
-            //Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDwonFaultThrLow", paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucFaultTimeSec", paramAll.flucFaultTimeSec.ToString("0"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucFaultThr", paramAll.flucFaultThr.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempBiasFaultThr", paramAll.tempBiasFaultThr.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempMaxValue", paramAll.tempMaxValue.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempMinValue", paramAll.tempMinValue.ToString("0.0000"));
-            //Utils.IniReadWrite.INIWriteValue(configFilePath, "TpBridge", "tpBridgeChannel", paramAll.tpBridge.tpBridgeChannel.ToString("0"));
-            //Utils.IniReadWrite.INIWriteValue(configFilePath, "TpBridge", "tpBridgeReadInterval", paramAll.tpBridge.tpBridgeReadInterval.ToString("0"));
-            //Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "subCircleShutdownThr", paramAll.subCoolAndCircleShutdownThr.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownDevision", paramAll.tempDownCoolFShutdownDevision.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownHot", paramAll.tempDownCoolFShutdownHot.ToString("0.0000"));
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShoutdownCool", paramAll.tempDownCoolFShutdownCool.ToString("0.0000"));
-
-            Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", paramAll.sort);
-            if (paramAll.ryElecEnable) Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", "Enable");
-            else Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", "Disable");
+            if(paramAll.WriteValueConfig(@"./config.ini") == false)
+            {
+                MessageBox.Show("保存参数失败！");
+            }
         }
 
         private void BntRead_Click(object sender, EventArgs e)
         {
-            textBox1.Text = paramAll.steadyTimeSec.ToString("0");
-            textBox2.Text = paramAll.bridgeSteadyTimeSec.ToString("0");
-            textBox3.Text = paramAll.flucValue.ToString("0.0000");
-            textBox4.Text = paramAll.controlTempThr.ToString("0.0000");
-            textBox5.Text = paramAll.tempNotUpOrDownFaultTimeSec.ToString("0");
-            //textBox6.Text = paramAll.tempNotUpOrDwonFaultThrHigh.ToString("0.0000");
-            textBox7.Text = paramAll.flucFaultTimeSec.ToString("0");
-            textBox8.Text = paramAll.flucFaultThr.ToString("0.0000");
-            textBox9.Text = paramAll.tempBiasFaultThr.ToString("0.0000");
-            textBox10.Text = paramAll.tempMaxValue.ToString("0.0000");
-            textBox11.Text = paramAll.tempMinValue.ToString("0.0000");
-            //textBox12.Text = paramAll.tpBridge.tpBridgeChannel.ToString("0");
-            //textBox13.Text = paramAll.tpBridge.tpBridgeReadInterval.ToString("0");
-            //textBox14.Text = paramAll.subCoolAndCircleShutdownThr.ToString("0.0000");
-            textBox15.Text = paramAll.tempDownCoolFShutdownDevision.ToString("0.0000");
-            textBox16.Text = paramAll.tempDownCoolFShutdownHot.ToString("0.0000");
-            textBox17.Text = paramAll.tempDownCoolFShutdownCool.ToString("0.0000");
-            //textBox18.Text = paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000");
-
-            if (paramAll.sort == "ascend")
+            if(paramAll.ReadValueConfig(@"./config.ini") == false)
             {
-                comboBox_sort.SelectedIndex = 0;
-            }
-            else
-            {
-                comboBox_sort.SelectedIndex = 1;
+                MessageBox.Show("读取参数失败！");
             }
 
-            if (paramAll.ryElecEnable == true)
-            {
-                comboBox_elect.SelectedIndex = 0;
-            }
-            else
-            {
-                comboBox_elect.SelectedIndex = 1;
-            }
-
+            loadFromParam();
         }
 
         private void button10_Click(object sender, EventArgs e)
