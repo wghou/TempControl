@@ -208,6 +208,7 @@ namespace Device
                 }
                 catch(Exception ex)
                 {
+                    Array.Copy(ryStatus, ryStatusToSet,  numCoils);
                     Debug.WriteLine(ex.Message);
                     err = Err_r.ComError;
                 }
