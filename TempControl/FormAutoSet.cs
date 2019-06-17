@@ -159,7 +159,6 @@ namespace TempControl
                     }
                 }
 
-                if(devicesAll._state == Device.State.Idle)
                 // 判断是否已开始自动控温流程
                 if (this.devicesAll._state == Device.State.Start ||
                         devicesAll._state == Device.State.TempDown ||
@@ -312,7 +311,7 @@ namespace TempControl
                 checkBox_start.Text = "停止";
 
                 // 开启定时器 - 状态更新
-                //this.timer1.Start();
+                this.timer1.Start();
             }
             else
             {

@@ -101,8 +101,45 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                // 系统流程
-                this.label_controlState.Text = "系统启动";
+                switch (st)
+                {
+                    case Device.State.Start:
+                        // 系统流程
+                        this.label_controlState.Text = "开始自动控温";
+                        break;
+                    case Device.State.TempUp:
+                        // 系统流程
+                        this.label_controlState.Text = "升温";
+                        break;
+                    case Device.State.TempDown:
+                        // 系统流程
+                        this.label_controlState.Text = "降温";
+                        break;
+                    case Device.State.Control:
+                        // 系统流程
+                        this.label_controlState.Text = "控温";
+                        break;
+                    case Device.State.Stable:
+                        // 系统流程
+                        this.label_controlState.Text = "稳定";
+                        break;
+                    case Device.State.Measure:
+                        // 系统流程
+                        this.label_controlState.Text = "测量";
+                        break;
+                    case Device.State.Stop:
+                        // 系统流程
+                        this.label_controlState.Text = "系统停止";
+                        break;
+                    case Device.State.Idle:
+                        // 系统流程
+                        this.label_controlState.Text = "空闲";
+                        break;
+                    case Device.State.Undefine:
+                        // 系统流程
+                        this.label_controlState.Text = "未定义";
+                        break;
+                }
             }));
         }
 
