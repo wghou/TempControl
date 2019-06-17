@@ -94,7 +94,7 @@ namespace Device
         /// <param name="act"></param>
         private void OnUnhandledTrigger(State st, Trigger tg)
         {
-            nlogger.Error("Unhandled trigger: state.");
+            nlogger.Trace("Unhandled trigger: state.");
 
             SetErrorStatus(ErrorCode.CodeError);
         }
@@ -106,11 +106,11 @@ namespace Device
         /// <returns></returns>
         private bool nextPointDown(float tpPoint)
         {
-            nlogger.Debug("Next point: " + tpPoint.ToString());
+            nlogger.Trace("Next point: " + tpPoint.ToString());
 
             if(tpDeviceM.temperatures.Count == 0)
             {
-                nlogger.Debug("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
+                nlogger.Trace("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
                 SetErrorStatus(ErrorCode.CodeError);
                 return true;
             }
@@ -126,7 +126,7 @@ namespace Device
         /// </summary>
         private void UndefineEntry()
         {
-            nlogger.Debug("Undefine Entry.");
+            nlogger.Trace("Undefine Entry.");
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void UndefineTick(int tic)
         {
-            nlogger.Debug("UndefineTick: " + tic.ToString() + " ms");
+            nlogger.Trace("UndefineTick: " + tic.ToString() + " ms");
             // do nothing
         }
 
@@ -144,7 +144,7 @@ namespace Device
         /// </summary>
         private void UndefineExit()
         {
-            nlogger.Debug("Undefine Exit.");
+            nlogger.Trace("Undefine Exit.");
         }
 
 
@@ -153,7 +153,12 @@ namespace Device
         /// </summary>
         private void IdleEntry()
         {
-            nlogger.Debug("Idle Entry.");
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            WriteRelayDeviceM(true);
+
+            nlogger.Trace("Idle Entry.");
         }
 
         /// <summary>
@@ -162,7 +167,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void IdleTick(int tic)
         {
-            nlogger.Debug("IdleTick: " + tic.ToString() + " ms");
+            nlogger.Trace("IdleTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -170,7 +175,7 @@ namespace Device
         /// </summary>
         private void IdleExit()
         {
-            nlogger.Debug("Idle Exit.");
+            nlogger.Trace("Idle Exit.");
         }
 
 
@@ -179,7 +184,7 @@ namespace Device
         /// </summary>
         private void StartEntry()
         {
-            nlogger.Debug("Start Entry.");
+            nlogger.Trace("Start Entry.");
         }
 
         /// <summary>
@@ -188,7 +193,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StartTick(int tic)
         {
-            nlogger.Debug("StartTick: " + tic.ToString() + " ms");
+            nlogger.Trace("StartTick: " + tic.ToString() + " ms");
 
             // 如果 temperaturePointList 为空
             if (temperaturePointList.Count == 0)
@@ -244,7 +249,7 @@ namespace Device
         /// </summary>
         private void StartExit()
         {
-            nlogger.Debug("Start Exit.");
+            nlogger.Trace("Start Exit.");
         }
 
 
@@ -256,12 +261,9 @@ namespace Device
         {
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
-
-            // 将继电器状态写入下位机
-            // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if(err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            WriteRelayDeviceM(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
@@ -277,7 +279,7 @@ namespace Device
                 WriteTempDeviceS(true);
             }
 
-            nlogger.Debug("TempUp Entry.");
+            nlogger.Trace("TempUp Entry.");
         }
 
         /// <summary>
@@ -286,7 +288,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempUpTick(int tic)
         {
-            nlogger.Debug("TempUp Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("TempUp Tick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -309,7 +311,7 @@ namespace Device
         /// </summary>
         private void TempUpExit()
         {
-            nlogger.Debug("TempUp Exit.");
+            nlogger.Trace("TempUp Exit.");
         }
 
 
@@ -320,32 +322,9 @@ namespace Device
         private void TempDownEntry()
         {
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
-
-            // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
-            {
-
-            }
-            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
-            else
-            {
-                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
-                {
-                    // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDeviceM.subCoolWaiting = true;
-                }
-                else
-                {
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-                }
-            }
-
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            WriteRelayDeviceM(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
@@ -362,7 +341,7 @@ namespace Device
                 WriteTempDeviceS(true);
             }
 
-            nlogger.Debug("TempDown Entry.");
+            nlogger.Trace("TempDown Entry.");
         }
 
         /// <summary>
@@ -371,7 +350,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempDownTick(int tic)
         {
-            nlogger.Debug("TempDown Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("TempDown Tick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -395,7 +374,7 @@ namespace Device
         /// </summary>
         private void TempDownExit()
         {
-            nlogger.Debug("TempDown Exit.");
+            nlogger.Trace("TempDown Exit.");
         }
 
         
@@ -405,38 +384,13 @@ namespace Device
         /// </summary>
         private void ControlEntry()
         {
-            nlogger.Debug("Control Entry.");
+            nlogger.Trace("Control Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            //  1 2 3 4 5 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
-
-            // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
-            {
-
-            }
-            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
-            else
-            {
-                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
-                {
-                    // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDeviceM.subCoolWaiting = true;
-                }
-                else
-                {
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-                }
-            }
-
-
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            WriteRelayDeviceM(true);
         }
 
         /// <summary>
@@ -445,7 +399,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void ControlTick(int tic)
         {
-            nlogger.Debug("Control Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("Control Tick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -471,7 +425,7 @@ namespace Device
         /// </summary>
         private void ControlExit()
         {
-            nlogger.Debug("Control Exit.");
+            nlogger.Trace("Control Exit.");
         }
 
 
@@ -481,38 +435,13 @@ namespace Device
         /// </summary>
         private void StableEntry()
         {
-            nlogger.Debug("Stable Entry.");
+            nlogger.Trace("Stable Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
-
-            // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
-            {
-
-            }
-            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
-            else
-            {
-                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
-                {
-                    // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDeviceM.subCoolWaiting = true;
-                }
-                else
-                {
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-                }
-            }
-
-
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            WriteRelayDeviceM(true);
         }
 
 
@@ -522,7 +451,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StableTick(int tic)
         {
-            nlogger.Debug("Stableick: " + tic.ToString() + " ms");
+            nlogger.Trace("Stableick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -554,7 +483,7 @@ namespace Device
         /// </summary>
         private void StableExit()
         {
-            nlogger.Debug("Stable Exit.");
+            nlogger.Trace("Stable Exit.");
         }
 
         
@@ -564,7 +493,7 @@ namespace Device
         /// </summary>
         private void MeasureEntry()
         {
-            nlogger.Debug("Measure Entry.");
+            nlogger.Trace("Measure Entry.");
         }
 
         /// <summary>
@@ -573,7 +502,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void MeasureTick(int tic)
         {
-            nlogger.Debug("MeasureTick: " + tic.ToString() + " ms");
+            nlogger.Trace("MeasureTick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -624,7 +553,7 @@ namespace Device
         /// </summary>
         private void MeasureExit()
         {
-            nlogger.Debug("Measure Exit.");
+            nlogger.Trace("Measure Exit.");
         }
 
 
@@ -634,15 +563,14 @@ namespace Device
         /// </summary>
         private void StopEntry()
         {
-            nlogger.Debug("Stop Entry.");
+            nlogger.Trace("Stop Entry.");
 
             // 关闭除总电源外的所有继电器
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
 
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 FlowControlFaultOccurEvent 事件通知主界面提示错误
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDeviceM(true);
 
         }
 
@@ -652,7 +580,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StopTick(int tic)
         {
-            nlogger.Debug("StopTick: " + tic.ToString() + " ms");
+            nlogger.Trace("StopTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -660,7 +588,7 @@ namespace Device
         /// </summary>
         private void StopExit()
         {
-            nlogger.Debug("Stop Exit.");
+            nlogger.Trace("Stop Exit.");
         }
     }
 }
