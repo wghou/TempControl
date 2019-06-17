@@ -94,7 +94,7 @@ namespace Device
         /// <param name="act"></param>
         private void OnUnhandledTrigger(State st, Trigger tg)
         {
-            Debug.WriteLine("Unhandled trigger: state.");
+            nlogger.Trace("Unhandled trigger: state.");
 
             SetErrorStatus(ErrorCode.CodeError);
         }
@@ -106,11 +106,11 @@ namespace Device
         /// <returns></returns>
         private bool nextPointDown(float tpPoint)
         {
-            Debug.WriteLine("Next point: " + tpPoint.ToString());
+            nlogger.Trace("Next point: " + tpPoint.ToString());
 
             if(tpDeviceM.temperatures.Count == 0)
             {
-                Debug.WriteLine("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
+                nlogger.Trace("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
                 SetErrorStatus(ErrorCode.CodeError);
                 return true;
             }
@@ -126,7 +126,7 @@ namespace Device
         /// </summary>
         private void UndefineEntry()
         {
-            Debug.WriteLine("Undefine Entry.");
+            nlogger.Trace("Undefine Entry.");
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void UndefineTick(int tic)
         {
-            Debug.WriteLine("UndefineTick: " + tic.ToString() + " ms");
+            nlogger.Trace("UndefineTick: " + tic.ToString() + " ms");
             // do nothing
         }
 
@@ -144,7 +144,7 @@ namespace Device
         /// </summary>
         private void UndefineExit()
         {
-            Debug.WriteLine("Undefine Exit.");
+            nlogger.Trace("Undefine Exit.");
         }
 
 
@@ -153,7 +153,7 @@ namespace Device
         /// </summary>
         private void IdleEntry()
         {
-            Debug.WriteLine("Idle Entry.");
+            nlogger.Trace("Idle Entry.");
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void IdleTick(int tic)
         {
-            Debug.WriteLine("IdleTick: " + tic.ToString() + " ms");
+            nlogger.Trace("IdleTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Device
         /// </summary>
         private void IdleExit()
         {
-            Debug.WriteLine("Idle Exit.");
+            nlogger.Trace("Idle Exit.");
         }
 
 
@@ -179,7 +179,7 @@ namespace Device
         /// </summary>
         private void StartEntry()
         {
-            Debug.WriteLine("Start Entry.");
+            nlogger.Trace("Start Entry.");
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StartTick(int tic)
         {
-            Debug.WriteLine("StartTick: " + tic.ToString() + " ms");
+            nlogger.Trace("StartTick: " + tic.ToString() + " ms");
 
             // 如果 temperaturePointList 为空
             if (temperaturePointList.Count == 0)
@@ -244,7 +244,7 @@ namespace Device
         /// </summary>
         private void StartExit()
         {
-            Debug.WriteLine("Start Exit.");
+            nlogger.Trace("Start Exit.");
         }
 
 
@@ -277,7 +277,7 @@ namespace Device
                 WriteTempDeviceS(true);
             }
 
-            Debug.WriteLine("TempUp Entry.");
+            nlogger.Trace("TempUp Entry.");
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempUpTick(int tic)
         {
-            Debug.WriteLine("TempUp Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("TempUp Tick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -309,7 +309,7 @@ namespace Device
         /// </summary>
         private void TempUpExit()
         {
-            Debug.WriteLine("TempUp Exit.");
+            nlogger.Trace("TempUp Exit.");
         }
 
 
@@ -362,7 +362,7 @@ namespace Device
                 WriteTempDeviceS(true);
             }
 
-            Debug.WriteLine("TempDown Entry.");
+            nlogger.Trace("TempDown Entry.");
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempDownTick(int tic)
         {
-            Debug.WriteLine("TempDown Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("TempDown Tick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -395,7 +395,7 @@ namespace Device
         /// </summary>
         private void TempDownExit()
         {
-            Debug.WriteLine("TempDown Exit.");
+            nlogger.Trace("TempDown Exit.");
         }
 
         
@@ -405,7 +405,7 @@ namespace Device
         /// </summary>
         private void ControlEntry()
         {
-            Debug.WriteLine("Control Entry.");
+            nlogger.Trace("Control Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
             //  1 2 3 4 5 
@@ -445,7 +445,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void ControlTick(int tic)
         {
-            Debug.WriteLine("Control Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("Control Tick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -462,7 +462,7 @@ namespace Device
                 // 进入下一个状态，下一个状态应该是 稳定
                 currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.AchieveSteady);
-                Utils.Logger.Sys((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
+                nlogger.Info((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
             }
         }
 
@@ -471,7 +471,7 @@ namespace Device
         /// </summary>
         private void ControlExit()
         {
-            Debug.WriteLine("Control Exit.");
+            nlogger.Trace("Control Exit.");
         }
 
 
@@ -481,7 +481,7 @@ namespace Device
         /// </summary>
         private void StableEntry()
         {
-            Debug.WriteLine("Stable Entry.");
+            nlogger.Trace("Stable Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
             // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
@@ -522,7 +522,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StableTick(int tic)
         {
-            Debug.WriteLine("Stableick: " + tic.ToString() + " ms");
+            nlogger.Trace("Stableick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -544,7 +544,7 @@ namespace Device
                     currentTemptPointState.stateCounts = 0;
                     _machine.Fire(Trigger.StartMeasure);
 
-                    Utils.Logger.Sys((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
+                    nlogger.Info((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
                 }
             }
         }
@@ -554,7 +554,7 @@ namespace Device
         /// </summary>
         private void StableExit()
         {
-            Debug.WriteLine("Stable Exit.");
+            nlogger.Trace("Stable Exit.");
         }
 
         
@@ -564,7 +564,7 @@ namespace Device
         /// </summary>
         private void MeasureEntry()
         {
-            Debug.WriteLine("Measure Entry.");
+            nlogger.Trace("Measure Entry.");
         }
 
         /// <summary>
@@ -573,7 +573,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void MeasureTick(int tic)
         {
-            Debug.WriteLine("MeasureTick: " + tic.ToString() + " ms");
+            nlogger.Trace("MeasureTick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -596,8 +596,8 @@ namespace Device
                     currentTemptPointState.stateCounts = 0;
                     _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
 
-                    Utils.Logger.Sys("开始下一个温度点的控温 - 稳定 - 测量流程...");
-                    Utils.Logger.Sys("查找到了下一个未测量的温度点 " + currentTemptPointState.stateTemp.ToString());
+                    nlogger.Info("开始下一个温度点的控温 - 稳定 - 测量流程...");
+                    nlogger.Info("查找到了下一个未测量的温度点 " + currentTemptPointState.stateTemp.ToString());
 
                     break;
                 }
@@ -615,7 +615,7 @@ namespace Device
                 {
                     _machine.Fire(Trigger.FinishedAll);
                 }
-                Utils.Logger.Sys("所有温度点均已测量完成...");
+                nlogger.Info("所有温度点均已测量完成...");
             }
         }
 
@@ -624,7 +624,7 @@ namespace Device
         /// </summary>
         private void MeasureExit()
         {
-            Debug.WriteLine("Measure Exit.");
+            nlogger.Trace("Measure Exit.");
         }
 
 
@@ -634,7 +634,7 @@ namespace Device
         /// </summary>
         private void StopEntry()
         {
-            Debug.WriteLine("Stop Entry.");
+            nlogger.Trace("Stop Entry.");
 
             // 关闭除总电源外的所有继电器
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
@@ -652,7 +652,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StopTick(int tic)
         {
-            Debug.WriteLine("StopTick: " + tic.ToString() + " ms");
+            nlogger.Trace("StopTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -660,7 +660,7 @@ namespace Device
         /// </summary>
         private void StopExit()
         {
-            Debug.WriteLine("Stop Exit.");
+            nlogger.Trace("Stop Exit.");
         }
     }
 }

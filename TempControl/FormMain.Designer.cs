@@ -428,6 +428,7 @@
             this.checkBox2.Text = "备用";
             this.checkBox2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.Click += new System.EventHandler(this.checkBox2_Click);
             // 
             // checkBox1
             // 

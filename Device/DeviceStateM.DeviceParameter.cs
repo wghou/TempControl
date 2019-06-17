@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using System.Timers;
+using NLog;
 
 namespace Device
 {
@@ -43,6 +44,8 @@ namespace Device
 
     public class RunningParamStruct
     {
+        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// 读取控温板时间间隔 Second
         /// </summary>
@@ -186,7 +189,7 @@ namespace Device
             }
             catch (Exception ex)
             {
-                Utils.Logger.Sys("从配置文件读取参数过程中发生异常：" + ex.Message.ToString());
+                nlogger.Error("从配置文件读取参数过程中发生异常：" + ex.Message.ToString());
                 return false;
             }
 
@@ -230,7 +233,7 @@ namespace Device
             }
             catch(Exception ex)
             {
-                Utils.Logger.Sys("向配置文件写入参数过程中发生异常：" + ex.Message.ToString());
+                nlogger.Error("从配置文件写入参数过程中发生异常：" + ex.Message.ToString());
                 return false;
             }
 
@@ -309,8 +312,7 @@ namespace Device
                 // 如果发生错误，则记录错误
                 _deviceErrorMonitor[ErrorCode.TemptError]++;
 
-                Debug.WriteLine("读取主槽温度时发生错误，errorCode: " + err.ToString());
-                Utils.Logger.Sys("读取主槽温度时发生错误，errorCode: " + err.ToString());
+                nlogger.Error("读取主槽温度时发生错误，errorCode: " + err.ToString());
                 goto next;
             }
             // 记录主槽温度
@@ -324,8 +326,7 @@ namespace Device
                 // 如果发生错误，则记录错误
                 _deviceErrorMonitor[ErrorCode.TemptError]++;
 
-                Debug.WriteLine("读取主槽功率时发生错误，errorCode: " + err.ToString());
-                Utils.Logger.Sys("读取主槽功率时发生错误，errorCode: " + err.ToString());
+                nlogger.Error("读取主槽功率时发生错误，errorCode: " + err.ToString());
                 goto next;
             }
 
@@ -339,8 +340,7 @@ namespace Device
                 // 如果发生错误，则记录错误
                 _deviceErrorMonitor[ErrorCode.TemptError]++;
 
-                Debug.WriteLine("读取辅槽温度时发生错误，errorCode: " + err.ToString());
-                Utils.Logger.Sys("读取辅槽温度时发生错误，errorCode: " + err.ToString());
+                nlogger.Error("读取辅槽温度时发生错误，errorCode: " + err.ToString());
                 return;
             }
 
@@ -352,8 +352,7 @@ namespace Device
                 // 如果发生错误，则记录错误
                 _deviceErrorMonitor[ErrorCode.TemptError]++;
 
-                Debug.WriteLine("读取辅槽功率时发生错误，errorCode: " + err.ToString());
-                Utils.Logger.Sys("读取辅槽功率时发生错误，errorCode: " + err.ToString());
+                nlogger.Error("读取辅槽功率时发生错误，errorCode: " + err.ToString());
                 return;
             }
             return;

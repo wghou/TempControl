@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Threading;
+using NLog;
 
 namespace Device
 {
     public class TempDevice
     {
+        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
+
         // 温控设备
         #region Members
         // 设备
@@ -59,14 +62,14 @@ namespace Device
             // 当 Enable == False 时，返回 true
             // 设置端口号
             if (SetDevicePortName(portName) == false) {
-                Debug.WriteLine("配置主槽控温设备失败! 端口号: " + portName);
+                nlogger.Error("配置主槽控温设备失败! 端口号: " + portName);
                 currentComStatus = false;
                 return !Enable;
             }
 
             // 更新参数
             if (UpdateParamFromDevice() != TempProtocol.Err_t.NoError){
-                Debug.WriteLine("从主槽控温设备读取参数失败！");
+                nlogger.Error("从主槽控温设备读取参数失败！");
                 currentComStatus = false;
                 return !Enable;
             }
@@ -166,8 +169,7 @@ namespace Device
                     err = tpDevice.SendData((TempProtocol.Cmd_t)i, tpParamToSet[i]);
 
                     // 调试信息
-                    Debug.WriteLineIf(err == TempProtocol.Err_t.NoError, "温控设备参数设置成功!  " + tpParamNames[i] + ": " + tpParam[i].ToString());
-                    Debug.WriteLineIf(err != TempProtocol.Err_t.NoError, "温控设备参数设置失败!  " + tpParamNames[i] + ": " + err.ToString());
+                    if (err != TempProtocol.Err_t.NoError) nlogger.Error("温控设备参数设置失败!  " + tpParamNames[i] + ": " + err.ToString());
 
                     // 如发生错误，则结束 for 循环
                     if (err != TempProtocol.Err_t.NoError)
@@ -203,8 +205,7 @@ namespace Device
                     err = tpDevice.ReadData((TempProtocol.Cmd_t)i, out val);
 
                     // 调试信息
-                    Debug.WriteLineIf(err == TempProtocol.Err_t.NoError, "温控设备参数读取成功!  " + tpParamNames[i] + ": " + tpParam[i].ToString());
-                    Debug.WriteLineIf(err != TempProtocol.Err_t.NoError, "温控设备参数读取失败!  " + tpParamNames[i] + ": " + err.ToString());
+                    if (err != TempProtocol.Err_t.NoError) nlogger.Error("温控设备参数读取失败!  " + tpParamNames[i] + ": " + err.ToString());
 
                     // 如发生错误，则立即结束 for 循环
                     if (err != TempProtocol.Err_t.NoError)

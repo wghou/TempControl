@@ -5,14 +5,20 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Brushes = System.Windows.Media.Brushes;
+using NLog;
+using Logazmic;
+using System.Diagnostics;
 
 namespace TempControl
 {
     public partial class FormMain : Form
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private Device.DeviceStateM _device = new Device.DeviceStateM();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyM = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyS = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
@@ -25,12 +31,6 @@ namespace TempControl
 
         Bitmap mBmpRelayRed;
         Bitmap mBmpRelayGreen;
-
-        public class DateModel
-        {
-            public System.DateTime DateTime { get; set; }
-            public double Value { get; set; }
-        }
 
 
         public FormMain()
@@ -61,6 +61,8 @@ namespace TempControl
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
+
+            logger.Error(() => "test");
         }
 
 
@@ -268,6 +270,11 @@ namespace TempControl
 
             Utils.Logger.Sys("打开辅槽控温设备温度曲线界面!");
             Utils.Logger.Op("打开辅槽控温设备温度曲线界面!");
+        }
+
+        private void checkBox2_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
