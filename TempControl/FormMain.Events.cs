@@ -44,10 +44,10 @@ namespace TempControl
 
                 // 辅槽温度显示值
                 if (this._device.tpDeviceS.temperatures.Count != 0)
-                    label_tempS.Text = this._device.tpDeviceS.temperatures.Last().ToString("0.0000") + "℃";
+                    label_tempS.Text = this._device.tpDeviceS.temperatures.Last().ToString("0.000") + "℃";
 
                 // 辅槽温度设定值
-                label_tempSetS.Text = this._device.tpDeviceS.tpParam[0].ToString("0.0000") + "℃";
+                label_tempSetS.Text = this._device.tpDeviceS.tpParam[0].ToString("0.000") + "℃";
             }));
         }
 
@@ -123,6 +123,7 @@ namespace TempControl
                 foreach (var chk in this.dictCheckBoxsRyM)
                 {
                     chk.Value.Checked = ryStatus[(int)chk.Key];
+                    pictureBoxRyM[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
                 }
 
                 // 如果禁用 ry2 ，则将全部 16 个按键作为 ry1 使用
@@ -131,6 +132,7 @@ namespace TempControl
                     foreach (var chk in this.dictCheckBoxsRyS)
                     {
                         chk.Value.Checked = ryStatus[(int)chk.Key + 8];
+                        pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key + 8] ? mBmpRelayGreen : mBmpRelayRed;
                     }
                 }
             }));
@@ -151,6 +153,7 @@ namespace TempControl
                 foreach (var chk in this.dictCheckBoxsRyS)
                 {
                     chk.Value.Checked = ryStatus[(int)chk.Key];
+                    pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
                 }
             }));
 

@@ -39,13 +39,6 @@ namespace TempControl
             devParam[15] = textBox16;
             devParam[16] = textBox17;
             devParam[17] = textBox18;
-
-            //comboBox1.Items
-            string[] portNames = SerialPort.GetPortNames();
-            comboBox_tp1.Items.AddRange(portNames);
-            comboBox_tp2.Items.AddRange(portNames);
-            comboBox_ry1.Items.AddRange(portNames);
-            comboBox_ry2.Items.AddRange(portNames);
         }
 
         private void loadFromParam()
@@ -73,10 +66,6 @@ namespace TempControl
 
             comboBox_sort.SelectedIndex = paramAll.sort == "ascend" ? 0 : 1;
             comboBox_elect.SelectedIndex = paramAll.ryElecEnable == true ? 0 : 1;
-            comboBox_tp1.SelectedIndex = comboBox_tp1.Items.IndexOf(paramAll.portTp1);
-            comboBox_tp2.SelectedIndex = comboBox_tp2.Items.IndexOf(paramAll.portTp2);
-            comboBox_ry1.SelectedIndex = comboBox_ry1.Items.IndexOf(paramAll.portRy1);
-            comboBox_ry2.SelectedIndex = comboBox_ry2.Items.IndexOf(paramAll.portRy2);
         }
         private void FormDebug_Load(object sender, EventArgs e)
         {
@@ -139,11 +128,6 @@ namespace TempControl
             {
                 paramAll.ryElecEnable = false;
             }
-
-            paramAll.portTp1 = comboBox_tp1.SelectedItem.ToString();
-            paramAll.portTp2 = comboBox_tp2.SelectedItem.ToString();
-            paramAll.portRy1 = comboBox_ry1.SelectedItem.ToString();
-            paramAll.portRy2 = comboBox_ry2.SelectedItem.ToString();
 
 
             // 写入到文本中

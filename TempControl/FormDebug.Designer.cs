@@ -85,14 +85,6 @@
             this.label19 = new System.Windows.Forms.Label();
             this.textBox18 = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.comboBox_tp1 = new System.Windows.Forms.ComboBox();
-            this.comboBox_tp2 = new System.Windows.Forms.ComboBox();
-            this.comboBox_ry2 = new System.Windows.Forms.ComboBox();
-            this.comboBox_ry1 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // button10
@@ -645,87 +637,11 @@
             this.label20.TabIndex = 95;
             this.label20.Text = "温度不下降-低温-阈值";
             // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(334, 127);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(83, 12);
-            this.label21.TabIndex = 96;
-            this.label21.Text = "控温板1端口：";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(334, 159);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(77, 12);
-            this.label22.TabIndex = 97;
-            this.label22.Text = "控温板2端口:";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(334, 221);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(77, 12);
-            this.label23.TabIndex = 99;
-            this.label23.Text = "继电器2端口:";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(334, 189);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(83, 12);
-            this.label24.TabIndex = 98;
-            this.label24.Text = "继电器1端口：";
-            // 
-            // comboBox_tp1
-            // 
-            this.comboBox_tp1.FormattingEnabled = true;
-            this.comboBox_tp1.Location = new System.Drawing.Point(451, 124);
-            this.comboBox_tp1.Name = "comboBox_tp1";
-            this.comboBox_tp1.Size = new System.Drawing.Size(129, 20);
-            this.comboBox_tp1.TabIndex = 100;
-            // 
-            // comboBox_tp2
-            // 
-            this.comboBox_tp2.FormattingEnabled = true;
-            this.comboBox_tp2.Location = new System.Drawing.Point(451, 151);
-            this.comboBox_tp2.Name = "comboBox_tp2";
-            this.comboBox_tp2.Size = new System.Drawing.Size(129, 20);
-            this.comboBox_tp2.TabIndex = 101;
-            // 
-            // comboBox_ry2
-            // 
-            this.comboBox_ry2.FormattingEnabled = true;
-            this.comboBox_ry2.Location = new System.Drawing.Point(451, 213);
-            this.comboBox_ry2.Name = "comboBox_ry2";
-            this.comboBox_ry2.Size = new System.Drawing.Size(129, 20);
-            this.comboBox_ry2.TabIndex = 103;
-            // 
-            // comboBox_ry1
-            // 
-            this.comboBox_ry1.FormattingEnabled = true;
-            this.comboBox_ry1.Location = new System.Drawing.Point(451, 186);
-            this.comboBox_ry1.Name = "comboBox_ry1";
-            this.comboBox_ry1.Size = new System.Drawing.Size(129, 20);
-            this.comboBox_ry1.TabIndex = 102;
-            // 
             // FormDebug
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(629, 578);
-            this.Controls.Add(this.comboBox_ry2);
-            this.Controls.Add(this.comboBox_ry1);
-            this.Controls.Add(this.comboBox_tp2);
-            this.Controls.Add(this.comboBox_tp1);
-            this.Controls.Add(this.label23);
-            this.Controls.Add(this.label24);
-            this.Controls.Add(this.label22);
-            this.Controls.Add(this.label21);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.textBox18);
             this.Controls.Add(this.textBox17);
@@ -850,13 +766,5 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox textBox18;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.ComboBox comboBox_tp1;
-        private System.Windows.Forms.ComboBox comboBox_tp2;
-        private System.Windows.Forms.ComboBox comboBox_ry2;
-        private System.Windows.Forms.ComboBox comboBox_ry1;
     }
 }

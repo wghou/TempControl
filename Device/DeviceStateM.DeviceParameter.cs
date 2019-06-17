@@ -334,7 +334,7 @@ namespace Device
             next:
             if (tpDeviceS.Enable == false) return;
 
-            err = tpDeviceS.GetTemperatureShow(out val, 4);
+            err = tpDeviceS.GetTemperatureShow(out val, 3);
             if (err != TempProtocol.Err_t.NoError)
             {
                 // 如果发生错误，则记录错误

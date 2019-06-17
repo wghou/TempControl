@@ -62,7 +62,23 @@
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox_ry1 = new System.Windows.Forms.GroupBox();
+            this.pictureBox_ryM7 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryM6 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryM5 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryM4 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryM3 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryM2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryM1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryM0 = new System.Windows.Forms.PictureBox();
             this.groupBox_ry2 = new System.Windows.Forms.GroupBox();
+            this.pictureBox_ryS7 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryS6 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryS5 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryS3 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryS2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryS1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryS4 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_ryS0 = new System.Windows.Forms.PictureBox();
             this.groupBox_tempM = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox_curveM = new System.Windows.Forms.CheckBox();
@@ -84,7 +100,23 @@
             this.checkBox_tempS = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM0)).BeginInit();
             this.groupBox_ry2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS0)).BeginInit();
             this.groupBox_tempM.SuspendLayout();
             this.groupBox_tempS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -447,6 +479,14 @@
             // 
             this.groupBox_ry1.AutoSize = true;
             this.groupBox_ry1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM7);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM6);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM5);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM4);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM3);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM2);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM1);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM0);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM0);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM4);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM1);
@@ -462,10 +502,82 @@
             this.groupBox_ry1.TabStop = false;
             this.groupBox_ry1.Text = "继电器模块 1";
             // 
+            // pictureBox_ryM7
+            // 
+            this.pictureBox_ryM7.Location = new System.Drawing.Point(105, 223);
+            this.pictureBox_ryM7.Name = "pictureBox_ryM7";
+            this.pictureBox_ryM7.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM7.TabIndex = 36;
+            this.pictureBox_ryM7.TabStop = false;
+            // 
+            // pictureBox_ryM6
+            // 
+            this.pictureBox_ryM6.Location = new System.Drawing.Point(105, 156);
+            this.pictureBox_ryM6.Name = "pictureBox_ryM6";
+            this.pictureBox_ryM6.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM6.TabIndex = 35;
+            this.pictureBox_ryM6.TabStop = false;
+            // 
+            // pictureBox_ryM5
+            // 
+            this.pictureBox_ryM5.Location = new System.Drawing.Point(105, 89);
+            this.pictureBox_ryM5.Name = "pictureBox_ryM5";
+            this.pictureBox_ryM5.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM5.TabIndex = 34;
+            this.pictureBox_ryM5.TabStop = false;
+            // 
+            // pictureBox_ryM4
+            // 
+            this.pictureBox_ryM4.Location = new System.Drawing.Point(105, 22);
+            this.pictureBox_ryM4.Name = "pictureBox_ryM4";
+            this.pictureBox_ryM4.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM4.TabIndex = 33;
+            this.pictureBox_ryM4.TabStop = false;
+            // 
+            // pictureBox_ryM3
+            // 
+            this.pictureBox_ryM3.Location = new System.Drawing.Point(8, 223);
+            this.pictureBox_ryM3.Name = "pictureBox_ryM3";
+            this.pictureBox_ryM3.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM3.TabIndex = 32;
+            this.pictureBox_ryM3.TabStop = false;
+            // 
+            // pictureBox_ryM2
+            // 
+            this.pictureBox_ryM2.Location = new System.Drawing.Point(8, 156);
+            this.pictureBox_ryM2.Name = "pictureBox_ryM2";
+            this.pictureBox_ryM2.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM2.TabIndex = 31;
+            this.pictureBox_ryM2.TabStop = false;
+            // 
+            // pictureBox_ryM1
+            // 
+            this.pictureBox_ryM1.Location = new System.Drawing.Point(8, 89);
+            this.pictureBox_ryM1.Name = "pictureBox_ryM1";
+            this.pictureBox_ryM1.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM1.TabIndex = 30;
+            this.pictureBox_ryM1.TabStop = false;
+            // 
+            // pictureBox_ryM0
+            // 
+            this.pictureBox_ryM0.Location = new System.Drawing.Point(8, 22);
+            this.pictureBox_ryM0.Name = "pictureBox_ryM0";
+            this.pictureBox_ryM0.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM0.TabIndex = 29;
+            this.pictureBox_ryM0.TabStop = false;
+            // 
             // groupBox_ry2
             // 
             this.groupBox_ry2.AutoSize = true;
             this.groupBox_ry2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS7);
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS6);
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS5);
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS3);
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS2);
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS1);
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS4);
+            this.groupBox_ry2.Controls.Add(this.pictureBox_ryS0);
             this.groupBox_ry2.Controls.Add(this.checkBox_ryS0);
             this.groupBox_ry2.Controls.Add(this.checkBox_ryS4);
             this.groupBox_ry2.Controls.Add(this.checkBox_ryS1);
@@ -480,6 +592,70 @@
             this.groupBox_ry2.TabIndex = 32;
             this.groupBox_ry2.TabStop = false;
             this.groupBox_ry2.Text = "继电器模块 2";
+            // 
+            // pictureBox_ryS7
+            // 
+            this.pictureBox_ryS7.Location = new System.Drawing.Point(105, 223);
+            this.pictureBox_ryS7.Name = "pictureBox_ryS7";
+            this.pictureBox_ryS7.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS7.TabIndex = 37;
+            this.pictureBox_ryS7.TabStop = false;
+            // 
+            // pictureBox_ryS6
+            // 
+            this.pictureBox_ryS6.Location = new System.Drawing.Point(105, 156);
+            this.pictureBox_ryS6.Name = "pictureBox_ryS6";
+            this.pictureBox_ryS6.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS6.TabIndex = 36;
+            this.pictureBox_ryS6.TabStop = false;
+            // 
+            // pictureBox_ryS5
+            // 
+            this.pictureBox_ryS5.Location = new System.Drawing.Point(105, 89);
+            this.pictureBox_ryS5.Name = "pictureBox_ryS5";
+            this.pictureBox_ryS5.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS5.TabIndex = 35;
+            this.pictureBox_ryS5.TabStop = false;
+            // 
+            // pictureBox_ryS3
+            // 
+            this.pictureBox_ryS3.Location = new System.Drawing.Point(8, 223);
+            this.pictureBox_ryS3.Name = "pictureBox_ryS3";
+            this.pictureBox_ryS3.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS3.TabIndex = 34;
+            this.pictureBox_ryS3.TabStop = false;
+            // 
+            // pictureBox_ryS2
+            // 
+            this.pictureBox_ryS2.Location = new System.Drawing.Point(8, 156);
+            this.pictureBox_ryS2.Name = "pictureBox_ryS2";
+            this.pictureBox_ryS2.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS2.TabIndex = 33;
+            this.pictureBox_ryS2.TabStop = false;
+            // 
+            // pictureBox_ryS1
+            // 
+            this.pictureBox_ryS1.Location = new System.Drawing.Point(8, 89);
+            this.pictureBox_ryS1.Name = "pictureBox_ryS1";
+            this.pictureBox_ryS1.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS1.TabIndex = 32;
+            this.pictureBox_ryS1.TabStop = false;
+            // 
+            // pictureBox_ryS4
+            // 
+            this.pictureBox_ryS4.Location = new System.Drawing.Point(105, 22);
+            this.pictureBox_ryS4.Name = "pictureBox_ryS4";
+            this.pictureBox_ryS4.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS4.TabIndex = 31;
+            this.pictureBox_ryS4.TabStop = false;
+            // 
+            // pictureBox_ryS0
+            // 
+            this.pictureBox_ryS0.Location = new System.Drawing.Point(8, 22);
+            this.pictureBox_ryS0.Name = "pictureBox_ryS0";
+            this.pictureBox_ryS0.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS0.TabIndex = 30;
+            this.pictureBox_ryS0.TabStop = false;
             // 
             // groupBox_tempM
             // 
@@ -637,7 +813,7 @@
             this.label_tempS.Name = "label_tempS";
             this.label_tempS.Size = new System.Drawing.Size(321, 60);
             this.label_tempS.TabIndex = 0;
-            this.label_tempS.Text = "0.0000℃";
+            this.label_tempS.Text = "0.000℃";
             this.label_tempS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_tempSetS
@@ -733,7 +909,6 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(764, 515);
-            this.ControlBox = false;
             this.Controls.Add(this.checkBox_tempS);
             this.Controls.Add(this.checkBox_protect);
             this.Controls.Add(this.checkBox_ryEn2);
@@ -750,13 +925,28 @@
             this.Controls.Add(this.label_controlState);
             this.Controls.Add(this.label3);
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "FormMain";
             this.Text = "自动控温系统";
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox_ry1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM0)).EndInit();
             this.groupBox_ry2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS0)).EndInit();
             this.groupBox_tempM.ResumeLayout(false);
             this.groupBox_tempM.PerformLayout();
             this.groupBox_tempS.ResumeLayout(false);
@@ -821,6 +1011,22 @@
         private System.Windows.Forms.CheckBox checkBox_ryEn2;
         private System.Windows.Forms.CheckBox checkBox_protect;
         private System.Windows.Forms.CheckBox checkBox_tempS;
+        private System.Windows.Forms.PictureBox pictureBox_ryM7;
+        private System.Windows.Forms.PictureBox pictureBox_ryM6;
+        private System.Windows.Forms.PictureBox pictureBox_ryM5;
+        private System.Windows.Forms.PictureBox pictureBox_ryM4;
+        private System.Windows.Forms.PictureBox pictureBox_ryM3;
+        private System.Windows.Forms.PictureBox pictureBox_ryM2;
+        private System.Windows.Forms.PictureBox pictureBox_ryM1;
+        private System.Windows.Forms.PictureBox pictureBox_ryM0;
+        private System.Windows.Forms.PictureBox pictureBox_ryS7;
+        private System.Windows.Forms.PictureBox pictureBox_ryS6;
+        private System.Windows.Forms.PictureBox pictureBox_ryS5;
+        private System.Windows.Forms.PictureBox pictureBox_ryS3;
+        private System.Windows.Forms.PictureBox pictureBox_ryS2;
+        private System.Windows.Forms.PictureBox pictureBox_ryS1;
+        private System.Windows.Forms.PictureBox pictureBox_ryS4;
+        private System.Windows.Forms.PictureBox pictureBox_ryS0;
     }
 }
 
