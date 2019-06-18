@@ -292,7 +292,7 @@ namespace Device
 
             if (tpDeviceS.Enable == true)
             {
-                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
+                currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
                 // 将参数更新到下位机
                 // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
                 WriteTempDeviceS(true);
@@ -365,7 +365,7 @@ namespace Device
 
             if (tpDeviceS.Enable == true)
             {
-                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
+                currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
                 // 将参数更新到下位机
                 // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
                 WriteTempDeviceS(true);
