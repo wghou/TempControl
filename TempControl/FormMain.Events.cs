@@ -162,16 +162,6 @@ namespace TempControl
                     chk.Value.Checked = ryStatus[(int)chk.Key];
                     pictureBoxRyM[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
                 }
-
-                // 如果禁用 ry2 ，则将全部 16 个按键作为 ry1 使用
-                if (this.checkBox_ryEn2.Checked == false)
-                {
-                    foreach (var chk in this.dictCheckBoxsRyS)
-                    {
-                        chk.Value.Checked = ryStatus[(int)chk.Key + 8];
-                        pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key + 8] ? mBmpRelayGreen : mBmpRelayRed;
-                    }
-                }
             }));
 
             if(err != Device.RelayDevice.Err_r.NoError)
@@ -182,8 +172,6 @@ namespace TempControl
 
         private void _device_RelayDeviceSStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
         {
-            if (this.checkBox_ryEn2.Checked == false) return;
-
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 按钮状态

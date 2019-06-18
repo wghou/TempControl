@@ -240,7 +240,7 @@ namespace TempControl
                     FileStream fs = File.Open(@"./params.cache", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                     if (fs != null) fs.Close();
 
-                    StreamWriter sw = new StreamWriter(@"./params.cache", true, Encoding.UTF8);
+                    StreamWriter sw = new StreamWriter(@"./params.cache", false, Encoding.UTF8);
                     for (int i = 0; i < paramList.Count; i++)
                     {
                         for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
