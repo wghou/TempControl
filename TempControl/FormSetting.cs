@@ -7,11 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
+using NLog;
 
 namespace TempControl
 {
     public partial class FormSetting : Form
     {
+        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// 用于存放所有对象
         /// </summary>
@@ -88,7 +91,7 @@ namespace TempControl
                     MessageBox.Show("从温控设备更新参数失败! \r错误状态：" + err.ToString());
                 }));
 
-                Utils.Logger.Sys("从 " + tpDev.tpDeviceName + " 中读取温控设备的参数失败  ErrorCode: " + err.ToString());
+                nlogger.Error("从 " + tpDev.tpDeviceName + " 中读取温控设备的参数失败  ErrorCode: " + err.ToString());
             }
             else
             {
@@ -134,7 +137,7 @@ namespace TempControl
             getTempParam.BeginInvoke(false, null, null);
 
             Utils.Logger.Op("点击 查询参数 按键，从 " + tpDev.tpDeviceName + " 中读取温控设备的参数!");
-            Utils.Logger.Sys("点击 查询参数 按键，从 " + tpDev.tpDeviceName + " 中读取温控设备的参数!");
+            nlogger.Info("点击 查询参数 按键，从 " + tpDev.tpDeviceName + " 中读取温控设备的参数!");
         }
 
 
@@ -182,7 +185,7 @@ namespace TempControl
             setTempParam.BeginInvoke(false, null, null);
 
             Utils.Logger.Op("点击 更新参数 按键，向 " + tpDev.tpDeviceName + " 中写入温控设备的参数!");
-            Utils.Logger.Sys("点击 更新参数 按键，向 " + tpDev.tpDeviceName + " 中写入温控设备的参数!");
+            nlogger.Info("点击 更新参数 按键，向 " + tpDev.tpDeviceName + " 中写入温控设备的参数!");
         }
 
 
@@ -244,7 +247,7 @@ namespace TempControl
                     tpParam[i].Text = (parm[i] / tpSet.Count).ToString();
                 }
 
-                Debug.WriteLine("读取到了 " + tpSet.Count.ToString() + " 个参数集，已作平均");
+                nlogger.Debug("读取到了 " + tpSet.Count.ToString() + " 个参数集，已作平均");
 
             }
         }

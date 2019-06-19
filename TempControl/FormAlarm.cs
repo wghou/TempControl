@@ -8,12 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-
+using NLog;
 
 namespace TempControl
 {
     public partial class FormAlarm : Form
     {
+        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
+
         // 显示时间
         private int errTime = 0;
         Device.DeviceStateM _device;
@@ -51,7 +53,7 @@ namespace TempControl
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            Debug.WriteLine("timer for error message and try to shut down PC.");
+            nlogger.Debug("timer for error message and try to shut down PC.");
 
             // 时间减一
             errTime--;
@@ -137,13 +139,13 @@ namespace TempControl
                 this.Close();
             }
 
-            Console.WriteLine("formAlarm.timer");
+            nlogger.Debug("formAlarm.timer");
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
             _device.ResetErrorStatus();
-            Utils.Logger.Sys("用户点击关闭了报警窗口");
+            nlogger.Info("用户点击关闭了报警窗口");
             this.Close();
         }
     }

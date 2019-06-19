@@ -44,12 +44,12 @@ namespace TempControl
 
             if (checkBox_ryM0.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M0!");
+                nlogger.Info("打开电源 M0!");
                 Utils.Logger.Op("打开电源 M0!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M0!");
+                nlogger.Info("关闭电源 M0!");
                 Utils.Logger.Op("关闭电源 M0!");
             }
         }
@@ -62,12 +62,12 @@ namespace TempControl
 
             if (checkBox_ryM1.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M1!");
+                nlogger.Info("打开电源 M1!");
                 Utils.Logger.Op("打开电源 M1!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M1!");
+                nlogger.Info("关闭电源 M1!");
                 Utils.Logger.Op("关闭电源 M1!");
             }
         }
@@ -80,12 +80,12 @@ namespace TempControl
 
             if (checkBox_ryM2.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M2!");
+                nlogger.Info("打开电源 M2!");
                 Utils.Logger.Op("打开电源 M2!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M2!");
+                nlogger.Info("关闭电源 M2!");
                 Utils.Logger.Op("关闭电源 M2!");
             }
         }
@@ -98,12 +98,12 @@ namespace TempControl
 
             if (checkBox_ryM3.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M3!");
+                nlogger.Info("打开电源 M3!");
                 Utils.Logger.Op("打开电源 M3!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M3!");
+                nlogger.Info("关闭电源 M3!");
                 Utils.Logger.Op("关闭电源 M3!");
             }
         }
@@ -116,12 +116,12 @@ namespace TempControl
 
             if (checkBox_ryM4.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M4!");
+                nlogger.Info("打开电源 M4!");
                 Utils.Logger.Op("打开电源 M4!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M4!");
+                nlogger.Info("关闭电源 M4!");
                 Utils.Logger.Op("关闭电源 M4!");
             }
         }
@@ -134,12 +134,12 @@ namespace TempControl
 
             if (checkBox_ryM5.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M5!");
+                nlogger.Info("打开电源 M5!");
                 Utils.Logger.Op("打开电源 M5!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M5!");
+                nlogger.Info("关闭电源 M5!");
                 Utils.Logger.Op("关闭电源 M5!");
             }
         }
@@ -152,12 +152,12 @@ namespace TempControl
 
             if (checkBox_ryM6.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M6!");
+                nlogger.Info("打开电源 M6!");
                 Utils.Logger.Op("打开电源 M6!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M6!");
+                nlogger.Info("关闭电源 M6!");
                 Utils.Logger.Op("关闭电源 M6!");
             }
         }
@@ -170,12 +170,12 @@ namespace TempControl
 
             if (checkBox_ryM7.Checked == true)
             {
-                Utils.Logger.Sys("打开电源 M7!");
+                nlogger.Info("打开电源 M7!");
                 Utils.Logger.Op("打开电源 M7!");
             }
             else
             {
-                Utils.Logger.Sys("关闭电源 M7!");
+                nlogger.Info("关闭电源 M7!");
                 Utils.Logger.Op("关闭电源 M7!");
             }
         }
@@ -190,12 +190,12 @@ namespace TempControl
 
                 if (checkBox_ryS0.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S0!");
+                    nlogger.Info("打开电源 S0!");
                     Utils.Logger.Op("打开电源 S0!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S0!");
+                    nlogger.Info("关闭电源 S0!");
                     Utils.Logger.Op("关闭电源 S0!");
                 }
             }
@@ -207,12 +207,12 @@ namespace TempControl
 
                 if (checkBox_ryS0.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M8!");
+                    nlogger.Info("打开电源 M8!");
                     Utils.Logger.Op("打开电源 M8!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M8!");
+                    nlogger.Info("关闭电源 M8!");
                     Utils.Logger.Op("关闭电源 M8!");
                 }
             }
@@ -228,12 +228,12 @@ namespace TempControl
 
                 if (checkBox_ryS1.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S1!");
+                    nlogger.Info("打开电源 S1!");
                     Utils.Logger.Op("打开电源 S1!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S1!");
+                    nlogger.Info("关闭电源 S1!");
                     Utils.Logger.Op("关闭电源 S1!");
                 }
             }
@@ -245,12 +245,12 @@ namespace TempControl
 
                 if (checkBox_ryS1.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M9!");
+                    nlogger.Info("打开电源 M9!");
                     Utils.Logger.Op("打开电源 M9!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M9!");
+                    nlogger.Info("关闭电源 M9!");
                     Utils.Logger.Op("关闭电源 M9!");
                 }
             }
@@ -266,12 +266,12 @@ namespace TempControl
 
                 if (checkBox_ryS2.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S2!");
+                    nlogger.Info("打开电源 S2!");
                     Utils.Logger.Op("打开电源 S2!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S2!");
+                    nlogger.Info("关闭电源 S2!");
                     Utils.Logger.Op("关闭电源 S2!");
                 }
             }
@@ -283,12 +283,12 @@ namespace TempControl
 
                 if (checkBox_ryS2.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M10!");
+                    nlogger.Info("打开电源 M10!");
                     Utils.Logger.Op("打开电源 M10!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M10!");
+                    nlogger.Info("关闭电源 M10!");
                     Utils.Logger.Op("关闭电源 M10!");
                 }
             }
@@ -304,12 +304,12 @@ namespace TempControl
 
                 if (checkBox_ryS3.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S3!");
+                    nlogger.Info("打开电源 S3!");
                     Utils.Logger.Op("打开电源 S3!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S3!");
+                    nlogger.Info("关闭电源 S3!");
                     Utils.Logger.Op("关闭电源 S3!");
                 }
             }
@@ -321,12 +321,12 @@ namespace TempControl
 
                 if (checkBox_ryS3.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M11!");
+                    nlogger.Info("打开电源 M11!");
                     Utils.Logger.Op("打开电源 M11!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M11!");
+                    nlogger.Info("关闭电源 M11!");
                     Utils.Logger.Op("关闭电源 M11!");
                 }
             }
@@ -342,12 +342,12 @@ namespace TempControl
 
                 if (checkBox_ryS4.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S4!");
+                    nlogger.Info("打开电源 S4!");
                     Utils.Logger.Op("打开电源 S4!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S4!");
+                    nlogger.Info("关闭电源 S4!");
                     Utils.Logger.Op("关闭电源 S4!");
                 }
             }
@@ -359,12 +359,12 @@ namespace TempControl
 
                 if (checkBox_ryS4.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M12!");
+                    nlogger.Info("打开电源 M12!");
                     Utils.Logger.Op("打开电源 M12!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M12!");
+                    nlogger.Info("关闭电源 M12!");
                     Utils.Logger.Op("关闭电源 M12!");
                 }
             }
@@ -380,12 +380,12 @@ namespace TempControl
 
                 if (checkBox_ryS5.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S5!");
+                    nlogger.Info("打开电源 S5!");
                     Utils.Logger.Op("打开电源 S5!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S5!");
+                    nlogger.Info("关闭电源 S5!");
                     Utils.Logger.Op("关闭电源 S5!");
                 }
             }
@@ -397,12 +397,12 @@ namespace TempControl
 
                 if (checkBox_ryS5.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M13!");
+                    nlogger.Info("打开电源 M13!");
                     Utils.Logger.Op("打开电源 M13!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M13!");
+                    nlogger.Info("关闭电源 M13!");
                     Utils.Logger.Op("关闭电源 M13!");
                 }
             }
@@ -418,12 +418,12 @@ namespace TempControl
 
                 if (checkBox_ryS6.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S6!");
+                    nlogger.Info("打开电源 S6!");
                     Utils.Logger.Op("打开电源 S6!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S6!");
+                    nlogger.Info("关闭电源 S6!");
                     Utils.Logger.Op("关闭电源 S6!");
                 }
             }
@@ -435,12 +435,12 @@ namespace TempControl
 
                 if (checkBox_ryS6.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M14!");
+                    nlogger.Info("打开电源 M14!");
                     Utils.Logger.Op("打开电源 M14!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M14!");
+                    nlogger.Info("关闭电源 M14!");
                     Utils.Logger.Op("关闭电源 M14!");
                 }
             }
@@ -456,12 +456,12 @@ namespace TempControl
 
                 if (checkBox_ryS7.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 S7!");
+                    nlogger.Info("打开电源 S7!");
                     Utils.Logger.Op("打开电源 S7!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 S7!");
+                    nlogger.Info("关闭电源 S7!");
                     Utils.Logger.Op("关闭电源 S7!");
                 }
             }
@@ -473,12 +473,12 @@ namespace TempControl
 
                 if (checkBox_ryS7.Checked == true)
                 {
-                    Utils.Logger.Sys("打开电源 M15!");
+                    nlogger.Info("打开电源 M15!");
                     Utils.Logger.Op("打开电源 M15!");
                 }
                 else
                 {
-                    Utils.Logger.Sys("关闭电源 M15!");
+                    nlogger.Info("关闭电源 M15!");
                     Utils.Logger.Op("关闭电源 M15!");
                 }
             }
@@ -508,7 +508,7 @@ namespace TempControl
                 fm.Show();
             }
 
-            Utils.Logger.Sys("打开主槽控温设备参数设置界面!");
+            nlogger.Info("打开主槽控温设备参数设置界面!");
             Utils.Logger.Op("打开主槽控温设备参数设置界面!");
         }
 
@@ -536,7 +536,7 @@ namespace TempControl
                 fm.Show();
             }
 
-            Utils.Logger.Sys("打开辅槽控温设备参数设置界面!");
+            nlogger.Info("打开辅槽控温设备参数设置界面!");
             Utils.Logger.Op("打开辅槽控温设备参数设置界面!");
         }
 
