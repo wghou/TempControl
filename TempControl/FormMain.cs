@@ -16,7 +16,7 @@ namespace TempControl
 {
     public partial class FormMain : Form
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
 
         private Device.DeviceStateM _device = new Device.DeviceStateM();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyM = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
@@ -34,6 +34,12 @@ namespace TempControl
         Bitmap mBmpRelayRed;
         Bitmap mBmpRelayGreen;
 
+        /// <summary>
+        /// 是否是程序要求关闭自身
+        /// 当出现错误，用户未响应时，程序要求关闭自身
+        /// 则在关闭时，不再弹出提示框
+        /// </summary>
+        bool ErrorAskForClose = false;
 
         public FormMain()
         {
@@ -77,8 +83,6 @@ namespace TempControl
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
-
-            logger.Error(() => "test");
         }
 
 
@@ -148,6 +152,7 @@ namespace TempControl
                 {
                     if (DialogResult.Yes == MessageBox.Show("设备端口错误，是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
+                        ErrorAskForClose = true;
                         this.Close();
                         return;
                     }
@@ -223,17 +228,6 @@ namespace TempControl
 
         private void checkBox_exit_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) 
-                != DialogResult.Yes)
-            {
-                return;
-            }
-
-            // 关闭所有继电器
-            _device.ryDeviceM.ryStatusToSet = new bool[16];
-            _device.ryDeviceM.closeDevice();
-            _device.ryDeviceS.ryStatusToSet = new bool[16];
-            _device.ryDeviceS.closeDevice();
             this.Close();
         }
 
@@ -286,7 +280,6 @@ namespace TempControl
                 fm.Show();
             }
 
-            Utils.Logger.Sys("打开主槽控温设备温度曲线界面!");
             Utils.Logger.Op("打开主槽控温设备温度曲线界面!");
         }
 
@@ -314,7 +307,6 @@ namespace TempControl
                 fm.Show();
             }
 
-            Utils.Logger.Sys("打开辅槽控温设备温度曲线界面!");
             Utils.Logger.Op("打开辅槽控温设备温度曲线界面!");
         }
 
@@ -326,6 +318,21 @@ namespace TempControl
         private void checkBox_data_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!ErrorAskForClose)
+            {
+                if (DialogResult.No == MessageBox.Show("您确定要退出程序吗？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            _device.ryDeviceM.closeDevice();
+            _device.ryDeviceS.closeDevice();
         }
     }
 }

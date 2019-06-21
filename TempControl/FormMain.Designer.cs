@@ -674,6 +674,7 @@
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.Text = "自动控温系统";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox_ry1.ResumeLayout(false);

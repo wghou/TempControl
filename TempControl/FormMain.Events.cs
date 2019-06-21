@@ -53,8 +53,6 @@ namespace TempControl
 
         private void _device_ErrorStatusChangedEvent(System.Collections.Generic.Dictionary<Device.ErrorCode, uint> errDict)
         {
-            return;
-
             // 警告信息及处理时间
             int errTm = 600;
             this.BeginInvoke(new EventHandler(delegate
@@ -74,8 +72,7 @@ namespace TempControl
                 {
                     fmA = new FormAlarm(_device, errTm);
                     fmA.Name = "FormAlarm";
-                    //fmA.Location = new System.Drawing.Point(600, 300);
-                    //fmA.shutdownSystem += FmA_shutdownSystem;
+                    fmA.shutdownSystem += FmA_shutdownSystem;
                 }
 
                 // 只是确保一下，应该没什么作用
@@ -95,6 +92,19 @@ namespace TempControl
 
             }));
             Debug.WriteLine("Error occur.");
+        }
+
+
+        private void FmA_shutdownSystem(object sender, EventArgs e)
+        {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                this.ErrorAskForClose = true;
+                nlogger.Info("出现错误，用户未做处理，关闭系统软件！");
+                // 60秒后关闭计算机
+                System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
+                this.Close();
+            }));
         }
 
         private void _device_StateChangedEvent(Device.State st)

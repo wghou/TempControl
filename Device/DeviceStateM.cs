@@ -52,22 +52,22 @@ namespace Device
                 // 主槽控温设备
                 confOK &= tpDeviceM.ConfigSyn(_runningParameters.portTp1);
                 if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
-                else nlogger.Trace("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+                else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
 
                 // 辅槽控温设备
                 confOK &= tpDeviceS.ConfigSyn(_runningParameters.portTp2);
                 if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceS.tpDevicePortName);
-                else nlogger.Trace("配置辅槽控温设备成功! 端口号: " + tpDeviceS.tpDevicePortName);
+                else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + tpDeviceS.tpDevicePortName);
 
                 // 继电器设备 1
                 confOK &= ryDeviceM.SetPortName(_runningParameters.portRy1);
                 if (!confOK) nlogger.Error("配置继电器设备 1 失败! 端口号: " + ryDeviceM.ryDevicePortName);
-                else nlogger.Trace("配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                else nlogger.Debug("配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
 
                 // 继电器设备 2
                 confOK &= ryDeviceS.SetPortName(_runningParameters.portRy2);
                 if (!confOK) nlogger.Error("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
-                else nlogger.Trace("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                else nlogger.Debug("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
             }
             catch (Exception ex)
             {
