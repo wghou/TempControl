@@ -154,19 +154,6 @@ namespace Device
         private void IdleEntry()
         {
             // relay device M
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
-            // relay device S
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            // update status
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             nlogger.Debug("Idle Entry.");
         }
@@ -236,7 +223,10 @@ namespace Device
             {
                 if (tpDeviceM.temperatures.Count == 0)
                 {
-                    _machine.Fire(Trigger.ForceStop);
+                    nlogger.Error("未读取到温度值 in start tick");
+                    _machine.Fire(Trigger.FinishedAll);
+                    SetErrorStatus(ErrorCode.TemptError);
+                    //_machine.Fire(Trigger.ForceStop);
                     return;
                 }
 
@@ -281,8 +271,20 @@ namespace Device
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             //
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+            RelayDevice.Err_r err2 = ryDeviceS.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err2 != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
 
             // 设置主槽 / 辅槽控温设备的参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
@@ -352,8 +354,20 @@ namespace Device
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             // update status
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+            RelayDevice.Err_r err2 = ryDeviceS.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err2 != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
 
 
             // 设置主槽 / 辅槽控温设备的参数
@@ -430,8 +444,20 @@ namespace Device
                 ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             }
             // update status
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+            RelayDevice.Err_r err2 = ryDeviceS.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err2 != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
 
             nlogger.Debug("Control Entry.");
         }
@@ -494,8 +520,20 @@ namespace Device
                 ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             }
             // update status
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+            RelayDevice.Err_r err2 = ryDeviceS.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err2 != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
 
             nlogger.Debug("Stable Entry.");
         }
@@ -566,8 +604,20 @@ namespace Device
                 ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
             }
             // update status
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+            RelayDevice.Err_r err2 = ryDeviceS.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err2 != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
 
             nlogger.Debug("Measure Entry.");
         }
@@ -615,6 +665,8 @@ namespace Device
                 if (_runningParameters.shutDownComputer == true)
                 {
                     _machine.Fire(Trigger.ForceStop);
+
+                    System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
                 }
                 else
                 {
@@ -649,8 +701,20 @@ namespace Device
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             // update status
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
+            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+            RelayDevice.Err_r err2 = ryDeviceS.UpdateStatusToDevice();
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err2 != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
 
             nlogger.Debug("Stop Entry.");
         }
