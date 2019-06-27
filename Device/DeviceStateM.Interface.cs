@@ -42,7 +42,10 @@ namespace Device
 
 
         /// <summary>
-        /// 写入继电器 1 状态 - 需异步调用 - 外部接口，禁止内部调用
+        /// 写入继电器 2 状态
+        /// 外部调用需注意 - 需异步调用，以防止界面线程阻塞
+        /// 另：如果 cntErr == true，则由 ErrorMonitor 记录并处理错误，
+        /// 并且只向 RelayDeviceMStatusUpdatedEvent 中反馈结果，不再反馈错误信息
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void WriteRelayDeviceM(bool cntErr)
@@ -51,19 +54,27 @@ namespace Device
 
             RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
 
-            RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
-
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
             if (cntErr && err != RelayDevice.Err_r.NoError)
             {
                 SetErrorStatus(ErrorCode.RelayError);
             }
+
+            // 此处的逻辑：如果在 Device 内部由 ErrorMonitor 记录错误，
+            // 则不向 RelayDeviceStatusUpdateEvent 反馈错误，以免在多个地方重复处理（提示）错误
+            // 实际上，Error 应该定义成一个类，并标识出是否已处理
+            if (cntErr) err = RelayDevice.Err_r.NoError;
+
+            RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
         }
 
 
         /// <summary>
-        /// 写入继电器 2 状态 - 需异步调用 - 外部接口，禁止内部调用
+        /// 写入继电器 2 状态
+        /// 外部调用需注意 - 需异步调用，以防止界面线程阻塞
+        /// 另：如果 cntErr == true，则由 ErrorMonitor 记录并处理错误，
+        /// 并且只向 RelayDeviceSStatusUpdatedEvent 中反馈结果，不再反馈错误信息
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void WriteRelayDeviceS(bool cntErr)
@@ -72,26 +83,33 @@ namespace Device
 
             RelayDevice.Err_r err = ryDeviceS.UpdateStatusToDevice();
 
-            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
-
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
             if (cntErr && err != RelayDevice.Err_r.NoError)
             {
                 SetErrorStatus(ErrorCode.RelayError);
             }
+
+            // 此处的逻辑：如果在 Device 内部由 ErrorMonitor 记录错误，
+            // 则不向 RelayDeviceStatusUpdateEvent 反馈错误，以免在多个地方重复处理（提示）错误
+            // 实际上，Error 应该定义成一个类，并标识出是否已处理
+            if (cntErr) err = RelayDevice.Err_r.NoError;
+
+            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
         }
 
 
         /// <summary>
         /// 写入控温板 1 参数 - 需要异步调用
+        /// 另：如果 cntErr == true，则由 ErrorMonitor 记录并处理错误，
+        /// 并且只向 TempDeviceMParamUpdatedEvent 中反馈结果，不再反馈错误信息
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void WriteTempDeviceM(bool cntErr)
         {
-            TempProtocol.Err_t err = tpDeviceM.UpdateParamToDevice();
+            if (tpDeviceM.Enable == false) return;
 
-            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+            TempProtocol.Err_t err = tpDeviceM.UpdateParamToDevice();
 
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
@@ -99,18 +117,27 @@ namespace Device
             {
                 SetErrorStatus(ErrorCode.TempParamSetError);
             }
+
+            // 此处的逻辑：如果在 Device 内部由 ErrorMonitor 记录错误，
+            // 则不向 TempDeviceMParamUpdatedEvent 反馈错误，以免在多个地方重复处理（提示）错误
+            // 实际上，Error 应该定义成一个类，并标识出是否已处理
+            if (cntErr == true) err = TempProtocol.Err_t.NoError;
+
+            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
         }
 
 
         /// <summary>
         /// 读取控温板 1 参数 - 需要异步调用
+        /// 另：如果 cntErr == true，则由 ErrorMonitor 记录并处理错误，
+        /// 并且只向 TempDeviceMParamUpdatedEvent 中反馈结果，不再反馈错误信息
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void ReadTempDeviceM(bool cntErr)
         {
-            TempProtocol.Err_t err = tpDeviceM.UpdateParamFromDevice();
+            if (tpDeviceS.Enable == false) return;
 
-            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+            TempProtocol.Err_t err = tpDeviceM.UpdateParamFromDevice();
 
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
@@ -118,11 +145,20 @@ namespace Device
             {
                 SetErrorStatus(ErrorCode.TemptError);
             }
+
+            // 此处的逻辑：如果在 Device 内部由 ErrorMonitor 记录错误，
+            // 则不向 TempDeviceMParamUpdatedEvent 反馈错误，以免在多个地方重复处理（提示）错误
+            // 实际上，Error 应该定义成一个类，并标识出是否已处理
+            if (cntErr == true) err = TempProtocol.Err_t.NoError;
+
+            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
         }
 
 
         /// <summary>
         /// 写入控温板 2 参数 - 需要异步调用
+        /// 另：如果 cntErr == true，则由 ErrorMonitor 记录并处理错误，
+        /// 并且只向 TempDeviceSParamUpdatedEvent 中反馈结果，不再反馈错误信息
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void WriteTempDeviceS(bool cntErr)
@@ -131,19 +167,26 @@ namespace Device
 
             TempProtocol.Err_t err = tpDeviceS.UpdateParamToDevice();
 
-            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
-
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
             if (cntErr && err != TempProtocol.Err_t.NoError)
             {
                 SetErrorStatus(ErrorCode.TempParamSetError);
             }
+
+            // 此处的逻辑：如果在 Device 内部由 ErrorMonitor 记录错误，
+            // 则不向 TempDeviceMParamUpdatedEvent 反馈错误，以免在多个地方重复处理（提示）错误
+            // 实际上，Error 应该定义成一个类，并标识出是否已处理
+            if (cntErr == true) err = TempProtocol.Err_t.NoError;
+
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
         }
 
 
         /// <summary>
         /// 读取控温板 2 参数 - 需要异步调用
+        /// 另：如果 cntErr == true，则由 ErrorMonitor 记录并处理错误，
+        /// 并且只向 TempDeviceSParamUpdatedEvent 中反馈结果，不再反馈错误信息
         /// </summary>
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void ReadTempDeviceS(bool cntErr)
@@ -152,14 +195,19 @@ namespace Device
 
             TempProtocol.Err_t err = tpDeviceS.UpdateParamFromDevice();
 
-            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
-
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
             if (cntErr && err != TempProtocol.Err_t.NoError)
             {
                 SetErrorStatus(ErrorCode.TemptError);
             }
+
+            // 此处的逻辑：如果在 Device 内部由 ErrorMonitor 记录错误，
+            // 则不向 TempDeviceMParamUpdatedEvent 反馈错误，以免在多个地方重复处理（提示）错误
+            // 实际上，Error 应该定义成一个类，并标识出是否已处理
+            if (cntErr == true) err = TempProtocol.Err_t.NoError;
+
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
         }
     }
 }

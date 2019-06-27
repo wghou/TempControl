@@ -256,26 +256,16 @@ namespace Device
         {
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
-
-            // 将继电器状态写入下位机
-            // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if(err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDeviceM(true);
+            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+            currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-
-            if (tpDeviceS.Enable == true)
-            {
-                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
-                // 将参数更新到下位机
-                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-                WriteTempDeviceS(true);
-            }
+            WriteTempDeviceS(true);
 
             nlogger.Debug("TempUp Entry.");
         }
@@ -321,46 +311,17 @@ namespace Device
         {
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
-
-            // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
-            {
-
-            }
-            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
-            else
-            {
-                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
-                {
-                    // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDeviceM.subCoolWaiting = true;
-                }
-                else
-                {
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-                }
-            }
-
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDeviceM(true);
+            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+            currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-
-            if (tpDeviceS.Enable == true)
-            {
-                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
-                // 将参数更新到下位机
-                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
-                WriteTempDeviceS(true);
-            }
+            WriteTempDeviceS(true);
 
             nlogger.Debug("TempDown Entry.");
         }
@@ -434,9 +395,8 @@ namespace Device
 
 
             // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDeviceM(true);
+            WriteRelayDeviceS(true);
         }
 
         /// <summary>
@@ -511,8 +471,8 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDeviceM(true);
+            WriteRelayDeviceS(true);
         }
 
 
@@ -641,8 +601,8 @@ namespace Device
 
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 FlowControlFaultOccurEvent 事件通知主界面提示错误
-            RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
-            if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
+            WriteRelayDeviceM(true);
+            WriteRelayDeviceS(true);
 
         }
 
