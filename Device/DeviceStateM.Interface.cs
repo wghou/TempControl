@@ -95,7 +95,7 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr) err = RelayDevice.Err_r.NoError;
 
-            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
+            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
         }
 
 

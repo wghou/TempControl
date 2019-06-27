@@ -69,7 +69,7 @@ namespace Device
         {
             _tickTimer.Start();
 
-           // _ryConnectTimer.Start();
+            _ryConnectTimer.Start();
 
             _machine.Fire(Trigger.ElectOn);
         }
