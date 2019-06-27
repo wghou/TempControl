@@ -9,18 +9,71 @@ using System.Windows.Forms;
 
 namespace TempControl
 {
+    public class ChartConfig
+    {
+        /// <summary>
+        /// 曲线名称
+        /// </summary>
+        public string chartTitle = "";
+
+        /// <summary>
+        /// 设备运行的起始时间
+        /// </summary>
+        public DateTime startTime = DateTime.Now;
+
+        /// <summary>
+        /// 所要显示的曲线
+        /// </summary>
+        public List<float> dataShow;
+
+        /// <summary>
+        /// 读取数据时的资源锁
+        /// </summary>
+        public object dataLocker;
+
+        /// <summary>
+        /// 显示数据的精度
+        /// </summary>
+        public int digits = 4;
+
+        /// <summary>
+        /// 数据间隔时长
+        /// </summary>
+        public int dataIntervalSec = 1;
+
+        /// <summary>
+        /// 行数
+        /// </summary>
+        public int column = 10;
+
+        /// <summary>
+        /// 列数
+        /// </summary>
+        public int row = 7;
+    }
+
     public partial class FormChart : Form
     {
-        DrawChart mDrawChart;
-        Device.TempDevice tpDevice;
-        Device.DeviceStateM deviceAll;
+        Form fmain;         // 主窗体，这里有待进一步修改
 
-        public FormChart(Device.DeviceStateM devAll, Device.TempDevice dev)
+        DrawChart mDrawChart;
+
+        DateTime startTime;     // 系统启动时间
+        List<float> dataShow;   // 绘图所显示的数据
+        object dataLocker;      // 源数据访问 - 锁
+
+        public FormChart(ChartConfig cfg, Form fm)
         {
             InitializeComponent();
-            tpDevice = dev;
-            deviceAll = devAll;
-            mDrawChart = new DrawChart(dev,devAll._runningParameters,TempPic.Height, TempPic.Width, 10, 7);
+
+            fmain = fm;
+
+            startTime = cfg.startTime;
+            dataShow = cfg.dataShow;
+            dataLocker = cfg.dataLocker;
+            this.Text = cfg.chartTitle;
+
+            mDrawChart = new DrawChart(cfg, TempPic.Height, TempPic.Width);
 
             timer1.Interval = 200;
             timer1.Tick += Timer1_Tick;
@@ -29,17 +82,18 @@ namespace TempControl
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            System.TimeSpan tmSpan = System.DateTime.Now - deviceAll.startTime;
+            System.TimeSpan tmSpan = System.DateTime.Now - startTime;
             this.label1.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " : " + tmSpan.Minutes.ToString("00") + " : " + tmSpan.Seconds.ToString("00") + " s";
         }
 
         private void TemperatureChart_Load(object sender, EventArgs e)
         {
             TempPic.Image = mDrawChart.Draw();
-            deviceAll.TimerTickEvent += DeviceAll_TpTemperatureUpdateTimerEvent;
 
-            System.TimeSpan tmSpan = System.DateTime.Now - deviceAll.startTime;
+            System.TimeSpan tmSpan = System.DateTime.Now - startTime;
             this.label1.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
+
+            (fmain as FormMain).mainFormTimeTickEventHandler += DeviceAll_TpTemperatureUpdateTimerEvent;
         }
 
         private void DeviceAll_TpTemperatureUpdateTimerEvent()
@@ -52,16 +106,7 @@ namespace TempControl
 
                 // 波动度显示
                 float fluc = 0.0f;
-                if(this.Name == "FormChartM")
-                {
-                    deviceAll.tpDeviceM.GetFlucDurCountOrLess(deviceAll._runningParameters.steadyTimeSec / deviceAll._runningParameters.readTempIntervalSec, out fluc);
-                    this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
-                }
-                else
-                {
-                    deviceAll.tpDeviceS.GetFlucDurCountOrLess(deviceAll._runningParameters.steadyTimeSec / deviceAll._runningParameters.readTempIntervalSec, out fluc);
-                    this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
-                }  
+                this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
             }));
         }
 
@@ -73,14 +118,15 @@ namespace TempControl
         private void TemperatureChart_FormClosing(object sender, FormClosingEventArgs e)
         {
             mDrawChart.Dispose();
-            deviceAll.TimerTickEvent -= DeviceAll_TpTemperatureUpdateTimerEvent;
+
+            (fmain as FormMain).mainFormTimeTickEventHandler -= DeviceAll_TpTemperatureUpdateTimerEvent;
         }
 
         private void button_Clear_Click(object sender, EventArgs e)
         {
-            lock(tpDevice.tpShowLocker)
+            lock(dataLocker)
             {
-                tpDevice.temperaturesShow.Clear();
+                dataShow.Clear();
             }
             TempPic.Image = mDrawChart.Draw();
         }

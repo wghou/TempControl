@@ -294,10 +294,18 @@ namespace TempControl
 
             if (!formExist)
             {
-                FormChart fm = new FormChart(_device, _device.tpDeviceM);
+                ChartConfig cfg = new ChartConfig();
+                cfg.chartTitle = "主槽控温";
+                cfg.column = 10;
+                cfg.row = 7;
+                cfg.startTime = _device.startTime;
+                cfg.dataShow = _device.tpDeviceM.temperaturesShow;
+                cfg.digits = 3;
+                cfg.dataLocker = _device.tpDeviceM.tpShowLocker;
+                cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
+
+                FormChart fm = new FormChart(cfg, this);
                 fm.Location = new System.Drawing.Point(10, 12);
-                fm.Name = "FormChartM";
-                fm.Text = "主槽温度曲线";
                 fm.Show();
             }
 
@@ -321,10 +329,18 @@ namespace TempControl
 
             if (!formExist)
             {
-                FormChart fm = new FormChart(_device, _device.tpDeviceS);
+                ChartConfig cfg = new ChartConfig();
+                cfg.chartTitle = "辅槽控温";
+                cfg.column = 10;
+                cfg.row = 7;
+                cfg.startTime = _device.startTime;
+                cfg.dataShow = _device.tpDeviceS.temperaturesShow;
+                cfg.digits = 3;
+                cfg.dataLocker = _device.tpDeviceS.tpShowLocker;
+                cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
+
+                FormChart fm = new FormChart(cfg, this);
                 fm.Location = new System.Drawing.Point(10, 12);
-                fm.Name = "FormChartS";
-                fm.Text = "辅槽温度曲线";
                 fm.Show();
             }
 
