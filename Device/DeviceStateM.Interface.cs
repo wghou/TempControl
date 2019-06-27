@@ -51,7 +51,6 @@ namespace Device
 
             RelayDevice.Err_r err = ryDeviceM.UpdateStatusToDevice();
 
-            RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
 
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
@@ -59,6 +58,10 @@ namespace Device
             {
                 SetErrorStatus(ErrorCode.RelayError);
             }
+
+            // 如果记录错误，则不向主界面反馈错误
+            if (cntErr) err = RelayDevice.Err_r.NoError;
+            RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
         }
 
 
@@ -72,14 +75,16 @@ namespace Device
 
             RelayDevice.Err_r err = ryDeviceS.UpdateStatusToDevice();
 
-            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
-
             // 记录错误状态
             // 仅记录，在 timerTickEvent 中检查全局错误状态
             if (cntErr && err != RelayDevice.Err_r.NoError)
             {
                 SetErrorStatus(ErrorCode.RelayError);
             }
+
+            // 如果记录错误，则不向主界面反馈错误
+            if (cntErr) err = RelayDevice.Err_r.NoError;
+            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
         }
 
 
