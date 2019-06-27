@@ -67,11 +67,11 @@ namespace Device
         /// </summary>
         public void startTimeStep()
         {
+            StateChangedEvent?.Invoke(_state);
+
             _tickTimer.Start();
 
             _ryConnectTimer.Start();
-
-            _machine.Fire(Trigger.ElectOn);
         }
 
 
@@ -84,6 +84,9 @@ namespace Device
             Trigger trigger = act.Trigger;
             State source = act.Source;
             State dest = act.Destination;
+
+            // 状态计数器
+            currentTemptPointState.stateCounts = 0;
 
             StateChangedEvent?.Invoke(dest);
         }
@@ -162,7 +165,18 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void IdleTick(int tic)
         {
-            nlogger.Debug("IdleTick: " + tic.ToString() + " ms");
+            if (srDevice.CheckStopRunRQT() == true)
+            {
+                _machine.Fire(Trigger.ForceStop);
+                nlogger.Info("系统收到结束指令.");
+            }
+            else if (srDevice.CheckNextPointRQT(out currentTemptPointState.paramM[0]) == true)
+            {
+                _machine.Fire(Trigger.StartAutoStep);
+                nlogger.Info("系统收到下一个温度点的指令: " + currentTemptPointState.stateTemp.ToString());
+            }
+
+            nlogger.Info("IdleTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -188,55 +202,19 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StartTick(int tic)
         {
-            nlogger.Debug("StartTick: " + tic.ToString() + " ms");
-
-            // 如果 temperaturePointList 为空
-            if (temperaturePointList.Count == 0)
+            // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
+            if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
             {
-                _machine.Fire(Trigger.FinishedAll);
-                return;
+                // 状态 - 控温
+                _machine.Fire(Trigger.StartControl);
             }
-
-            // 定义当前状态
-            currentTemptPointState.stateCounts = 0;
-
-            // 查找未测量的温度点
-            int i = 0;
-            for (; i < temperaturePointList.Count; i++)
-            {
-                if (temperaturePointList[i].finished == false)
-                {
-                    currentTemptPointState.tempPointIndex = i;
-                    currentTemptPointState = temperaturePointList[i];
-                    break;
-                }
-            }
-
-            // 如果全部温度点都已经标记为 已测量，则转入空闲状态
-            if (i == temperaturePointList.Count)
-            {
-                _machine.Fire(Trigger.FinishedAll);
-            }
+            // 当前温度点小于温度设定点，则升温
             else
             {
-                if (tpDeviceM.temperatures.Count == 0)
-                {
-                    _machine.Fire(Trigger.ForceStop);
-                    return;
-                }
-
-                // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
-                if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
-                {
-                    // 状态 - 控温
-                    _machine.Fire(Trigger.StartControl);
-                }
-                // 当前温度点小于温度设定点，则升温
-                else
-                {
-                    _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
-                }
+                _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
             }
+
+            nlogger.Debug("StartTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -257,15 +235,12 @@ namespace Device
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-            currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-            WriteTempDeviceS(true);
 
             nlogger.Debug("TempUp Entry.");
         }
@@ -278,6 +253,12 @@ namespace Device
         {
             nlogger.Debug("TempUp Tick: " + tic.ToString() + " ms");
 
+            if (srDevice.CheckStopRunRQT() == true)
+            {
+                _machine.Fire(Trigger.ForceStop);
+                nlogger.Info("系统收到结束指令.");
+            }
+
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
@@ -288,7 +269,6 @@ namespace Device
             if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp - 0.1)
             {
                 // 如果主槽中温度高于设定值，则进入下一个状态 - 控温
-                currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.StartControl);
                 return;
             }
@@ -312,16 +292,13 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-            currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-            WriteTempDeviceS(true);
 
             nlogger.Debug("TempDown Entry.");
         }
@@ -334,6 +311,12 @@ namespace Device
         {
             nlogger.Debug("TempDown Tick: " + tic.ToString() + " ms");
 
+            if (srDevice.CheckStopRunRQT() == true)
+            {
+                _machine.Fire(Trigger.ForceStop);
+                nlogger.Info("系统收到结束指令.");
+            }
+
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
 
@@ -345,7 +328,6 @@ namespace Device
             if (tpDeviceM.temperatures.Last() < currentTemptPointState.stateTemp + 0.1)
             {
                 // 如果主槽中温度高于设定值，则进入下一个状态 - 控温
-                currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.StartControl);
                 return;
             }
@@ -396,7 +378,6 @@ namespace Device
 
             // 将继电器状态写入下位机
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
         /// <summary>
@@ -406,6 +387,12 @@ namespace Device
         private void ControlTick(int tic)
         {
             nlogger.Debug("Control Tick: " + tic.ToString() + " ms");
+
+            if (srDevice.CheckStopRunRQT() == true)
+            {
+                _machine.Fire(Trigger.ForceStop);
+                nlogger.Info("系统收到结束指令.");
+            }
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -420,7 +407,6 @@ namespace Device
             if (steady)
             {
                 // 进入下一个状态，下一个状态应该是 稳定
-                currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.AchieveSteady);
                 nlogger.Info((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
             }
@@ -447,32 +433,9 @@ namespace Device
             // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
 
-
-            // 如果辅槽制冷本身就是打开的，则不操作
-            if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_0] == true)
-            {
-
-            }
-            // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
-            else
-            {
-                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
-                {
-                    // 暂时先保持关闭，等待满 10 分钟后再打开
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-                    ryDeviceM.subCoolWaiting = true;
-                }
-                else
-                {
-                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-                }
-            }
-
-
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
 
@@ -483,6 +446,12 @@ namespace Device
         private void StableTick(int tic)
         {
             nlogger.Debug("Stableick: " + tic.ToString() + " ms");
+
+            if (srDevice.CheckStopRunRQT() == true)
+            {
+                _machine.Fire(Trigger.ForceStop);
+                nlogger.Info("系统收到结束指令.");
+            }
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -495,16 +464,26 @@ namespace Device
             // 判断 - 测温电桥温度值的波动度满足条件（2 分钟 0.001），则进入测量状态
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
-                // 电桥自检正常。。。
-                //if (tpBridge.tpBridgeReadInterval < 1) tpBridge.tpBridgeReadInterval = 1;
-                //bool steady = tpBridge.chekFluc(currentState.stateCounts / tpBridge.tpBridgeReadInterval, flucValue);
-                if (true)
+                float diff = srDevice.temperatures.Last() - tpDeviceM.temperatures.Last();
+                if (Math.Abs(diff) < 0.01)
                 {
-                    // 温度稳定度达到了要求，进入下一个状态 - 测量
-                    currentTemptPointState.stateCounts = 0;
                     _machine.Fire(Trigger.StartMeasure);
 
-                    nlogger.Info((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
+                    nlogger.Info("温度稳定，并且温差小于 0.01度，进行测量");
+                }
+                else
+                {
+                    // 设置主槽 / 辅槽控温设备的参数
+                    // 向主槽 / 辅槽控温设备写入全部参数
+                    currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+                    tpDeviceM.tpParamToSet[1] = diff;
+                    // 将参数更新到下位机
+                    // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
+                    WriteTempDeviceM(true);
+
+                    _machine.Fire(Trigger.NeedModify);
+
+                    nlogger.Info("温度稳定，但温差大于0.01度，进行修正");
                 }
             }
         }
@@ -541,41 +520,21 @@ namespace Device
             // measure
 
 
-            // 测量完成，标记
-            temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;
-
-
-            // 查找下一个未测量的温度点
-            int i = currentTemptPointState.tempPointIndex + 1;
-            for (; i < temperaturePointList.Count; i++)
+            if (srDevice.CheckStopRunRQT() == true)
             {
-                if (temperaturePointList[i].finished == false)
-                {
-                    currentTemptPointState = temperaturePointList[i];
-                    currentTemptPointState.tempPointIndex = i;
-                    currentTemptPointState.stateCounts = 0;
-                    _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
-
-                    nlogger.Info("开始下一个温度点的控温 - 稳定 - 测量流程...");
-                    nlogger.Info("查找到了下一个未测量的温度点 " + currentTemptPointState.stateTemp.ToString());
-
-                    break;
-                }
+                _machine.Fire(Trigger.ForceStop);
+                nlogger.Info("系统收到结束指令.");
             }
-
-            // 未查找到，则表示已经测量完成了
-            if (i == temperaturePointList.Count)
+            else if (srDevice.CheckNextPointRQT(out currentTemptPointState.paramM[0]) == true)
             {
-                // 控制状态序列为空，说明实验已经结束了
-                if (_runningParameters.shutDownComputer == true)
-                {
-                    _machine.Fire(Trigger.ForceStop);
-                }
-                else
-                {
-                    _machine.Fire(Trigger.FinishedAll);
-                }
-                nlogger.Info("所有温度点均已测量完成...");
+                _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
+                nlogger.Info("系统收到下一个温度点的指令: " + currentTemptPointState.stateTemp.ToString());
+            }
+            else
+            {
+                _machine.Fire(Trigger.FinishedAll);
+
+                nlogger.Info("未读取到新的温度点，进入空闲");
             }
         }
 
@@ -602,7 +561,8 @@ namespace Device
             // 将继电器状态写入下位机
             // 如果出现错误，则通过 FlowControlFaultOccurEvent 事件通知主界面提示错误
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
+
+            // 关机指令
 
         }
 

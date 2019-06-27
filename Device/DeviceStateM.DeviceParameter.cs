@@ -26,7 +26,7 @@ namespace Device
         /// <summary>
         /// 当前工作状态下的应达到的温度值
         /// </summary>
-        public float stateTemp { get { return paramM[0]; } }
+        public float stateTemp { get { return paramM[0]; } set { paramM[0] = value; } }
         /// <summary>
         /// 主槽控温表参数 - 7个
         /// </summary>
@@ -265,7 +265,7 @@ namespace Device
         /// <summary>
         /// 辅槽控温设备
         /// </summary>
-        public TempDevice tpDeviceS = new TempDevice() { tpDeviceName = "辅槽控温设备" };
+        public SensorDevice srDevice = new SensorDevice() { srDeviceName = "传感器设备" };
 
         /// <summary>
         /// 系统开始运行的时间
@@ -313,7 +313,7 @@ namespace Device
                 _deviceErrorMonitor[ErrorCode.TemptError]++;
 
                 nlogger.Error("读取主槽温度时发生错误，errorCode: " + err.ToString());
-                goto next;
+                return;
             }
             // 记录主槽温度
             Utils.Logger.TempData(tpDeviceM.temperatures.Last());
@@ -327,35 +327,8 @@ namespace Device
                 _deviceErrorMonitor[ErrorCode.TemptError]++;
 
                 nlogger.Error("读取主槽功率时发生错误，errorCode: " + err.ToString());
-                goto next;
-            }
-
-            /// Label:
-            next:
-            if (tpDeviceS.Enable == false) return;
-
-            err = tpDeviceS.GetTemperatureShow(out val, 3);
-            if (err != TempProtocol.Err_t.NoError)
-            {
-                // 如果发生错误，则记录错误
-                _deviceErrorMonitor[ErrorCode.TemptError]++;
-
-                nlogger.Error("读取辅槽温度时发生错误，errorCode: " + err.ToString());
                 return;
             }
-
-
-            // 读取辅槽功率系数
-            err = tpDeviceS.GetPowerShow(out val);
-            if (err != TempProtocol.Err_t.NoError)
-            {
-                // 如果发生错误，则记录错误
-                _deviceErrorMonitor[ErrorCode.TemptError]++;
-
-                nlogger.Error("读取辅槽功率时发生错误，errorCode: " + err.ToString());
-                return;
-            }
-            return;
         }
     }
 }

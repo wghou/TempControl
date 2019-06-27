@@ -48,6 +48,8 @@ namespace Device
         StartControl,
         /// <summary> 到达稳定 </summary>
         AchieveSteady,
+        /// <summary> 需要进一步调整 </summary>
+        NeedModify,
         /// <summary> 开始测量 </summary>
         StartMeasure,
         /// <summary> 暂停自动控温 </summary>
@@ -69,7 +71,7 @@ namespace Device
         /// 状态机
         /// </summary>
         StateMachine<State, Trigger> _machine;
-        public State _state = State.Undefine;
+        public State _state = State.Idle;
 
         /// <summary>
         /// 下一温度设定点 - 带参数 float
@@ -103,6 +105,7 @@ namespace Device
 
             // on unhandled trigger
             _machine.OnUnhandledTrigger(OnUnhandledTrigger);
+
 
             // State.Undefine
             // 
@@ -171,6 +174,7 @@ namespace Device
                 .OnEntry(t => StableEntry())
                 .OnExit(t => StableExit())
                 .InternalTransition(_TickTrigger, (tic, t) => StableTick(tic))
+                .Permit(Trigger.NeedModify, State.Control)
                 .Permit(Trigger.StartMeasure, State.Measure)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceStop, State.Stop);

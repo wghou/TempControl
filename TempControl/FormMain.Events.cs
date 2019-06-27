@@ -12,7 +12,6 @@ namespace TempControl
         void RegistEventHandler()
         {
             _device.RelayDeviceMStatusUpdatedEvent += _device_RelayDeviceMStatusUpdatedEvent;
-            _device.RelayDeviceSStatusUpdatedEvent += _device_RelayDeviceSStatusUpdatedEvent;
             _device.TempDeviceMParamUpdatedEvent += _device_TempDeviceParamUpdatedEvent;
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
@@ -45,15 +44,10 @@ namespace TempControl
                 // 主槽温度设定值
                 label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
 
-                // 辅槽功率系数
-                label_powerS.Text = this._device.tpDeviceS.tpPowerShow.ToString("0") + "%";
 
-                // 辅槽温度显示值
-                if (this._device.tpDeviceS.temperatures.Count != 0)
-                    label_tempS.Text = this._device.tpDeviceS.temperatures.Last().ToString("0.000") + "℃";
-
-                // 辅槽温度设定值
-                label_tempSetS.Text = this._device.tpDeviceS.tpParam[0].ToString("0.000") + "℃";
+                // 传感器温度显示值
+                if (this._device.srDevice.temperatures.Count != 0)
+                    label_tempS.Text = this._device.srDevice.temperatures.Last().ToString("0.000") + "℃";
             }));
 
             // 执行主界面定时器事件 handler
@@ -179,43 +173,17 @@ namespace TempControl
                 foreach (var chk in this.dictCheckBoxsRyM)
                 {
                     chk.Value.Checked = ryStatus[(int)chk.Key];
-                    pictureBoxRyM[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
                 }
 
-                // 如果禁用 ry2 ，则将全部 16 个按键作为 ry1 使用
-                if (this.checkBox_ryEn2.Checked == false)
+                foreach(var pic in this.pictureBoxRyM)
                 {
-                    foreach (var chk in this.dictCheckBoxsRyS)
-                    {
-                        chk.Value.Checked = ryStatus[(int)chk.Key + 8];
-                        pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key + 8] ? mBmpRelayGreen : mBmpRelayRed;
-                    }
+                    pictureBoxRyM[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
                 }
             }));
 
             if(err != Device.RelayDevice.Err_r.NoError)
             {
                 MessageBox.Show("继电器模块 1 设置错误！");
-            }
-        }
-
-        private void _device_RelayDeviceSStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
-        {
-            if (this.checkBox_ryEn2.Checked == false) return;
-
-            this.BeginInvoke(new EventHandler(delegate
-            {
-                // 按钮状态
-                foreach (var chk in this.dictCheckBoxsRyS)
-                {
-                    chk.Value.Checked = ryStatus[(int)chk.Key];
-                    pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
-                }
-            }));
-
-            if (err != Device.RelayDevice.Err_r.NoError)
-            {
-                MessageBox.Show("继电器模块 2 设置错误！");
             }
         }
     }

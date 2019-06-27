@@ -55,9 +55,9 @@ namespace Device
                 else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
 
                 // 辅槽控温设备
-                confOK &= tpDeviceS.ConfigSyn(_runningParameters.portTp2);
-                if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceS.tpDevicePortName);
-                else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + tpDeviceS.tpDevicePortName);
+                confOK &= srDevice.ConfigSyn(_runningParameters.portTp2);
+                if (!confOK) nlogger.Error("配置传感器设备失败! 端口号: " + srDevice.srDevicePortName);
+                else nlogger.Debug("配置传感器设备成功! 端口号: " + srDevice.srDevicePortName);
 
                 // 继电器设备 1
                 confOK &= ryDeviceM.SetPortName(_runningParameters.portRy1);
