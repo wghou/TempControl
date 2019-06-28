@@ -313,10 +313,12 @@ namespace Device
             {
                 if (stopRunRQT == true)
                 {
+                    stopRunRQT = false;
                     return true;
                 }
                 else
                 {
+                    stopRunRQT = false;
                     return false;
                 }
             }

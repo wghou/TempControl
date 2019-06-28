@@ -124,6 +124,7 @@ namespace Device
                 .OnExit(t => IdleExit())
                 .InternalTransition(_TickTrigger, (tic, t) => IdleTick(tic))
                 .Permit(Trigger.StartAutoStep, State.Start)
+                .Ignore(Trigger.SuspendAutoControl)
                 .Permit(Trigger.ForceStop, State.Stop);
 
 
@@ -136,6 +137,7 @@ namespace Device
                 .PermitIf<float>(_nextPointTrigger, State.TempUp, tp => !nextPointDown(tp))
                 .PermitIf<float>(_nextPointTrigger, State.TempDown, tp => nextPointDown(tp))
                 .Permit(Trigger.FinishedAll,State.Idle)
+                .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceStop, State.Stop);
 
 
@@ -196,7 +198,9 @@ namespace Device
             _machine.Configure(State.Stop)
                 .OnEntry(t => StopEntry())
                 .OnExit(t => StopExit())
-                .InternalTransition(_TickTrigger, (tic, t) => StopTick(tic));
+                .InternalTransition(_TickTrigger, (tic, t) => StopTick(tic))
+                .Ignore(Trigger.SuspendAutoControl)
+                .Permit(Trigger.FinishedAll, State.Idle);
 
 
             // 设置定时器

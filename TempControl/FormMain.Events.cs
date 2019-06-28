@@ -102,8 +102,10 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
+                _device.StopAutoControl();
+
                 this.ErrorAskForClose = true;
-                nlogger.Info("出现错误，用户未做处理，关闭系统软件！");
+                nlogger.Warn("出现错误，用户未做处理，关闭系统软件！");
                 // 60秒后关闭计算机
                 System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
                 this.Close();

@@ -14,7 +14,7 @@ namespace TempControl
     {
         private Device.RunningParamStruct paramAll;
 
-        private TextBox[] devParam = new TextBox[18];
+        private TextBox[] devParam = new TextBox[19];
         private TextBox tx = null;
 
         public FormDebug(Device.RunningParamStruct pms)
@@ -39,6 +39,7 @@ namespace TempControl
             devParam[15] = textBox16;
             devParam[16] = textBox17;
             devParam[17] = textBox18;
+            devParam[18] = textBox19;
         }
 
         private void loadFromParam()
@@ -63,6 +64,7 @@ namespace TempControl
             textBox16.Text = paramAll.tempDownCoolFShutdownHot.ToString("0.0000");
             textBox17.Text = paramAll.tempDownCoolFShutdownCool.ToString("0.0000");
             textBox18.Text = paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000");
+            textBox19.Text = paramAll.temperatureDiff.ToString("0.000");
 
             comboBox_sort.SelectedIndex = paramAll.sort == "ascend" ? 0 : 1;
             comboBox_elect.SelectedIndex = paramAll.ryElecEnable == true ? 0 : 1;
@@ -75,9 +77,9 @@ namespace TempControl
 
         private void BntUpdate_Click(object sender, EventArgs e)
         {
-            float[] paramCache = new float[18];
+            float[] paramCache = new float[19];
             // 设置温控设备参数
-            for (int i = 0; i < 18; i++)
+            for (int i = 0; i < 19; i++)
             {
                 float newVal = 0.0f;
 
@@ -110,6 +112,7 @@ namespace TempControl
             paramAll.tempDownCoolFShutdownHot = paramCache[15];
             paramAll.tempDownCoolFShutdownCool = paramCache[16];
             paramAll.tempNotUpOrDwonFaultThrLow = paramCache[17];
+            paramAll.temperatureDiff = paramCache[18];
 
             if (comboBox_sort.SelectedIndex == 0)
             {

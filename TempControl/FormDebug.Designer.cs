@@ -85,6 +85,8 @@
             this.label19 = new System.Windows.Forms.Label();
             this.textBox18 = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
+            this.textBox19 = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button10
@@ -637,11 +639,29 @@
             this.label20.TabIndex = 95;
             this.label20.Text = "温度不下降-低温-阈值";
             // 
+            // textBox19
+            // 
+            this.textBox19.Location = new System.Drawing.Point(480, 129);
+            this.textBox19.Name = "textBox19";
+            this.textBox19.Size = new System.Drawing.Size(100, 21);
+            this.textBox19.TabIndex = 96;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(334, 132);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(95, 12);
+            this.label21.TabIndex = 97;
+            this.label21.Text = "温差修正 - 阈值";
+            // 
             // FormDebug
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(629, 578);
+            this.Controls.Add(this.label21);
+            this.Controls.Add(this.textBox19);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.textBox18);
             this.Controls.Add(this.textBox17);
@@ -766,5 +786,7 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox textBox18;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox textBox19;
+        private System.Windows.Forms.Label label21;
     }
 }

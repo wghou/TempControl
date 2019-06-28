@@ -37,7 +37,8 @@ namespace Device
 
         public void StopAutoControl()
         {
-            _machine.Fire(Trigger.SuspendAutoControl);
+            //_machine.Fire(Trigger.SuspendAutoControl);
+            _machine.Fire(Trigger.ForceStop);
         }
 
 

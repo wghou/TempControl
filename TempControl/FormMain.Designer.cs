@@ -52,6 +52,7 @@
             this.pictureBox_ryM6 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM5 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM4 = new System.Windows.Forms.PictureBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.pictureBox_ryM3 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM2 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM1 = new System.Windows.Forms.PictureBox();
@@ -62,11 +63,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox_tempS = new System.Windows.Forms.GroupBox();
+            this.checkBox_shutdownPC = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox_curveS = new System.Windows.Forms.CheckBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label_tempS = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM6)).BeginInit();
@@ -172,6 +173,7 @@
             // 
             this.checkBox_exit.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_exit.AutoCheck = false;
+            this.checkBox_exit.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.checkBox_exit.ForeColor = System.Drawing.Color.Red;
             this.checkBox_exit.Location = new System.Drawing.Point(202, 241);
             this.checkBox_exit.Name = "checkBox_exit";
@@ -207,7 +209,7 @@
             // 
             this.checkBox_debug.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_debug.AutoCheck = false;
-            this.checkBox_debug.Location = new System.Drawing.Point(248, 96);
+            this.checkBox_debug.Location = new System.Drawing.Point(127, 96);
             this.checkBox_debug.Name = "checkBox_debug";
             this.checkBox_debug.Size = new System.Drawing.Size(79, 37);
             this.checkBox_debug.TabIndex = 20;
@@ -223,7 +225,7 @@
             this.checkBox_ryM6.Name = "checkBox_ryM6";
             this.checkBox_ryM6.Size = new System.Drawing.Size(138, 50);
             this.checkBox_ryM6.TabIndex = 26;
-            this.checkBox_ryM6.Text = "控温制冷";
+            this.checkBox_ryM6.Text = "循环";
             this.checkBox_ryM6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM6.UseVisualStyleBackColor = true;
             this.checkBox_ryM6.Click += new System.EventHandler(this.checkBox_ryM6_Click);
@@ -235,7 +237,7 @@
             this.checkBox_ryM5.Name = "checkBox_ryM5";
             this.checkBox_ryM5.Size = new System.Drawing.Size(138, 50);
             this.checkBox_ryM5.TabIndex = 24;
-            this.checkBox_ryM5.Text = "快冷机组";
+            this.checkBox_ryM5.Text = "制冷";
             this.checkBox_ryM5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM5.UseVisualStyleBackColor = true;
             this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryM5_Click);
@@ -327,6 +329,20 @@
             this.pictureBox_ryM4.TabIndex = 33;
             this.pictureBox_ryM4.TabStop = false;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox1.AutoCheck = false;
+            this.checkBox1.ForeColor = System.Drawing.Color.Black;
+            this.checkBox1.Location = new System.Drawing.Point(8, 241);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(138, 50);
+            this.checkBox1.TabIndex = 30;
+            this.checkBox1.Text = "备用";
+            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.Click += new System.EventHandler(this.checkBox1_Click);
+            // 
             // pictureBox_ryM3
             // 
             this.pictureBox_ryM3.Location = new System.Drawing.Point(116, 22);
@@ -381,7 +397,7 @@
             this.groupBox_tempM.Size = new System.Drawing.Size(333, 219);
             this.groupBox_tempM.TabIndex = 33;
             this.groupBox_tempM.TabStop = false;
-            this.groupBox_tempM.Text = "控温槽 1";
+            this.groupBox_tempM.Text = "前端水槽";
             // 
             // label5
             // 
@@ -436,6 +452,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox_tempS.AutoSize = true;
             this.groupBox_tempS.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox_tempS.Controls.Add(this.checkBox_shutdownPC);
             this.groupBox_tempS.Controls.Add(this.label1);
             this.groupBox_tempS.Controls.Add(this.checkBox_curveS);
             this.groupBox_tempS.Controls.Add(this.checkBox_debug);
@@ -443,10 +460,22 @@
             this.groupBox_tempS.Controls.Add(this.label_tempS);
             this.groupBox_tempS.Location = new System.Drawing.Point(12, 249);
             this.groupBox_tempS.Name = "groupBox_tempS";
-            this.groupBox_tempS.Size = new System.Drawing.Size(333, 153);
+            this.groupBox_tempS.Size = new System.Drawing.Size(333, 157);
             this.groupBox_tempS.TabIndex = 34;
             this.groupBox_tempS.TabStop = false;
-            this.groupBox_tempS.Text = "控温槽 2";
+            this.groupBox_tempS.Text = "后端水槽";
+            // 
+            // checkBox_shutdownPC
+            // 
+            this.checkBox_shutdownPC.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_shutdownPC.ForeColor = System.Drawing.Color.Red;
+            this.checkBox_shutdownPC.Location = new System.Drawing.Point(223, 96);
+            this.checkBox_shutdownPC.Name = "checkBox_shutdownPC";
+            this.checkBox_shutdownPC.Size = new System.Drawing.Size(104, 41);
+            this.checkBox_shutdownPC.TabIndex = 37;
+            this.checkBox_shutdownPC.Text = "试验完成后关闭计算机";
+            this.checkBox_shutdownPC.UseVisualStyleBackColor = true;
+            this.checkBox_shutdownPC.CheckedChanged += new System.EventHandler(this.checkBox_shutdownPC_CheckedChanged);
             // 
             // label1
             // 
@@ -491,23 +520,10 @@
             this.label_tempS.Text = "0.000℃";
             this.label_tempS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // checkBox1
-            // 
-            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox1.AutoCheck = false;
-            this.checkBox1.ForeColor = System.Drawing.Color.Black;
-            this.checkBox1.Location = new System.Drawing.Point(8, 241);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(138, 50);
-            this.checkBox1.TabIndex = 30;
-            this.checkBox1.Text = "备用";
-            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(725, 446);
+            this.ClientSize = new System.Drawing.Size(725, 443);
             this.Controls.Add(this.groupBox_tempS);
             this.Controls.Add(this.groupBox_tempM);
             this.Controls.Add(this.groupBox_ry1);
@@ -516,7 +532,7 @@
             this.Controls.Add(this.label3);
             this.MaximizeBox = false;
             this.Name = "FormMain";
-            this.Text = "自动控温系统";
+            this.Text = "北京三原兆兴  -- 自动控温系统";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -577,6 +593,7 @@
         private System.Windows.Forms.PictureBox pictureBox_ryM1;
         private System.Windows.Forms.PictureBox pictureBox_ryM0;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox_shutdownPC;
     }
 }
 

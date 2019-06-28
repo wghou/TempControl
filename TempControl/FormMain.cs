@@ -154,6 +154,14 @@ namespace TempControl
             {
                 _device.startTimeStep();
             }
+
+            // 初始状态下，总电源
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_0] = true;
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_1] = true;
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_2] = true;
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_3] = true;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
+            setRyStatus.BeginInvoke(true, null, null);
         }
 
 
@@ -318,6 +326,16 @@ namespace TempControl
 
             _device.ryDeviceM.closeDevice();
             _device.ryDeviceS.closeDevice();
+        }
+
+        private void checkBox_shutdownPC_CheckedChanged(object sender, EventArgs e)
+        {
+            _device._runningParameters.shutDownComputer = this.checkBox_shutdownPC.Checked;
+        }
+
+        private void checkBox1_Click(object sender, EventArgs e)
+        {
+            _device.StopAutoControl();
         }
     }
 }
