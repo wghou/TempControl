@@ -8,14 +8,11 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
-using NLog;
 
 namespace TempControl
 {
     public partial class FormAutoSet : Form
     {
-        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
-
         // 设备
         Device.DeviceStateM devicesAll;
         /// <summary>
@@ -255,7 +252,7 @@ namespace TempControl
                 }
                 catch (Exception ex)
                 {
-                    nlogger.Warn("存储温度点缓存时，发生异常！");
+                    Utils.Logger.Sys("存储温度点缓存时，发生异常！");
                     MessageBox.Show("存储温度点缓存时，发生异常！");
                     this.checkBox_start.Checked = false;
                     return;
@@ -292,17 +289,17 @@ namespace TempControl
                 }
 
                 Utils.Logger.Op("点击自动控温设置界面 开始 按键，开始执行自动控温流程...");
-                nlogger.Info("点击自动控温设置界面 开始 按键，开始执行自动控温流程...");
+                Utils.Logger.Sys("点击自动控温设置界面 开始 按键，开始执行自动控温流程...");
 
                 Utils.Logger.Op("设定的温度点有：");
-                nlogger.Info("设定的温度点有：");
+                Utils.Logger.Sys("设定的温度点有：");
 
                 foreach (var st in paramList)
                 {
                     Utils.Logger.Op(st.paramM[0].ToString("0.0000"));
-                    nlogger.Info(st.paramM[0].ToString("0.0000"));
+                    Utils.Logger.Sys(st.paramM[0].ToString("0.0000"));
                     Utils.Logger.Op("是否已测量：" + st.finished.ToString());
-                    nlogger.Info("是否已测量：" + st.finished.ToString());
+                    Utils.Logger.Sys("是否已测量：" + st.finished.ToString());
                 }
 
                 // 自动控温流程已开始
@@ -429,7 +426,7 @@ namespace TempControl
             textBox_tpSetM.Text = "";
 
             Utils.Logger.Op("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
-            nlogger.Info("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
+            Utils.Logger.Sys("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
 
         }
 
@@ -452,7 +449,7 @@ namespace TempControl
                 if (dataGridView1.Rows[i - 1].Selected == true)
                 {
                     Utils.Logger.Op("删除了温度设定点: " + BList[i - 1].TemptSet);
-                    nlogger.Info("删除了温度设定点: " + BList[i - 1].TemptSet);
+                    Utils.Logger.Sys("删除了温度设定点: " + BList[i - 1].TemptSet);
 
                     if (i % 2 == 0)
                     {

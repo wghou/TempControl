@@ -5,15 +5,11 @@ using System.Text;
 using System.IO.Ports;
 using System.Threading;
 using System.Diagnostics;
-using NLog;
 
 namespace Device
 {
     public class SensorDevice
     {
-        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
-
-
         /// <summary>串口</summary>
         private const int baudrate = 9600;
         private const int dataBits = 8;
@@ -80,7 +76,7 @@ namespace Device
             // 设置端口号
             if (SetDevicePortName(portName) == false)
             {
-                nlogger.Error("配置传感器设备失败! 端口号: " + portName);
+                Utils.Logger.Sys("配置传感器设备失败! 端口号: " + portName);
                 currentComStatus = false;
                 return !Enable;
             }

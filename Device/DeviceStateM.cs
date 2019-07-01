@@ -7,7 +7,6 @@ using Stateless;
 using System.Diagnostics;
 using System.Timers;
 using System.IO;
-using NLog;
 
 namespace Device
 {
@@ -16,8 +15,6 @@ namespace Device
     /// </summary>
     public partial class DeviceStateM
     {
-        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
-
         public DeviceStateM()
         {
             // 配置设备状态机
@@ -41,7 +38,7 @@ namespace Device
             bool confOK = true;
 
             // 读取配置运行参数
-            if (_runningParameters.ReadValueConfig(configFilePath) == false) nlogger.Warn("读取配置文件错误，使用默认参数运行");
+            if (_runningParameters.ReadValueConfig(configFilePath) == false) Utils.Logger.Sys("读取配置文件错误，使用默认参数运行");
 
             _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
 
@@ -51,27 +48,27 @@ namespace Device
                 // 配置参数
                 // 主槽控温设备
                 confOK &= tpDeviceM.ConfigSyn(_runningParameters.portTp1);
-                if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
-                else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+                if (!confOK) Utils.Logger.Sys("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
+                else Debug.WriteLine("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
 
                 // 辅槽控温设备
                 confOK &= srDevice.ConfigSyn(_runningParameters.portTp2);
-                if (!confOK) nlogger.Error("配置传感器设备失败! 端口号: " + srDevice.srDevicePortName);
-                else nlogger.Debug("配置传感器设备成功! 端口号: " + srDevice.srDevicePortName);
+                if (!confOK) Utils.Logger.Sys("配置传感器设备失败! 端口号: " + srDevice.srDevicePortName);
+                else Debug.WriteLine("配置传感器设备成功! 端口号: " + srDevice.srDevicePortName);
 
                 // 继电器设备 1
                 confOK &= ryDeviceM.SetPortName(_runningParameters.portRy1);
-                if (!confOK) nlogger.Error("配置继电器设备 1 失败! 端口号: " + ryDeviceM.ryDevicePortName);
-                else nlogger.Debug("配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                if (!confOK) Utils.Logger.Sys("配置继电器设备 1 失败! 端口号: " + ryDeviceM.ryDevicePortName);
+                else Debug.WriteLine("配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
 
                 // 继电器设备 2
                 confOK &= ryDeviceS.SetPortName(_runningParameters.portRy2);
-                if (!confOK) nlogger.Error("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
-                else nlogger.Debug("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                if (!confOK) Utils.Logger.Sys("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
+                else Debug.WriteLine("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
             }
             catch (Exception ex)
             {
-                nlogger.Error("从配置文件读取参数过程中发生异常：" + ex.Message.ToString());
+                Utils.Logger.Sys("从配置文件读取参数过程中发生异常：" + ex.Message.ToString());
                 confOK = false;
             }
 

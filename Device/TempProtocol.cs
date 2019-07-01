@@ -5,14 +5,11 @@ using System.Text;
 using System.IO.Ports;
 using System.Diagnostics;
 using System.Threading;
-using NLog;
 
 namespace Device
 {
     public class TempProtocol
     {
-        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
-
         #region Members
 
         #region Serial Port
@@ -127,7 +124,7 @@ namespace Device
                 }
                 else
                 {
-                    nlogger.Error("端口 " + portName + " 不存在");
+                    Utils.Logger.Sys("端口 " + portName + " 不存在");
                     return false;
                 }
 
@@ -145,7 +142,7 @@ namespace Device
             }
             catch (Exception ex)
             {
-                nlogger.Error("温控设备新建串口时发生异常：" + ex.Message);
+                Utils.Logger.Sys("温控设备新建串口时发生异常：" + ex.Message);
                 return false;
             }
         }
@@ -192,7 +189,7 @@ namespace Device
             catch (Exception ex)
             {
                 // 串口发生错误！
-                nlogger.Error("温控设备写入参数 " + cmd.ToString() + " 异常: " + ex.Message);
+                Utils.Logger.Sys("温控设备写入参数 " + cmd.ToString() + " 异常: " + ex.Message);
                 // 关闭串口
                 try { sPort.Close(); } catch { }
                 return Err_t.ComError;
@@ -234,7 +231,7 @@ namespace Device
             catch (Exception ex)
             {
                 val = 0.0f;
-                nlogger.Error("温控设备读取参数 " + cmd.ToString() + " 异常: " + ex.Message);
+                Utils.Logger.Sys("温控设备读取参数 " + cmd.ToString() + " 异常: " + ex.Message);
                 // 关闭串口
                 try { sPort.Close(); } catch { }
                 return Err_t.ComError;
@@ -251,9 +248,6 @@ namespace Device
             {
                 // 未发生错误
                 // 如果格式转化错误，则返回 ComErr
-                if(cmd == Cmd_t.TempShow) nlogger.Trace("温度值原始数据： " + data);
-
-
                 if (!float.TryParse(data.Substring(5), out val))
                     err = Err_t.ComError;
             }

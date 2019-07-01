@@ -97,7 +97,7 @@ namespace Device
         /// <param name="act"></param>
         private void OnUnhandledTrigger(State st, Trigger tg)
         {
-            nlogger.Error("Unhandled trigger: state.");
+            Utils.Logger.Sys("Unhandled trigger: state.");
 
             SetErrorStatus(ErrorCode.CodeError);
         }
@@ -109,11 +109,11 @@ namespace Device
         /// <returns></returns>
         private bool nextPointDown(float tpPoint)
         {
-            nlogger.Debug("Next point: " + tpPoint.ToString());
+            Debug.WriteLine("Next point: " + tpPoint.ToString());
 
             if(tpDeviceM.temperatures.Count == 0)
             {
-                nlogger.Debug("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
+                Debug.WriteLine("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
                 SetErrorStatus(ErrorCode.CodeError);
                 return true;
             }
@@ -129,7 +129,7 @@ namespace Device
         /// </summary>
         private void UndefineEntry()
         {
-            nlogger.Debug("Undefine Entry.");
+            Debug.WriteLine("Undefine Entry.");
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void UndefineTick(int tic)
         {
-            nlogger.Debug("UndefineTick: " + tic.ToString() + " ms");
+            Debug.WriteLine("UndefineTick: " + tic.ToString() + " ms");
             // do nothing
         }
 
@@ -147,7 +147,7 @@ namespace Device
         /// </summary>
         private void UndefineExit()
         {
-            nlogger.Debug("Undefine Exit.");
+            Debug.WriteLine("Undefine Exit.");
         }
 
 
@@ -156,7 +156,7 @@ namespace Device
         /// </summary>
         private void IdleEntry()
         {
-            nlogger.Debug("Idle Entry.");
+            Debug.WriteLine("Idle Entry.");
         }
 
         /// <summary>
@@ -168,15 +168,15 @@ namespace Device
             if (srDevice.CheckStopRunRQT() == true)
             {
                 _machine.Fire(Trigger.ForceStop);
-                nlogger.Info("系统收到结束指令.");
+                Utils.Logger.Sys("系统收到结束指令.");
             }
             else if (srDevice.CheckNextPointRQT(out currentTemptPointState.paramM[0]) == true)
             {
                 _machine.Fire(Trigger.StartAutoStep);
-                nlogger.Info("系统收到下一个温度点的指令: " + currentTemptPointState.stateTemp.ToString());
+                Utils.Logger.Sys("系统收到下一个温度点的指令: " + currentTemptPointState.stateTemp.ToString());
             }
 
-            nlogger.Info("IdleTick: " + tic.ToString() + " ms");
+            Debug.WriteLine("IdleTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace Device
         /// </summary>
         private void IdleExit()
         {
-            nlogger.Debug("Idle Exit.");
+            Debug.WriteLine("Idle Exit.");
         }
 
 
@@ -193,7 +193,7 @@ namespace Device
         /// </summary>
         private void StartEntry()
         {
-            nlogger.Debug("Start Entry.");
+            Debug.WriteLine("Start Entry.");
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Device
                 _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
             }
 
-            nlogger.Debug("StartTick: " + tic.ToString() + " ms");
+            Debug.WriteLine("StartTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Device
         /// </summary>
         private void StartExit()
         {
-            nlogger.Debug("Start Exit.");
+            Debug.WriteLine("Start Exit.");
         }
 
 
@@ -250,7 +250,7 @@ namespace Device
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
 
-            nlogger.Debug("TempUp Entry.");
+            Debug.WriteLine("TempUp Entry.");
         }
 
         /// <summary>
@@ -259,12 +259,12 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempUpTick(int tic)
         {
-            nlogger.Debug("TempUp Tick: " + tic.ToString() + " ms");
+            Debug.WriteLine("TempUp Tick: " + tic.ToString() + " ms");
 
             if (srDevice.CheckStopRunRQT() == true)
             {
                 _machine.Fire(Trigger.ForceStop);
-                nlogger.Info("系统收到结束指令.");
+                Utils.Logger.Sys("系统收到结束指令.");
             }
 
             // 状态时间计数器
@@ -287,7 +287,7 @@ namespace Device
         /// </summary>
         private void TempUpExit()
         {
-            nlogger.Debug("TempUp Exit.");
+            Debug.WriteLine("TempUp Exit.");
         }
 
 
@@ -315,7 +315,7 @@ namespace Device
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
 
-            nlogger.Debug("TempDown Entry.");
+            Debug.WriteLine("TempDown Entry.");
         }
 
         /// <summary>
@@ -324,12 +324,12 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempDownTick(int tic)
         {
-            nlogger.Debug("TempDown Tick: " + tic.ToString() + " ms");
+            Debug.WriteLine("TempDown Tick: " + tic.ToString() + " ms");
 
             if (srDevice.CheckStopRunRQT() == true)
             {
                 _machine.Fire(Trigger.ForceStop);
-                nlogger.Info("系统收到结束指令.");
+                Utils.Logger.Sys("系统收到结束指令.");
             }
 
             // 状态时间计数器
@@ -353,7 +353,7 @@ namespace Device
         /// </summary>
         private void TempDownExit()
         {
-            nlogger.Debug("TempDown Exit.");
+            Debug.WriteLine("TempDown Exit.");
         }
 
         
@@ -363,7 +363,7 @@ namespace Device
         /// </summary>
         private void ControlEntry()
         {
-            nlogger.Debug("Control Entry.");
+            Debug.WriteLine("Control Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
@@ -405,12 +405,12 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void ControlTick(int tic)
         {
-            nlogger.Debug("Control Tick: " + tic.ToString() + " ms");
+            Debug.WriteLine("Control Tick: " + tic.ToString() + " ms");
 
             if (srDevice.CheckStopRunRQT() == true)
             {
                 _machine.Fire(Trigger.ForceStop);
-                nlogger.Info("系统收到结束指令.");
+                Utils.Logger.Sys("系统收到结束指令.");
             }
 
             // 状态时间计数器
@@ -427,7 +427,7 @@ namespace Device
             {
                 // 进入下一个状态，下一个状态应该是 稳定
                 _machine.Fire(Trigger.AchieveSteady);
-                nlogger.Info((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
+                Utils.Logger.Sys((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
             }
         }
 
@@ -436,7 +436,7 @@ namespace Device
         /// </summary>
         private void ControlExit()
         {
-            nlogger.Debug("Control Exit.");
+            Debug.WriteLine("Control Exit.");
         }
 
 
@@ -446,7 +446,7 @@ namespace Device
         /// </summary>
         private void StableEntry()
         {
-            nlogger.Debug("Stable Entry.");
+            Debug.WriteLine("Stable Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
@@ -469,12 +469,12 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StableTick(int tic)
         {
-            nlogger.Debug("Stableick: " + tic.ToString() + " ms");
+            Debug.WriteLine("Stableick: " + tic.ToString() + " ms");
 
             if (srDevice.CheckStopRunRQT() == true)
             {
                 _machine.Fire(Trigger.ForceStop);
-                nlogger.Info("系统收到结束指令.");
+                Utils.Logger.Sys("系统收到结束指令.");
             }
 
             // 状态时间计数器
@@ -497,7 +497,7 @@ namespace Device
                 {
                     _machine.Fire(Trigger.StartMeasure);
 
-                    nlogger.Info("温度稳定，并且温差小于 0.01度，进行测量");
+                    Utils.Logger.Sys("温度稳定，并且温差小于 0.01度，进行测量");
                 }
                 else
                 {
@@ -512,7 +512,7 @@ namespace Device
 
                     _machine.Fire(Trigger.NeedModify);
 
-                    nlogger.Info("温度稳定，但温差大于0.01度，进行修正");
+                    Utils.Logger.Sys("温度稳定，但温差大于0.01度，进行修正");
                 }
             }
         }
@@ -522,7 +522,7 @@ namespace Device
         /// </summary>
         private void StableExit()
         {
-            nlogger.Debug("Stable Exit.");
+            Debug.WriteLine("Stable Exit.");
         }
 
         
@@ -532,7 +532,7 @@ namespace Device
         /// </summary>
         private void MeasureEntry()
         {
-            nlogger.Debug("Measure Entry.");
+            Debug.WriteLine("Measure Entry.");
         }
 
         /// <summary>
@@ -541,7 +541,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void MeasureTick(int tic)
         {
-            nlogger.Debug("MeasureTick: " + tic.ToString() + " ms");
+            Debug.WriteLine("MeasureTick: " + tic.ToString() + " ms");
 
             // 状态时间计数器
             currentTemptPointState.stateCounts++;
@@ -552,18 +552,18 @@ namespace Device
             if (srDevice.CheckStopRunRQT() == true)
             {
                 _machine.Fire(Trigger.ForceStop);
-                nlogger.Info("系统收到结束指令.");
+                Utils.Logger.Sys("系统收到结束指令.");
             }
             else if (srDevice.CheckNextPointRQT(out currentTemptPointState.paramM[0]) == true)
             {
                 _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
-                nlogger.Info("系统收到下一个温度点的指令: " + currentTemptPointState.stateTemp.ToString());
+                Utils.Logger.Sys("系统收到下一个温度点的指令: " + currentTemptPointState.stateTemp.ToString());
             }
             else
             {
                 _machine.Fire(Trigger.FinishedAll);
 
-                nlogger.Info("未读取到新的温度点，进入空闲");
+                Utils.Logger.Sys("未读取到新的温度点，进入空闲");
             }
         }
 
@@ -572,7 +572,7 @@ namespace Device
         /// </summary>
         private void MeasureExit()
         {
-            nlogger.Debug("Measure Exit.");
+            Debug.WriteLine("Measure Exit.");
         }
 
 
@@ -582,7 +582,7 @@ namespace Device
         /// </summary>
         private void StopEntry()
         {
-            nlogger.Debug("Stop Entry.");
+            Debug.WriteLine("Stop Entry.");
 
             // 关闭除总电源外的所有继电器
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
@@ -615,7 +615,7 @@ namespace Device
 
             _machine.Fire(Trigger.FinishedAll);
 
-            nlogger.Debug("StopTick: " + tic.ToString() + " ms");
+            Debug.WriteLine("StopTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -623,7 +623,7 @@ namespace Device
         /// </summary>
         private void StopExit()
         {
-            nlogger.Debug("Stop Exit.");
+            Debug.WriteLine("Stop Exit.");
         }
     }
 }

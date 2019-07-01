@@ -9,15 +9,12 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Brushes = System.Windows.Media.Brushes;
-using NLog;
 using System.Diagnostics;
 
 namespace TempControl
 {
     public partial class FormMain : Form
     {
-        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
-
         private Device.DeviceStateM _device = new Device.DeviceStateM();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyM = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyS = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
@@ -128,7 +125,7 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                _device.srDevice.Enable = false;
+                _device.srDevice.Enable = true;
 
                 _device.ryDeviceM.Enable = true;
                 _device.ryDeviceS.Enable = false;
@@ -337,7 +334,7 @@ namespace TempControl
 
         private void checkBox1_Click(object sender, EventArgs e)
         {
-            _device.StopAutoControl();
+           
         }
     }
 }

@@ -8,7 +8,6 @@ using Modbus.Data;
 using Modbus.Device;
 using Modbus.Utility;
 using System.IO.Ports;
-using NLog;
 
 namespace Device
 {
@@ -19,8 +18,6 @@ namespace Device
     /// </summary>
     public class RelayDevice
     {
-        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
-
         /// <summary>串口</summary>
         private SerialPort sPort;
         public string ryDevicePortName;
@@ -131,7 +128,7 @@ namespace Device
             }
             catch (Exception ex)
             {
-                nlogger.Error("继电器设备新建串口时发生异常：" + ex.Message);
+                Utils.Logger.Sys("继电器设备新建串口时发生异常：" + ex.Message);
                 return !Enable;
             }
         }
@@ -152,7 +149,7 @@ namespace Device
             }
             catch(Exception ex)
             {
-                nlogger.Error("继电器设备自检错误 " + ex.Message);
+                Utils.Logger.Sys("继电器设备自检错误 " + ex.Message);
                 err = Err_r.ComError;
             }
 
@@ -179,7 +176,7 @@ namespace Device
                 }
                 catch(Exception ex)
                 {
-                    nlogger.Error("继电器设备自检错误 " + ex.Message);
+                    Utils.Logger.Sys("继电器设备自检错误 " + ex.Message);
                     err = Err_r.ComError;
                     break;
                 }
@@ -212,7 +209,7 @@ namespace Device
                 catch(Exception ex)
                 {
                     Array.Copy(ryStatus, ryStatusToSet,  numCoils);
-                    nlogger.Error("继电器设备写入继电器状态失败 " + ex.Message);
+                    Utils.Logger.Sys("继电器设备写入继电器状态失败 " + ex.Message);
                     err = Err_r.ComError;
                 }
                 
@@ -248,7 +245,7 @@ namespace Device
             catch (Exception ex)
             {
                 rlt = false;
-                nlogger.Error("关闭继电器设备失败 - 16。");
+                Utils.Logger.Sys("关闭继电器设备失败 - 16。");
             }
             return rlt;
 
