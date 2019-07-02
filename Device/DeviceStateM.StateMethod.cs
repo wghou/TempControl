@@ -259,7 +259,9 @@ namespace Device
             WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
+            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+            //currentTemptPointState.paramS[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
@@ -307,9 +309,10 @@ namespace Device
             WriteRelayDeviceM(true);
             WriteRelayDeviceS(true);
 
-            // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
+            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
