@@ -110,8 +110,9 @@ namespace TempControl
             {
                 this.ErrorAskForClose = true;
                 nlogger.Info("出现错误，用户未做处理，关闭系统软件！");
-                // 60秒后关闭计算机
-                System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
+
+                _device.SuspendAutoControl();
+
                 this.Close();
             }));
         }
@@ -146,17 +147,13 @@ namespace TempControl
                         // 系统流程
                         this.label_controlState.Text = "测量";
                         break;
-                    case Device.State.Stop:
+                    case Device.State.ShutdownPC:
                         // 系统流程
                         this.label_controlState.Text = "系统停止";
                         break;
                     case Device.State.Idle:
                         // 系统流程
                         this.label_controlState.Text = "空闲";
-                        break;
-                    case Device.State.Undefine:
-                        // 系统流程
-                        this.label_controlState.Text = "未定义";
                         break;
                 }
             }));

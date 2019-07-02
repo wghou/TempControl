@@ -26,11 +26,9 @@ namespace Device
         /// <summary> 测量 </summary>
         Measure,
         /// <summary> 停止 </summary>
-        Stop,
+        ShutdownPC,
         /// <summary> 空闲 </summary>
-        Idle,
-        /// <summary> 未定义 </summary>
-        Undefine
+        Idle
     }
 
     /// <summary>
@@ -55,7 +53,7 @@ namespace Device
         /// <summary> 测量完成 </summary>
         FinishedAll,
         /// <summary> 强制停止 </summary>
-        ForceStop,
+        ForceShutdownPC,
         /// <summary> 电源打开 </summary>
         ElectOn,
         /// <summary> 电源关闭 </summary>
@@ -69,7 +67,7 @@ namespace Device
         /// 状态机
         /// </summary>
         StateMachine<State, Trigger> _machine;
-        public State _state = State.Undefine;
+        public State _state = State.Idle;
 
         /// <summary>
         /// 下一温度设定点 - 带参数 float
@@ -104,14 +102,6 @@ namespace Device
             // on unhandled trigger
             _machine.OnUnhandledTrigger(OnUnhandledTrigger);
 
-            // State.Undefine
-            // 
-            _machine.Configure(State.Undefine)
-                .OnEntry(t => UndefineEntry())
-                .OnExit(t => UndefineExit())
-                .InternalTransition(_TickTrigger, (tic, t) => UndefineTick(tic))
-                .Permit(Trigger.ElectOn, State.Idle);
-
 
             // State.Idle
             // -> State.Start
@@ -121,7 +111,8 @@ namespace Device
                 .OnExit(t => IdleExit())
                 .InternalTransition(_TickTrigger, (tic, t) => IdleTick(tic))
                 .Permit(Trigger.StartAutoStep, State.Start)
-                .Permit(Trigger.ForceStop, State.Stop);
+                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC)
+                .Ignore(Trigger.SuspendAutoControl);
 
 
             // State.Start
@@ -133,7 +124,8 @@ namespace Device
                 .PermitIf<float>(_nextPointTrigger, State.TempUp, tp => !nextPointDown(tp))
                 .PermitIf<float>(_nextPointTrigger, State.TempDown, tp => nextPointDown(tp))
                 .Permit(Trigger.FinishedAll,State.Idle)
-                .Permit(Trigger.ForceStop, State.Stop);
+                .Permit(Trigger.SuspendAutoControl, State.Idle)
+                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
             // state TempUp
@@ -143,7 +135,7 @@ namespace Device
                 .InternalTransition(_TickTrigger, (tic, t) => TempUpTick(tic))
                 .Permit(Trigger.StartControl, State.Control)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
-                .Permit(Trigger.ForceStop, State.Stop);
+                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
             // state TempDown
@@ -153,7 +145,7 @@ namespace Device
                 .InternalTransition(_TickTrigger, (tic, t) => TempDownTick(tic))
                 .Permit(Trigger.StartControl, State.Control)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
-                .Permit(Trigger.ForceStop, State.Stop);
+                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
             // state Control
@@ -163,7 +155,7 @@ namespace Device
                 .InternalTransition(_TickTrigger, (tic, t) => ControlTick(tic))
                 .Permit(Trigger.AchieveSteady, State.Stable)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
-                .Permit(Trigger.ForceStop, State.Stop);
+                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
             // state Steady
@@ -173,7 +165,7 @@ namespace Device
                 .InternalTransition(_TickTrigger, (tic, t) => StableTick(tic))
                 .Permit(Trigger.StartMeasure, State.Measure)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
-                .Permit(Trigger.ForceStop, State.Stop);
+                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
             // state Measure
@@ -185,14 +177,17 @@ namespace Device
                 .PermitIf<float>(_nextPointTrigger, State.TempDown, tp => nextPointDown(tp))
                 .Permit(Trigger.FinishedAll, State.Idle)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
-                .Permit(Trigger.ForceStop, State.Stop);
+                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
-            // state Stop
-            _machine.Configure(State.Stop)
-                .OnEntry(t => StopEntry())
-                .OnExit(t => StopExit())
-                .InternalTransition(_TickTrigger, (tic, t) => StopTick(tic));
+            // state ShutdownPC
+            _machine.Configure(State.ShutdownPC)
+                .OnEntry(t => ShutdownPCEntry())
+                .OnExit(t => ShutdownPCExit())
+                .InternalTransition(_TickTrigger, (tic, t) => ShutdownPCTick(tic))
+                .Permit(Trigger.FinishedAll, State.Idle)
+                .Ignore(Trigger.SuspendAutoControl)
+                .Ignore(Trigger.ForceShutdownPC);
 
 
             // 设置定时器

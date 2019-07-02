@@ -178,8 +178,7 @@ namespace TempControl
                     this.checkBox_shutDown.Enabled = false;
                 }
                 else if(devicesAll._state == Device.State.Idle ||
-                        devicesAll._state == Device.State.Stop ||
-                        devicesAll._state == Device.State.Undefine)
+                        devicesAll._state == Device.State.ShutdownPC )
                 {
                     // 未开始自动控温
                     this.checkBox_start.Checked = false;
@@ -339,7 +338,7 @@ namespace TempControl
                         }
                     }
 
-                    devicesAll.StopAutoControl();
+                    devicesAll.SuspendAutoControl();
 
                     // 取消 - 实验完成后不关闭计算机
                     devicesAll._runningParameters.shutDownComputer = false;

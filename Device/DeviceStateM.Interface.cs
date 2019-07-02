@@ -29,15 +29,29 @@ namespace Device
             }
         }
 
+        /// <summary>
+        /// _stateM 开始自动控温流程
+        /// </summary>
         public void StartAutoControl()
         {
             if (_state != State.Idle) return;
             _machine.Fire(Trigger.StartAutoStep);
         }
 
-        public void StopAutoControl()
+        /// <summary>
+        /// _stateM 暂停自动控温流程，进入 空闲 状态
+        /// </summary>
+        public void SuspendAutoControl()
         {
             _machine.Fire(Trigger.SuspendAutoControl);
+        }
+
+        /// <summary>
+        /// _stateM 停止控温，并关闭计算机
+        /// </summary>
+        public void ShutdownComputer()
+        {
+            _machine.Fire(Trigger.ForceShutdownPC);
         }
 
 
