@@ -200,9 +200,9 @@ namespace TempControl
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 按钮状态
-                foreach (var chk in this.dictCheckBoxsRyM) chk.Value.Checked = ryStatus[(int)chk.Key];
+                foreach (var chk in this.dictCheckBoxsRyS) chk.Value.Checked = ryStatus[(int)chk.Key];
                 // 指示灯状态
-                foreach (var pic in this.pictureBoxRyM) pictureBoxRyM[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
+                foreach (var pic in this.pictureBoxRyS) pictureBoxRyS[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
             }));
 
             if (err != Device.RelayDevice.Err_r.NoError)

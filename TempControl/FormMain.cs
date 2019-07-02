@@ -92,8 +92,8 @@ namespace TempControl
             mGhpGreen.Clear(Color.Green);
 
             // 用于状态指示灯
-            mBmpM = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            mBmpS = new Bitmap(pictureBox2.Width, pictureBox2.Height);
+            mBmpM = new Bitmap(pictureBoxM.Width, pictureBoxM.Height);
+            mBmpS = new Bitmap(pictureBoxS.Width, pictureBoxS.Height);
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
@@ -120,24 +120,24 @@ namespace TempControl
         // 控温板通讯指示灯闪烁
         private void TimPic_Tick(object sender, EventArgs e)
         {
-            Graphics mGhp1 = Graphics.FromImage(mBmpM);
-            Graphics mGhp2 = Graphics.FromImage(mBmpS);
-            mGhp1.Clear(SystemColors.Control);
+            Graphics mGhpM = Graphics.FromImage(mBmpM);
+            Graphics mGhpS = Graphics.FromImage(mBmpS);
+            mGhpM.Clear(SystemColors.Control);
             if (flp)
             {
-                mGhp1.Clear(SystemColors.Control);
-                mGhp2.Clear(SystemColors.Control);
+                mGhpM.Clear(SystemColors.Control);
+                mGhpS.Clear(SystemColors.Control);
                 flp = false;
             }
             else
             {
-                mGhp1.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
-                mGhp2.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
+                mGhpM.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
+                mGhpS.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
                 flp = true;
             }
 
-            pictureBox1.Image = mBmpM;
-            pictureBox2.Image = mBmpS;
+            pictureBoxM.Image = mBmpM;
+            pictureBoxS.Image = mBmpS;
         }
 
 
