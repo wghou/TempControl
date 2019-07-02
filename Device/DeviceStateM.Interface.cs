@@ -149,7 +149,7 @@ namespace Device
         /// <param name="cntErr"> 是否在 ErrorMonitor 中记录错误 </param>
         public void ReadTempDeviceM(bool cntErr)
         {
-            if (tpDeviceS.Enable == false) return;
+            if (tpDeviceM.Enable == false) return;
 
             TempProtocol.Err_t err = tpDeviceM.UpdateParamFromDevice();
 
@@ -193,7 +193,7 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
-            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
         }
 
 
@@ -221,7 +221,7 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
-            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
         }
     }
 }
