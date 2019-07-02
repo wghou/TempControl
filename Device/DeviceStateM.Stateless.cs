@@ -53,11 +53,7 @@ namespace Device
         /// <summary> 测量完成 </summary>
         FinishedAll,
         /// <summary> 强制停止 </summary>
-        ForceShutdownPC,
-        /// <summary> 电源打开 </summary>
-        ElectOn,
-        /// <summary> 电源关闭 </summary>
-        ElectOff
+        ForceShutdownPC
     }
 
 
