@@ -306,6 +306,7 @@ namespace TempControl
                 cfg.digits = 3;
                 cfg.dataLocker = _device.tpDeviceM.tpShowLocker;
                 cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
+                cfg.funcPtr = _device.tpDeviceM.GetFlucDurCountOrLess;
 
                 FormChart fm = new FormChart(cfg, this);
                 fm.Location = new System.Drawing.Point(10, 12);
@@ -341,6 +342,7 @@ namespace TempControl
                 cfg.digits = 3;
                 cfg.dataLocker = _device.tpDeviceS.tpShowLocker;
                 cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
+                cfg.funcPtr = _device.tpDeviceS.GetFlucDurCountOrLess;
 
                 FormChart fm = new FormChart(cfg, this);
                 fm.Location = new System.Drawing.Point(10, 12);
