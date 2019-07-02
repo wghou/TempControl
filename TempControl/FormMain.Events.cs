@@ -111,7 +111,7 @@ namespace TempControl
                 this.ErrorAskForClose = true;
                 nlogger.Info("出现错误，用户未做处理，关闭系统软件！");
 
-                _device.SuspendAutoControl();
+                _device.ShutdownComputer();
 
                 this.Close();
             }));
@@ -173,20 +173,17 @@ namespace TempControl
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 按钮状态
-                foreach (var chk in this.dictCheckBoxsRyM)
-                {
-                    chk.Value.Checked = ryStatus[(int)chk.Key];
-                    pictureBoxRyM[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
-                }
+                foreach (var chk in this.dictCheckBoxsRyM) chk.Value.Checked = ryStatus[(int)chk.Key];
+                // 指示灯状态
+                foreach (var pic in this.pictureBoxRyM) pictureBoxRyM[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
 
                 // 如果禁用 ry2 ，则将全部 16 个按键作为 ry1 使用
                 if (this.checkBox_ryEn2.Checked == false)
                 {
-                    foreach (var chk in this.dictCheckBoxsRyS)
-                    {
-                        chk.Value.Checked = ryStatus[(int)chk.Key + 8];
-                        pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key + 8] ? mBmpRelayGreen : mBmpRelayRed;
-                    }
+                    // 按钮状态
+                    foreach (var chk in this.dictCheckBoxsRyS) chk.Value.Checked = ryStatus[(int)chk.Key + 8];
+                    // 指示灯状态
+                    foreach ( var pic in this.pictureBoxRyM) pictureBoxRyS[pic.Key].Image = ryStatus[(int)pic.Key + 8] ? mBmpRelayGreen : mBmpRelayRed;
                 }
             }));
 
@@ -203,11 +200,9 @@ namespace TempControl
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 按钮状态
-                foreach (var chk in this.dictCheckBoxsRyS)
-                {
-                    chk.Value.Checked = ryStatus[(int)chk.Key];
-                    pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
-                }
+                foreach (var chk in this.dictCheckBoxsRyM) chk.Value.Checked = ryStatus[(int)chk.Key];
+                // 指示灯状态
+                foreach (var pic in this.pictureBoxRyM) pictureBoxRyM[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
             }));
 
             if (err != Device.RelayDevice.Err_r.NoError)
