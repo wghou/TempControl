@@ -111,6 +111,16 @@ namespace TempControl
             Utils.Logger.Op("打开主槽控温设备参数设置界面!");
         }
 
+
+        private void checkBox2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/Data");
+            }
+            catch (Exception ex) { }
+        }
+
         private void checkBox_logM_Click(object sender, EventArgs e)
         {
             try

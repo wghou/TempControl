@@ -134,6 +134,7 @@ namespace TempControl
             }));
 
             bool confDevice = _device.Configure();
+
             if (confDevice == false)
             {
                 this.BeginInvoke(new EventHandler(delegate
@@ -305,11 +306,6 @@ namespace TempControl
             }
 
             Utils.Logger.Op("打开辅槽控温设备温度曲线界面!");
-        }
-
-        private void checkBox2_Click(object sender, EventArgs e)
-        {
-            
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
