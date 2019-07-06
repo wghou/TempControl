@@ -8,9 +8,99 @@ namespace Device
 {
     public partial class DeviceStateM
     {
+        /// <summary>
+        /// （通过配置文件）配置设备参数
+        /// </summary>
+        /// <param name="configFilePath">配置文件路径</param>
+        /// <returns></returns>
+        public bool Configure(string configFilePath = @"./config.ini")
+        {
+            // 配置成功标志位
+            bool confOK = true;
 
-        ///////////////////////////////////////////////////
-        // public interface
+            // 读取配置运行参数
+            if (_runningParameters.ReadValueConfig(configFilePath) == false) nlogger.Warn("读取配置文件错误，使用默认参数运行");
+
+            _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
+
+            try
+            {
+                //////////////////////////////////////////
+                // 配置参数
+                // 主槽控温设备
+                confOK &= tpDeviceM.ConfigSyn(_runningParameters.portTp1);
+                if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
+                else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+
+                // 辅槽控温设备
+                confOK &= tpDeviceS.ConfigSyn(_runningParameters.portTp2);
+                if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceS.tpDevicePortName);
+                else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + tpDeviceS.tpDevicePortName);
+
+                // 继电器设备 1
+                confOK &= ryDeviceM.SetPortName(_runningParameters.portRy1);
+                if (!confOK) nlogger.Error("配置继电器设备 1 失败! 端口号: " + ryDeviceM.ryDevicePortName);
+                else nlogger.Debug("配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+
+                // 继电器设备 2
+                confOK &= ryDeviceS.SetPortName(_runningParameters.portRy2);
+                if (!confOK) nlogger.Error("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
+                else nlogger.Debug("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+            }
+            catch (Exception ex)
+            {
+                nlogger.Error("从配置文件读取参数过程中发生异常：" + ex.Message.ToString());
+                confOK = false;
+            }
+
+            return confOK;
+        }
+
+
+        /// <summary>
+        /// 刷新事件，使主界面更新状态
+        /// </summary>
+        public void updateEvents()
+        {
+            StateChangedEvent?.Invoke(_state);
+
+            TempDeviceMParamUpdatedEvent?.Invoke(TempProtocol.Err_t.NoError, tpDeviceM.tpParam);
+
+            TempDeviceSParamUpdatedEvent?.Invoke(TempProtocol.Err_t.NoError, tpDeviceS.tpParam);
+
+            RelayDeviceMStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceM.ryStatus);
+
+            RelayDeviceSStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceS.ryStatus);
+        }
+
+
+        /// <summary>
+        /// _stateM 开始自动控温流程
+        /// </summary>
+        public void StartAutoControl()
+        {
+            if (_state != State.Idle) return;
+            _machine.Fire(Trigger.StartAutoStep);
+        }
+
+
+        /// <summary>
+        /// _stateM 暂停自动控温流程，进入 空闲 状态
+        /// </summary>
+        public void SuspendAutoControl()
+        {
+            _machine.Fire(Trigger.SuspendAutoControl);
+        }
+
+
+        /// <summary>
+        /// _stateM 停止控温，并关闭计算机
+        /// </summary>
+        public void ShutdownComputer()
+        {
+            _machine.Fire(Trigger.ForceShutdownPC);
+        }
+
 
         /// <summary>
         /// 查询控温点列表中的完成状态
@@ -27,31 +117,6 @@ namespace Device
                     st.Add(temperaturePointList[i].finished);
                 }
             }
-        }
-
-        /// <summary>
-        /// _stateM 开始自动控温流程
-        /// </summary>
-        public void StartAutoControl()
-        {
-            if (_state != State.Idle) return;
-            _machine.Fire(Trigger.StartAutoStep);
-        }
-
-        /// <summary>
-        /// _stateM 暂停自动控温流程，进入 空闲 状态
-        /// </summary>
-        public void SuspendAutoControl()
-        {
-            _machine.Fire(Trigger.SuspendAutoControl);
-        }
-
-        /// <summary>
-        /// _stateM 停止控温，并关闭计算机
-        /// </summary>
-        public void ShutdownComputer()
-        {
-            _machine.Fire(Trigger.ForceShutdownPC);
         }
 
 

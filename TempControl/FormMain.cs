@@ -111,9 +111,6 @@ namespace TempControl
 
             _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
             _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
-
-            _device_RelayDeviceMStatusUpdatedEvent(Device.RelayDevice.Err_r.NoError, _device.ryDeviceM.ryStatus);
-            _device_RelayDeviceSStatusUpdatedEvent(Device.RelayDevice.Err_r.NoError, _device.ryDeviceS.ryStatus);
         }
 
         ///////////////////////////////////////////////////
@@ -187,6 +184,8 @@ namespace TempControl
             {
                 _device.startTimeStep();
             }
+
+            _device.updateEvents();
         }
 
 
