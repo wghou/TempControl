@@ -153,11 +153,6 @@ namespace Device
         /// </summary>
         private void IdleEntry()
         {
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            WriteRelayDeviceM(true);
-
             nlogger.Trace("Idle Entry.");
         }
 
