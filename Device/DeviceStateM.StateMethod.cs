@@ -256,8 +256,8 @@ namespace Device
         {
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
             WriteRelayDeviceM(true);
 
             // 设置主槽 / 辅槽控温设备的参数
@@ -317,8 +317,8 @@ namespace Device
         private void TempDownEntry()
         {
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
             WriteRelayDeviceM(true);
 
             // 设置主槽 / 辅槽控温设备的参数
@@ -383,8 +383,8 @@ namespace Device
 
             // 首次进入该状态，应改变相应的继电器状态
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
             WriteRelayDeviceM(true);
         }
 
@@ -434,8 +434,8 @@ namespace Device
 
             // 首次进入该状态，应改变相应的继电器状态
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
             WriteRelayDeviceM(true);
         }
 
@@ -562,8 +562,8 @@ namespace Device
 
             // 关闭除总电源外的所有继电器
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
 
             WriteRelayDeviceM(true);
 
