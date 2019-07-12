@@ -153,21 +153,6 @@ namespace Device
         /// </summary>
         private void IdleEntry()
         {
-            // relay device M
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
-            // relay device S
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            // update status
-            WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
-
             nlogger.Debug("Idle Entry.");
         }
 
