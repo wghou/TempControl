@@ -99,7 +99,7 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                //this.ErrorAskForClose = true;
+                this.ErrorAskForClose = true;
                 logger.Info("出现错误，用户未做处理，关闭系统软件！");
                 // 60秒后关闭计算机
                 System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");

@@ -201,17 +201,8 @@ namespace TempControl
 
         private void checkBox_exit_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question) 
-                != DialogResult.Yes)
-            {
-                return;
-            }
+            this.ErrorAskForClose = false;
 
-            // 关闭所有继电器
-            _device.ryDeviceM.ryStatusToSet = new bool[16];
-            _device.ryDeviceM.closeDevice();
-            _device.ryDeviceS.ryStatusToSet = new bool[16];
-            _device.ryDeviceS.closeDevice();
             this.Close();
         }
 
