@@ -45,23 +45,13 @@
             this.checkBox_auto = new System.Windows.Forms.CheckBox();
             this.pictureBoxM = new System.Windows.Forms.PictureBox();
             this.checkBox_debug = new System.Windows.Forms.CheckBox();
-            this.checkBox_ryM3 = new System.Windows.Forms.CheckBox();
-            this.checkBox_ryM6 = new System.Windows.Forms.CheckBox();
-            this.checkBox_ryM2 = new System.Windows.Forms.CheckBox();
-            this.checkBox_ryM5 = new System.Windows.Forms.CheckBox();
-            this.checkBox_ryM1 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM4 = new System.Windows.Forms.CheckBox();
+            this.checkBox_ryM5 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM0 = new System.Windows.Forms.CheckBox();
             this.checkBox_data = new System.Windows.Forms.CheckBox();
             this.groupBox_ry1 = new System.Windows.Forms.GroupBox();
-            this.pictureBox_ryS1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox_ryM6 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM5 = new System.Windows.Forms.PictureBox();
-            this.pictureBox_ryS0 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox_ryM3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox_ryM2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox_ryM1 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM0 = new System.Windows.Forms.PictureBox();
             this.groupBox_tempM = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -81,14 +71,8 @@
             this.checkBox_logS = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS0)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM0)).BeginInit();
             this.groupBox_tempM.SuspendLayout();
             this.groupBox_tempS.SuspendLayout();
@@ -280,51 +264,27 @@
             // 
             // checkBox_ryM2
             // 
-            this.checkBox_ryM2.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM2.Location = new System.Drawing.Point(6, 154);
-            this.checkBox_ryM2.Name = "checkBox_ryM2";
-            this.checkBox_ryM2.Size = new System.Drawing.Size(95, 50);
-            this.checkBox_ryM2.TabIndex = 25;
-            this.checkBox_ryM2.Text = "主槽控温";
-            this.checkBox_ryM2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_ryM2.UseVisualStyleBackColor = true;
-            this.checkBox_ryM2.Click += new System.EventHandler(this.checkBox_ryM2_Click);
-            // 
-            // checkBox_ryM5
-            // 
-            this.checkBox_ryM5.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM5.Location = new System.Drawing.Point(144, 87);
-            this.checkBox_ryM5.Name = "checkBox_ryM5";
-            this.checkBox_ryM5.Size = new System.Drawing.Size(95, 50);
-            this.checkBox_ryM5.TabIndex = 24;
-            this.checkBox_ryM5.Text = "辅槽循环";
-            this.checkBox_ryM5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_ryM5.UseVisualStyleBackColor = true;
-            this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryM5_Click);
-            // 
-            // checkBox_ryM1
-            // 
-            this.checkBox_ryM1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM1.Location = new System.Drawing.Point(6, 87);
-            this.checkBox_ryM1.Name = "checkBox_ryM1";
-            this.checkBox_ryM1.Size = new System.Drawing.Size(95, 50);
-            this.checkBox_ryM1.TabIndex = 23;
-            this.checkBox_ryM1.Text = "主槽快冷";
-            this.checkBox_ryM1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_ryM1.UseVisualStyleBackColor = true;
-            this.checkBox_ryM1.Click += new System.EventHandler(this.checkBox_ryM1_Click);
-            // 
-            // checkBox_ryM4
-            // 
             this.checkBox_ryM4.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM4.Location = new System.Drawing.Point(144, 20);
-            this.checkBox_ryM4.Name = "checkBox_ryM4";
-            this.checkBox_ryM4.Size = new System.Drawing.Size(95, 50);
-            this.checkBox_ryM4.TabIndex = 22;
-            this.checkBox_ryM4.Text = "辅槽制冷";
+            this.checkBox_ryM4.Location = new System.Drawing.Point(8, 92);
+            this.checkBox_ryM4.Name = "checkBox_ryM2";
+            this.checkBox_ryM4.Size = new System.Drawing.Size(81, 50);
+            this.checkBox_ryM4.TabIndex = 25;
+            this.checkBox_ryM4.Text = "制冷";
             this.checkBox_ryM4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM4.UseVisualStyleBackColor = true;
             this.checkBox_ryM4.Click += new System.EventHandler(this.checkBox_ryM4_Click);
+            // 
+            // checkBox_ryM4
+            // 
+            this.checkBox_ryM5.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_ryM5.Location = new System.Drawing.Point(10, 171);
+            this.checkBox_ryM5.Name = "checkBox_ryM4";
+            this.checkBox_ryM5.Size = new System.Drawing.Size(81, 50);
+            this.checkBox_ryM5.TabIndex = 22;
+            this.checkBox_ryM5.Text = "快冷";
+            this.checkBox_ryM5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_ryM5.UseVisualStyleBackColor = true;
+            this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryM5_Click);
             // 
             // checkBox_ryM0
             // 
@@ -354,28 +314,16 @@
             // groupBox_ry1
             // 
             this.groupBox_ry1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.groupBox_ry1.Controls.Add(this.pictureBox_ryS1);
-            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM6);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryM5);
-            this.groupBox_ry1.Controls.Add(this.pictureBox_ryS0);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryM4);
-            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM3);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM0);
             this.groupBox_ry1.Controls.Add(this.checkBox_data);
             this.groupBox_ry1.Controls.Add(this.checkBox_exit);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryS0);
             this.groupBox_ry1.Controls.Add(this.checkBox_auto);
-            this.groupBox_ry1.Controls.Add(this.checkBox_ryS1);
-            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM2);
-            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM1);
-            this.groupBox_ry1.Controls.Add(this.pictureBox_ryM0);
-            this.groupBox_ry1.Controls.Add(this.checkBox_ryM0);
-            this.groupBox_ry1.Controls.Add(this.checkBox_ryM4);
-            this.groupBox_ry1.Controls.Add(this.checkBox_ryM1);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM5);
-            this.groupBox_ry1.Controls.Add(this.checkBox_ryM3);
-            this.groupBox_ry1.Controls.Add(this.checkBox_ryM2);
-            this.groupBox_ry1.Controls.Add(this.checkBox_ryM6);
-            this.groupBox_ry1.Location = new System.Drawing.Point(365, 174);
+            this.groupBox_ry1.Controls.Add(this.checkBox_ryM4);
+            this.groupBox_ry1.Location = new System.Drawing.Point(499, 204);
             this.groupBox_ry1.Name = "groupBox_ry1";
             this.groupBox_ry1.Size = new System.Drawing.Size(385, 291);
             this.groupBox_ry1.TabIndex = 31;
@@ -416,11 +364,11 @@
             // 
             // pictureBox_ryM4
             // 
-            this.pictureBox_ryM4.Location = new System.Drawing.Point(146, 22);
-            this.pictureBox_ryM4.Name = "pictureBox_ryM4";
-            this.pictureBox_ryM4.Size = new System.Drawing.Size(30, 10);
-            this.pictureBox_ryM4.TabIndex = 33;
-            this.pictureBox_ryM4.TabStop = false;
+            this.pictureBox_ryM5.Location = new System.Drawing.Point(12, 173);
+            this.pictureBox_ryM5.Name = "pictureBox_ryM4";
+            this.pictureBox_ryM5.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM5.TabIndex = 33;
+            this.pictureBox_ryM5.TabStop = false;
             // 
             // pictureBox_ryM3
             // 
@@ -432,11 +380,11 @@
             // 
             // pictureBox_ryM2
             // 
-            this.pictureBox_ryM2.Location = new System.Drawing.Point(8, 156);
-            this.pictureBox_ryM2.Name = "pictureBox_ryM2";
-            this.pictureBox_ryM2.Size = new System.Drawing.Size(30, 10);
-            this.pictureBox_ryM2.TabIndex = 31;
-            this.pictureBox_ryM2.TabStop = false;
+            this.pictureBox_ryM4.Location = new System.Drawing.Point(10, 94);
+            this.pictureBox_ryM4.Name = "pictureBox_ryM2";
+            this.pictureBox_ryM4.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryM4.TabIndex = 31;
+            this.pictureBox_ryM4.TabStop = false;
             // 
             // pictureBox_ryM1
             // 
@@ -678,14 +626,8 @@
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();
             this.groupBox_ry1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS0)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM0)).EndInit();
             this.groupBox_tempM.ResumeLayout(false);
             this.groupBox_tempM.PerformLayout();
@@ -714,12 +656,8 @@
         private System.Windows.Forms.CheckBox checkBox_auto;
         private System.Windows.Forms.PictureBox pictureBoxM;
         private System.Windows.Forms.CheckBox checkBox_debug;
-        private System.Windows.Forms.CheckBox checkBox_ryM3;
-        private System.Windows.Forms.CheckBox checkBox_ryM6;
-        private System.Windows.Forms.CheckBox checkBox_ryM2;
-        private System.Windows.Forms.CheckBox checkBox_ryM5;
-        private System.Windows.Forms.CheckBox checkBox_ryM1;
         private System.Windows.Forms.CheckBox checkBox_ryM4;
+        private System.Windows.Forms.CheckBox checkBox_ryM5;
         private System.Windows.Forms.CheckBox checkBox_ryM0;
         private System.Windows.Forms.CheckBox checkBox_data;
         private System.Windows.Forms.GroupBox groupBox_ry1;
@@ -728,23 +666,8 @@
         private System.Windows.Forms.CheckBox checkBox_curveM;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.GroupBox groupBox_tempS;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox checkBox_curveS;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.PictureBox pictureBoxS;
-        private System.Windows.Forms.Label label_tempS;
-        private System.Windows.Forms.Label label_tempSetS;
-        private System.Windows.Forms.Label label_powerS;
-        private System.Windows.Forms.CheckBox checkBox_paramS;
-        private System.Windows.Forms.CheckBox checkBox_logS;
-        private System.Windows.Forms.PictureBox pictureBox_ryM6;
         private System.Windows.Forms.PictureBox pictureBox_ryM5;
         private System.Windows.Forms.PictureBox pictureBox_ryM4;
-        private System.Windows.Forms.PictureBox pictureBox_ryM3;
-        private System.Windows.Forms.PictureBox pictureBox_ryM2;
-        private System.Windows.Forms.PictureBox pictureBox_ryM1;
         private System.Windows.Forms.PictureBox pictureBox_ryM0;
         private System.Windows.Forms.PictureBox pictureBox_ryS1;
         private System.Windows.Forms.PictureBox pictureBox_ryS0;

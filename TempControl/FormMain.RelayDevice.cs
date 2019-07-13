@@ -44,21 +44,21 @@ namespace TempControl
             }
         }
 
-        private void checkBox_ryM2_Click(object sender, EventArgs e)
+        private void checkBox_ryM4_Click(object sender, EventArgs e)
         {
-            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryM2.Checked;
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryM4.Checked;
             RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
             setRyStatus.BeginInvoke(false, null, null);
 
-            if (checkBox_ryM2.Checked == true)
+            if (checkBox_ryM4.Checked == true)
             {
-                nlogger.Info("打开电源 M2!");
-                Utils.Logger.Op("打开电源 M2!");
+                Utils.Logger.Sys("打开电源 M4!");
+                Utils.Logger.Op("打开电源 M4!");
             }
             else
             {
-                nlogger.Info("关闭电源 M2!");
-                Utils.Logger.Op("关闭电源 M2!");
+                Utils.Logger.Sys("关闭电源 M4!");
+                Utils.Logger.Op("关闭电源 M4!");
             }
         }
 
@@ -80,21 +80,21 @@ namespace TempControl
             }
         }
 
-        private void checkBox_ryM4_Click(object sender, EventArgs e)
+        private void checkBox_ryM5_Click(object sender, EventArgs e)
         {
-            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryM4.Checked;
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryM5.Checked;
             RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
             setRyStatus.BeginInvoke(false, null, null);
 
-            if (checkBox_ryM4.Checked == true)
+            if (checkBox_ryM5.Checked == true)
             {
-                nlogger.Info("打开电源 M4!");
-                Utils.Logger.Op("打开电源 M4!");
+                Utils.Logger.Sys("打开电源 M5!");
+                Utils.Logger.Op("打开电源 M5!");
             }
             else
             {
-                nlogger.Info("关闭电源 M4!");
-                Utils.Logger.Op("关闭电源 M4!");
+                Utils.Logger.Sys("关闭电源 M5!");
+                Utils.Logger.Op("关闭电源 M5!");
             }
         }
 
