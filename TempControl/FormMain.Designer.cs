@@ -43,7 +43,7 @@
             this.checkBox_paramM = new System.Windows.Forms.CheckBox();
             this.checkBox_exit = new System.Windows.Forms.CheckBox();
             this.checkBox_auto = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBoxM = new System.Windows.Forms.PictureBox();
             this.checkBox_debug = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM3 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM6 = new System.Windows.Forms.CheckBox();
@@ -73,7 +73,7 @@
             this.checkBox_curveS = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBoxS = new System.Windows.Forms.PictureBox();
             this.label_tempS = new System.Windows.Forms.Label();
             this.label_tempSetS = new System.Windows.Forms.Label();
             this.label_powerS = new System.Windows.Forms.Label();
@@ -92,7 +92,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM0)).BeginInit();
             this.groupBox_tempM.SuspendLayout();
             this.groupBox_tempS.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).BeginInit();
             this.SuspendLayout();
             // 
             // label_tempM
@@ -163,7 +163,7 @@
             this.checkBox_ryS0.Name = "checkBox_ryS0";
             this.checkBox_ryS0.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryS0.TabIndex = 7;
-            this.checkBox_ryS0.Text = "继电器 0";
+            this.checkBox_ryS0.Text = "取样泵";
             this.checkBox_ryS0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS0.UseVisualStyleBackColor = true;
             this.checkBox_ryS0.Click += new System.EventHandler(this.checkBox_ryS0_Click);
@@ -175,7 +175,7 @@
             this.checkBox_ryS1.Name = "checkBox_ryS1";
             this.checkBox_ryS1.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryS1.TabIndex = 9;
-            this.checkBox_ryS1.Text = "继电器 1";
+            this.checkBox_ryS1.Text = "取样电磁阀";
             this.checkBox_ryS1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS1.UseVisualStyleBackColor = true;
             this.checkBox_ryS1.Click += new System.EventHandler(this.checkBox_ryS1_Click);
@@ -235,11 +235,11 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(8, 19);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(40, 10);
-            this.pictureBox1.TabIndex = 19;
-            this.pictureBox1.TabStop = false;
+            this.pictureBoxM.Location = new System.Drawing.Point(8, 19);
+            this.pictureBoxM.Name = "pictureBox1";
+            this.pictureBoxM.Size = new System.Drawing.Size(40, 10);
+            this.pictureBoxM.TabIndex = 19;
+            this.pictureBoxM.TabStop = false;
             // 
             // checkBox_debug
             // 
@@ -261,7 +261,7 @@
             this.checkBox_ryM3.Name = "checkBox_ryM3";
             this.checkBox_ryM3.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryM3.TabIndex = 27;
-            this.checkBox_ryM3.Text = "继电器 3";
+            this.checkBox_ryM3.Text = "辅槽控温";
             this.checkBox_ryM3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM3.UseVisualStyleBackColor = true;
             this.checkBox_ryM3.Click += new System.EventHandler(this.checkBox_ryM3_Click);
@@ -273,7 +273,7 @@
             this.checkBox_ryM6.Name = "checkBox_ryM6";
             this.checkBox_ryM6.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryM6.TabIndex = 26;
-            this.checkBox_ryM6.Text = "继电器 6";
+            this.checkBox_ryM6.Text = "辅槽快冷";
             this.checkBox_ryM6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM6.UseVisualStyleBackColor = true;
             this.checkBox_ryM6.Click += new System.EventHandler(this.checkBox_ryM6_Click);
@@ -285,7 +285,7 @@
             this.checkBox_ryM2.Name = "checkBox_ryM2";
             this.checkBox_ryM2.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryM2.TabIndex = 25;
-            this.checkBox_ryM2.Text = "继电器 2";
+            this.checkBox_ryM2.Text = "主槽控温";
             this.checkBox_ryM2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM2.UseVisualStyleBackColor = true;
             this.checkBox_ryM2.Click += new System.EventHandler(this.checkBox_ryM2_Click);
@@ -297,7 +297,7 @@
             this.checkBox_ryM5.Name = "checkBox_ryM5";
             this.checkBox_ryM5.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryM5.TabIndex = 24;
-            this.checkBox_ryM5.Text = "继电器 5";
+            this.checkBox_ryM5.Text = "辅槽循环";
             this.checkBox_ryM5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM5.UseVisualStyleBackColor = true;
             this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryM5_Click);
@@ -309,7 +309,7 @@
             this.checkBox_ryM1.Name = "checkBox_ryM1";
             this.checkBox_ryM1.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryM1.TabIndex = 23;
-            this.checkBox_ryM1.Text = "继电器 1";
+            this.checkBox_ryM1.Text = "主槽快冷";
             this.checkBox_ryM1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM1.UseVisualStyleBackColor = true;
             this.checkBox_ryM1.Click += new System.EventHandler(this.checkBox_ryM1_Click);
@@ -321,7 +321,7 @@
             this.checkBox_ryM4.Name = "checkBox_ryM4";
             this.checkBox_ryM4.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryM4.TabIndex = 22;
-            this.checkBox_ryM4.Text = "继电器 4";
+            this.checkBox_ryM4.Text = "辅槽制冷";
             this.checkBox_ryM4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM4.UseVisualStyleBackColor = true;
             this.checkBox_ryM4.Click += new System.EventHandler(this.checkBox_ryM4_Click);
@@ -333,7 +333,7 @@
             this.checkBox_ryM0.Name = "checkBox_ryM0";
             this.checkBox_ryM0.Size = new System.Drawing.Size(95, 50);
             this.checkBox_ryM0.TabIndex = 21;
-            this.checkBox_ryM0.Text = "继电器 0";
+            this.checkBox_ryM0.Text = "总电源";
             this.checkBox_ryM0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM0.UseVisualStyleBackColor = true;
             this.checkBox_ryM0.Click += new System.EventHandler(this.checkBox_ryM0_Click);
@@ -465,7 +465,7 @@
             this.groupBox_tempM.Controls.Add(this.checkBox_curveM);
             this.groupBox_tempM.Controls.Add(this.label2);
             this.groupBox_tempM.Controls.Add(this.label4);
-            this.groupBox_tempM.Controls.Add(this.pictureBox1);
+            this.groupBox_tempM.Controls.Add(this.pictureBoxM);
             this.groupBox_tempM.Controls.Add(this.label_tempM);
             this.groupBox_tempM.Controls.Add(this.label_tempSetM);
             this.groupBox_tempM.Controls.Add(this.label_powerM);
@@ -535,7 +535,7 @@
             this.groupBox_tempS.Controls.Add(this.checkBox_curveS);
             this.groupBox_tempS.Controls.Add(this.label6);
             this.groupBox_tempS.Controls.Add(this.label7);
-            this.groupBox_tempS.Controls.Add(this.pictureBox2);
+            this.groupBox_tempS.Controls.Add(this.pictureBoxS);
             this.groupBox_tempS.Controls.Add(this.label_tempS);
             this.groupBox_tempS.Controls.Add(this.label_tempSetS);
             this.groupBox_tempS.Controls.Add(this.label_powerS);
@@ -596,11 +596,11 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(8, 19);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(40, 10);
-            this.pictureBox2.TabIndex = 19;
-            this.pictureBox2.TabStop = false;
+            this.pictureBoxS.Location = new System.Drawing.Point(8, 19);
+            this.pictureBoxS.Name = "pictureBox2";
+            this.pictureBoxS.Size = new System.Drawing.Size(40, 10);
+            this.pictureBoxS.TabIndex = 19;
+            this.pictureBoxS.TabStop = false;
             // 
             // label_tempS
             // 
@@ -676,7 +676,7 @@
             this.Text = "自动控温系统";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();
             this.groupBox_ry1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM6)).EndInit();
@@ -691,7 +691,7 @@
             this.groupBox_tempM.PerformLayout();
             this.groupBox_tempS.ResumeLayout(false);
             this.groupBox_tempS.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -712,7 +712,7 @@
         private System.Windows.Forms.CheckBox checkBox_paramM;
         private System.Windows.Forms.CheckBox checkBox_exit;
         private System.Windows.Forms.CheckBox checkBox_auto;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBoxM;
         private System.Windows.Forms.CheckBox checkBox_debug;
         private System.Windows.Forms.CheckBox checkBox_ryM3;
         private System.Windows.Forms.CheckBox checkBox_ryM6;
@@ -733,7 +733,7 @@
         private System.Windows.Forms.CheckBox checkBox_curveS;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBoxS;
         private System.Windows.Forms.Label label_tempS;
         private System.Windows.Forms.Label label_tempSetS;
         private System.Windows.Forms.Label label_powerS;

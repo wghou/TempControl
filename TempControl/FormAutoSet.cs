@@ -436,7 +436,7 @@ namespace TempControl
                         }
                     }
 
-                    devicesAll.StopAutoControl();
+                    devicesAll.SuspendAutoControl();
 
                     // 取消 - 实验完成后不关闭计算机
                     devicesAll._runningParameters.shutDownComputer = false;

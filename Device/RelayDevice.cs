@@ -111,13 +111,12 @@ namespace Device
                 // 先主动关闭串口
                 try { sPort.Close(); } catch { }
 
+                sPort.PortName = portName;
+
                 string[] portNames = SerialPort.GetPortNames();
-                if (portNames.Contains(portName.ToUpper()))
+                if (!portNames.Contains(portName.ToUpper()))
                 {
-                    sPort.PortName = portName;
-                }
-                else
-                {
+                    nlogger.Error("端口 " + portName + " 不存在");
                     return !Enable;
                 }
                 // 串口打开 / 关闭测试
