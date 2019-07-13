@@ -19,6 +19,12 @@ namespace TempControl
             _device.TimerTickEvent += _device_TimerTickEvent;
         }
 
+        public delegate void mainFormTimeTickEvent();
+        /// <summary>
+        /// 主界面定时器事件
+        /// </summary>
+        public event mainFormTimeTickEvent mainFormTimeTickEventHandler;
+
         // 定时器更新事件
         private void _device_TimerTickEvent()
         {
@@ -49,6 +55,9 @@ namespace TempControl
                 // 辅槽温度设定值
                 label_tempSetS.Text = this._device.tpDeviceS.tpParam[0].ToString("0.000") + "℃";
             }));
+
+            // 执行主界面定时器事件 handler
+            mainFormTimeTickEventHandler?.Invoke();
         }
 
         private void _device_ErrorStatusChangedEvent(System.Collections.Generic.Dictionary<Device.ErrorCode, uint> errDict)
@@ -101,8 +110,9 @@ namespace TempControl
             {
                 this.ErrorAskForClose = true;
                 nlogger.Info("出现错误，用户未做处理，关闭系统软件！");
-                // 60秒后关闭计算机
-                System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
+
+                _device.ShutdownComputer();
+
                 this.Close();
             }));
         }
@@ -137,17 +147,13 @@ namespace TempControl
                         // 系统流程
                         this.label_controlState.Text = "测量";
                         break;
-                    case Device.State.Stop:
+                    case Device.State.ShutdownPC:
                         // 系统流程
                         this.label_controlState.Text = "系统停止";
                         break;
                     case Device.State.Idle:
                         // 系统流程
                         this.label_controlState.Text = "空闲";
-                        break;
-                    case Device.State.Undefine:
-                        // 系统流程
-                        this.label_controlState.Text = "未定义";
                         break;
                 }
             }));
@@ -185,11 +191,9 @@ namespace TempControl
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 按钮状态
-                foreach (var chk in this.dictCheckBoxsRyS)
-                {
-                    chk.Value.Checked = ryStatus[(int)chk.Key];
-                    pictureBoxRyS[chk.Key].Image = ryStatus[(int)chk.Key] ? mBmpRelayGreen : mBmpRelayRed;
-                }
+                foreach (var chk in this.dictCheckBoxsRyS) chk.Value.Checked = ryStatus[(int)chk.Key];
+                // 指示灯状态
+                foreach (var pic in this.pictureBoxRyS) pictureBoxRyS[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
             }));
 
             if (err != Device.RelayDevice.Err_r.NoError)

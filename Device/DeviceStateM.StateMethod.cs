@@ -29,14 +29,12 @@ namespace Device
             // error check
             ErrorCheckOutRange();   // 温度超出界限
 
-
             // 驱动状态机执行流程
+            currentTemptPointState.stateCounts++;
             _machine.Fire(_TickTrigger, _runningParameters.readTempIntervalSec * 1000);
-
    
             // 定时器事件
             TimerTickEvent?.Invoke();
-
 
             // 全局错误信息 - 事件
             uint errCnt = CheckErrorStatus();
@@ -69,9 +67,7 @@ namespace Device
         {
             _tickTimer.Start();
 
-           // _ryConnectTimer.Start();
-
-            _machine.Fire(Trigger.ElectOn);
+            _ryConnectTimer.Start();
         }
 
 
@@ -81,9 +77,14 @@ namespace Device
         /// <param name="act"></param>
         private void OnTransitionedAction(StateMachine<State, Trigger>.Transition act)
         {
+            nlogger.Debug("On State Transitioned.");
+
             Trigger trigger = act.Trigger;
             State source = act.Source;
             State dest = act.Destination;
+
+            // 状态计数器 清零
+            currentTemptPointState.stateCounts = 0;
 
             StateChangedEvent?.Invoke(dest);
         }
@@ -197,9 +198,6 @@ namespace Device
                 return;
             }
 
-            // 定义当前状态
-            currentTemptPointState.stateCounts = 0;
-
             // 查找未测量的温度点
             int i = 0;
             for (; i < temperaturePointList.Count; i++)
@@ -221,7 +219,7 @@ namespace Device
             {
                 if (tpDeviceM.temperatures.Count == 0)
                 {
-                    _machine.Fire(Trigger.ForceStop);
+                    _machine.Fire(Trigger.ForceShutdownPC);
                     return;
                 }
 
@@ -248,12 +246,13 @@ namespace Device
         }
 
 
- 
         /// <summary>
         /// TempUp Entry
         /// </summary>
         private void TempUpEntry()
         {
+            nlogger.Debug("TempUp Entry.");
+
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
@@ -270,11 +269,13 @@ namespace Device
             WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
+            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+            //currentTemptPointState.paramS[1] = 0.0f;    // 将修正值清零
+            currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-
             if (tpDeviceS.Enable == true)
             {
                 currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
@@ -294,17 +295,12 @@ namespace Device
         {
             nlogger.Debug("TempUp Tick: " + tic.ToString() + " ms");
 
-            // 状态时间计数器
-            currentTemptPointState.stateCounts++;
-
             ErrorCheckTempNotUp();  // 温度不升高
-
 
             // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
             if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp - 0.1)
             {
                 // 如果主槽中温度高于设定值，则进入下一个状态 - 控温
-                currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.StartControl);
                 return;
             }
@@ -317,7 +313,6 @@ namespace Device
         {
             nlogger.Debug("TempUp Exit.");
         }
-
 
 
         /// <summary>
@@ -343,7 +338,10 @@ namespace Device
 
             // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
+            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
+            currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
@@ -367,18 +365,13 @@ namespace Device
         {
             nlogger.Debug("TempDown Tick: " + tic.ToString() + " ms");
 
-            // 状态时间计数器
-            currentTemptPointState.stateCounts++;
-
             // error check
             ErrorCheckTempNotDown();    // 温度不降低
-
 
             // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
             if (tpDeviceM.temperatures.Last() < currentTemptPointState.stateTemp + 0.1)
             {
                 // 如果主槽中温度高于设定值，则进入下一个状态 - 控温
-                currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.StartControl);
                 return;
             }
@@ -429,20 +422,15 @@ namespace Device
         {
             nlogger.Debug("Control Tick: " + tic.ToString() + " ms");
 
-            // 状态时间计数器
-            currentTemptPointState.stateCounts++;
-
             // error check
             ErrorCheckBasis();          // 当前温度偏离温度设定点过大
             ErrorCheckTempFlucLarge();  // 波动度过大
-
 
             // 判断 - 控温状态下，温度波动度满足判断条件（5 分钟 0.001），则立即进入稳定状态
             bool steady = tpDeviceM.checkFlucCount(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
             if (steady)
             {
                 // 进入下一个状态，下一个状态应该是 稳定
-                currentTemptPointState.stateCounts = 0;
                 _machine.Fire(Trigger.AchieveSteady);
                 nlogger.Info((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
             }
@@ -494,13 +482,9 @@ namespace Device
         {
             nlogger.Debug("Stableick: " + tic.ToString() + " ms");
 
-            // 状态时间计数器
-            currentTemptPointState.stateCounts++;
-
             // error check
             ErrorCheckBasis();          // 当前温度与设定温度点偏离过大
             ErrorCheckTempFlucLarge();  // 波动度过大
-
 
             // 判断 - 测温电桥温度值的波动度满足条件（2 分钟 0.001），则进入测量状态
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
@@ -511,7 +495,6 @@ namespace Device
                 if (true)
                 {
                     // 温度稳定度达到了要求，进入下一个状态 - 测量
-                    currentTemptPointState.stateCounts = 0;
                     _machine.Fire(Trigger.StartMeasure);
 
                     nlogger.Info((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
@@ -565,15 +548,11 @@ namespace Device
         {
             nlogger.Debug("MeasureTick: " + tic.ToString() + " ms");
 
-            // 状态时间计数器
-            currentTemptPointState.stateCounts++;
-
             // measure
 
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;
-
 
             // 查找下一个未测量的温度点
             int i = currentTemptPointState.tempPointIndex + 1;
@@ -583,7 +562,6 @@ namespace Device
                 {
                     currentTemptPointState = temperaturePointList[i];
                     currentTemptPointState.tempPointIndex = i;
-                    currentTemptPointState.stateCounts = 0;
                     _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
 
                     nlogger.Info("开始下一个温度点的控温 - 稳定 - 测量流程...");
@@ -599,7 +577,7 @@ namespace Device
                 // 控制状态序列为空，说明实验已经结束了
                 if (_runningParameters.shutDownComputer == true)
                 {
-                    _machine.Fire(Trigger.ForceStop);
+                    _machine.Fire(Trigger.ForceShutdownPC);
                 }
                 else
                 {
@@ -618,9 +596,9 @@ namespace Device
         }
 
         /// <summary>
-        /// Stop Entry
+        /// ShutdownPC Entry
         /// </summary>
-        private void StopEntry()
+        private void ShutdownPCEntry()
         {
             // relay device M
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
@@ -641,18 +619,22 @@ namespace Device
         }
 
         /// <summary>
-        /// Stop Tick
+        /// ShutdownPC Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
-        private void StopTick(int tic)
+        private void ShutdownPCTick(int tic)
         {
             nlogger.Debug("StopTick: " + tic.ToString() + " ms");
+
+            System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
+
+            _machine.Fire(Trigger.FinishedAll);
         }
 
         /// <summary>
-        /// Stop Exit
+        /// ShutdownPC Exit
         /// </summary>
-        private void StopExit()
+        private void ShutdownPCExit()
         {
             nlogger.Debug("Stop Exit.");
         }

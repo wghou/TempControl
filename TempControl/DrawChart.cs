@@ -10,9 +10,10 @@ namespace TempControl
     {
         #region Members
 
-        // 数据来源
-        public Device.TempDevice tpDevice;
-        public Device.RunningParamStruct runningParam;
+        private List<float> dataShow;
+        private object dataLocker;
+        private int digits;
+        private int dataIntervalSec;
 
         // Value
         private float max = 0;
@@ -56,41 +57,34 @@ namespace TempControl
                                                     // 661 is suitable for 800*? chart
                                                     // Use for saving temperature data only for chart drawing
         private List<float> tempListForChart;// 所有要绘制的温度数据
-
-        private int digits;     // 数据分辨率
         #endregion
 
         #region constructor
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="dataIntervalSec"> 显示数据之间的时间间隔 </param>
         /// <param name="height">Height of chart</param>
         /// <param name="width">width of chart</param>
         /// <param name="colNum">Column number of chart</param>
         /// <param name="rowNum">Row number of chart</param>
-        public DrawChart(Device.TempDevice dev, Device.RunningParamStruct devicePm, int height, int width, int colNum, int rowNum)
+        public DrawChart(ChartConfig cfg,int height, int width)
         {
-            tpDevice = dev;
-            runningParam = devicePm;
+            this.dataShow = cfg.dataShow;
+            this.dataLocker = cfg.dataLocker;
+            this.dataIntervalSec = cfg.dataIntervalSec;
+            this.digits = cfg.digits;
 
             this.height = height;
             this.width = width;
-            this.colNum = colNum;
-            this.rowNum = rowNum;
+            this.colNum = cfg.column;
+            this.rowNum = cfg.row;
 
             CalcSize();
             PutOnColor();
 
             mBmp = new Bitmap(this.width, this.height);
             mGhp = Graphics.FromImage(mBmp);
-
-            if (tpDevice.tpDeviceName == "主槽控温设备")
-                digits = 4;
-            else if (tpDevice.tpDeviceName == "辅槽控温设备")
-                digits = 3;
-            else
-                digits = 4;     // 默认 4 位有效数字
-
         }
         #endregion
 
@@ -130,17 +124,17 @@ namespace TempControl
         /// </summary>
         private void MoveTempLocal()
         {
-            lock(tpDevice.tpShowLocker)
+            lock(dataLocker)
             {
                 // 将温度数据从 Device.TempDevice.temperatures 中读取到 tempListForChart 中
-                if (tpDevice.temperaturesShow.Count < tempChartFixLen)
+                if (dataShow.Count < tempChartFixLen)
                 {
-                    tempListForChart = tpDevice.temperaturesShow.GetRange(0, tpDevice.temperaturesShow.Count);
+                    tempListForChart = dataShow.GetRange(0, dataShow.Count);
                 }
                 else
                 {
-                    tempListForChart = tpDevice.temperaturesShow.GetRange
-                        (tpDevice.temperaturesShow.Count - tempChartFixLen, tempChartFixLen);
+                    tempListForChart = dataShow.GetRange
+                        (dataShow.Count - tempChartFixLen, tempChartFixLen);
                 }
             }
 
@@ -206,12 +200,12 @@ namespace TempControl
         {
             List<int[]> timeTags = new List<int[]>();
 
-            int minuteInterval = timeColInt * runningParam.readTempIntervalSec;
+            int minuteInterval = timeColInt * dataIntervalSec;
 
             DateTime dt = DateTime.Now;
             int hour = dt.Hour;
             int minute = (int)Math.Round(dt.Minute + (float)dt.Second / 60.0     // 60.0 means 1min = 60s
-                - (tempListForChart.Count * runningParam.readTempIntervalSec / 60.0) - minuteInterval);
+                - (tempListForChart.Count * dataIntervalSec / 60.0) - minuteInterval);
 
             // Avoid a minus minute
             if (minute < 0)
@@ -288,7 +282,7 @@ namespace TempControl
             }
 #endif
             // wghou -> 分辨率改为 0.0001
-            if(digits==3)
+            if(digits == 3)
             {
                 float max3f = (float)Math.Round(max, digits);
                 float step3f = (float)Math.Round(margin / rowNum, digits);
