@@ -53,16 +53,9 @@ namespace TempControl
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryM4;
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryM5;
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryM6;
-            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryM7;
 
             dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryS0;
             dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryS1;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryS2;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryS3;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryS4;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryS5;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryS6;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryS7;
 
             // picture box
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryM0);
@@ -72,16 +65,9 @@ namespace TempControl
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_4, pictureBox_ryM4);
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_5, pictureBox_ryM5);
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_6, pictureBox_ryM6);
-            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_7, pictureBox_ryM7);
 
             pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryS0);
             pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_1, pictureBox_ryS1);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_2, pictureBox_ryS2);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_3, pictureBox_ryS3);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_4, pictureBox_ryS4);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_5, pictureBox_ryS5);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_6, pictureBox_ryS6);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_7, pictureBox_ryS7);
 
             // 用于继电器的指示灯
             mBmpRelayRed = new Bitmap(this.pictureBox_ryM0.Width, pictureBox_ryM0.Height);
@@ -150,20 +136,13 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                _device.tpDeviceS.Enable = checkBox_tempS.Checked;
-                this.groupBox_tempS.Enabled = checkBox_tempS.Checked;
+                _device.tpDeviceS.Enable = true;
 
                 _device.ryDeviceM.Enable = true;
-                _device.ryDeviceS.Enable = this.checkBox_ryEn2.Checked;
-                if (this.checkBox_ryEn2.Checked) {
-                    this.groupBox_ry2.Text = "继电器模块 2";
-                }
-                else {
-                    this.groupBox_ry2.Text = "继电器模块 1 (备用)";
-                }
+                _device.ryDeviceS.Enable = true;
 
-                _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
-                _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
+                _device.ryDeviceM.DisconnectProtect = true;
+                _device.ryDeviceS.DisconnectProtect = true;
             }));
 
             bool confDevice = _device.Configure();

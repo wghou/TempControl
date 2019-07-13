@@ -38,6 +38,7 @@ namespace TempControl
 
         private TextBox tx = null;
         private TextBox[] paramMTextBox = new TextBox[7];
+        private TextBox[] paramSTextBox = new TextBox[7];
         private float[] paramMCache = new float[7];
         private float[] paramSCache = new float[7];
 
@@ -52,6 +53,14 @@ namespace TempControl
             paramMTextBox[4] = textBox_ratioM;
             paramMTextBox[5] = textBox_integM;
             paramMTextBox[6] = textBox_powerM;
+
+            paramSTextBox[0] = textBox_tpSetS;
+            paramSTextBox[1] = null;
+            paramSTextBox[2] = textBox_advanceS;
+            paramSTextBox[3] = textBox_fuzzyS;
+            paramSTextBox[4] = textBox_ratioS;
+            paramSTextBox[5] = textBox_integS;
+            paramSTextBox[6] = textBox_powerS;
 
             this.timer1.Interval = 10000;
             this.timer1.Tick += Timer1_Tick;
@@ -114,12 +123,19 @@ namespace TempControl
             {
                 ParamShow ps1 = new ParamShow();
                 ps1._index = i + 1;
+                ps1.tpName = "主槽";
                 if (paramList[i].finished == true)
-                    ps1._finish = "已测量";
+                    ps1.editSave = "已测量";
                 else
-                    ps1._finish = "未测量";
+                    ps1.editSave = "未测量";
                 paramList[i].paramM.CopyTo(ps1.param, 0);
                 BList.Add(ps1);
+                ParamShow ps2 = new ParamShow();
+                ps2._index = i + 1;
+                ps2.tpName = "辅槽";
+                ps2.editSave = "参数设置";
+                paramList[i].paramS.CopyTo(ps2.param, 0);
+                BList.Add(ps2);
             }
             dataGridView1.ClearSelection();
         }
@@ -128,7 +144,7 @@ namespace TempControl
         private void FormAutoSet_Load(object sender, EventArgs e)
         {
             index.DataPropertyName = "Index";
-            
+            tpName.DataPropertyName = "TpName";
             tpSet.DataPropertyName = "TemptSet";
             //tpAdjust.DataPropertyName = "TempAdjust";
             advance.DataPropertyName = "Advance";
@@ -137,7 +153,6 @@ namespace TempControl
             integration.DataPropertyName = "Integration";
             power.DataPropertyName = "Power";
             edit.DataPropertyName = "Edit";
-            finish.DataPropertyName = "Finish";
 
 
             dataGridView1.AutoGenerateColumns = false;
@@ -154,8 +169,81 @@ namespace TempControl
                     {
                         TempParam ts = new TempParam();
                         st.paramM.CopyTo(ts.paramM, 0);
+                        st.paramS.CopyTo(ts.paramS, 0);
                         ts.finished = st.finished;
                         paramList.Add(ts);
+                    }
+                }
+                else
+                {
+                    // 从缓存文本中读取温度点
+                    try
+                    {
+                        string[] lines = File.ReadAllLines(@"./params.cache", Encoding.UTF8);
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            // 主槽参数
+                            string line1 = lines[i];
+                            TempParam ts = new TempParam();
+                            i++;
+                            string[] parmM = line1.Split(' ');
+                            if (parmM.Length == 7)
+                            {
+                                float vl;
+                                if (float.TryParse(parmM[0], out vl)) ts.paramM[0] = vl;
+                                else break;
+                                if (float.TryParse(parmM[1], out vl)) ts.paramM[1] = vl;
+                                else break;
+                                if (float.TryParse(parmM[2], out vl)) ts.paramM[2] = vl;
+                                else break;
+                                if (float.TryParse(parmM[3], out vl)) ts.paramM[3] = vl;
+                                else break;
+                                if (float.TryParse(parmM[4], out vl)) ts.paramM[4] = vl;
+                                else break;
+                                if (float.TryParse(parmM[5], out vl)) ts.paramM[5] = vl;
+                                else break;
+                                if (float.TryParse(parmM[6], out vl)) ts.paramM[6] = vl;
+                                else break;
+                            }
+                            else
+                            {
+                                break;
+                            }
+
+                            // 辅槽参数
+                            if (i >= lines.Length) { break; }
+                            string line2 = lines[i];
+                            string[] parmS = line2.Split(' ');
+                            if (parmS.Length == 7)
+                            {
+                                float vl;
+                                if (float.TryParse(parmS[0], out vl)) ts.paramS[0] = vl;
+                                else break;
+                                if (float.TryParse(parmS[1], out vl)) ts.paramS[1] = vl;
+                                else break;
+                                if (float.TryParse(parmS[2], out vl)) ts.paramS[2] = vl;
+                                else break;
+                                if (float.TryParse(parmS[3], out vl)) ts.paramS[3] = vl;
+                                else break;
+                                if (float.TryParse(parmS[4], out vl)) ts.paramS[4] = vl;
+                                else break;
+                                if (float.TryParse(parmS[5], out vl)) ts.paramS[5] = vl;
+                                else break;
+                                if (float.TryParse(parmS[6], out vl)) ts.paramS[6] = vl;
+                                else break;
+                            }
+                            else
+                            {
+                                break;
+                            }
+
+                            // 装入列表中
+                            paramList.Add(ts);
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        
                     }
                 }
 
@@ -171,20 +259,21 @@ namespace TempControl
                     this.checkBox_start.Checked = true;
                     this.checkBox_start.Text = "停止";
                     flowStart = true;
-                    SetAutoButtonEvent?.Invoke(true);
+                    SetAutoButtonEvent(true);
 
                     // 判断是否已设定完成实验测量后关机
                     this.checkBox_shutDown.Checked = devicesAll._runningParameters.shutDownComputer;
                     this.checkBox_shutDown.Enabled = false;
                 }
-                else if(devicesAll._state == Device.State.Idle ||
-                        devicesAll._state == Device.State.ShutdownPC )
+                else if (devicesAll._state == Device.State.Idle ||
+                        devicesAll._state == Device.State.Stop ||
+                        devicesAll._state == Device.State.Undefine)
                 {
                     // 未开始自动控温
                     this.checkBox_start.Checked = false;
                     this.checkBox_start.Text = "开始";
                     flowStart = false;
-                    SetAutoButtonEvent?.Invoke(false);
+                    SetAutoButtonEvent(false);
 
                     // 判断是否已设定完成实验测量后关机
                     this.checkBox_shutDown.Checked = false;
@@ -192,20 +281,24 @@ namespace TempControl
                 }
             }
 
+
             // 更新表格显示
             updateDataGridView();
 
             // 输入窗口的默认数值
             devicesAll.tpDeviceM.tpParam.CopyTo(paramMCache, 0);
+            devicesAll.tpDeviceS.tpParam.CopyTo(paramSCache, 0);
             for (int i = 2; i < 7; i++)
             {
                 if (i < 3)
                 {
                     paramMTextBox[i].Text = paramMCache[i].ToString("0.000");
+                    paramSTextBox[i].Text = paramSCache[i].ToString("0.000");
                 }
                 else
                 {
                     paramMTextBox[i].Text = paramMCache[i].ToString("0");
+                    paramSTextBox[i].Text = paramSCache[i].ToString("0");
                 }
             }
 
@@ -225,7 +318,7 @@ namespace TempControl
                 if (paramList.Count == 0)
                 {
                     flowStart = false;
-                    SetAutoButtonEvent?.Invoke(false);
+                    SetAutoButtonEvent(false);
                     this.checkBox_start.Checked = false;
                     this.checkBox_start.Text = "开始";
                     return;
@@ -236,10 +329,10 @@ namespace TempControl
                 try
                 {
                     // 清空原有文件
-                    FileStream fs = File.Open(@"./params.cache", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                    FileStream fs = File.Open(@"./params.cache", FileMode.Truncate, FileAccess.ReadWrite);
                     if (fs != null) fs.Close();
 
-                    StreamWriter sw = new StreamWriter(@"./params.cache", true, Encoding.UTF8);
+                    StreamWriter sw = new StreamWriter(@"./params.cache", false, Encoding.UTF8);
                     for (int i = 0; i < paramList.Count; i++)
                     {
                         for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
@@ -247,6 +340,12 @@ namespace TempControl
                             sw.Write(paramList[i].paramM[j].ToString() + " ");
                         }
                         sw.Write(paramList[i].paramM[paramList[i].paramM.Length - 1].ToString());
+                        sw.WriteLine();
+                        for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
+                        {
+                            sw.Write(paramList[i].paramS[j].ToString() + " ");
+                        }
+                        sw.Write(paramList[i].paramS[paramList[i].paramM.Length - 1].ToString());
                         sw.WriteLine();
                     }
                     sw.Flush();
@@ -272,11 +371,12 @@ namespace TempControl
                         // 只保存温度点，不再保存
                         Device.TemptPointStruct tp = new Device.TemptPointStruct();
                         paramList[i].paramM.CopyTo(tp.paramM, 0);
+                        paramList[i].paramS.CopyTo(tp.paramS, 0);
                         tp.finished = paramList[i].finished;
                         devicesAll.temperaturePointList.Add(tp);
                     }
 
-                    if(devicesAll._state == Device.State.Idle)
+                    if (devicesAll._state == Device.State.Idle)
                     {
                         devicesAll.StartAutoControl();
                     }
@@ -306,7 +406,7 @@ namespace TempControl
 
                 // 自动控温流程已开始
                 flowStart = true;
-                SetAutoButtonEvent?.Invoke(true);
+                SetAutoButtonEvent(true);
                 checkBox_start.Text = "停止";
 
                 // 开启定时器 - 状态更新
@@ -322,9 +422,6 @@ namespace TempControl
                 lock (this.devicesAll.stepLocker)
                 {
                     // 控温流程当前工作状态 - 停止
-                    //this.devicesAll.currentState.flowState = Device.Devices.State.Stop;
-                    //this.devicesAll.currentState.stateChanged = true;
-
                     if (devicesAll.temperaturePointList.Count != 0)
                     {
                         paramList.Clear();
@@ -333,6 +430,7 @@ namespace TempControl
                         {
                             TempParam ts = new TempParam();
                             st.paramM.CopyTo(ts.paramM, 0);
+                            st.paramS.CopyTo(ts.paramS, 0);
                             ts.finished = st.finished;
                             paramList.Add(ts);
                         }
@@ -350,7 +448,7 @@ namespace TempControl
 
                 // 自动控温流程已停止
                 flowStart = false;
-                SetAutoButtonEvent?.Invoke(false);
+                SetAutoButtonEvent(false);
                 checkBox_start.Text = "开始";
             }
 
@@ -402,6 +500,34 @@ namespace TempControl
                 return;
             }
 
+
+            // 辅槽参数
+            for (int i = 0; i < 7; i++)
+            {
+                // 跳过温度修订值，其值设为 0
+                if (i == 1)
+                {
+                    paramMCache[1] = 0;
+                    continue;
+                }
+
+
+                if (float.TryParse(this.paramSTextBox[i].Text, out valuef))
+                {
+                    paramSCache[i] = valuef;
+                }
+                else
+                {
+                    MessageBox.Show("温度点参数格式不正确，请检查!");
+                    return;
+                }
+            }
+            if (paramSCache[0] > devicesAll._runningParameters.tempMaxValue || paramSCache[0] < devicesAll._runningParameters.tempMinValue)
+            {
+                MessageBox.Show("温度点超出界限 ( " + devicesAll._runningParameters.tempMinValue.ToString("0.0000") + " - " + devicesAll._runningParameters.tempMaxValue.ToString("0.0000") + " )，请检查!");
+                return;
+            }
+
             // 判断温度点是否已经存在于 BList 中
             foreach (TempParam st in paramList)
             {
@@ -418,6 +544,7 @@ namespace TempControl
             // 添加温度点
             TempParam ts = new TempParam();
             paramMCache.CopyTo(ts.paramM, 0);
+            paramSCache.CopyTo(ts.paramS, 0);
             // 添加到 
             paramList.Add(ts);
 
@@ -426,6 +553,7 @@ namespace TempControl
 
             // 删除列表中的温度设定值
             textBox_tpSetM.Text = "";
+            textBox_tpSetS.Text = "";
 
             Utils.Logger.Op("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
             nlogger.Info("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
@@ -490,48 +618,51 @@ namespace TempControl
         // 重新编辑按键
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex == -1) return;
-
             // 如果已经开始自动控温流程，则无法编辑
             if (flowStart)
                 return;
 
+
             if (dataGridView1.Columns[e.ColumnIndex].Name == "edit")
             {
-                // 获取该行的参数
-                paramList[e.RowIndex].paramM.CopyTo(paramMCache, 0);
-                //paramList[e.RowIndex / 2].paramS.CopyTo(paramSCache, 0);
-                // 将参数写入到文本框中
-                for (int i = 0; i < 7; i++)
+                if (e.RowIndex % 2 == 1)
                 {
-                    // 跳过温度修订值，其值设为 0
-                    if (i == 1)
+                    // 获取该行的参数
+                    paramList[e.RowIndex / 2].paramM.CopyTo(paramMCache, 0);
+                    paramList[e.RowIndex / 2].paramS.CopyTo(paramSCache, 0);
+                    // 将参数写入到文本框中
+                    for (int i = 0; i < 7; i++)
                     {
-                        //paramMCache[1] = 0;
-                        continue;
-                    }
+                        // 跳过温度修订值，其值设为 0
+                        if (i == 1)
+                        {
+                            //paramMCache[1] = 0;
+                            continue;
+                        }
 
 
-                    if (i < 3)
-                    {
-                        paramMTextBox[i].Text = paramMCache[i].ToString("0.000");
+                        if (i < 3)
+                        {
+                            paramMTextBox[i].Text = paramMCache[i].ToString("0.000");
+                            paramSTextBox[i].Text = paramSCache[i].ToString("0.000");
+                        }
+                        else
+                        {
+                            paramMTextBox[i].Text = paramMCache[i].ToString("0");
+                            paramSTextBox[i].Text = paramSCache[i].ToString("0");
+                        }
                     }
-                    else
-                    {
-                        paramMTextBox[i].Text = paramMCache[i].ToString("0");
-                    }
+                    // 从 paramList 中删除该项
+                    paramList.RemoveAt(e.RowIndex / 2);
+                    // 重新显示
+                    updateDataGridView();
                 }
-                // 从 paramList 中删除该项
-                paramList.RemoveAt(e.RowIndex);
-                // 重新显示
-                updateDataGridView();
-            }
-            else if(dataGridView1.Columns[e.ColumnIndex].Name == "finish")
-            {
-                if (paramList.Count < e.RowIndex) return;
+                else
+                {
+                    paramList[e.RowIndex / 2].finished = !paramList[e.RowIndex / 2].finished;
+                    updateDataGridView();
+                }
 
-                paramList[e.RowIndex].finished = !paramList[e.RowIndex].finished;
-                updateDataGridView();
             }
         }
 
@@ -607,6 +738,75 @@ namespace TempControl
                 //设置处理事件完成（关键点），只有设置为ture,才能显示出想要的结果。
                 e.Handled = true;
             }
+
+#if false
+            // 合并编辑列
+            else if(dataGridView1.Columns[e.ColumnIndex].Name == "edit" && e.RowIndex >= 0)
+            {
+                Brush gridBrush = new SolidBrush(this.dataGridView1.GridColor);
+                Pen gridLinePen = new Pen(gridBrush);
+                SolidBrush backBrush = new SolidBrush(e.CellStyle.BackColor);
+                SolidBrush fontBrush = new SolidBrush(e.CellStyle.ForeColor);
+
+                e.Graphics.FillRectangle(backBrush, e.CellBounds);
+
+                // 绘制单元格相互间隔的区分线条，dataGridView自己会处理左侧和上册边缘的线条，因此，只需绘制下边框和右边框
+                // dataGridView 控件绘制单元格时，不绘制左边和上边框，共用左单元格的右边框，上一单元格的下边框
+
+                // 不是最后一行且单元格的值不为 null
+                if (e.RowIndex < this.dataGridView1.RowCount - 1 && this.dataGridView1.Rows[e.RowIndex + 1].Cells[e.ColumnIndex].Value != null)
+                {
+                    // 若与下一单元格值不同
+                    if (this.dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString() != this.dataGridView1.Rows[e.RowIndex + 1].Cells[0].Value.ToString())
+                    {
+                        //下边缘的线
+                        e.Graphics.DrawLine(gridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1,
+                        e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
+                        //绘制值
+                        if (e.Value != null)
+                        {
+                            e.Graphics.DrawString(e.Value.ToString(), e.CellStyle.Font,
+                                Brushes.Crimson, e.CellBounds.X + 2,
+                                e.CellBounds.Y + 2, StringFormat.GenericDefault);
+                        }
+                    }
+                    //若与下一单元格值相同 
+                    else
+                    {
+                        //背景颜色
+                        //e.CellStyle.BackColor = Color.LightPink;   //仅在CellFormatting方法中可用
+                        this.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Style.BackColor = Color.LightBlue;
+                        this.dataGridView1.Rows[e.RowIndex + 1].Cells[e.ColumnIndex].Style.BackColor = Color.LightBlue;
+                        //只读（以免双击单元格时显示值）
+                        this.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly = true;
+                        this.dataGridView1.Rows[e.RowIndex + 1].Cells[e.ColumnIndex].ReadOnly = true;
+                    }
+                }
+                //最后一行或单元格的值为null
+                else
+                {
+                    //下边缘的线
+                    e.Graphics.DrawLine(gridLinePen, e.CellBounds.Left, e.CellBounds.Bottom - 1,
+                        e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
+
+                    //绘制值
+                    if (e.Value != null)
+                    {
+                        e.Graphics.DrawString(e.Value.ToString(), e.CellStyle.Font,
+                            Brushes.Crimson, e.CellBounds.X + 2,
+                            e.CellBounds.Y + 2, StringFormat.GenericDefault);
+                    }
+                }
+
+                //右侧的线
+                e.Graphics.DrawLine(gridLinePen, e.CellBounds.Right - 1,
+                    e.CellBounds.Top, e.CellBounds.Right - 1,
+                    e.CellBounds.Bottom - 1);
+
+                //设置处理事件完成（关键点），只有设置为ture,才能显示出想要的结果。
+                e.Handled = true;
+            }
+#endif
         }
 
 
@@ -641,6 +841,32 @@ namespace TempControl
                     }
                 }
             }
+
+
+            // 从数据库中查询辅槽温度设定参数
+            if (float.TryParse(textBox_tpSetS.Text, out val))
+            {
+                Utils.CTempSets tpSet = null;
+                tpSet = Utils.DataBase.checkTempSetS(val, 2.0f);
+
+                if (tpSet != null && tpSet.Count != 0)
+                {
+                    float[] parm = { 0, 0, 0, 0, 0, 0, 0 };
+                    for (int i = 0; i < tpSet.Count; i++)
+                    {
+                        for (int j = 1; j < 7; j++)
+                        {
+                            parm[j] += tpSet[i][j];
+                        }
+                    }
+
+                    for (int i = 2; i < 7; i++)
+                    {
+                        paramSTextBox[i].Text = (parm[i] / tpSet.Count).ToString();
+                    }
+                }
+            }
+
         }
 
 
@@ -967,6 +1193,18 @@ namespace TempControl
             dataGridView1.ClearSelection();
         }
 
+        //private void textBox_tpAdjust_Enter(object sender, EventArgs e)
+        //{
+        //    if (tx != null)
+        //    {
+        //        tx.BackColor = System.Drawing.SystemColors.Control;
+        //    }
+
+        //    tx = this.textBox_tpAdjustM;
+        //    tx.BackColor = System.Drawing.SystemColors.Window;
+        //    dataGridView1.ClearSelection();
+        //}
+
         private void textBox_advance_Enter(object sender, EventArgs e)
         {
             if (tx != null)
@@ -1026,13 +1264,98 @@ namespace TempControl
             tx.BackColor = System.Drawing.SystemColors.Window;
             dataGridView1.ClearSelection();
         }
+
+        //////////////////////////////////////////////////////////////
+        private void textBox_tpSetS_Enter(object sender, EventArgs e)
+        {
+            if (tx != null)
+            {
+                tx.BackColor = System.Drawing.SystemColors.Control;
+            }
+
+            tx = this.textBox_tpSetS;
+            tx.BackColor = System.Drawing.SystemColors.Window;
+            dataGridView1.ClearSelection();
+        }
+
+        //private void textBox_tpAdjustS_Enter(object sender, EventArgs e)
+        //{
+        //    if (tx != null)
+        //    {
+        //        tx.BackColor = System.Drawing.SystemColors.Control;
+        //    }
+
+        //    tx = this.textBox_tpAdjustS;
+        //    tx.BackColor = System.Drawing.SystemColors.Window;
+        //    dataGridView1.ClearSelection();
+        //}
+
+        private void textBox_advanceS_Enter(object sender, EventArgs e)
+        {
+            if (tx != null)
+            {
+                tx.BackColor = System.Drawing.SystemColors.Control;
+            }
+
+            tx = this.textBox_advanceS;
+            tx.BackColor = System.Drawing.SystemColors.Window;
+            dataGridView1.ClearSelection();
+        }
+
+        private void textBox_fuzzyS_Enter(object sender, EventArgs e)
+        {
+            if (tx != null)
+            {
+                tx.BackColor = System.Drawing.SystemColors.Control;
+            }
+
+            tx = this.textBox_fuzzyS;
+            tx.BackColor = System.Drawing.SystemColors.Window;
+            dataGridView1.ClearSelection();
+        }
+
+        private void textBox_ratioS_Enter(object sender, EventArgs e)
+        {
+            if (tx != null)
+            {
+                tx.BackColor = System.Drawing.SystemColors.Control;
+            }
+
+            tx = this.textBox_ratioS;
+            tx.BackColor = System.Drawing.SystemColors.Window;
+            dataGridView1.ClearSelection();
+        }
+
+        private void textBox_integS_Enter(object sender, EventArgs e)
+        {
+            if (tx != null)
+            {
+                tx.BackColor = System.Drawing.SystemColors.Control;
+            }
+
+            tx = this.textBox_integS;
+            tx.BackColor = System.Drawing.SystemColors.Window;
+            dataGridView1.ClearSelection();
+        }
+
+        private void textBox_powerS_Enter(object sender, EventArgs e)
+        {
+            if (tx != null)
+            {
+                tx.BackColor = System.Drawing.SystemColors.Control;
+            }
+
+            tx = this.textBox_powerS;
+            tx.BackColor = System.Drawing.SystemColors.Window;
+            dataGridView1.ClearSelection();
+        }
     }
 
     internal class ParamShow
     {
         public int _index;
-        public string _edit = "编辑";
-        public string _finish = "未测量";
+        public string tpName;
+        public string editSave;
         /// <summary>
         /// 温控设备的参数值
         /// </summary>
@@ -1043,6 +1366,10 @@ namespace TempControl
         /// 编号
         /// </summary>
         public string Index { get { return _index.ToString("0"); } }
+        /// <summary>
+        /// 主槽 / 辅槽 （名称）
+        /// </summary>
+        public string TpName { get { return tpName; } }
         /// <summary>
         /// 温度值
         /// </summary>
@@ -1080,8 +1407,7 @@ namespace TempControl
         /// </summary>
         public string TempThr { get { return param[8].ToString("0.000"); } }
 
-        public string Edit { get { return _edit; } }
-        public string Finish { get { return _finish; } }
+        public string Edit { get { return editSave; } }
     }
 
     /// <summary>
@@ -1094,6 +1420,10 @@ namespace TempControl
         /// 主槽温控设备的参数值
         /// </summary>
         public float[] paramM = new float[7];
+        /// <summary>
+        /// 辅槽温控设备的参数值
+        /// </summary>
+        public float[] paramS = new float[7];
 
         /// <summary>
         /// 比较函数
