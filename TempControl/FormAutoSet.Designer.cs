@@ -59,22 +59,29 @@
             this.label7 = new System.Windows.Forms.Label();
             this.textBox_powerM = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.button_chkParam = new System.Windows.Forms.Button();
-            this.checkBox_start = new System.Windows.Forms.CheckBox();
-            this.checkBox_shutDown = new System.Windows.Forms.CheckBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.index = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tpName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tpSet = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.advance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fuzzy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ratio = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.integration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.power = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.finish = new System.Windows.Forms.DataGridViewLinkColumn();
             this.edit = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBox_powerS = new System.Windows.Forms.TextBox();
+            this.textBox_integS = new System.Windows.Forms.TextBox();
+            this.textBox_ratioS = new System.Windows.Forms.TextBox();
+            this.textBox_fuzzyS = new System.Windows.Forms.TextBox();
+            this.textBox_advanceS = new System.Windows.Forms.TextBox();
+            this.textBox_tpSetS = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.button_chkParam = new System.Windows.Forms.Button();
+            this.checkBox_start = new System.Windows.Forms.CheckBox();
+            this.checkBox_shutDown = new System.Windows.Forms.CheckBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -392,13 +399,13 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.index,
+            this.tpName,
             this.tpSet,
             this.advance,
             this.fuzzy,
             this.ratio,
             this.integration,
             this.power,
-            this.finish,
             this.edit});
             this.dataGridView1.Location = new System.Drawing.Point(13, 14);
             this.dataGridView1.MultiSelect = false;
@@ -413,59 +420,6 @@
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(37, 444);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(29, 12);
-            this.label8.TabIndex = 64;
-            this.label8.Text = "主槽";
-            // 
-            // label10
-            // 
-            this.label10.Font = new System.Drawing.Font("宋体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label10.Location = new System.Drawing.Point(705, 14);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(165, 39);
-            this.label10.TabIndex = 73;
-            this.label10.Text = "温度点设定";
-            // 
-            // button_chkParam
-            // 
-            this.button_chkParam.Location = new System.Drawing.Point(655, 420);
-            this.button_chkParam.Name = "button_chkParam";
-            this.button_chkParam.Size = new System.Drawing.Size(128, 60);
-            this.button_chkParam.TabIndex = 74;
-            this.button_chkParam.Text = "查询参数";
-            this.button_chkParam.UseVisualStyleBackColor = true;
-            this.button_chkParam.Click += new System.EventHandler(this.button_chk_Click);
-            // 
-            // checkBox_start
-            // 
-            this.checkBox_start.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_start.Location = new System.Drawing.Point(655, 345);
-            this.checkBox_start.Name = "checkBox_start";
-            this.checkBox_start.Size = new System.Drawing.Size(128, 60);
-            this.checkBox_start.TabIndex = 75;
-            this.checkBox_start.Text = "开始";
-            this.checkBox_start.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_start.UseVisualStyleBackColor = true;
-            this.checkBox_start.Click += new System.EventHandler(this.checkBox_start_Click);
-            // 
-            // checkBox_shutDown
-            // 
-            this.checkBox_shutDown.AutoSize = true;
-            this.checkBox_shutDown.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox_shutDown.ForeColor = System.Drawing.Color.Red;
-            this.checkBox_shutDown.Location = new System.Drawing.Point(807, 431);
-            this.checkBox_shutDown.Name = "checkBox_shutDown";
-            this.checkBox_shutDown.Size = new System.Drawing.Size(112, 36);
-            this.checkBox_shutDown.TabIndex = 76;
-            this.checkBox_shutDown.Text = "实验完成后\r\n关闭计算机";
-            this.checkBox_shutDown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_shutDown.UseVisualStyleBackColor = true;
-            // 
             // index
             // 
             this.index.HeaderText = "序号";
@@ -474,6 +428,15 @@
             this.index.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.index.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.index.Width = 40;
+            // 
+            // tpName
+            // 
+            this.tpName.HeaderText = "主槽/辅槽";
+            this.tpName.Name = "tpName";
+            this.tpName.ReadOnly = true;
+            this.tpName.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.tpName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.tpName.Width = 72;
             // 
             // tpSet
             // 
@@ -529,13 +492,6 @@
             this.power.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.power.Width = 72;
             // 
-            // finish
-            // 
-            this.finish.HeaderText = "测量完成";
-            this.finish.Name = "finish";
-            this.finish.ReadOnly = true;
-            this.finish.Width = 70;
-            // 
             // edit
             // 
             this.edit.HeaderText = "编辑";
@@ -544,15 +500,144 @@
             this.edit.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.edit.Width = 70;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(37, 444);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(29, 12);
+            this.label8.TabIndex = 64;
+            this.label8.Text = "主槽";
+            // 
+            // textBox_powerS
+            // 
+            this.textBox_powerS.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_powerS.Location = new System.Drawing.Point(487, 474);
+            this.textBox_powerS.Name = "textBox_powerS";
+            this.textBox_powerS.Size = new System.Drawing.Size(72, 21);
+            this.textBox_powerS.TabIndex = 71;
+            this.textBox_powerS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_powerS.Enter += new System.EventHandler(this.textBox_powerS_Enter);
+            // 
+            // textBox_integS
+            // 
+            this.textBox_integS.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_integS.Location = new System.Drawing.Point(409, 474);
+            this.textBox_integS.Name = "textBox_integS";
+            this.textBox_integS.Size = new System.Drawing.Size(72, 21);
+            this.textBox_integS.TabIndex = 70;
+            this.textBox_integS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_integS.Enter += new System.EventHandler(this.textBox_integS_Enter);
+            // 
+            // textBox_ratioS
+            // 
+            this.textBox_ratioS.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_ratioS.Location = new System.Drawing.Point(331, 474);
+            this.textBox_ratioS.Name = "textBox_ratioS";
+            this.textBox_ratioS.Size = new System.Drawing.Size(72, 21);
+            this.textBox_ratioS.TabIndex = 69;
+            this.textBox_ratioS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_ratioS.Enter += new System.EventHandler(this.textBox_ratioS_Enter);
+            // 
+            // textBox_fuzzyS
+            // 
+            this.textBox_fuzzyS.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_fuzzyS.Location = new System.Drawing.Point(253, 474);
+            this.textBox_fuzzyS.Name = "textBox_fuzzyS";
+            this.textBox_fuzzyS.Size = new System.Drawing.Size(72, 21);
+            this.textBox_fuzzyS.TabIndex = 68;
+            this.textBox_fuzzyS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_fuzzyS.Enter += new System.EventHandler(this.textBox_fuzzyS_Enter);
+            // 
+            // textBox_advanceS
+            // 
+            this.textBox_advanceS.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_advanceS.Location = new System.Drawing.Point(175, 474);
+            this.textBox_advanceS.Name = "textBox_advanceS";
+            this.textBox_advanceS.Size = new System.Drawing.Size(72, 21);
+            this.textBox_advanceS.TabIndex = 67;
+            this.textBox_advanceS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_advanceS.Enter += new System.EventHandler(this.textBox_advanceS_Enter);
+            // 
+            // textBox_tpSetS
+            // 
+            this.textBox_tpSetS.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_tpSetS.Location = new System.Drawing.Point(97, 474);
+            this.textBox_tpSetS.Name = "textBox_tpSetS";
+            this.textBox_tpSetS.Size = new System.Drawing.Size(72, 21);
+            this.textBox_tpSetS.TabIndex = 65;
+            this.textBox_tpSetS.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox_tpSetS.Enter += new System.EventHandler(this.textBox_tpSetS_Enter);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(37, 474);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(29, 12);
+            this.label9.TabIndex = 72;
+            this.label9.Text = "辅槽";
+            // 
+            // label10
+            // 
+            this.label10.Font = new System.Drawing.Font("宋体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label10.Location = new System.Drawing.Point(705, 14);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(165, 39);
+            this.label10.TabIndex = 73;
+            this.label10.Text = "温度点设定";
+            // 
+            // button_chkParam
+            // 
+            this.button_chkParam.Location = new System.Drawing.Point(655, 420);
+            this.button_chkParam.Name = "button_chkParam";
+            this.button_chkParam.Size = new System.Drawing.Size(128, 60);
+            this.button_chkParam.TabIndex = 74;
+            this.button_chkParam.Text = "查询参数";
+            this.button_chkParam.UseVisualStyleBackColor = true;
+            this.button_chkParam.Click += new System.EventHandler(this.button_chk_Click);
+            // 
+            // checkBox_start
+            // 
+            this.checkBox_start.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_start.Location = new System.Drawing.Point(655, 345);
+            this.checkBox_start.Name = "checkBox_start";
+            this.checkBox_start.Size = new System.Drawing.Size(128, 60);
+            this.checkBox_start.TabIndex = 75;
+            this.checkBox_start.Text = "开始";
+            this.checkBox_start.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_start.UseVisualStyleBackColor = true;
+            this.checkBox_start.Click += new System.EventHandler(this.checkBox_start_Click);
+            // 
+            // checkBox_shutDown
+            // 
+            this.checkBox_shutDown.AutoSize = true;
+            this.checkBox_shutDown.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_shutDown.ForeColor = System.Drawing.Color.Red;
+            this.checkBox_shutDown.Location = new System.Drawing.Point(807, 431);
+            this.checkBox_shutDown.Name = "checkBox_shutDown";
+            this.checkBox_shutDown.Size = new System.Drawing.Size(112, 36);
+            this.checkBox_shutDown.TabIndex = 76;
+            this.checkBox_shutDown.Text = "实验完成后\r\n关闭计算机";
+            this.checkBox_shutDown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_shutDown.UseVisualStyleBackColor = true;
+            // 
             // FormAutoSet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(941, 496);
+            this.ClientSize = new System.Drawing.Size(941, 512);
             this.Controls.Add(this.checkBox_shutDown);
             this.Controls.Add(this.checkBox_start);
             this.Controls.Add(this.button_chkParam);
             this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBox_powerS);
+            this.Controls.Add(this.textBox_integS);
+            this.Controls.Add(this.textBox_ratioS);
+            this.Controls.Add(this.textBox_fuzzyS);
+            this.Controls.Add(this.textBox_advanceS);
+            this.Controls.Add(this.textBox_tpSetS);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_powerM);
@@ -627,6 +712,13 @@
         private System.Windows.Forms.TextBox textBox_powerM;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBox_powerS;
+        private System.Windows.Forms.TextBox textBox_integS;
+        private System.Windows.Forms.TextBox textBox_ratioS;
+        private System.Windows.Forms.TextBox textBox_fuzzyS;
+        private System.Windows.Forms.TextBox textBox_advanceS;
+        private System.Windows.Forms.TextBox textBox_tpSetS;
+        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button_chkParam;
         private System.Windows.Forms.CheckBox checkBox_start;
@@ -634,13 +726,13 @@
         private System.Windows.Forms.Timer timer1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.DataGridViewTextBoxColumn index;
+        private System.Windows.Forms.DataGridViewTextBoxColumn tpName;
         private System.Windows.Forms.DataGridViewTextBoxColumn tpSet;
         private System.Windows.Forms.DataGridViewTextBoxColumn advance;
         private System.Windows.Forms.DataGridViewTextBoxColumn fuzzy;
         private System.Windows.Forms.DataGridViewTextBoxColumn ratio;
         private System.Windows.Forms.DataGridViewTextBoxColumn integration;
         private System.Windows.Forms.DataGridViewTextBoxColumn power;
-        private System.Windows.Forms.DataGridViewLinkColumn finish;
         private System.Windows.Forms.DataGridViewLinkColumn edit;
     }
 }

@@ -12,22 +12,18 @@ namespace TempControl
         void RegistEventHandler()
         {
             _device.RelayDeviceMStatusUpdatedEvent += _device_RelayDeviceMStatusUpdatedEvent;
+            _device.RelayDeviceSStatusUpdatedEvent += _device_RelayDeviceSStatusUpdatedEvent;
             _device.TempDeviceMParamUpdatedEvent += _device_TempDeviceParamUpdatedEvent;
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEvent += _device_TimerTickEvent;
-            _device.TimerTickEvent += DeviceAll_TpTemperatureUpdateTimerEvent;
         }
 
-        private void DeviceAll_TpTemperatureUpdateTimerEvent()
-        {
-            // 只要是定时器函数执行了，不管有没有正确的从下位机读取到参数，都会重新绘制
-            // 也就是说，不处理错误
-            this.BeginInvoke(new EventHandler(delegate
-            {
-                TempPic.Image = mDrawChart.Draw();
-            }));
-        }
+        public delegate void mainFormTimeTickEvent();
+        /// <summary>
+        /// 主界面定时器事件
+        /// </summary>
+        public event mainFormTimeTickEvent mainFormTimeTickEventHandler;
 
         // 定时器更新事件
         private void _device_TimerTickEvent()
@@ -48,7 +44,20 @@ namespace TempControl
 
                 // 主槽温度设定值
                 label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
+
+                // 辅槽功率系数
+                label_powerS.Text = this._device.tpDeviceS.tpPowerShow.ToString("0") + "%";
+
+                // 辅槽温度显示值
+                if (this._device.tpDeviceS.temperatures.Count != 0)
+                    label_tempS.Text = this._device.tpDeviceS.temperatures.Last().ToString("0.000") + "℃";
+
+                // 辅槽温度设定值
+                label_tempSetS.Text = this._device.tpDeviceS.tpParam[0].ToString("0.000") + "℃";
             }));
+
+            // 执行主界面定时器事件 handler
+            mainFormTimeTickEventHandler?.Invoke();
         }
 
         private void _device_ErrorStatusChangedEvent(System.Collections.Generic.Dictionary<Device.ErrorCode, uint> errDict)
@@ -137,17 +146,13 @@ namespace TempControl
                         // 系统流程
                         this.label_controlState.Text = "测量";
                         break;
-                    case Device.State.Stop:
+                    case Device.State.ShutdownPC:
                         // 系统流程
                         this.label_controlState.Text = "系统停止";
                         break;
                     case Device.State.Idle:
                         // 系统流程
                         this.label_controlState.Text = "空闲";
-                        break;
-                    case Device.State.Undefine:
-                        // 系统流程
-                        this.label_controlState.Text = "未定义";
                         break;
                 }
             }));
@@ -177,6 +182,22 @@ namespace TempControl
             if(err != Device.RelayDevice.Err_r.NoError)
             {
                 MessageBox.Show("继电器模块 1 设置错误！");
+            }
+        }
+
+        private void _device_RelayDeviceSStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
+        {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                // 按钮状态
+                foreach (var chk in this.dictCheckBoxsRyS) chk.Value.Checked = ryStatus[(int)chk.Key];
+                // 指示灯状态
+                foreach (var pic in this.pictureBoxRyS) pictureBoxRyS[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
+            }));
+
+            if (err != Device.RelayDevice.Err_r.NoError)
+            {
+                MessageBox.Show("继电器模块 2 设置错误！");
             }
         }
     }

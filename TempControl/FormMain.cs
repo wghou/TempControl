@@ -16,24 +16,31 @@ namespace TempControl
 {
     public partial class FormMain : Form
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
 
         private Device.DeviceStateM _device = new Device.DeviceStateM();
         private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyM = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
+        private Dictionary<Device.RelayDevice.Cmd_r, CheckBox> dictCheckBoxsRyS = new Dictionary<Device.RelayDevice.Cmd_r, CheckBox>();
         private Dictionary<Device.RelayDevice.Cmd_r, PictureBox> pictureBoxRyM = new Dictionary<Device.RelayDevice.Cmd_r, PictureBox>();
+        private Dictionary<Device.RelayDevice.Cmd_r, PictureBox> pictureBoxRyS = new Dictionary<Device.RelayDevice.Cmd_r, PictureBox>();
 
         bool ErrorAskForClose = false;
 
         // 闪烁等
         Bitmap mBmpM;
+        Bitmap mBmpS;
         private bool flp = false;
         private Timer timPic = new Timer();
 
         Bitmap mBmpRelayRed;
         Bitmap mBmpRelayGreen;
 
-        // 温度曲线
-        DrawChart mDrawChart;
+        /// <summary>
+        /// 是否是程序要求关闭自身
+        /// 当出现错误，用户未响应时，程序要求关闭自身
+        /// 则在关闭时，不再弹出提示框
+        /// </summary>
+        bool ErrorAskForClose = false;
 
         public FormMain()
         {
@@ -49,8 +56,8 @@ namespace TempControl
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_4, pictureBox_ryM4);
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_5, pictureBox_ryM5);
 
-            // 曲线
-            mDrawChart = new DrawChart(_device.tpDeviceM, _device._runningParameters, TempPic.Height, TempPic.Width, 6, 7);
+            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryS0);
+            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_1, pictureBox_ryS1);
 
             // 用于继电器的指示灯
             mBmpRelayRed = new Bitmap(this.pictureBox_ryM0.Width, pictureBox_ryM0.Height);
@@ -61,7 +68,8 @@ namespace TempControl
             mGhpGreen.Clear(Color.Green);
 
             // 用于状态指示灯
-            mBmpM = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            mBmpM = new Bitmap(pictureBoxM.Width, pictureBoxM.Height);
+            mBmpS = new Bitmap(pictureBoxS.Width, pictureBoxS.Height);
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
@@ -77,35 +85,32 @@ namespace TempControl
 
             RegistEventHandler();
 
-            TempPic.Image = mDrawChart.Draw();
-           
-            _device_RelayDeviceMStatusUpdatedEvent(Device.RelayDevice.Err_r.NoError, _device.ryDeviceM.ryStatus);
+            _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
+            _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
         }
 
         ///////////////////////////////////////////////////
         // 控温板通讯指示灯闪烁
         private void TimPic_Tick(object sender, EventArgs e)
         {
-            Graphics mGhp1 = Graphics.FromImage(mBmpM);
-            Graphics mGhp2 = Graphics.FromImage(mBmpM);
-            mGhp1.Clear(SystemColors.Control);
+            Graphics mGhpM = Graphics.FromImage(mBmpM);
+            Graphics mGhpS = Graphics.FromImage(mBmpS);
+            mGhpM.Clear(SystemColors.Control);
             if (flp)
             {
-                mGhp1.Clear(SystemColors.Control);
-                mGhp2.Clear(SystemColors.Control);
+                mGhpM.Clear(SystemColors.Control);
+                mGhpS.Clear(SystemColors.Control);
                 flp = false;
             }
             else
             {
-                mGhp1.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
-                mGhp2.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
+                mGhpM.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
+                mGhpS.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
                 flp = true;
             }
 
-            pictureBox1.Image = mBmpM;
-
-            System.TimeSpan tmSpan = System.DateTime.Now - _device.startTime;
-            this.label_time.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
+            pictureBoxM.Image = mBmpM;
+            pictureBoxS.Image = mBmpS;
         }
 
 
@@ -121,11 +126,13 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                _device.ryDeviceM.Enable = true;
-                _device.ryDeviceM.DisconnectProtect = false;
+                _device.tpDeviceS.Enable = true;
 
-                _device.ryDeviceS.Enable = false;
-                _device.tpDeviceS.Enable = false;
+                _device.ryDeviceM.Enable = true;
+                _device.ryDeviceS.Enable = true;
+
+                _device.ryDeviceM.DisconnectProtect = true;
+                _device.ryDeviceS.DisconnectProtect = true;
             }));
 
             bool confDevice = _device.Configure();
@@ -135,6 +142,7 @@ namespace TempControl
                 {
                     if (DialogResult.Yes == MessageBox.Show("设备端口错误，是否退出程序？", "程序关闭确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
+                        ErrorAskForClose = true;
                         this.Close();
                         return;
                     }
@@ -145,6 +153,8 @@ namespace TempControl
             {
                 _device.startTimeStep();
             }
+
+            _device.updateEvents();
         }
 
 
@@ -184,6 +194,11 @@ namespace TempControl
                     {
                         chk.Value.Enabled = false;
                     }
+
+                    foreach (var chk in dictCheckBoxsRyS)
+                    {
+                        chk.Value.Enabled = false;
+                    }
                 }
                 else
                 {
@@ -194,6 +209,10 @@ namespace TempControl
                         chk.Value.Enabled = true;
                     }
 
+                    foreach (var chk in dictCheckBoxsRyS)
+                    {
+                        chk.Value.Enabled = true;
+                    }
                 }
             }));
 
@@ -231,23 +250,86 @@ namespace TempControl
             }
         }
 
+        private void checkBox_curveM_Click(object sender, EventArgs e)
+        {
+            bool formExist = false;
+            foreach (Form fm in Application.OpenForms)
+            {
+                if (fm.Name == "FormChartM")
+                {
+                    // Avoid form being minimized
+                    fm.WindowState = FormWindowState.Normal;
+                    fm.Location = new System.Drawing.Point(10, 12);
+                    fm.BringToFront();
+                    formExist = true;
+                }
+            }
+
+            if (!formExist)
+            {
+                ChartConfig cfg = new ChartConfig();
+                cfg.chartTitle = "主槽控温";
+                cfg.column = 10;
+                cfg.row = 7;
+                cfg.startTime = _device.startTime;
+                cfg.dataShow = _device.tpDeviceM.temperaturesShow;
+                cfg.digits = 3;
+                cfg.dataLocker = _device.tpDeviceM.tpShowLocker;
+                cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
+                cfg.funcPtr = _device.tpDeviceM.GetFlucDurCountOrLess;
+
+                FormChart fm = new FormChart(cfg, this);
+                fm.Location = new System.Drawing.Point(10, 12);
+                fm.Show();
+            }
+
+            Utils.Logger.Op("打开主槽控温设备温度曲线界面!");
+        }
+
+        private void checkBox_curveS_Click(object sender, EventArgs e)
+        {
+            bool formExist = false;
+            foreach (Form fm in Application.OpenForms)
+            {
+                if (fm.Name == "FormChartS")
+                {
+                    // Avoid form being minimized
+                    fm.WindowState = FormWindowState.Normal;
+                    fm.Location = new System.Drawing.Point(10, 12);
+                    fm.BringToFront();
+                    formExist = true;
+                }
+            }
+
+            if (!formExist)
+            {
+                ChartConfig cfg = new ChartConfig();
+                cfg.chartTitle = "辅槽控温";
+                cfg.column = 10;
+                cfg.row = 7;
+                cfg.startTime = _device.startTime;
+                cfg.dataShow = _device.tpDeviceS.temperaturesShow;
+                cfg.digits = 3;
+                cfg.dataLocker = _device.tpDeviceS.tpShowLocker;
+                cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
+                cfg.funcPtr = _device.tpDeviceS.GetFlucDurCountOrLess;
+
+                FormChart fm = new FormChart(cfg, this);
+                fm.Location = new System.Drawing.Point(10, 12);
+                fm.Show();
+            }
+
+            Utils.Logger.Op("打开辅槽控温设备温度曲线界面!");
+        }
+
+        private void checkBox2_Click(object sender, EventArgs e)
+        {
+            
+        }
 
         private void checkBox_data_Click(object sender, EventArgs e)
         {
-            try
-            {
-                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/Data");
-            }
-            catch (Exception ex) { }
-        }
 
-        private void checkBox_clear_Click(object sender, EventArgs e)
-        {
-            lock (_device.tpDeviceM.tpShowLocker)
-            {
-                _device.tpDeviceM.temperaturesShow.Clear();
-            }
-            TempPic.Image = mDrawChart.Draw();
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
