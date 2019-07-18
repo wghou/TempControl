@@ -43,7 +43,7 @@
             this.checkBox_paramM = new System.Windows.Forms.CheckBox();
             this.checkBox_exit = new System.Windows.Forms.CheckBox();
             this.checkBox_auto = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBoxM = new System.Windows.Forms.PictureBox();
             this.checkBox_debug = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM3 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM6 = new System.Windows.Forms.CheckBox();
@@ -75,7 +75,7 @@
             this.checkBox_curveS = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBoxS = new System.Windows.Forms.PictureBox();
             this.label_tempS = new System.Windows.Forms.Label();
             this.label_tempSetS = new System.Windows.Forms.Label();
             this.label_powerS = new System.Windows.Forms.Label();
@@ -95,7 +95,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM0)).BeginInit();
             this.groupBox_tempM.SuspendLayout();
             this.groupBox_tempS.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).BeginInit();
             this.SuspendLayout();
             // 
             // label_tempM
@@ -238,11 +238,11 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(8, 19);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(40, 10);
-            this.pictureBox1.TabIndex = 19;
-            this.pictureBox1.TabStop = false;
+            this.pictureBoxM.Location = new System.Drawing.Point(8, 19);
+            this.pictureBoxM.Name = "pictureBox1";
+            this.pictureBoxM.Size = new System.Drawing.Size(40, 10);
+            this.pictureBoxM.TabIndex = 19;
+            this.pictureBoxM.TabStop = false;
             // 
             // checkBox_debug
             // 
@@ -490,7 +490,7 @@
             this.groupBox_tempM.Controls.Add(this.checkBox_curveM);
             this.groupBox_tempM.Controls.Add(this.label2);
             this.groupBox_tempM.Controls.Add(this.label4);
-            this.groupBox_tempM.Controls.Add(this.pictureBox1);
+            this.groupBox_tempM.Controls.Add(this.pictureBoxM);
             this.groupBox_tempM.Controls.Add(this.label_tempM);
             this.groupBox_tempM.Controls.Add(this.label_tempSetM);
             this.groupBox_tempM.Controls.Add(this.label_powerM);
@@ -560,7 +560,7 @@
             this.groupBox_tempS.Controls.Add(this.checkBox_curveS);
             this.groupBox_tempS.Controls.Add(this.label6);
             this.groupBox_tempS.Controls.Add(this.label7);
-            this.groupBox_tempS.Controls.Add(this.pictureBox2);
+            this.groupBox_tempS.Controls.Add(this.pictureBoxS);
             this.groupBox_tempS.Controls.Add(this.label_tempS);
             this.groupBox_tempS.Controls.Add(this.label_tempSetS);
             this.groupBox_tempS.Controls.Add(this.label_powerS);
@@ -621,11 +621,11 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(8, 19);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(40, 10);
-            this.pictureBox2.TabIndex = 19;
-            this.pictureBox2.TabStop = false;
+            this.pictureBoxS.Location = new System.Drawing.Point(8, 19);
+            this.pictureBoxS.Name = "pictureBox2";
+            this.pictureBoxS.Size = new System.Drawing.Size(40, 10);
+            this.pictureBoxS.TabIndex = 19;
+            this.pictureBoxS.TabStop = false;
             // 
             // label_tempS
             // 
@@ -702,7 +702,7 @@
             this.Text = "自动控温系统 - 北京三原兆兴";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();
             this.groupBox_ry1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).EndInit();
@@ -718,7 +718,7 @@
             this.groupBox_tempM.PerformLayout();
             this.groupBox_tempS.ResumeLayout(false);
             this.groupBox_tempS.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -739,7 +739,7 @@
         private System.Windows.Forms.CheckBox checkBox_paramM;
         private System.Windows.Forms.CheckBox checkBox_exit;
         private System.Windows.Forms.CheckBox checkBox_auto;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBoxM;
         private System.Windows.Forms.CheckBox checkBox_debug;
         private System.Windows.Forms.CheckBox checkBox_ryM3;
         private System.Windows.Forms.CheckBox checkBox_ryM6;
@@ -760,7 +760,7 @@
         private System.Windows.Forms.CheckBox checkBox_curveS;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBoxS;
         private System.Windows.Forms.Label label_tempS;
         private System.Windows.Forms.Label label_tempSetS;
         private System.Windows.Forms.Label label_powerS;

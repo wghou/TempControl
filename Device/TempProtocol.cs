@@ -120,12 +120,10 @@ namespace Device
             {
                 try { sPort.Close(); } catch { }
 
+                sPort.PortName = portName;
+
                 string[] portNames = SerialPort.GetPortNames();
-                if (portNames.Contains(portName.ToUpper()))
-                {
-                    sPort.PortName = portName;
-                }
-                else
+                if (!portNames.Contains(portName.ToUpper()))
                 {
                     nlogger.Error("端口 " + portName + " 不存在");
                     return false;

@@ -153,6 +153,8 @@ namespace Device
         /// </summary>
         private void IdleEntry()
         {
+            // relay device M
+
             nlogger.Debug("Idle Entry.");
         }
 
@@ -221,7 +223,10 @@ namespace Device
             {
                 if (tpDeviceM.temperatures.Count == 0)
                 {
-                    _machine.Fire(Trigger.ForceStop);
+                    nlogger.Error("未读取到温度值 in start tick");
+                    _machine.Fire(Trigger.FinishedAll);
+                    SetErrorStatus(ErrorCode.TemptError);
+                    //_machine.Fire(Trigger.ForceStop);
                     return;
                 }
 
@@ -600,6 +605,8 @@ namespace Device
                 if (_runningParameters.shutDownComputer == true)
                 {
                     _machine.Fire(Trigger.ForceStop);
+
+                    System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
                 }
                 else
                 {
