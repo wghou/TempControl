@@ -134,6 +134,24 @@ namespace TempControl
             }
         }
 
+        private void checkBox_ryM7_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryM7.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryM7.Checked == true)
+            {
+                nlogger.Info("打开电源 M7!");
+                Utils.Logger.Op("打开电源 M7!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 M7!");
+                Utils.Logger.Op("关闭电源 M7!");
+            }
+        }
+
         private void checkBox_ryS0_Click(object sender, EventArgs e)
         {
             _device.ryDeviceS.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryS0.Checked;
@@ -231,6 +249,24 @@ namespace TempControl
             try
             {
                 System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/OperationLog");
+            }
+            catch (Exception ex) { }
+        }
+
+        private void checkBox_logS_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/OperationLog");
+            }
+            catch (Exception ex) { }
+        }
+
+        private void checkBox2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/Data");
             }
             catch (Exception ex) { }
         }
