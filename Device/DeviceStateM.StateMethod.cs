@@ -122,32 +122,6 @@ namespace Device
                 return false;
         }
 
-        /// <summary>
-        /// Idle Entry
-        /// </summary>
-        private void UndefineEntry()
-        {
-            nlogger.Debug("Undefine Entry.");
-        }
-
-        /// <summary>
-        /// Idle Tick
-        /// </summary>
-        /// <param name="tic"> 时间步长 </param>
-        private void UndefineTick(int tic)
-        {
-            nlogger.Debug("UndefineTick: " + tic.ToString() + " ms");
-            // do nothing
-        }
-
-        /// <summary>
-        /// Idle Exit
-        /// </summary>
-        private void UndefineExit()
-        {
-            nlogger.Debug("Undefine Exit.");
-        }
-
 
         /// <summary>
         /// Idle Entry
@@ -155,6 +129,28 @@ namespace Device
         private void IdleEntry()
         {
             nlogger.Debug("Idle Entry.");
+
+            // 空闲
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+
+            WriteRelayDeviceM(true);
+            WriteRelayDeviceS(true);
         }
 
         /// <summary>
