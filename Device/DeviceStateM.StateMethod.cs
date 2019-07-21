@@ -125,36 +125,23 @@ namespace Device
         /// <summary>
         /// Idle Entry
         /// </summary>
-        private void UndefineEntry()
-        {
-            nlogger.Debug("Undefine Entry.");
-        }
-
-        /// <summary>
-        /// Idle Tick
-        /// </summary>
-        /// <param name="tic"> 时间步长 </param>
-        private void UndefineTick(int tic)
-        {
-            nlogger.Debug("UndefineTick: " + tic.ToString() + " ms");
-            // do nothing
-        }
-
-        /// <summary>
-        /// Idle Exit
-        /// </summary>
-        private void UndefineExit()
-        {
-            nlogger.Debug("Undefine Exit.");
-        }
-
-
-        /// <summary>
-        /// Idle Entry
-        /// </summary>
         private void IdleEntry()
         {
             nlogger.Debug("Idle Entry.");
+
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            WriteRelayDeviceM(true);
+            WriteRelayDeviceS(true);
         }
 
         /// <summary>
@@ -219,7 +206,7 @@ namespace Device
             {
                 if (tpDeviceM.temperatures.Count == 0)
                 {
-                    _machine.Fire(Trigger.ForceShutdownPC);
+                    _machine.Fire(Trigger.SuspendAutoControl);
                     return;
                 }
 
@@ -255,6 +242,17 @@ namespace Device
 
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+
             WriteRelayDeviceM(true);
             WriteRelayDeviceS(true);
 
@@ -305,6 +303,16 @@ namespace Device
             nlogger.Debug("TempDown Entry.");
 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
+
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
 
             WriteRelayDeviceM(true);
             WriteRelayDeviceS(true);
@@ -358,11 +366,18 @@ namespace Device
             nlogger.Debug("Control Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            //  1 2 3 4 5 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
 
-            // 将继电器状态写入下位机
             WriteRelayDeviceM(true);
             WriteRelayDeviceS(true);
         }
@@ -407,12 +422,18 @@ namespace Device
             nlogger.Debug("Stable Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
 
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteRelayDeviceM(true);
             WriteRelayDeviceS(true);
         }
