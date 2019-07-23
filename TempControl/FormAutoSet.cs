@@ -250,7 +250,7 @@ namespace TempControl
                         sw.WriteLine();
                     }
                     sw.Flush();
-                    fs.Close();
+                    sw.Close();
                 }
                 catch (Exception ex)
                 {

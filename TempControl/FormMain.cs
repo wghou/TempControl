@@ -302,13 +302,14 @@ namespace TempControl
                 cfg.row = 7;
                 cfg.startTime = _device.startTime;
                 cfg.dataShow = _device.tpDeviceM.temperaturesShow;
-                cfg.digits = 3;
+                cfg.digits = 4;
                 cfg.dataLocker = _device.tpDeviceM.tpShowLocker;
                 cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
                 cfg.funcPtr = _device.tpDeviceM.GetFlucDurCountOrLess;
 
                 FormChart fm = new FormChart(cfg, this);
                 fm.Location = new System.Drawing.Point(10, 12);
+                fm.Name = "FormChartM";
                 fm.Show();
             }
 
@@ -345,6 +346,7 @@ namespace TempControl
 
                 FormChart fm = new FormChart(cfg, this);
                 fm.Location = new System.Drawing.Point(10, 12);
+                fm.Name = "FormChartS";
                 fm.Show();
             }
 
