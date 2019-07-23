@@ -5,34 +5,6 @@ namespace TempControl
 {
     public partial class FormMain
     {
-        private delegate void ry();
-        ////////////////    勾选框    /////////////
-        private void checkBox_tempS_CheckedChanged(object sender, EventArgs e)
-        {
-            _device.tpDeviceS.Enable = checkBox_tempS.Checked;
-            this.groupBox_tempS.Enabled = checkBox_tempS.Checked;
-        }
-
-        private void checkBox_ryEn2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.checkBox_ryEn2.Checked) {
-                _device.ryDeviceS.Enable = true;
-                _device.ryDeviceM.numCoils = 8;
-                this.groupBox_ry2.Text = "继电器模块 2";
-            }
-            else {
-                _device.ryDeviceS.Enable = false;
-                _device.ryDeviceM.numCoils = 16;
-                this.groupBox_ry2.Text = "继电器模块 1 (备用)";
-            }
-        }
-
-        private void checkBox_protect_CheckedChanged(object sender, EventArgs e)
-        {
-            _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
-            _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
-        }
-
         /// <summary> 设置继电器设备状态 - 委托 </summary>
         private delegate void RySetHandler(bool cntErr);
 
@@ -144,6 +116,7 @@ namespace TempControl
             }
         }
 
+#if false
         private void checkBox_ryM6_Click(object sender, EventArgs e)
         {
             _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryM6.Checked;
@@ -483,6 +456,7 @@ namespace TempControl
                 }
             }
         }
+#endif
 
         private void checkBox_paramM_Click(object sender, EventArgs e)
         {
@@ -541,6 +515,24 @@ namespace TempControl
         }
 
         private void checkBox_logM_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/OperationLog");
+            }
+            catch (Exception ex) { }
+        }
+
+        private void checkBox2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/Data");
+            }
+            catch (Exception ex) { }
+        }
+
+        private void checkBox_logS_Click(object sender, EventArgs e)
         {
             try
             {
