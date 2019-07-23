@@ -129,7 +129,7 @@ namespace Device
         {
             nlogger.Debug("Idle Entry.");
 
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;

@@ -54,6 +54,8 @@
             this.checkBox_ryM4 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM0 = new System.Windows.Forms.CheckBox();
             this.groupBox_ry1 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.checkBox_data = new System.Windows.Forms.CheckBox();
             this.pictureBox_ryS1 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM7 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryS0 = new System.Windows.Forms.PictureBox();
@@ -80,7 +82,6 @@
             this.label_powerS = new System.Windows.Forms.Label();
             this.checkBox_paramS = new System.Windows.Forms.CheckBox();
             this.checkBox_logS = new System.Windows.Forms.CheckBox();
-            this.checkBox_data = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).BeginInit();
@@ -356,6 +357,7 @@
             // groupBox_ry1
             // 
             this.groupBox_ry1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox_ry1.Controls.Add(this.label8);
             this.groupBox_ry1.Controls.Add(this.checkBox_data);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryS1);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryM7);
@@ -385,6 +387,30 @@
             this.groupBox_ry1.TabIndex = 31;
             this.groupBox_ry1.TabStop = false;
             this.groupBox_ry1.Text = "继电器模块 1";
+            // 
+            // label8
+            // 
+            this.label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label8.Font = new System.Drawing.Font("华文行楷", 26.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label8.Location = new System.Drawing.Point(6, 298);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(238, 50);
+            this.label8.TabIndex = 37;
+            this.label8.Text = "北京三原兆兴";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkBox_data
+            // 
+            this.checkBox_data.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_data.AutoCheck = false;
+            this.checkBox_data.Location = new System.Drawing.Point(279, 227);
+            this.checkBox_data.Name = "checkBox_data";
+            this.checkBox_data.Size = new System.Drawing.Size(100, 50);
+            this.checkBox_data.TabIndex = 35;
+            this.checkBox_data.Text = "数据查询";
+            this.checkBox_data.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_data.UseVisualStyleBackColor = true;
+            this.checkBox_data.Click += new System.EventHandler(this.checkBox_data_Click_1);
             // 
             // pictureBox_ryS1
             // 
@@ -673,19 +699,6 @@
             this.checkBox_logS.UseVisualStyleBackColor = true;
             this.checkBox_logS.Click += new System.EventHandler(this.checkBox_logS_Click);
             // 
-            // checkBox_data
-            // 
-            this.checkBox_data.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_data.AutoCheck = false;
-            this.checkBox_data.Location = new System.Drawing.Point(279, 227);
-            this.checkBox_data.Name = "checkBox_data";
-            this.checkBox_data.Size = new System.Drawing.Size(100, 50);
-            this.checkBox_data.TabIndex = 35;
-            this.checkBox_data.Text = "数据查询";
-            this.checkBox_data.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_data.UseVisualStyleBackColor = true;
-            this.checkBox_data.Click += new System.EventHandler(this.checkBox_data_Click_1);
-            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -777,6 +790,7 @@
         private System.Windows.Forms.PictureBox pictureBox_ryS1;
         private System.Windows.Forms.PictureBox pictureBox_ryS0;
         private System.Windows.Forms.CheckBox checkBox_data;
+        private System.Windows.Forms.Label label8;
     }
 }
 
