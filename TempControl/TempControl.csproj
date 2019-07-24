@@ -72,6 +72,12 @@
     <Compile Include="FormAutoSet.Designer.cs">
       <DependentUpon>FormAutoSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAutoSet1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAutoSet1.designer.cs">
+      <DependentUpon>FormAutoSet1.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormChart.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormAutoSet.resx">
       <DependentUpon>FormAutoSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAutoSet1.resx">
+      <DependentUpon>FormAutoSet1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormDebug.resx">
       <DependentUpon>FormDebug.cs</DependentUpon>

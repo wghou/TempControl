@@ -206,7 +206,7 @@ namespace TempControl
 
             if (!fmExit)
             {
-                FormAutoSet fm = new FormAutoSet(_device);
+                FormAutoSet1 fm = new FormAutoSet1(_device);
                 fm.SetAutoButtonEvent += SetAutoButton;
                 fm.Name = "FormAutoSet";
                 fm.Show();
