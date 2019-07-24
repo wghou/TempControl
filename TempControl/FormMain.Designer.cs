@@ -532,7 +532,7 @@
             this.Controls.Add(this.label3);
             this.MaximizeBox = false;
             this.Name = "FormMain";
-            this.Text = "北京三原兆兴  -- 自动控温系统";
+            this.Text = "自动控温系统 -- 北京三原兆兴 ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
