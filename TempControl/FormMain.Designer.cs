@@ -332,10 +332,10 @@
             this.checkBox_auto.UseVisualStyleBackColor = true;
             this.checkBox_auto.Click += new System.EventHandler(this.checkBox_auto_Click);
             // 
-            // pictureBox1
+            // pictureBoxM
             // 
             this.pictureBoxM.Location = new System.Drawing.Point(8, 19);
-            this.pictureBoxM.Name = "pictureBox1";
+            this.pictureBoxM.Name = "pictureBoxM";
             this.pictureBoxM.Size = new System.Drawing.Size(40, 10);
             this.pictureBoxM.TabIndex = 19;
             this.pictureBoxM.TabStop = false;
@@ -797,10 +797,10 @@
             this.label7.Text = "温度设定值";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // pictureBox2
+            // pictureBoxS
             // 
             this.pictureBoxS.Location = new System.Drawing.Point(8, 19);
-            this.pictureBoxS.Name = "pictureBox2";
+            this.pictureBoxS.Name = "pictureBoxS";
             this.pictureBoxS.Size = new System.Drawing.Size(40, 10);
             this.pictureBoxS.TabIndex = 19;
             this.pictureBoxS.TabStop = false;
@@ -926,7 +926,7 @@
             this.Controls.Add(this.label3);
             this.MaximizeBox = false;
             this.Name = "FormMain";
-            this.Text = "自动控温系统";
+            this.Text = "自动控温系统 -- 北京三原兆兴";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();
