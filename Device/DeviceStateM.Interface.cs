@@ -43,9 +43,9 @@ namespace Device
                 else nlogger.Debug("配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
 
                 // 继电器设备 2
-                confOK &= ryDeviceS.SetPortName(_runningParameters.portRy2);
-                if (!confOK) nlogger.Error("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
-                else nlogger.Debug("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                //confOK &= ryDeviceS.SetPortName(_runningParameters.portRy2);
+                //if (!confOK) nlogger.Error("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
+                //else nlogger.Debug("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
             }
             catch (Exception ex)
             {
