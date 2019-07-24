@@ -265,7 +265,7 @@
             this.checkBox_ryM7.Name = "checkBox_ryM7";
             this.checkBox_ryM7.Size = new System.Drawing.Size(100, 50);
             this.checkBox_ryM7.TabIndex = 28;
-            this.checkBox_ryM7.Text = "主槽制冷";
+            this.checkBox_ryM7.Text = "主槽快冷";
             this.checkBox_ryM7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM7.UseVisualStyleBackColor = true;
             this.checkBox_ryM7.Click += new System.EventHandler(this.checkBox_ryM7_Click);
@@ -325,7 +325,7 @@
             this.checkBox_ryM1.Name = "checkBox_ryM1";
             this.checkBox_ryM1.Size = new System.Drawing.Size(100, 50);
             this.checkBox_ryM1.TabIndex = 23;
-            this.checkBox_ryM1.Text = "主槽快冷";
+            this.checkBox_ryM1.Text = "主槽制冷";
             this.checkBox_ryM1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM1.UseVisualStyleBackColor = true;
             this.checkBox_ryM1.Click += new System.EventHandler(this.checkBox_ryM1_Click);
