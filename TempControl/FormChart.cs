@@ -24,6 +24,8 @@ namespace TempControl
         List<float> dataShow;   // 绘图所显示的数据
         object dataLocker;      // 源数据访问 - 锁
 
+        int digits = 4;
+
         public FormChart(ChartConfig cfg, Form fm)
         {
             InitializeComponent();
@@ -33,6 +35,7 @@ namespace TempControl
             startTime = cfg.startTime;
             dataShow = cfg.dataShow;
             dataLocker = cfg.dataLocker;
+            this.digits = cfg.digits;
             this.Text = cfg.chartTitle;
             this.getDataFlucPtr = cfg.funcPtr;
             this.dataIntervalSec = cfg.dataIntervalSec;
@@ -71,7 +74,9 @@ namespace TempControl
                 // 波动度显示
                 float fluc = 0.0f;
                 getDataFlucPtr?.Invoke(steadyTimeSec / dataIntervalSec, out fluc);
-                this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
+                if(digits == 3) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
+                else if(digits == 4) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
+                else this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
             }));
         }
 

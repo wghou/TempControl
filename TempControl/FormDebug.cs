@@ -32,8 +32,6 @@ namespace TempControl
             devParam[8] = textBox9;
             devParam[9] = textBox10;
             devParam[10] = textBox11;
-            devParam[11] = textBox12;
-            devParam[12] = textBox13;
             devParam[13] = textBox14;
             devParam[14] = textBox15;
             devParam[15] = textBox16;
@@ -54,8 +52,6 @@ namespace TempControl
             textBox9.Text = paramAll.tempBiasFaultThr.ToString("0.0000");
             textBox10.Text = paramAll.tempMaxValue.ToString("0.0000");
             textBox11.Text = paramAll.tempMinValue.ToString("0.0000");
-            textBox12.Text = "0";
-            textBox13.Text = "0";
             //textBox12.Text = paramAll.tpBridge.tpBridgeChannel.ToString("0");
             //textBox13.Text = paramAll.tpBridge.tpBridgeReadInterval.ToString("0");
             textBox14.Text = paramAll.subCoolAndCircleShutdownThr.ToString("0.0000");
@@ -80,6 +76,8 @@ namespace TempControl
             for (int i = 0; i < 18; i++)
             {
                 float newVal = 0.0f;
+
+                if (i == 11 || i == 12) continue;
 
                 if (float.TryParse(this.devParam[i].Text, out newVal) != true)
                 {
@@ -573,28 +571,6 @@ namespace TempControl
             }
 
             tx = this.textBox11;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox12_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox12;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox13_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox13;
             tx.BackColor = System.Drawing.SystemColors.Window;
         }
 

@@ -75,6 +75,9 @@ namespace TempControl
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
+
+            // 公司 logo
+            pictureBox_logo.BringToFront();
         }
 
 
@@ -155,6 +158,14 @@ namespace TempControl
             }
 
             _device.updateEvents();
+
+            // 公司 logo
+            System.Threading.Thread.Sleep(3000);
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                pictureBox_logo.Visible = false;
+                pictureBox_logo.Dispose();
+            }));
         }
 
 
