@@ -17,6 +17,7 @@ namespace TempControl
         private getDataFluc getDataFlucPtr;
         private int steadyTimeSec = 300;
         private int dataIntervalSec = 5;
+        private int digits = 4;
 
         DrawChart mDrawChart;
 
@@ -36,6 +37,7 @@ namespace TempControl
             this.Text = cfg.chartTitle;
             this.getDataFlucPtr = cfg.funcPtr;
             this.dataIntervalSec = cfg.dataIntervalSec;
+            this.digits = cfg.digits;
 
             mDrawChart = new DrawChart(cfg, TempPic.Height, TempPic.Width);
 
@@ -71,7 +73,9 @@ namespace TempControl
                 // 波动度显示
                 float fluc = 0.0f;
                 getDataFlucPtr?.Invoke(steadyTimeSec / dataIntervalSec, out fluc);
-                this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
+                if(digits==3) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
+                else if(digits == 4) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
+                else this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
             }));
         }
 
