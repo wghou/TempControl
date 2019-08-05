@@ -98,6 +98,7 @@
             this.checkBox_ryEn2 = new System.Windows.Forms.CheckBox();
             this.checkBox_protect = new System.Windows.Forms.CheckBox();
             this.checkBox_tempS = new System.Windows.Forms.CheckBox();
+            this.pictureBox_logo = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).BeginInit();
@@ -120,6 +121,7 @@
             this.groupBox_tempM.SuspendLayout();
             this.groupBox_tempS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).BeginInit();
             this.SuspendLayout();
             // 
             // label_tempM
@@ -905,6 +907,18 @@
             this.checkBox_tempS.UseVisualStyleBackColor = true;
             this.checkBox_tempS.CheckedChanged += new System.EventHandler(this.checkBox_tempS_CheckedChanged);
             // 
+            // pictureBox_logo
+            // 
+            this.pictureBox_logo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.pictureBox_logo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox_logo.Image = global::TempControl.Properties.Resources.company_logo;
+            this.pictureBox_logo.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox_logo.Name = "pictureBox_logo";
+            this.pictureBox_logo.Size = new System.Drawing.Size(764, 515);
+            this.pictureBox_logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox_logo.TabIndex = 41;
+            this.pictureBox_logo.TabStop = false;
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -924,6 +938,7 @@
             this.Controls.Add(this.label_fluc);
             this.Controls.Add(this.label_controlState);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.pictureBox_logo);
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.Text = "自动控温系统 -- 北京三原兆兴";
@@ -953,6 +968,7 @@
             this.groupBox_tempS.ResumeLayout(false);
             this.groupBox_tempS.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1028,6 +1044,7 @@
         private System.Windows.Forms.PictureBox pictureBox_ryS1;
         private System.Windows.Forms.PictureBox pictureBox_ryS4;
         private System.Windows.Forms.PictureBox pictureBox_ryS0;
+        private System.Windows.Forms.PictureBox pictureBox_logo;
     }
 }
 
