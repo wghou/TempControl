@@ -28,6 +28,7 @@ namespace TempControl
         // 闪烁等
         Bitmap mBmpM;
         Bitmap mBmpS;
+        Bitmap mBmpLot;
         private bool flp = false;
         private Timer timPic = new Timer();
 
@@ -94,6 +95,7 @@ namespace TempControl
             // 用于状态指示灯
             mBmpM = new Bitmap(pictureBoxM.Width, pictureBoxM.Height);
             mBmpS = new Bitmap(pictureBoxS.Width, pictureBoxS.Height);
+            mBmpLot = new Bitmap(pictureBox_lot.Width, pictureBox_lot.Height);
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
@@ -122,22 +124,26 @@ namespace TempControl
         {
             Graphics mGhpM = Graphics.FromImage(mBmpM);
             Graphics mGhpS = Graphics.FromImage(mBmpS);
+            Graphics mGhpLot = Graphics.FromImage(mBmpLot);
             mGhpM.Clear(SystemColors.Control);
             if (flp)
             {
                 mGhpM.Clear(SystemColors.Control);
                 mGhpS.Clear(SystemColors.Control);
+                mGhpLot.Clear(SystemColors.Control);
                 flp = false;
             }
             else
             {
                 mGhpM.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
                 mGhpS.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
+                mGhpLot.Clear(this._device.isMqttConnected() ? Color.Green : Color.Red);
                 flp = true;
             }
 
             pictureBoxM.Image = mBmpM;
             pictureBoxS.Image = mBmpS;
+            pictureBox_lot.Image = mBmpLot;
         }
 
 

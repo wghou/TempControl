@@ -146,6 +146,9 @@ namespace Device
             if (cntErr) err = RelayDevice.Err_r.NoError;
 
             RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
+
+            // publish
+            Publish(LotTopics.RelayM, string.Join(",", ryDeviceM.ryStatus.Select(b=> b.ToString()).ToArray()));
         }
 
 
@@ -175,6 +178,9 @@ namespace Device
             if (cntErr) err = RelayDevice.Err_r.NoError;
 
             RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
+
+            // publish
+            Publish(LotTopics.RelayS, string.Join(",", ryDeviceS.ryStatus.Select(b => b.ToString()).ToArray()));
         }
 
 
@@ -203,6 +209,9 @@ namespace Device
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
             TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+
+            // publish
+            Publish(LotTopics.TemptSetM, tpDeviceM.tpParam[0].ToString("0.0000"));
         }
 
 
@@ -231,6 +240,9 @@ namespace Device
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
             TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
+
+            // publish
+            Publish(LotTopics.TemptSetM, tpDeviceM.tpParam[0].ToString("0.0000"));
         }
 
 
@@ -259,6 +271,9 @@ namespace Device
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
             TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
+
+            // publish
+            Publish(LotTopics.TemptSetS, tpDeviceS.tpParam[0].ToString("0.0000"));
         }
 
 
@@ -287,6 +302,9 @@ namespace Device
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
             TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
+
+            // publish
+            Publish(LotTopics.TemptSetS, tpDeviceS.tpParam[0].ToString("0.0000"));
         }
     }
 }

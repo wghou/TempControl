@@ -57,7 +57,11 @@ namespace Device
         /// <summary>
         /// 其他错误
         /// </summary>
-        CodeError
+        CodeError,
+        /// <summary>
+        /// 清除所有错误状态
+        /// </summary>
+        ClearErrorStatus
     }
 
     public partial class DeviceStateM
@@ -81,6 +85,9 @@ namespace Device
                     _deviceErrorMonitor[item] = 0;
                 }
             }
+
+            // publish
+            Publish(LotTopics.ErrStatus, ErrorCode.ClearErrorStatus.ToString());
         }
 
         /// <summary>
@@ -120,6 +127,9 @@ namespace Device
             {
                 _deviceErrorMonitor[err]++;
             }
+
+            // publish
+            Publish(LotTopics.ErrStatus, err.ToString());
         }
 
 

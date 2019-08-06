@@ -99,6 +99,7 @@
             this.checkBox_protect = new System.Windows.Forms.CheckBox();
             this.checkBox_tempS = new System.Windows.Forms.CheckBox();
             this.pictureBox_logo = new System.Windows.Forms.PictureBox();
+            this.pictureBox_lot = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).BeginInit();
@@ -122,6 +123,7 @@
             this.groupBox_tempS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_lot)).BeginInit();
             this.SuspendLayout();
             // 
             // label_tempM
@@ -346,7 +348,7 @@
             // 
             this.checkBox_debug.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_debug.AutoCheck = false;
-            this.checkBox_debug.Location = new System.Drawing.Point(18, 474);
+            this.checkBox_debug.Location = new System.Drawing.Point(262, 479);
             this.checkBox_debug.Name = "checkBox_debug";
             this.checkBox_debug.Size = new System.Drawing.Size(77, 30);
             this.checkBox_debug.TabIndex = 20;
@@ -919,10 +921,19 @@
             this.pictureBox_logo.TabIndex = 41;
             this.pictureBox_logo.TabStop = false;
             // 
+            // pictureBox_lot
+            // 
+            this.pictureBox_lot.Location = new System.Drawing.Point(12, 499);
+            this.pictureBox_lot.Name = "pictureBox_lot";
+            this.pictureBox_lot.Size = new System.Drawing.Size(40, 10);
+            this.pictureBox_lot.TabIndex = 42;
+            this.pictureBox_lot.TabStop = false;
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(764, 515);
+            this.Controls.Add(this.pictureBox_lot);
             this.Controls.Add(this.checkBox_tempS);
             this.Controls.Add(this.checkBox_protect);
             this.Controls.Add(this.checkBox_ryEn2);
@@ -969,6 +980,7 @@
             this.groupBox_tempS.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_lot)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1045,6 +1057,7 @@
         private System.Windows.Forms.PictureBox pictureBox_ryS4;
         private System.Windows.Forms.PictureBox pictureBox_ryS0;
         private System.Windows.Forms.PictureBox pictureBox_logo;
+        private System.Windows.Forms.PictureBox pictureBox_lot;
     }
 }
 

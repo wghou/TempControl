@@ -43,6 +43,12 @@ namespace Device
                 ErrorStatusChangedEvent?.Invoke(_deviceErrorMonitor);
             }
             lastErrCnt = errCnt;
+
+            // publish
+            if (tpDeviceM.temperatures.Count != 0) Publish(LotTopics.TemptM, tpDeviceM.temperatures.Last().ToString("0.0000"));
+            Publish(LotTopics.PowerM, tpDeviceM.tpParam[6].ToString("0"));
+            if (tpDeviceS.temperatures.Count != 0) Publish(LotTopics.TemptS, tpDeviceS.temperatures.Last().ToString("0.0000"));
+            Publish(LotTopics.PowerS, tpDeviceS.tpParam[6].ToString("0"));
         }
 
         private void _ryConnectTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -87,6 +93,9 @@ namespace Device
             currentTemptPointState.stateCounts = 0;
 
             StateChangedEvent?.Invoke(dest);
+
+            // publish
+            Publish(LotTopics.FlowState, dest.ToString());
         }
 
         /// <summary>
