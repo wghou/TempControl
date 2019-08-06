@@ -33,6 +33,13 @@ namespace TempControl
             _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
         }
 
+        private void checkBox_remoteMonitor_CheckedChanged(object sender, EventArgs e)
+        {
+            _device.setMqttEnable(this.checkBox_remoteMonitor.Checked);
+
+            pictureBox_lot.Enabled = this.checkBox_remoteMonitor.Checked;
+        }
+
         /// <summary> 设置继电器设备状态 - 委托 </summary>
         private delegate void RySetHandler(bool cntErr);
 

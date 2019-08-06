@@ -222,8 +222,9 @@ namespace Device
 
         public bool closeDevice()
         {
-            if (Enable == false) return true;
+            for (int i = 0; i < ryStatus.Length; i++) ryStatus[i] = false;
 
+            if (Enable == false) return true;
 
             bool rlt = true;
             try

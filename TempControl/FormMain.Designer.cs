@@ -100,6 +100,7 @@
             this.checkBox_tempS = new System.Windows.Forms.CheckBox();
             this.pictureBox_logo = new System.Windows.Forms.PictureBox();
             this.pictureBox_lot = new System.Windows.Forms.PictureBox();
+            this.checkBox_remoteMonitor = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).BeginInit();
@@ -348,7 +349,7 @@
             // 
             this.checkBox_debug.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_debug.AutoCheck = false;
-            this.checkBox_debug.Location = new System.Drawing.Point(262, 479);
+            this.checkBox_debug.Location = new System.Drawing.Point(111, 479);
             this.checkBox_debug.Name = "checkBox_debug";
             this.checkBox_debug.Size = new System.Drawing.Size(77, 30);
             this.checkBox_debug.TabIndex = 20;
@@ -929,10 +930,25 @@
             this.pictureBox_lot.TabIndex = 42;
             this.pictureBox_lot.TabStop = false;
             // 
+            // checkBox_remoteMonitor
+            // 
+            this.checkBox_remoteMonitor.AutoSize = true;
+            this.checkBox_remoteMonitor.Checked = true;
+            this.checkBox_remoteMonitor.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_remoteMonitor.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_remoteMonitor.Location = new System.Drawing.Point(228, 485);
+            this.checkBox_remoteMonitor.Name = "checkBox_remoteMonitor";
+            this.checkBox_remoteMonitor.Size = new System.Drawing.Size(117, 18);
+            this.checkBox_remoteMonitor.TabIndex = 43;
+            this.checkBox_remoteMonitor.Text = "RemoteMonitor";
+            this.checkBox_remoteMonitor.UseVisualStyleBackColor = true;
+            this.checkBox_remoteMonitor.CheckedChanged += new System.EventHandler(this.checkBox_remoteMonitor_CheckedChanged);
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(764, 515);
+            this.Controls.Add(this.checkBox_remoteMonitor);
             this.Controls.Add(this.pictureBox_lot);
             this.Controls.Add(this.checkBox_tempS);
             this.Controls.Add(this.checkBox_protect);
@@ -1058,6 +1074,7 @@
         private System.Windows.Forms.PictureBox pictureBox_ryS0;
         private System.Windows.Forms.PictureBox pictureBox_logo;
         private System.Windows.Forms.PictureBox pictureBox_lot;
+        private System.Windows.Forms.CheckBox checkBox_remoteMonitor;
     }
 }
 

@@ -12,10 +12,9 @@ using MQTTnet.Client.Receiving;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
 
-
-namespace Device
+namespace LotMonitor
 {
-    public partial class DeviceStateM
+    public partial class LotMonitorForm
     {
         private MqttClient mqttClient = null;
         private IMqttClientOptions options = null;
@@ -34,22 +33,11 @@ namespace Device
         /// </summary>
         private static string ProductID = "20190805";
 
-        /// <summary>
-        /// 订阅主题
-        /// </summary>
-        List<string> topicsSubscribeList = new List<string>() { "Control", "Status" };
+        private List<string> topicPublish = new List<string>() { "Control", "Status" };
 
         private bool Retained = false;
 
-        /// <summary>
-        /// 是否启用 mqtt monitor
-        /// </summary>
-        private bool monitorEnable = true;
-
-        /// <summary>
-        /// 所发布的主题
-        /// </summary>
-        public enum LotTopicsPublish : int
+        public enum LotTopicsSubscribe : int
         {
             TemptM = 0,
             TemptSetM,
@@ -63,16 +51,16 @@ namespace Device
             ErrStatus
         }
 
-        private Dictionary<LotTopicsPublish, Tuple<string, int>> topicPublishDict = new Dictionary<LotTopicsPublish, Tuple<string, int>>();
+        private Dictionary<LotTopicsSubscribe, Tuple<string, int>> topicSubscribeDict = new Dictionary<LotTopicsSubscribe, Tuple<string, int>>();
 
         bool setupMqtt()
         {
-            if(mqttClient == null)
+            if (mqttClient == null)
             {
-                topicPublishDict.Clear();
-                foreach (LotTopicsPublish item in Enum.GetValues(typeof(LotTopicsPublish)))
+                topicSubscribeDict.Clear();
+                foreach (LotTopicsSubscribe item in Enum.GetValues(typeof(LotTopicsSubscribe)))
                 {
-                    topicPublishDict.Add(item, new Tuple<string, int>(Enum.GetName(typeof(LotTopicsPublish), item), 0));
+                    topicSubscribeDict.Add(item, new Tuple<string, int>(Enum.GetName(typeof(LotTopicsSubscribe), item), 0));
                 }
 
                 var factory = new MqttFactory();
@@ -81,7 +69,7 @@ namespace Device
                 options = new MqttClientOptionsBuilder()
                 .WithTcpServer(mqttServerUrl, mqttPort)
                 .WithCredentials(mqttUserId, mqttPassword)
-                .WithClientId(Guid.NewGuid().ToString().Substring(0,10))
+                .WithClientId(Guid.NewGuid().ToString().Substring(0, 10))
                 .Build();
 
 
@@ -109,22 +97,8 @@ namespace Device
             else return mqttClient.IsConnected;
         }
 
-        /// <summary>
-        /// 设置 monitor Enable 的状态
-        /// </summary>
-        /// <param name="st"></param>
-        public void setMqttEnable(bool st)
+        public void Publish(string topic, string Message)
         {
-            monitorEnable = st;
-
-            if(st) mqttClient.ConnectAsync(options);
-        }
-
-
-        public void Publish(LotTopicsPublish topic, string Message)
-        {
-            if (!monitorEnable) return;
-
             try
             {
                 if (mqttClient == null) return;
@@ -137,25 +111,27 @@ namespace Device
                     return;
                 }
 
-                string myTopic = Model + "/" + topicPublishDict[topic].Item1 + "/" + ProductID;
+                string myTopic = Model + "/" + topic + "/" + ProductID;
 
-                Console.WriteLine("Publish >>Topic: " + myTopic + "; QoS: " + topicPublishDict[topic].Item2 + "; Retained: " + Retained + ";");
+                Console.WriteLine("Publish >>Topic: " + myTopic + "; QoS: " + 0 + "; Retained: " + Retained + ";");
                 Console.WriteLine("Publish >>Message: " + Message);
                 MqttApplicationMessageBuilder mamb = new MqttApplicationMessageBuilder()
                  .WithTopic(myTopic)
                  .WithPayload(Message).WithRetainFlag(Retained);
-                if (topicPublishDict[topic].Item2 == 0)
-                {
-                    mamb = mamb.WithAtMostOnceQoS();
-                }
-                else if (topicPublishDict[topic].Item2 == 1)
-                {
-                    mamb = mamb.WithAtLeastOnceQoS();
-                }
-                else if (topicPublishDict[topic].Item2 == 2)
-                {
-                    mamb = mamb.WithExactlyOnceQoS();
-                }
+
+                mamb = mamb.WithAtMostOnceQoS();
+                //if (topicSubscribeDict[topic].Item2 == 0)
+                //{
+                //    mamb = mamb.WithAtMostOnceQoS();
+                //}
+                //else if (topicSubscribeDict[topic].Item2 == 1)
+                //{
+                //    mamb = mamb.WithAtLeastOnceQoS();
+                //}
+                //else if (topicSubscribeDict[topic].Item2 == 2)
+                //{
+                //    mamb = mamb.WithExactlyOnceQoS();
+                //}
 
                 mqttClient.PublishAsync(mamb.Build());
             }
@@ -168,8 +144,6 @@ namespace Device
 
         private void MqttApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
-            if (!monitorEnable) return;
-
             try
             {
                 string text = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
@@ -179,22 +153,93 @@ namespace Device
                 Console.WriteLine("MessageReceived >>Topic:" + Topic + "; QoS: " + QoS + "; Retained: " + Retained + ";");
                 Console.WriteLine("MessageReceived >>Msg: " + text);
 
-                switch(Topic)
+                switch (Topic)
                 {
-                    // control cmd from the monitor
-                    case "LOT/Control/20190805":
+                    case "LOT/TemptM/20190805":
+                        this.BeginInvoke(new EventHandler(delegate
+                        {
+                            double val = 0.0f;
+                            if (double.TryParse(text, out val)) this.hslGaugeChart_temptM.Value = val;
+                        }));
                         break;
 
-                    // update all status request from the monitor
-                    case "LOT/Status/20190805":
-                        Publish(LotTopicsPublish.TemptSetM, tpDeviceM.tpParam[0].ToString());
-                        Publish(LotTopicsPublish.TemptSetS, tpDeviceS.tpParam[0].ToString());
-                        Publish(LotTopicsPublish.FlowState, _state.ToString());
-                        Publish(LotTopicsPublish.RelayM, string.Join(",", ryDeviceM.ryStatus.Select(b => b.ToString()).ToArray()));
-                        Publish(LotTopicsPublish.RelayS, string.Join(",", ryDeviceS.ryStatus.Select(b => b.ToString()).ToArray()));
+                    case "LOT/TemptSetM/20190805":
+                        this.BeginInvoke(new EventHandler(delegate
+                        {
+                            double val = 0.0f;
+                            if (double.TryParse(text, out val)) this.hslLedDisplay_temptSetM.DisplayText = val.ToString("0.0000");
+                        }));
                         break;
 
-                    // default
+                    case "LOT/PowerM/20190805":
+                        this.BeginInvoke(new EventHandler(delegate
+                        {
+                            float val = 0.0f;
+                            if (float.TryParse(text, out val)) this.hslGauge_powerM.Value = val;
+                        }));
+                        break;
+
+                    case "LOT/TemptS/20190805":
+                        this.BeginInvoke(new EventHandler(delegate
+                        {
+                            double val = 0.0f;
+                            if (double.TryParse(text, out val)) this.hslGaugeChart_temptS.Value = val;
+                        }));
+                        break;
+
+                    case "LOT/TemptSetS/20190805":
+                        this.BeginInvoke(new EventHandler(delegate
+                        {
+                            double val = 0.0f;
+                            if (double.TryParse(text, out val)) this.hslLedDisplay_temptSetS.DisplayText = val.ToString("0.0000");
+                        }));
+                        break;
+
+                    case "LOT/PowerS/20190805":
+                        this.BeginInvoke(new EventHandler(delegate
+                        {
+                            float val = 0.0f;
+                            if (float.TryParse(text, out val)) this.hslGauge_powerS.Value = val;
+                        }));
+                        break;
+
+                    case "LOT/RelayM/20190805":
+                        try
+                        {
+                            String str = text;
+                            bool[] st = text.Split(',').Select(b => Boolean.Parse(b)).ToArray();
+                            if (st.Length != 16) break;
+
+                            this.BeginInvoke(new EventHandler(delegate
+                            {
+                                for (int i = 0; i < 8; i++) switchRyM[i].SwitchStatus = st[i];
+                            }));
+                            
+                        }
+                        catch(Exception ex)
+                        {
+
+                        }
+                        break;
+
+                    case "LOT/RelayS/20190805":
+                        try
+                        {
+                            String str = text;
+                            bool[] st = text.Split(',').Select(b => Boolean.Parse(b)).ToArray();
+                            if (st.Length != 16) break;
+
+                            this.BeginInvoke(new EventHandler(delegate
+                            {
+                                for (int i = 0; i < 8; i++) switchRyS[i].SwitchStatus = st[i];
+                            }));
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                        break;
+
                     default:
                         break;
                 }
@@ -213,13 +258,13 @@ namespace Device
                 List<TopicFilter> listTopic = new List<TopicFilter>();
                 if (listTopic.Count() <= 0)
                 {
-                    foreach(string tp in topicsSubscribeList)
+                    foreach(var tp in Enum.GetValues(typeof(LotTopicsSubscribe)))
                     {
-                        string Topic = Model + "/" + tp + "/" + ProductID;
+                        string Topic = Model + "/" + tp.ToString() + "/" + ProductID;
                         var topicFilterBulder = new TopicFilterBuilder().WithTopic(Topic).Build();
                         listTopic.Add(topicFilterBulder);
                         Console.WriteLine("Connected >>Subscribe " + Topic);
-                    }
+                    }  
                 }
                 await mqttClient.SubscribeAsync(listTopic.ToArray());
                 Console.WriteLine("Connected >>Subscribe Success");
@@ -228,12 +273,12 @@ namespace Device
             {
                 Console.WriteLine(exp.Message);
             }
+
+            Publish(topicPublish[1], "requrest");
         }
 
         private async Task Disconnected(MqttClientDisconnectedEventArgs e)
         {
-            if (!monitorEnable) return;
-
             try
             {
                 Console.WriteLine("Disconnected >>Disconnected Server");

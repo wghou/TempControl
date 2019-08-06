@@ -87,7 +87,7 @@ namespace Device
             }
 
             // publish
-            Publish(LotTopics.ErrStatus, ErrorCode.ClearErrorStatus.ToString());
+            Publish(LotTopicsPublish.ErrStatus, ErrorCode.ClearErrorStatus.ToString());
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Device
             }
 
             // publish
-            Publish(LotTopics.ErrStatus, err.ToString());
+            Publish(LotTopicsPublish.ErrStatus, err.ToString());
         }
 
 

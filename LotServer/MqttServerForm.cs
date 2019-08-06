@@ -17,9 +17,9 @@ namespace LotServer
         {
             InitializeComponent();
 
-            //this.WindowState = FormWindowState.Minimized;
-            //this.Hide();
-            //this.notifyIcon1.Visible = true;
+            this.WindowState = FormWindowState.Minimized;
+            this.Hide();
+            this.notifyIcon1.Visible = true;
 
             setupMqtt();
 

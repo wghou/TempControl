@@ -107,12 +107,12 @@ namespace TempControl
 
         private void Form1_Shown(object sender, EventArgs e)
         {
+            RegistEventHandler();
+
             backgroundWorker1.DoWork += BackgroundWorker1_DoWork;
             timer1.Interval = 200;
             timer1.Tick += Timer1_Tick;
             timer1.Start();
-
-            RegistEventHandler();
 
             _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
             _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
@@ -391,8 +391,7 @@ namespace TempControl
                 }
             }
 
-            _device.ryDeviceM.closeDevice();
-            _device.ryDeviceS.closeDevice();
+            _device.closeDevice();
         }
     }
 }

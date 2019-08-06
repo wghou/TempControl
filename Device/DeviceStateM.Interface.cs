@@ -71,6 +71,13 @@ namespace Device
             RelayDeviceMStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceM.ryStatus);
 
             RelayDeviceSStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceS.ryStatus);
+
+            // publish
+            Publish(LotTopicsPublish.TemptSetM, tpDeviceM.tpParam[0].ToString());
+            Publish(LotTopicsPublish.TemptSetS, tpDeviceS.tpParam[0].ToString());
+            Publish(LotTopicsPublish.FlowState, _state.ToString());
+            Publish(LotTopicsPublish.RelayM, string.Join(",", ryDeviceM.ryStatus.Select(b => b.ToString()).ToArray()));
+            Publish(LotTopicsPublish.RelayS, string.Join(",", ryDeviceS.ryStatus.Select(b => b.ToString()).ToArray()));
         }
 
 
@@ -99,6 +106,16 @@ namespace Device
         public void ShutdownComputer()
         {
             _machine.Fire(Trigger.ForceShutdownPC);
+        }
+
+        public void closeDevice()
+        {
+            ryDeviceM.closeDevice();
+            ryDeviceS.closeDevice();
+
+            Publish(LotTopicsPublish.FlowState, State.ShutdownPC.ToString());
+            Publish(LotTopicsPublish.RelayM, string.Join(",", ryDeviceM.ryStatus.Select(b => b.ToString()).ToArray()));
+            Publish(LotTopicsPublish.RelayS, string.Join(",", ryDeviceS.ryStatus.Select(b => b.ToString()).ToArray()));
         }
 
 
@@ -145,10 +162,10 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr) err = RelayDevice.Err_r.NoError;
 
-            RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
-
             // publish
-            Publish(LotTopics.RelayM, string.Join(",", ryDeviceM.ryStatus.Select(b=> b.ToString()).ToArray()));
+            Publish(LotTopicsPublish.RelayM, string.Join(",", ryDeviceM.ryStatus.Select(b=> b.ToString()).ToArray()));
+
+            RelayDeviceMStatusUpdatedEvent?.Invoke(err, ryDeviceM.ryStatus);
         }
 
 
@@ -177,10 +194,10 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr) err = RelayDevice.Err_r.NoError;
 
-            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
-
             // publish
-            Publish(LotTopics.RelayS, string.Join(",", ryDeviceS.ryStatus.Select(b => b.ToString()).ToArray()));
+            Publish(LotTopicsPublish.RelayS, string.Join(",", ryDeviceS.ryStatus.Select(b => b.ToString()).ToArray()));
+
+            RelayDeviceSStatusUpdatedEvent?.Invoke(err, ryDeviceS.ryStatus);
         }
 
 
@@ -208,10 +225,10 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
-            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
-
             // publish
-            Publish(LotTopics.TemptSetM, tpDeviceM.tpParam[0].ToString("0.0000"));
+            Publish(LotTopicsPublish.TemptSetM, tpDeviceM.tpParam[0].ToString("0.0000"));
+
+            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
         }
 
 
@@ -239,10 +256,10 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
-            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
-
             // publish
-            Publish(LotTopics.TemptSetM, tpDeviceM.tpParam[0].ToString("0.0000"));
+            Publish(LotTopicsPublish.TemptSetM, tpDeviceM.tpParam[0].ToString("0.0000"));
+
+            TempDeviceMParamUpdatedEvent?.Invoke(err, tpDeviceM.tpParam);
         }
 
 
@@ -270,10 +287,10 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
-            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
-
             // publish
-            Publish(LotTopics.TemptSetS, tpDeviceS.tpParam[0].ToString("0.0000"));
+            Publish(LotTopicsPublish.TemptSetS, tpDeviceS.tpParam[0].ToString("0.0000"));
+
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
         }
 
 
@@ -301,10 +318,10 @@ namespace Device
             // 实际上，Error 应该定义成一个类，并标识出是否已处理
             if (cntErr == true) err = TempProtocol.Err_t.NoError;
 
-            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
-
             // publish
-            Publish(LotTopics.TemptSetS, tpDeviceS.tpParam[0].ToString("0.0000"));
+            Publish(LotTopicsPublish.TemptSetS, tpDeviceS.tpParam[0].ToString("0.0000"));
+
+            TempDeviceSParamUpdatedEvent?.Invoke(err, tpDeviceS.tpParam);
         }
     }
 }
