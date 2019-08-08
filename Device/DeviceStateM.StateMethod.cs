@@ -247,7 +247,7 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
@@ -371,8 +371,8 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
@@ -437,8 +437,8 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
@@ -465,9 +465,8 @@ namespace Device
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
                 // 电桥自检正常。。。
-                //if (tpBridge.tpBridgeReadInterval < 1) tpBridge.tpBridgeReadInterval = 1;
-                //bool steady = tpBridge.chekFluc(currentState.stateCounts / tpBridge.tpBridgeReadInterval, flucValue);
-                if (true)
+                bool steady = tpDeviceM.checkFlucCount(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                if (steady)
                 {
                     // 温度稳定度达到了要求，进入下一个状态 - 测量
                     _machine.Fire(Trigger.StartMeasure);
@@ -504,7 +503,8 @@ namespace Device
             nlogger.Debug("MeasureTick: " + tic.ToString() + " ms");
 
             // measure
-
+            // 电导率测量
+            // 海水取样
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;
