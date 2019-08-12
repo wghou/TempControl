@@ -54,7 +54,10 @@
             this.checkBox_ryM4 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM0 = new System.Windows.Forms.CheckBox();
             this.groupBox_ry1 = new System.Windows.Forms.GroupBox();
-            this.label8 = new System.Windows.Forms.Label();
+            this.pictureBox_ryS3 = new System.Windows.Forms.PictureBox();
+            this.checkBox_ryS3 = new System.Windows.Forms.CheckBox();
+            this.pictureBox_ryS2 = new System.Windows.Forms.PictureBox();
+            this.checkBox_ryS2 = new System.Windows.Forms.CheckBox();
             this.checkBox_data = new System.Windows.Forms.CheckBox();
             this.pictureBox_ryS1 = new System.Windows.Forms.PictureBox();
             this.pictureBox_ryM7 = new System.Windows.Forms.PictureBox();
@@ -85,6 +88,8 @@
             this.pictureBox_logo = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS0)).BeginInit();
@@ -230,7 +235,7 @@
             // 
             this.checkBox_auto.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_auto.AutoCheck = false;
-            this.checkBox_auto.Location = new System.Drawing.Point(361, 204);
+            this.checkBox_auto.Location = new System.Drawing.Point(8, 386);
             this.checkBox_auto.Name = "checkBox_auto";
             this.checkBox_auto.Size = new System.Drawing.Size(130, 50);
             this.checkBox_auto.TabIndex = 17;
@@ -359,7 +364,10 @@
             // groupBox_ry1
             // 
             this.groupBox_ry1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.groupBox_ry1.Controls.Add(this.label8);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryS3);
+            this.groupBox_ry1.Controls.Add(this.checkBox_ryS3);
+            this.groupBox_ry1.Controls.Add(this.pictureBox_ryS2);
+            this.groupBox_ry1.Controls.Add(this.checkBox_ryS2);
             this.groupBox_ry1.Controls.Add(this.checkBox_data);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryS1);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryM7);
@@ -390,22 +398,51 @@
             this.groupBox_ry1.TabStop = false;
             this.groupBox_ry1.Text = "继电器模块 1";
             // 
-            // label8
+            // pictureBox_ryS3
             // 
-            this.label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label8.Font = new System.Drawing.Font("华文行楷", 26.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label8.Location = new System.Drawing.Point(0, 386);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(318, 50);
-            this.label8.TabIndex = 37;
-            this.label8.Text = "北京三原兆兴";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.pictureBox_ryS3.Location = new System.Drawing.Point(363, 297);
+            this.pictureBox_ryS3.Name = "pictureBox_ryS3";
+            this.pictureBox_ryS3.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS3.TabIndex = 40;
+            this.pictureBox_ryS3.TabStop = false;
+            // 
+            // checkBox_ryS3
+            // 
+            this.checkBox_ryS3.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_ryS3.Location = new System.Drawing.Point(361, 295);
+            this.checkBox_ryS3.Name = "checkBox_ryS3";
+            this.checkBox_ryS3.Size = new System.Drawing.Size(130, 50);
+            this.checkBox_ryS3.TabIndex = 38;
+            this.checkBox_ryS3.Text = "除液电磁阀";
+            this.checkBox_ryS3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_ryS3.UseVisualStyleBackColor = true;
+            this.checkBox_ryS3.Click += new System.EventHandler(this.checkBox_ryS3_Click);
+            // 
+            // pictureBox_ryS2
+            // 
+            this.pictureBox_ryS2.Location = new System.Drawing.Point(363, 205);
+            this.pictureBox_ryS2.Name = "pictureBox_ryS2";
+            this.pictureBox_ryS2.Size = new System.Drawing.Size(30, 10);
+            this.pictureBox_ryS2.TabIndex = 39;
+            this.pictureBox_ryS2.TabStop = false;
+            // 
+            // checkBox_ryS2
+            // 
+            this.checkBox_ryS2.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_ryS2.Location = new System.Drawing.Point(361, 203);
+            this.checkBox_ryS2.Name = "checkBox_ryS2";
+            this.checkBox_ryS2.Size = new System.Drawing.Size(130, 50);
+            this.checkBox_ryS2.TabIndex = 37;
+            this.checkBox_ryS2.Text = "除液泵";
+            this.checkBox_ryS2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_ryS2.UseVisualStyleBackColor = true;
+            this.checkBox_ryS2.Click += new System.EventHandler(this.checkBox_ryS2_Click);
             // 
             // checkBox_data
             // 
             this.checkBox_data.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_data.AutoCheck = false;
-            this.checkBox_data.Location = new System.Drawing.Point(361, 295);
+            this.checkBox_data.Location = new System.Drawing.Point(188, 386);
             this.checkBox_data.Name = "checkBox_data";
             this.checkBox_data.Size = new System.Drawing.Size(130, 50);
             this.checkBox_data.TabIndex = 35;
@@ -729,6 +766,8 @@
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();
             this.groupBox_ry1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS0)).EndInit();
@@ -802,8 +841,11 @@
         private System.Windows.Forms.PictureBox pictureBox_ryS1;
         private System.Windows.Forms.PictureBox pictureBox_ryS0;
         private System.Windows.Forms.CheckBox checkBox_data;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.PictureBox pictureBox_logo;
+        private System.Windows.Forms.PictureBox pictureBox_ryS3;
+        private System.Windows.Forms.CheckBox checkBox_ryS3;
+        private System.Windows.Forms.PictureBox pictureBox_ryS2;
+        private System.Windows.Forms.CheckBox checkBox_ryS2;
     }
 }
 

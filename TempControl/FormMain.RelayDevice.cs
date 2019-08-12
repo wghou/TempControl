@@ -188,6 +188,42 @@ namespace TempControl
             }
         }
 
+        private void checkBox_ryS2_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceS.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryS2.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceS);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryS2.Checked == true)
+            {
+                nlogger.Info("打开电源 S2!");
+                Utils.Logger.Op("打开电源 S2!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 S2!");
+                Utils.Logger.Op("关闭电源 S2!");
+            }
+        }
+
+        private void checkBox_ryS3_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceS.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryS3.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceS);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryS3.Checked == true)
+            {
+                nlogger.Info("打开电源 S3!");
+                Utils.Logger.Op("打开电源 S3!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 S3!");
+                Utils.Logger.Op("关闭电源 S3!");
+            }
+        }
+
         private void checkBox_paramM_Click(object sender, EventArgs e)
         {
             bool formExist = false;
