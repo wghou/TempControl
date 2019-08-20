@@ -375,6 +375,10 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
+            // 温度点低于 5 度时，保持 辅槽快冷打开
+            if (currentTemptPointState.stateTemp <= _runningParameters.subCoolFNotDownThr)
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
 
@@ -440,6 +444,10 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+
+            // 温度点低于 5 度时，保持 辅槽快冷打开
+            if (currentTemptPointState.stateTemp <= _runningParameters.subCoolFNotDownThr)
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
 
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
