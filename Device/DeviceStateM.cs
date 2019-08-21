@@ -27,7 +27,7 @@ namespace Device
             ResetErrorStatus();
 
             // 初始化 MQTT 通信
-            setupMqtt();
+            setupLotClient();
 
             // 记录设备运行时间
             startTime = DateTime.Now; 

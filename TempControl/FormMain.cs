@@ -137,7 +137,7 @@ namespace TempControl
             {
                 mGhpM.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
                 mGhpS.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
-                mGhpLot.Clear(this._device.isMqttConnected() ? Color.Green : Color.Red);
+                mGhpLot.Clear(this._device.isMqttConnected ? Color.Green : Color.Red);
                 flp = true;
             }
 

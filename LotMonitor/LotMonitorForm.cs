@@ -50,7 +50,7 @@ namespace LotMonitor
 
         private void LotMonitorForm_Shown(object sender, EventArgs e)
         {
-            setupMqtt();
+            setupLotClient();
         }
 
         ///////////////////////////////////////////////////
@@ -65,7 +65,7 @@ namespace LotMonitor
             }
             else
             {
-                mGhpLot.Clear(isMqttConnected() ? Color.Green : Color.Red);
+                mGhpLot.Clear(isMqttConnected ? Color.Green : Color.Red);
                 flp = true;
             }
             pictureBox_lot.Image = mBmpLot;

@@ -13,124 +13,57 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using LotClient;
 
 namespace LotMonitor
 {
     public partial class LotMonitorForm
     {
-        private MqttClient mqttClient = null;
-        private IMqttClientOptions options = null;
+        private MyMqttClient _lotClient = new MyMqttClient();
 
-        private string mqttServerUrl = "183.230.40.39";
-        //private string mqttServerUrl = "192.168.1.101";
-        private int mqttPort = 6002;
-        private string mqttDeviceApiKey = "123123123M";
-        private string mqttProductId = "270595";
-        private string mqttDeviceId = "542228212";
-        private TimeSpan mqttTs2 = new TimeSpan(0, 1, 0);
-
-
-        //
-        // Topic 的构成形式为： topicDeviceId/topicData
-        // 也就是说，每制作一台设备时，都会新建一个 DeviceId，该设备下，有两个子项（主题）（Data和Control）
         /// <summary>
-        /// 设备序列号 - 在同一类产品中，每个单独的设备都有一个相应的编号
+        /// 是否与 mqtt server 连接成功
         /// </summary>
-        private static string topicDeviceId = "lot_tst";
-        /// <summary>
-        /// 数据类型 - 包括 Data: 温度等数据   Control: 控制指令
-        /// </summary>
-        private static string topicData = "Data";
-        /// <summary>
-        /// 指令类型 - 包括 Data: 温度等数据   Control: 控制指令
-        /// </summary>
-        private static string topicCmd = "Control";
+        public bool isMqttConnected { get { return _lotClient.isConnected; } }
 
-        private bool Retained = false;
-
-        public enum LotTopicsSubscribe : int
+        public void setMqttEnable(bool st)
         {
-            TemptM = 0,
-            TemptSetM,
-            PowerM,
-            TemptS,
-            TemptSetS,
-            PowerS,
-            FlowState,
-            RelayM,
-            RelayS,
-            ErrStatus
+            _lotClient.Enabled = st;
         }
 
-        bool setupMqtt()
+        private bool setupLotClient()
         {
-            if (mqttClient == null)
-            {
-                var factory = new MqttFactory();
-                mqttClient = factory.CreateMqttClient() as MqttClient;
+            _lotClient.Initialize(@"./lotConfig.json", MyMqttClient.SubTopic.Data);
 
-                options = new MqttClientOptionsBuilder()
-                .WithTcpServer(mqttServerUrl, mqttPort)
-                .WithCredentials(mqttProductId, mqttDeviceApiKey)
-                //.WithClientId(Guid.NewGuid().ToString().Substring(0,10))
-                .WithClientId(mqttDeviceId)
-                .WithKeepAlivePeriod(mqttTs2)
-                .WithCleanSession(true)
-                .Build();
+            _lotClient.MessageReceievedEvent += LotClient_MessageReceievedEvent;
 
-
-                mqttClient.ConnectedHandler = new MqttClientConnectedHandlerDelegate(new Func<MqttClientConnectedEventArgs, Task>(Connected));
-                mqttClient.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(new Func<MqttClientDisconnectedEventArgs, Task>(Disconnected));
-                mqttClient.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(new Action<MqttApplicationMessageReceivedEventArgs>(MqttApplicationMessageReceived));
-
-                mqttClient.ConnectAsync(options);
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
 
         /// <summary>
-        /// 查询 mqtt 状态
+        /// 接收到 Server 消息
         /// </summary>
-        /// <returns></returns>
-        public bool isMqttConnected()
+        /// <param name="topic"></param>
+        /// <param name="message"></param>
+        private void LotClient_MessageReceievedEvent(MyMqttClient.SubTopic topic, string message)
         {
-            if (mqttClient == null) return false;
-            else return mqttClient.IsConnected;
-        }
-
-        public void Publish(string Message)
-        {
-            try
+            switch (topic)
             {
-                if (mqttClient == null) return;
-                if (mqttClient.IsConnected == false)
-                    mqttClient.ConnectAsync(options);
+                case MyMqttClient.SubTopic.Data:
+                    JObject allData = (JObject)JsonConvert.DeserializeObject(message);
+                    this.BeginInvoke(new EventHandler(delegate
+                    {
+                        double val = 0.0f;
+                        if (allData.ContainsKey("mTp"))
+                        {
+                            if (double.TryParse(allData["mTp"].ToString(), out val)) this.hslGaugeChart_temptM.Value = val;
+                        } 
+                    }));
+                    break;
 
-                if (mqttClient.IsConnected == false)
-                {
-                    Console.WriteLine("Publish >>Connected Failed! ");
-                    return;
-                }
-
-                string myTopic = topicDeviceId + "/" + topicData;
-
-                Console.WriteLine("Publish >>Message: " + Message);
-                MqttApplicationMessageBuilder mamb = new MqttApplicationMessageBuilder()
-                 .WithTopic(myTopic)
-                 .WithPayload(Message)
-                 .WithExactlyOnceQoS()
-                 .WithRetainFlag(Retained);
-
-                mqttClient.PublishAsync(mamb.Build());
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine("Publish >>" + exp.Message);
+                default:
+                    Console.WriteLine("Unknown message receieved.");
+                    break;
             }
         }
 
@@ -257,45 +190,6 @@ namespace LotMonitor
 
                     //    }
                     //    break;
-                }
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine(exp.Message);
-            }
-        }
-
-
-        private async Task Connected(MqttClientConnectedEventArgs e)
-        {
-            try
-            {
-                string Topic = topicDeviceId + "/" + topicData;
-                var topicFilterBulder = new TopicFilterBuilder().WithTopic(Topic).Build();
-                Console.WriteLine("Connected >>Subscribe " + Topic);
-
-                await mqttClient.SubscribeAsync(topicFilterBulder);
-                Console.WriteLine("Connected >>Subscribe Success");
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine(exp.Message);
-            }
-        }
-
-        private async Task Disconnected(MqttClientDisconnectedEventArgs e)
-        {
-            try
-            {
-                Console.WriteLine("Disconnected >>Disconnected Server");
-                await Task.Delay(TimeSpan.FromSeconds(2));
-                try
-                {
-                    await mqttClient.ConnectAsync(options);
-                }
-                catch (Exception exp)
-                {
-                    Console.WriteLine("Disconnected >>Exception " + exp.Message);
                 }
             }
             catch (Exception exp)

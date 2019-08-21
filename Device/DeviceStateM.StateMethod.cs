@@ -44,7 +44,8 @@ namespace Device
             }
             lastErrCnt = errCnt;
 
-            Publish(packageDataJson());
+            // 向 mqtt server 发布主题信息
+            _lotClient.Publish(LotClient.MyMqttClient.SubTopic.Data, packageDataJson());
         }
 
         private void _ryConnectTimer_Elapsed(object sender, ElapsedEventArgs e)
