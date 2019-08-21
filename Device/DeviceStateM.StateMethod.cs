@@ -44,11 +44,7 @@ namespace Device
             }
             lastErrCnt = errCnt;
 
-            // publish
-            if (tpDeviceM.temperatures.Count != 0) Publish(LotTopicsPublish.TemptM, tpDeviceM.temperatures.Last().ToString("0.0000"));
-            Publish(LotTopicsPublish.PowerM, tpDeviceM.tpParam[6].ToString("0"));
-            if (tpDeviceS.temperatures.Count != 0) Publish(LotTopicsPublish.TemptS, tpDeviceS.temperatures.Last().ToString("0.0000"));
-            Publish(LotTopicsPublish.PowerS, tpDeviceS.tpParam[6].ToString("0"));
+            Publish(packageDataJson());
         }
 
         private void _ryConnectTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -93,9 +89,6 @@ namespace Device
             currentTemptPointState.stateCounts = 0;
 
             StateChangedEvent?.Invoke(dest);
-
-            // publish
-            Publish(LotTopicsPublish.FlowState, dest.ToString());
         }
 
         /// <summary>

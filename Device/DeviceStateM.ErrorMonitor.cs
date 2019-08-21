@@ -85,9 +85,6 @@ namespace Device
                     _deviceErrorMonitor[item] = 0;
                 }
             }
-
-            // publish
-            Publish(LotTopicsPublish.ErrStatus, ErrorCode.ClearErrorStatus.ToString());
         }
 
         /// <summary>
@@ -127,9 +124,6 @@ namespace Device
             {
                 _deviceErrorMonitor[err]++;
             }
-
-            // publish
-            Publish(LotTopicsPublish.ErrStatus, err.ToString());
         }
 
 

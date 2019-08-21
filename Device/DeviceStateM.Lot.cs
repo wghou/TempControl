@@ -11,6 +11,8 @@ using MQTTnet.Protocol;
 using MQTTnet.Client.Receiving;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 namespace Device
@@ -20,24 +22,29 @@ namespace Device
         private MqttClient mqttClient = null;
         private IMqttClientOptions options = null;
 
-        private string mqttServerUrl = "192.168.1.101";
-        private int mqttPort = 501;
-        private string mqttPassword = "public";
-        private string mqttUserId = "admin";
+        private string mqttServerUrl = "183.230.40.39";
+        //private string mqttServerUrl = "192.168.1.101";
+        private int mqttPort = 6002;
+        private string mqttDeviceApiKey = "123123123";
+        private string mqttProductId = "270595";
+        private string mqttDeviceId = "542169339";
+        private TimeSpan mqttTs2 = new TimeSpan(0,1,0);
 
+        //
+        // Topic 的构成形式为： topicDeviceId/topicData
+        // 也就是说，每制作一台设备时，都会新建一个 DeviceId，该设备下，有两个子项（主题）（Data和Control）
         /// <summary>
-        /// 产品型号 - 每一种的产品对应一个相应的型号
+        /// 设备序列号 - 在同一类产品中，每个单独的设备都有一个相应的编号
         /// </summary>
-        private static string Model = "LOT";
+        private static string topicDeviceId = "lot_tst";
         /// <summary>
-        /// 产品编号 - 在同一类产品中，每个单独的设备都有一个相应的编号
+        /// 数据类型 - 包括 Data: 温度等数据   Control: 控制指令
         /// </summary>
-        private static string ProductID = "20190805";
-
+        private static string topicData = "Data";
         /// <summary>
-        /// 订阅主题
+        /// 指令类型 - 包括 Data: 温度等数据   Control: 控制指令
         /// </summary>
-        List<string> topicsSubscribeList = new List<string>() { "Control", "Status" };
+        private static string topicCmd = "Control";
 
         private bool Retained = false;
 
@@ -80,8 +87,11 @@ namespace Device
 
                 options = new MqttClientOptionsBuilder()
                 .WithTcpServer(mqttServerUrl, mqttPort)
-                .WithCredentials(mqttUserId, mqttPassword)
-                .WithClientId(Guid.NewGuid().ToString().Substring(0,10))
+                .WithCredentials(mqttProductId, mqttDeviceApiKey)
+                //.WithClientId(Guid.NewGuid().ToString().Substring(0,10))
+                .WithClientId(mqttDeviceId)
+                .WithKeepAlivePeriod(mqttTs2)
+                .WithCleanSession(true)
                 .Build();
 
 
@@ -120,8 +130,46 @@ namespace Device
             if(st) mqttClient.ConnectAsync(options);
         }
 
+        public string packageDataJson()
+        {
+            // 所有数据
+            JObject allData = new JObject();
 
-        public void Publish(LotTopicsPublish topic, string Message)
+            // 主槽温度
+            JProperty mTp = new JProperty("mTp",tpDeviceM.temperatures.Last());
+            // 主槽功率
+            JProperty mPw = new JProperty("mPw", tpDeviceM.tpPowerShow);
+            // 主槽设定值
+            JProperty mSt = new JProperty("mSt", tpDeviceM.tpParam[0]);
+            // 添加
+            allData.Add(mTp); allData.Add(mPw); allData.Add(mSt);
+
+            // 辅槽温度
+            JProperty sTp = new JProperty("sTp", tpDeviceS.temperatures.Last());
+            // 辅槽功率
+            JProperty sPw = new JProperty("sPw", tpDeviceS.tpPowerShow);
+            // 辅槽设定值
+            JProperty sSt = new JProperty("sSt", tpDeviceS.tpParam[0]);
+            // 添加
+            allData.Add(sTp); allData.Add(sPw); allData.Add(sSt);
+
+            // 继电器 M
+            JProperty mRy = new JProperty("mRy", ryDeviceM.ryStatus);
+            // 继电器 S
+            JProperty sRy = new JProperty("sRy", ryDeviceS.ryStatus);
+            // 添加
+            allData.Add(mRy); allData.Add(sRy);
+
+            // 错误状态
+            //JProperty err = new JProperty("err", _deviceErrorMonitor);
+            // 添加
+            //allData.Add(err);
+
+            return allData.ToString();
+        }
+
+
+        public void Publish(string Message)
         {
             if (!monitorEnable) return;
 
@@ -137,25 +185,14 @@ namespace Device
                     return;
                 }
 
-                string myTopic = Model + "/" + topicPublishDict[topic].Item1 + "/" + ProductID;
+                string myTopic = topicDeviceId + "/" + topicData;
 
-                Console.WriteLine("Publish >>Topic: " + myTopic + "; QoS: " + topicPublishDict[topic].Item2 + "; Retained: " + Retained + ";");
                 Console.WriteLine("Publish >>Message: " + Message);
                 MqttApplicationMessageBuilder mamb = new MqttApplicationMessageBuilder()
                  .WithTopic(myTopic)
-                 .WithPayload(Message).WithRetainFlag(Retained);
-                if (topicPublishDict[topic].Item2 == 0)
-                {
-                    mamb = mamb.WithAtMostOnceQoS();
-                }
-                else if (topicPublishDict[topic].Item2 == 1)
-                {
-                    mamb = mamb.WithAtLeastOnceQoS();
-                }
-                else if (topicPublishDict[topic].Item2 == 2)
-                {
-                    mamb = mamb.WithExactlyOnceQoS();
-                }
+                 .WithPayload(Message)
+                 .WithExactlyOnceQoS()
+                 .WithRetainFlag(Retained);
 
                 mqttClient.PublishAsync(mamb.Build());
             }
@@ -182,20 +219,18 @@ namespace Device
                 switch(Topic)
                 {
                     // control cmd from the monitor
-                    case "LOT/Control/20190805":
+                    case "lot_tst/Control":
+                        Console.WriteLine(" control from server.");
                         break;
 
-                    // update all status request from the monitor
-                    case "LOT/Status/20190805":
-                        Publish(LotTopicsPublish.TemptSetM, tpDeviceM.tpParam[0].ToString());
-                        Publish(LotTopicsPublish.TemptSetS, tpDeviceS.tpParam[0].ToString());
-                        Publish(LotTopicsPublish.FlowState, _state.ToString());
-                        Publish(LotTopicsPublish.RelayM, string.Join(",", ryDeviceM.ryStatus.Select(b => b.ToString()).ToArray()));
-                        Publish(LotTopicsPublish.RelayS, string.Join(",", ryDeviceS.ryStatus.Select(b => b.ToString()).ToArray()));
+                    // Data from the monitor
+                    case "lot_tst/Data":
+                        Console.WriteLine(" Data from server.");
                         break;
 
                     // default
                     default:
+                        Console.WriteLine(" unknown from server.");
                         break;
                 }
             }
@@ -210,18 +245,11 @@ namespace Device
         {
             try
             {
-                List<TopicFilter> listTopic = new List<TopicFilter>();
-                if (listTopic.Count() <= 0)
-                {
-                    foreach(string tp in topicsSubscribeList)
-                    {
-                        string Topic = Model + "/" + tp + "/" + ProductID;
-                        var topicFilterBulder = new TopicFilterBuilder().WithTopic(Topic).Build();
-                        listTopic.Add(topicFilterBulder);
-                        Console.WriteLine("Connected >>Subscribe " + Topic);
-                    }
-                }
-                await mqttClient.SubscribeAsync(listTopic.ToArray());
+                string Topic = topicDeviceId + "/" + topicCmd;
+                var topicFilterBulder = new TopicFilterBuilder().WithTopic(Topic).Build();
+                Console.WriteLine("Connected >>Subscribe " + Topic);
+
+                await mqttClient.SubscribeAsync(topicFilterBulder);
                 Console.WriteLine("Connected >>Subscribe Success");
             }
             catch (Exception exp)
