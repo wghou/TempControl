@@ -198,7 +198,7 @@
             this.checkBox_ryS0.Text = "继电器 0";
             this.checkBox_ryS0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS0.UseVisualStyleBackColor = true;
-            this.checkBox_ryS0.Click += new System.EventHandler(this.checkBox_ryS0_Click);
+            this.checkBox_ryS0.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryS4
             // 
@@ -210,7 +210,7 @@
             this.checkBox_ryS4.Text = "继电器 4";
             this.checkBox_ryS4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS4.UseVisualStyleBackColor = true;
-            this.checkBox_ryS4.Click += new System.EventHandler(this.checkBox_ryS4_Click);
+            this.checkBox_ryS4.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryS1
             // 
@@ -222,7 +222,7 @@
             this.checkBox_ryS1.Text = "继电器 1";
             this.checkBox_ryS1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS1.UseVisualStyleBackColor = true;
-            this.checkBox_ryS1.Click += new System.EventHandler(this.checkBox_ryS1_Click);
+            this.checkBox_ryS1.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryS5
             // 
@@ -234,7 +234,7 @@
             this.checkBox_ryS5.Text = "继电器 5";
             this.checkBox_ryS5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS5.UseVisualStyleBackColor = true;
-            this.checkBox_ryS5.Click += new System.EventHandler(this.checkBox_ryS5_Click);
+            this.checkBox_ryS5.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryS2
             // 
@@ -246,7 +246,7 @@
             this.checkBox_ryS2.Text = "继电器 2";
             this.checkBox_ryS2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS2.UseVisualStyleBackColor = true;
-            this.checkBox_ryS2.Click += new System.EventHandler(this.checkBox_ryS2_Click);
+            this.checkBox_ryS2.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryS6
             // 
@@ -258,7 +258,7 @@
             this.checkBox_ryS6.Text = "继电器 6";
             this.checkBox_ryS6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS6.UseVisualStyleBackColor = true;
-            this.checkBox_ryS6.Click += new System.EventHandler(this.checkBox_ryS6_Click);
+            this.checkBox_ryS6.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryS3
             // 
@@ -270,7 +270,7 @@
             this.checkBox_ryS3.Text = "继电器 3";
             this.checkBox_ryS3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS3.UseVisualStyleBackColor = true;
-            this.checkBox_ryS3.Click += new System.EventHandler(this.checkBox_ryS3_Click);
+            this.checkBox_ryS3.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryS7
             // 
@@ -282,7 +282,7 @@
             this.checkBox_ryS7.Text = "继电器 7";
             this.checkBox_ryS7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryS7.UseVisualStyleBackColor = true;
-            this.checkBox_ryS7.Click += new System.EventHandler(this.checkBox_ryS7_Click);
+            this.checkBox_ryS7.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_logM
             // 
@@ -368,7 +368,7 @@
             this.checkBox_ryM7.Text = "继电器 7";
             this.checkBox_ryM7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM7.UseVisualStyleBackColor = true;
-            this.checkBox_ryM7.Click += new System.EventHandler(this.checkBox_ryM7_Click);
+            this.checkBox_ryM7.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM3
             // 
@@ -380,7 +380,7 @@
             this.checkBox_ryM3.Text = "继电器 3";
             this.checkBox_ryM3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM3.UseVisualStyleBackColor = true;
-            this.checkBox_ryM3.Click += new System.EventHandler(this.checkBox_ryM3_Click);
+            this.checkBox_ryM3.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM6
             // 
@@ -392,7 +392,7 @@
             this.checkBox_ryM6.Text = "继电器 6";
             this.checkBox_ryM6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM6.UseVisualStyleBackColor = true;
-            this.checkBox_ryM6.Click += new System.EventHandler(this.checkBox_ryM6_Click);
+            this.checkBox_ryM6.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM2
             // 
@@ -404,7 +404,7 @@
             this.checkBox_ryM2.Text = "继电器 2";
             this.checkBox_ryM2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM2.UseVisualStyleBackColor = true;
-            this.checkBox_ryM2.Click += new System.EventHandler(this.checkBox_ryM2_Click);
+            this.checkBox_ryM2.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM5
             // 
@@ -416,7 +416,7 @@
             this.checkBox_ryM5.Text = "继电器 5";
             this.checkBox_ryM5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM5.UseVisualStyleBackColor = true;
-            this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryM5_Click);
+            this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM1
             // 
@@ -428,7 +428,7 @@
             this.checkBox_ryM1.Text = "继电器 1";
             this.checkBox_ryM1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM1.UseVisualStyleBackColor = true;
-            this.checkBox_ryM1.Click += new System.EventHandler(this.checkBox_ryM1_Click);
+            this.checkBox_ryM1.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM4
             // 
@@ -440,7 +440,7 @@
             this.checkBox_ryM4.Text = "继电器 4";
             this.checkBox_ryM4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM4.UseVisualStyleBackColor = true;
-            this.checkBox_ryM4.Click += new System.EventHandler(this.checkBox_ryM4_Click);
+            this.checkBox_ryM4.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM0
             // 
@@ -452,7 +452,7 @@
             this.checkBox_ryM0.Text = "继电器 0";
             this.checkBox_ryM0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM0.UseVisualStyleBackColor = true;
-            this.checkBox_ryM0.Click += new System.EventHandler(this.checkBox_ryM0_Click);
+            this.checkBox_ryM0.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox2
             // 

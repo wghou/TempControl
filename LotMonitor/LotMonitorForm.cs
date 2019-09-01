@@ -70,5 +70,10 @@ namespace LotMonitor
             }
             pictureBox_lot.Image = mBmpLot;
         }
+
+        private void hslSwitch_RelayM0_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

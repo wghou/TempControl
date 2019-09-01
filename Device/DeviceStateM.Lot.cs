@@ -82,9 +82,10 @@ namespace Device
             allData.Add(mRy); allData.Add(sRy);
 
             // 错误状态
-            //JProperty err = new JProperty("err", _deviceErrorMonitor);
+            string errStr = string.Join(";", _deviceErrorMonitor.Select(x => Enum.GetName(typeof(ErrorCode), x.Key) + "=" + x.Value.ToString()).ToArray());
+            JProperty err = new JProperty("err", errStr);
             // 添加
-            //allData.Add(err);
+            allData.Add(err);
 
             return allData.ToString();
         }

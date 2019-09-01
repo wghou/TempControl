@@ -53,148 +53,84 @@ namespace LotMonitor
                     JObject allData = (JObject)JsonConvert.DeserializeObject(message);
                     this.BeginInvoke(new EventHandler(delegate
                     {
-                        double val = 0.0f;
+                        // temptM
                         if (allData.ContainsKey("mTp"))
                         {
-                            if (double.TryParse(allData["mTp"].ToString(), out val)) this.hslGaugeChart_temptM.Value = val;
-                        } 
+                            var data = JsonConvert.DeserializeObject<double>(allData["mTp"].ToString()); this.hslGaugeChart_temptM.Value = data;
+                        }
+                        if (allData.ContainsKey("mPw"))
+                        {
+                            var data = JsonConvert.DeserializeObject<float>(allData["mPw"].ToString()); this.hslGauge_powerM.Value = data;
+                        }
+                        if (allData.ContainsKey("mSt"))
+                        {
+                            var data = JsonConvert.DeserializeObject<float>(allData["mSt"].ToString()); this.hslLedDisplay_temptSetM.DisplayText = data.ToString("0.0000");
+                        }
+
+                        // temptS
+                        if (allData.ContainsKey("sTp"))
+                        {
+                            var data = JsonConvert.DeserializeObject<double>(allData["sTp"].ToString()); this.hslGaugeChart_temptS.Value = data;
+                        }
+                        if (allData.ContainsKey("sPw"))
+                        {
+                            var data = JsonConvert.DeserializeObject<float>(allData["sPw"].ToString()); this.hslGauge_powerS.Value = data;
+                        }
+                        if (allData.ContainsKey("sSt"))
+                        {
+                            var data = JsonConvert.DeserializeObject<float>(allData["sSt"].ToString()); this.hslLedDisplay_temptSetS.DisplayText = data.ToString("0.0000");
+                        }
+
+                        // relayM
+                        if(allData.ContainsKey("mRy"))
+                        {
+                            var data = JsonConvert.DeserializeObject<bool[]>(allData["mRy"].ToString());
+                            for(int i = 0; i < 8; i++)
+                            {
+                                switchRyM[i].SwitchStatus = data[i];
+                            }
+                        }
+
+                        // relayM
+                        if (allData.ContainsKey("sRy"))
+                        {
+                            var data = JsonConvert.DeserializeObject<bool[]>(allData["sRy"].ToString());
+                            for (int i = 0; i < 8; i++)
+                            {
+                                switchRyS[i].SwitchStatus = data[i];
+                            }
+                        }
+
+                        // error
+                        if(allData.ContainsKey("err"))
+                        {
+                            try
+                            {
+                                string[] data = allData["err"].ToString().Split(';');
+                                Dictionary<string, int> err = new Dictionary<string, int>();
+                                foreach(var itm in data)
+                                {
+                                    string[] subdata = itm.Split('=');
+                                    err[subdata[0]] = int.Parse(subdata[1]);
+                                }
+
+                                this.label_err.Text = "";
+                                foreach(var itm in err)
+                                {
+                                    this.label_err.Text += itm.Key + ": " + itm.Value.ToString() + "\n";
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+
+                            }
+                        }
                     }));
                     break;
 
                 default:
                     Console.WriteLine("Unknown message receieved.");
                     break;
-            }
-        }
-
-
-        private void MqttApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
-        {
-            try
-            {
-                string text = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-                string Topic = e.ApplicationMessage.Topic;
-                string QoS = e.ApplicationMessage.QualityOfServiceLevel.ToString();
-                string Retained = e.ApplicationMessage.Retain.ToString();
-                Console.WriteLine("MessageReceived >>Topic:" + Topic + "; QoS: " + QoS + "; Retained: " + Retained + ";");
-                Console.WriteLine("MessageReceived >>Msg: " + text);
-
-                JObject allData = (JObject)JsonConvert.DeserializeObject(text);
-
-                switch (Topic)
-                {
-                    // control cmd from the monitor
-                    case "lot_tst/Control":
-                        Console.WriteLine(" control from server.");
-                        break;
-
-                    // Data from the monitor
-                    case "lot_tst/Data":
-                        
-                        if(allData.ContainsKey("mTp"))
-                        {
-                            this.BeginInvoke(new EventHandler(delegate
-                        {
-                            double val = 0.0f;
-                            if (double.TryParse(allData["mTp"].ToString(), out val)) this.hslGaugeChart_temptM.Value = val;
-                        }));
-                        }
-                        break;
-
-                    // default
-                    default:
-                        Console.WriteLine(" unknown from server.");
-                        break;
-
-                    //case "LOT/TemptM/20190805":
-                    //    this.BeginInvoke(new EventHandler(delegate
-                    //    {
-                    //        double val = 0.0f;
-                    //        if (double.TryParse(text, out val)) this.hslGaugeChart_temptM.Value = val;
-                    //    }));
-                    //    break;
-
-                    //case "LOT/TemptSetM/20190805":
-                    //    this.BeginInvoke(new EventHandler(delegate
-                    //    {
-                    //        double val = 0.0f;
-                    //        if (double.TryParse(text, out val)) this.hslLedDisplay_temptSetM.DisplayText = val.ToString("0.0000");
-                    //    }));
-                    //    break;
-
-                    //case "LOT/PowerM/20190805":
-                    //    this.BeginInvoke(new EventHandler(delegate
-                    //    {
-                    //        float val = 0.0f;
-                    //        if (float.TryParse(text, out val)) this.hslGauge_powerM.Value = val;
-                    //    }));
-                    //    break;
-
-                    //case "LOT/TemptS/20190805":
-                    //    this.BeginInvoke(new EventHandler(delegate
-                    //    {
-                    //        double val = 0.0f;
-                    //        if (double.TryParse(text, out val)) this.hslGaugeChart_temptS.Value = val;
-                    //    }));
-                    //    break;
-
-                    //case "LOT/TemptSetS/20190805":
-                    //    this.BeginInvoke(new EventHandler(delegate
-                    //    {
-                    //        double val = 0.0f;
-                    //        if (double.TryParse(text, out val)) this.hslLedDisplay_temptSetS.DisplayText = val.ToString("0.0000");
-                    //    }));
-                    //    break;
-
-                    //case "LOT/PowerS/20190805":
-                    //    this.BeginInvoke(new EventHandler(delegate
-                    //    {
-                    //        float val = 0.0f;
-                    //        if (float.TryParse(text, out val)) this.hslGauge_powerS.Value = val;
-                    //    }));
-                    //    break;
-
-                    //case "LOT/RelayM/20190805":
-                    //    try
-                    //    {
-                    //        String str = text;
-                    //        bool[] st = text.Split(',').Select(b => Boolean.Parse(b)).ToArray();
-                    //        if (st.Length != 16) break;
-
-                    //        this.BeginInvoke(new EventHandler(delegate
-                    //        {
-                    //            for (int i = 0; i < 8; i++) switchRyM[i].SwitchStatus = st[i];
-                    //        }));
-                            
-                    //    }
-                    //    catch(Exception ex)
-                    //    {
-
-                    //    }
-                    //    break;
-
-                    //case "LOT/RelayS/20190805":
-                    //    try
-                    //    {
-                    //        String str = text;
-                    //        bool[] st = text.Split(',').Select(b => Boolean.Parse(b)).ToArray();
-                    //        if (st.Length != 16) break;
-
-                    //        this.BeginInvoke(new EventHandler(delegate
-                    //        {
-                    //            for (int i = 0; i < 8; i++) switchRyS[i].SwitchStatus = st[i];
-                    //        }));
-                    //    }
-                    //    catch (Exception ex)
-                    //    {
-
-                    //    }
-                    //    break;
-                }
-            }
-            catch (Exception exp)
-            {
-                Console.WriteLine(exp.Message);
             }
         }
     }

@@ -159,7 +159,7 @@ namespace LotClient
         /// 发布主题
         /// </summary>
         /// <param name="Message"></param>
-        public void Publish(SubTopic topic, string Message)
+        public void Publish(SubTopic topic, string Message, bool isWait = false)
         {
             if (!Enabled) return;
 
@@ -184,7 +184,10 @@ namespace LotClient
                  .WithExactlyOnceQoS()
                  .WithRetainFlag(false);
 
-                mqttClient.PublishAsync(mamb.Build());
+                if (isWait == true)
+                    mqttClient.PublishAsync(mamb.Build()).Wait();
+                else
+                    mqttClient.PublishAsync(mamb.Build());
             }
             catch (Exception exp)
             {
