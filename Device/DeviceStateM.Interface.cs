@@ -101,6 +101,15 @@ namespace Device
             _machine.Fire(Trigger.ForceShutdownPC);
         }
 
+        public void closeDevice()
+        {
+            ryDeviceM.closeDevice();
+            ryDeviceS.closeDevice();
+
+            // 向 mqtt server 发布主题信息
+            _lotClient.Publish(LotClient.MyMqttClient.SubTopic.Data, packageDataJson(), true);
+        }
+
 
         /// <summary>
         /// 查询控温点列表中的完成状态

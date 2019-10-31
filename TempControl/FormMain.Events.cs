@@ -13,7 +13,8 @@ namespace TempControl
         {
             _device.RelayDeviceMStatusUpdatedEvent += _device_RelayDeviceMStatusUpdatedEvent;
             _device.RelayDeviceSStatusUpdatedEvent += _device_RelayDeviceSStatusUpdatedEvent;
-            _device.TempDeviceMParamUpdatedEvent += _device_TempDeviceParamUpdatedEvent;
+            _device.TempDeviceMParamUpdatedEvent += _device_TempDeviceMParamUpdatedEvent;
+            _device.TempDeviceSParamUpdatedEvent += _device_TempDeviceSParamUpdatedEvent;
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEvent += _device_TimerTickEvent;
@@ -159,12 +160,21 @@ namespace TempControl
             }));
         }
 
-        private void _device_TempDeviceParamUpdatedEvent(Device.TempProtocol.Err_t err, float[] param)
+        private void _device_TempDeviceMParamUpdatedEvent(Device.TempProtocol.Err_t err, float[] param)
         {
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 温度设定值
                 label_tempSetM.Text = param[0].ToString("0.0000") + "℃";
+            }));
+        }
+
+        private void _device_TempDeviceSParamUpdatedEvent(Device.TempProtocol.Err_t err, float[] param)
+        {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                // 温度设定值
+                label_tempSetS.Text = param[0].ToString("0.0000") + "℃";
             }));
         }
 

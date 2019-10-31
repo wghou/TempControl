@@ -82,6 +82,7 @@
             this.checkBox_shutDown = new System.Windows.Forms.CheckBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -622,6 +623,14 @@
             this.checkBox_shutDown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_shutDown.UseVisualStyleBackColor = true;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(941, 24);
+            this.menuStrip1.TabIndex = 77;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
             // FormAutoSet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -668,7 +677,9 @@
             this.Controls.Add(this.button_add);
             this.Controls.Add(this.textBox_tpSetM);
             this.Controls.Add(this.button_cancel);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormAutoSet";
@@ -734,5 +745,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn integration;
         private System.Windows.Forms.DataGridViewTextBoxColumn power;
         private System.Windows.Forms.DataGridViewLinkColumn edit;
+        private System.Windows.Forms.MenuStrip menuStrip1;
     }
 }

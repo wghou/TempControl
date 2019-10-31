@@ -57,7 +57,11 @@ namespace Device
         /// <summary>
         /// 其他错误
         /// </summary>
-        CodeError
+        CodeError,
+        /// <summary>
+        /// 清除所有错误状态
+        /// </summary>
+        ClearErrorStatus
     }
 
     public partial class DeviceStateM
