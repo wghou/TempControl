@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ComTest
 {
@@ -19,29 +21,36 @@ namespace ComTest
         /// 主控温槽 - 通信端口
         /// </summary>
         private SerialPort sPortTm = new SerialPort();
+        private bool SportTm_enable = false;
 
         /// <summary>
         /// 辅槽控温 - 通信端口
         /// </summary>
         private SerialPort sPortTs = new SerialPort();
+        private bool SportTs_enable = false;
 
         /// <summary>
         /// 继电器 - 通信端口
         /// </summary>
         private SerialPort sPortRy = new SerialPort();
+        private bool SportRy_enable = false;
 
         /// <summary>
         /// 测温电桥 - 通信端口
         /// </summary>
         private SerialPort sPortBg = new SerialPort();
         private string bridgeStatus = "OFF";
+        private bool SportBg_enable = false;
 
         /// <summary>
         /// 传感器 - 通信端口
         /// </summary>
         private SerialPort sPortSr = new SerialPort();
+        private bool SportSr_enable = false;
 
         Bitmap mBmp_Sr;
+
+        private string confFile = "config.json";
 
         public Form1()
         {
@@ -61,54 +70,100 @@ namespace ComTest
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            // 配置端口
             try
             {
+                System.IO.StreamReader file = System.IO.File.OpenText(confFile);
+                JsonTextReader reader = new JsonTextReader(file);
+                JObject obj = (JObject)JToken.ReadFrom(reader);
+
                 // 主槽控温 - 通信端口
-                sPortTm.PortName = "COM2";
-                sPortTm.BaudRate = 2400;
-                sPortTm.DataBits = 8;
-                sPortTm.StopBits = StopBits.One;
-                sPortTm.Parity = Parity.None;
-                sPortTm.ReadBufferSize = 64;
-                sPortTm.WriteBufferSize = 64;
+                if (obj.ContainsKey("TempM"))
+                {
+                    JObject child = (JObject)obj["TempM"];
+
+                    sPortTm.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString():"COM0";
+                    sPortTm.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
+                    sPortTm.DataBits = 8;
+                    sPortTm.StopBits = StopBits.One;
+                    sPortTm.Parity = Parity.None;
+                    sPortTm.ReadBufferSize = 64;
+                    sPortTm.WriteBufferSize = 64;
+
+                    SportTm_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                }
 
                 // 辅槽控温 - 通信端口
-                sPortTs.PortName = "COM4";
-                sPortTs.BaudRate = 2400;
-                sPortTs.DataBits = 8;
-                sPortTs.StopBits = StopBits.One;
-                sPortTs.Parity = Parity.None;
-                sPortTs.ReadBufferSize = 64;
-                sPortTs.WriteBufferSize = 64;
+                if (obj.ContainsKey("TempS"))
+                {
+                    JObject child = (JObject)obj["TempS"];
 
-                // 继电器 - 通信端口
-                sPortRy.PortName = "COM6";
-                sPortRy.BaudRate = 2400;
-                sPortRy.DataBits = 8;
-                sPortRy.StopBits = StopBits.One;
-                sPortRy.Parity = Parity.None;
-                sPortRy.ReadBufferSize = 64;
-                sPortRy.WriteBufferSize = 64;
+                    sPortTs.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM1";
+                    sPortTs.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
+                    sPortTs.DataBits = 8;
+                    sPortTs.StopBits = StopBits.One;
+                    sPortTs.Parity = Parity.None;
+                    sPortTs.ReadBufferSize = 64;
+                    sPortTs.WriteBufferSize = 64;
+
+                    SportTs_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                }
+
+                // 继电器 1 - 通信端口
+                if (obj.ContainsKey("RelayM"))
+                {
+                    JObject child = (JObject)obj["RelayM"];
+
+                    sPortRy.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM2";
+                    sPortRy.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                    sPortRy.DataBits = 8;
+                    sPortRy.StopBits = StopBits.One;
+                    sPortRy.Parity = Parity.None;
+                    sPortRy.ReadBufferSize = 64;
+                    sPortRy.WriteBufferSize = 64;
+
+                    SportRy_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                }
+
+                // 继电器 2 - 通信端口
+                if (obj.ContainsKey("RelayS"))
+                {
+                    JObject child = (JObject)obj["RelayS"];
+
+                    
+                }
 
                 // 电桥 - 通信端口
-                sPortBg.PortName = "COM8";
-                sPortBg.BaudRate = 9600;
-                sPortBg.DataBits = 8;
-                sPortBg.StopBits = StopBits.One;
-                sPortBg.Parity = Parity.None;
-                sPortBg.ReadBufferSize = 64;
-                sPortBg.WriteBufferSize = 64;
-                sPortBg.ReadTimeout = 500;
+                if (obj.ContainsKey("Bridge"))
+                {
+                    JObject child = (JObject)obj["Bridge"];
+
+                    sPortBg.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM4";
+                    sPortBg.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                    sPortBg.DataBits = 8;
+                    sPortBg.StopBits = StopBits.One;
+                    sPortBg.Parity = Parity.None;
+                    sPortBg.ReadBufferSize = 64;
+                    sPortBg.WriteBufferSize = 64;
+                    sPortBg.ReadTimeout = 500;
+
+                    SportBg_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                }
 
                 // 传感器 - 通信端口
-                sPortSr.PortName = "COM10";
-                sPortSr.BaudRate = 2400;
-                sPortSr.DataBits = 8;
-                sPortSr.StopBits = StopBits.One;
-                sPortSr.Parity = Parity.None;
-                sPortSr.ReadBufferSize = 64;
-                sPortSr.WriteBufferSize = 64;
+                if (obj.ContainsKey("Sensor"))
+                {
+                    JObject child = (JObject)obj["Sensor"];
+
+                    sPortSr.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM5";
+                    sPortSr.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                    sPortSr.DataBits = 8;
+                    sPortSr.StopBits = StopBits.One;
+                    sPortSr.Parity = Parity.None;
+                    sPortSr.ReadBufferSize = 64;
+                    sPortSr.WriteBufferSize = 64;
+
+                    SportSr_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                }
             }
             catch(Exception ex)
             {
@@ -119,21 +174,21 @@ namespace ComTest
 
 
             // 添加串口收发信息事件
-            sPortTm.DataReceived += SPortTm_DataReceived;
-            sPortTs.DataReceived += SPortTs_DataReceived;
-            sPortRy.DataReceived += SPortRy_DataReceived;
-            sPortSr.DataReceived += SPortSr_DataReceived;
-            sPortBg.DataReceived += SPortBg_DataReceived;
+            if (SportTm_enable) sPortTm.DataReceived += SPortTm_DataReceived;
+            if (SportTs_enable) sPortTs.DataReceived += SPortTs_DataReceived;
+            if (SportRy_enable) sPortRy.DataReceived += SPortRy_DataReceived;
+            if (SportSr_enable) sPortSr.DataReceived += SPortSr_DataReceived;
+            if (SportBg_enable) sPortBg.DataReceived += SPortBg_DataReceived;
 
 
             // 打开端口
             try
             {
-                sPortTm.Open();
-                sPortTs.Open();
-                //sPortRy.Open();
-                //sPortSr.Open();
-                //sPortBg.Open();
+                if (SportTm_enable) sPortTm.Open();
+                if (SportTs_enable) sPortTs.Open();
+                if (SportRy_enable) sPortRy.Open();
+                if (SportSr_enable) sPortSr.Open();
+                if (SportBg_enable) sPortBg.Open();
             }
             catch(Exception ex)
             {
