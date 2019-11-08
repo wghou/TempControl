@@ -5,43 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using LotClient;
+using UserPort;
 
 namespace Device
 {
     public partial class DeviceStateM
     {
-        private MyMqttClient _lotClient = new MyMqttClient();
-
         /// <summary>
-        /// 是否与 mqtt server 连接成功
+        /// 用户接口
         /// </summary>
-        public bool isMqttConnected { get { return _lotClient.isConnected; } }
+        private UserPorts _userPorts = new UserPorts();
 
-        public void setMqttEnable(bool st)
+        public bool isUserPortConnected
         {
-            _lotClient.Enabled = st;
-        }
-
-        private bool setupLotClient()
-        {
-            _lotClient.Initialize(@"./lotConfig.json", MyMqttClient.SubTopic.Control);
-
-            _lotClient.MessageReceievedEvent += LotClient_MessageReceievedEvent;
-
-            return true;
+            get { return true; }
         }
 
         /// <summary>
-        /// 接收到 Server 消息
+        /// 从用户接口收到数据
         /// </summary>
+        /// <param name="Ptype"></param>
         /// <param name="topic"></param>
         /// <param name="message"></param>
-        private void LotClient_MessageReceievedEvent(MyMqttClient.SubTopic topic, string message)
+        private void _userPorts_UserPortMsgRvEvent(UserPortType Ptype, SubTopic topic, string message)
         {
             switch (topic)
             {
-                case MyMqttClient.SubTopic.Control:
+                case SubTopic.Control:
 
                     break;
 

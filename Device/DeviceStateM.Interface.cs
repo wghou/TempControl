@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Device
 {
@@ -23,31 +25,100 @@ namespace Device
 
             _tickTimer.Interval = _runningParameters.readTempIntervalSec * 1000;
 
+
+            // json config file
+            string confFile = "config.json";
             try
             {
-                //////////////////////////////////////////
-                // 配置参数
-                // 主槽控温设备
-                confOK &= tpDeviceM.ConfigSyn(_runningParameters.portTp1);
-                if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
-                else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+                System.IO.StreamReader file = System.IO.File.OpenText(confFile);
+                JsonTextReader reader = new JsonTextReader(file);
+                JObject obj = (JObject)JToken.ReadFrom(reader);
 
-                // 辅槽控温设备
-                confOK &= tpDeviceS.ConfigSyn(_runningParameters.portTp2);
-                if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceS.tpDevicePortName);
-                else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + tpDeviceS.tpDevicePortName);
+                // 设置控温表
+                if (obj.ContainsKey("TempDev"))
+                {
+                    JObject child = (JObject)obj["TempDev"];
 
-                // 继电器设备 1
-                confOK &= ryDeviceM.SetPortName(_runningParameters.portRy1);
-                if (!confOK) nlogger.Error("配置继电器设备 1 失败! 端口号: " + ryDeviceM.ryDevicePortName);
-                else nlogger.Debug("配置继电器设备 1 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                    // 设置主控温表
+                    if (child.ContainsKey("TempM"))
+                    {
+                        JObject child2 = (JObject)child["TempM"];
 
-                // 继电器设备 2
-                confOK &= ryDeviceS.SetPortName(_runningParameters.portRy2);
-                if (!confOK) nlogger.Error("配置继电器设备 2 失败! 端口号: " + ryDeviceS.ryDevicePortName);
-                else nlogger.Debug("配置继电器设备 2 成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                        confOK &= tpDeviceM.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        tpDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                        if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
+                        else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+
+                        //sPortTm.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM0";
+                        //sPortTm.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
+                        //sPortTm.DataBits = 8;
+                        //sPortTm.StopBits = StopBits.One;
+                        //sPortTm.Parity = Parity.None;
+                        //sPortTm.ReadBufferSize = 64;
+                        //sPortTm.WriteBufferSize = 64;
+                        //SportTm_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    }
+
+                    // 设置辅控温表
+                    if (child.ContainsKey("TempS"))
+                    {
+                        JObject child2 = (JObject)child["TempS"];
+
+                        confOK &= tpDeviceS.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        tpDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                        if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
+                        else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+                    }
+                }
+
+                // 设置继电器
+                if (obj.ContainsKey("RelayDev"))
+                {
+                    JObject child = (JObject)obj["RelayDev"];
+
+                    // 设置继电器1
+                    if (child.ContainsKey("RelayM"))
+                    {
+                        JObject child2 = (JObject)child["RelayM"];
+
+                        confOK &= ryDeviceM.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        ryDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                        if (!confOK) nlogger.Error("配置主继电器失败! 端口号: " + ryDeviceM.ryDevicePortName);
+                        else nlogger.Debug("配置主继电器成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                    }
+
+                    // 设置继电器2
+                    if (child.ContainsKey("RelayS"))
+                    {
+                        JObject child2 = (JObject)child["RelayS"];
+
+                        confOK &= ryDeviceS.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        ryDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                        if (!confOK) nlogger.Error("配置辅继电器失败! 端口号: " + ryDeviceS.ryDevicePortName);
+                        else nlogger.Debug("配置辅继电器成功! 端口号: " + ryDeviceS.ryDevicePortName);
+                    }
+                }
+
+                // 设置传感器
+                if (obj.ContainsKey("SensorDev"))
+                {
+                    JObject child = (JObject)obj["SensorDev"];
+
+                }
+
+                // 设置接口
+                if (obj.ContainsKey("UserPort"))
+                {
+                    JObject child = (JObject)obj["UserPort"];
+
+                    confOK &= _userPorts.configUserPorts(child);
+                    if (!confOK) nlogger.Error("配置 UserPort 失败");
+                    else nlogger.Debug("配置 UserPort 失败");
+
+                    _userPorts.UserPortMsgRvEvent += _userPorts_UserPortMsgRvEvent;
+                }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 nlogger.Error("从配置文件读取参数过程中发生异常：" + ex.Message.ToString());
                 confOK = false;
@@ -107,7 +178,7 @@ namespace Device
             ryDeviceS.closeDevice();
 
             // 向 mqtt server 发布主题信息
-            _lotClient.Publish(LotClient.MyMqttClient.SubTopic.Data, packageDataJson(), true);
+            _userPorts.PublishMessage(UserPort.SubTopic.Data, packageDataJson(), true, UserPort.UserPortType.All);
         }
 
 

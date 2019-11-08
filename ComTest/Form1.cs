@@ -81,15 +81,17 @@ namespace ComTest
                 {
                     JObject child = (JObject)obj["TempM"];
 
-                    sPortTm.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString():"COM0";
-                    sPortTm.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
-                    sPortTm.DataBits = 8;
-                    sPortTm.StopBits = StopBits.One;
-                    sPortTm.Parity = Parity.None;
-                    sPortTm.ReadBufferSize = 64;
-                    sPortTm.WriteBufferSize = 64;
-
                     SportTm_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (SportTm_enable)
+                    {
+                        sPortTm.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM0";
+                        sPortTm.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
+                        sPortTm.DataBits = 8;
+                        sPortTm.StopBits = StopBits.One;
+                        sPortTm.Parity = Parity.None;
+                        sPortTm.ReadBufferSize = 64;
+                        sPortTm.WriteBufferSize = 64;
+                    }
                 }
 
                 // 辅槽控温 - 通信端口
@@ -97,15 +99,17 @@ namespace ComTest
                 {
                     JObject child = (JObject)obj["TempS"];
 
-                    sPortTs.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM1";
-                    sPortTs.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
-                    sPortTs.DataBits = 8;
-                    sPortTs.StopBits = StopBits.One;
-                    sPortTs.Parity = Parity.None;
-                    sPortTs.ReadBufferSize = 64;
-                    sPortTs.WriteBufferSize = 64;
-
                     SportTs_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (SportTs_enable)
+                    {
+                        sPortTs.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM1";
+                        sPortTs.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
+                        sPortTs.DataBits = 8;
+                        sPortTs.StopBits = StopBits.One;
+                        sPortTs.Parity = Parity.None;
+                        sPortTs.ReadBufferSize = 64;
+                        sPortTs.WriteBufferSize = 64;
+                    } 
                 }
 
                 // 继电器 1 - 通信端口
@@ -113,15 +117,17 @@ namespace ComTest
                 {
                     JObject child = (JObject)obj["RelayM"];
 
-                    sPortRy.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM2";
-                    sPortRy.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
-                    sPortRy.DataBits = 8;
-                    sPortRy.StopBits = StopBits.One;
-                    sPortRy.Parity = Parity.None;
-                    sPortRy.ReadBufferSize = 64;
-                    sPortRy.WriteBufferSize = 64;
-
                     SportRy_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (SportRy_enable)
+                    {
+                        sPortRy.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM2";
+                        sPortRy.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                        sPortRy.DataBits = 8;
+                        sPortRy.StopBits = StopBits.One;
+                        sPortRy.Parity = Parity.None;
+                        sPortRy.ReadBufferSize = 64;
+                        sPortRy.WriteBufferSize = 64;
+                    }
                 }
 
                 // 继电器 2 - 通信端口
@@ -137,16 +143,18 @@ namespace ComTest
                 {
                     JObject child = (JObject)obj["Bridge"];
 
-                    sPortBg.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM4";
-                    sPortBg.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
-                    sPortBg.DataBits = 8;
-                    sPortBg.StopBits = StopBits.One;
-                    sPortBg.Parity = Parity.None;
-                    sPortBg.ReadBufferSize = 64;
-                    sPortBg.WriteBufferSize = 64;
-                    sPortBg.ReadTimeout = 500;
-
                     SportBg_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (SportBg_enable)
+                    {
+                        sPortBg.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM4";
+                        sPortBg.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                        sPortBg.DataBits = 8;
+                        sPortBg.StopBits = StopBits.One;
+                        sPortBg.Parity = Parity.None;
+                        sPortBg.ReadBufferSize = 64;
+                        sPortBg.WriteBufferSize = 64;
+                        sPortBg.ReadTimeout = 500;
+                    }
                 }
 
                 // 传感器 - 通信端口
@@ -154,15 +162,17 @@ namespace ComTest
                 {
                     JObject child = (JObject)obj["Sensor"];
 
-                    sPortSr.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM5";
-                    sPortSr.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
-                    sPortSr.DataBits = 8;
-                    sPortSr.StopBits = StopBits.One;
-                    sPortSr.Parity = Parity.None;
-                    sPortSr.ReadBufferSize = 64;
-                    sPortSr.WriteBufferSize = 64;
-
                     SportSr_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (SportSr_enable)
+                    {
+                        sPortSr.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM5";
+                        sPortSr.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                        sPortSr.DataBits = 8;
+                        sPortSr.StopBits = StopBits.One;
+                        sPortSr.Parity = Parity.None;
+                        sPortSr.ReadBufferSize = 64;
+                        sPortSr.WriteBufferSize = 64;
+                    }
                 }
             }
             catch(Exception ex)

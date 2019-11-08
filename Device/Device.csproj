@@ -42,7 +42,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.6.7\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
@@ -91,7 +91,7 @@
     <Compile Include="DeviceStateM.ErrorMonitor.cs" />
     <Compile Include="DeviceStateM.Event.cs" />
     <Compile Include="DeviceStateM.Interface.cs" />
-    <Compile Include="DeviceStateM.Lot.cs" />
+    <Compile Include="DeviceStateM.UserPorts.cs" />
     <Compile Include="DeviceStateM.Stateless.cs" />
     <Compile Include="DeviceStateM.StateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -100,9 +100,9 @@
     <Compile Include="TempProtocol.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\lotClient\lotClient.csproj">
-      <Project>{f6dab42e-5554-44c8-ad80-4eea27845f0f}</Project>
-      <Name>lotClient</Name>
+    <ProjectReference Include="..\UserPort\UserPort.csproj">
+      <Project>{7cb47cc8-bb87-4d8e-9eb0-5fde4d17746d}</Project>
+      <Name>UserPort</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{665e85e4-8da9-4e1d-b628-767814c15df3}</Project>
@@ -110,6 +110,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

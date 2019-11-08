@@ -22,7 +22,7 @@ namespace LotServer
     {
         private MqttServer mqttServer = null;
         private IMqttServerOptions options = null;
-        private int mqttPort = 501;
+        private int mqttPort = 5001;
         private IPAddress mqttServerUrl = new IPAddress(new byte[] { 192, 168, 1, 101 });
         private string mqttUsername = "admin";
         private string mqttPassword = "public";
@@ -112,7 +112,7 @@ namespace LotServer
 
         private void MqttApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs message)
         {
-            nlogger.Info("client connected. cientID: " + message.ClientId);
+            nlogger.Info("server receive message from cientID: " + message.ClientId);
 
             // process the message
         }

@@ -13,7 +13,7 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using LotClient;
+using UserPort;
 
 namespace LotMonitor
 {
@@ -33,9 +33,21 @@ namespace LotMonitor
 
         private bool setupLotClient()
         {
-            _lotClient.Initialize(@"./lotConfig.json", MyMqttClient.SubTopic.Data);
+            // json config file
+            string confFile = @"./cfgLocal.json";
+            try
+            {
+                System.IO.StreamReader file = System.IO.File.OpenText(confFile);
+                JsonTextReader reader = new JsonTextReader(file);
+                JObject obj = (JObject)JToken.ReadFrom(reader);
 
-            _lotClient.MessageReceievedEvent += LotClient_MessageReceievedEvent;
+                _lotClient.Initialize(obj, SubTopic.Data);
+                _lotClient.MessageReceievedEvent += LotClient_MessageReceievedEvent;
+            }
+            catch(Exception ex)
+            {
+
+            }
 
             return true;
         }
@@ -45,11 +57,11 @@ namespace LotMonitor
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="message"></param>
-        private void LotClient_MessageReceievedEvent(MyMqttClient.SubTopic topic, string message)
+        private void LotClient_MessageReceievedEvent(SubTopic topic, string message)
         {
             switch (topic)
             {
-                case MyMqttClient.SubTopic.Data:
+                case SubTopic.Data:
                     JObject allData = (JObject)JsonConvert.DeserializeObject(message);
                     this.BeginInvoke(new EventHandler(delegate
                     {

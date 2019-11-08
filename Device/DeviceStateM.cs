@@ -26,9 +26,6 @@ namespace Device
             // 配置设备错误状态监测器
             ResetErrorStatus();
 
-            // 初始化 MQTT 通信
-            setupLotClient();
-
             // 记录设备运行时间
             startTime = DateTime.Now; 
         }

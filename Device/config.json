@@ -1,0 +1,73 @@
+{
+  "?TempDev": "关于温度表的配置信息",
+  "TempDev": {
+    "TempM": {
+      "Enable": true,
+      "PortName": "COM3",
+      "BaudRate": 2400
+    },
+    "TempS": {
+      "Enable": true,
+      "PortName": "COM5",
+      "BaudRate": 2400
+    }
+  },
+  "?RelayDev": "关于继电器的配置信息",
+  "RelayDev": {
+    "RelayM": {
+      "Enable": true,
+      "PortName": "COM7",
+      "BaudRate": 9600
+    },
+    "RelayS": {
+      "Enable": true,
+      "PortName": "COM9",
+      "BaudRate": 9600
+    }
+  },
+  "?SensorDev": "关于其他传感器的配置信息",
+  "SensorDev": {
+    "Sensor": {
+      "Enable": false,
+      "PortName": "COM4",
+      "BaudRate": 9600
+    },
+    "Bridge": {
+      "Enable": false,
+      "PortName": "COM5",
+      "BaudRate": 9600
+    }
+  },
+  "?UserPort": "关于用户接口的配置信息",
+  "UserPort": {
+    "Serial": {
+      "Enable": false,
+      "PortName": "COM5",
+      "BaudRate": 9600
+    },
+    "Socket": {
+      "Enable": false,
+      "ServerUrl": "192.168.1.101",
+      "Port": 5002,
+      "ApiKey": "",
+      "ProductId": "admin",
+      "DeviceId": "public"
+    },
+    "MqttLocal": {
+      "Enable": true,
+      "ServerUrl": "192.168.1.105",
+      "Port": 5001,
+      "ApiKey": "public",
+      "ProductId": "admin",
+      "DeviceId": "mydeviceId"
+    },
+    "MqttCloud": {
+      "Enable": true,
+      "ServerUrl": "183.230.40.39",
+      "Port": 6002,
+      "ApiKey": "123123123",
+      "ProductId": "270595",
+      "DeviceId": "542169339"
+    }
+  }
+}
