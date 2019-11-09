@@ -1,0 +1,144 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace LotMonitor
+{
+    public enum ErrorCode : int
+    {
+        /// <summary>
+        /// 温度不降
+        /// </summary>
+        TempNotDown = 0,
+        /// <summary>
+        /// 温度持续下降
+        /// </summary>
+        TempNotUp,
+        /// <summary>
+        /// 温度波动过大
+        /// </summary>
+        TempFlucLarge,
+        /// <summary>
+        /// 温度持续上升
+        /// </summary>
+        TempBasis,
+        /// <summary>
+        /// 控温槽中的温度超出界限
+        /// </summary>
+        TempOutRange,
+        /// <summary>
+        /// 读电桥温度错误
+        /// </summary>
+        SensorError,
+        /// <summary>
+        /// 继电器设备错误
+        /// </summary>
+        RelayError,
+        /// <summary>
+        /// 温控设备错误
+        /// </summary>
+        TemptError,
+        /// <summary>
+        /// 温控设备参数写入错误
+        /// </summary>
+        TempParamSetError,
+        /// <summary>
+        /// 测温电桥错误
+        /// </summary>
+        BridgeError,
+        /// <summary>
+        /// 其他错误
+        /// </summary>
+        CodeError
+    }
+
+    public partial class LotMonitorForm
+    {
+        /// <summary>
+        /// 为每种错误定义一种颜色 - 只读
+        /// </summary>
+        readonly Dictionary<ErrorCode, Color> errorColorMap = new Dictionary<ErrorCode, Color>() {
+            { ErrorCode.TempNotDown, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.TempNotUp, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.TempFlucLarge, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.TempBasis, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.TempOutRange, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.SensorError, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.RelayError, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.TemptError, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.TempParamSetError, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.BridgeError, Color.FromArgb(123, 201, 111) },
+            { ErrorCode.CodeError, Color.FromArgb(123, 201, 111) }
+        };
+
+        // 错误状态显示符的 列数 / 行数
+        const int errStatusCol = 50;
+        const int errStatusRow = 11;
+
+        Dictionary<ErrorCode, List<int>> errorDict = new Dictionary<ErrorCode, List<int>>();
+        Dictionary<ErrorCode, int> currentErrCnt = new Dictionary<ErrorCode, int>();
+        object errLocker = new object();
+
+        Timer timer_errSt = new Timer();
+
+        private void init_err_st()
+        {
+            int[] err = new int[50];
+
+            foreach (ErrorCode itm in Enum.GetValues(typeof(ErrorCode)))
+            {
+                errorDict[itm] = new List<int>(err);
+                currentErrCnt[itm] = 0;
+            }
+
+            timer_errSt.Interval = 10000;
+            timer_errSt.Tick += Timer_errSt_Tick;
+            timer_errSt.Start();
+        }
+
+
+        // 定时更新错误显示状态
+        private void Timer_errSt_Tick(object sender, EventArgs e)
+        {
+            lock (errLocker)
+            {
+                foreach (ErrorCode itm in Enum.GetValues(typeof(ErrorCode)))
+                {
+                    errorDict[itm].RemoveAt(0);
+
+                    int errCnt = currentErrCnt[itm];
+                    if(errCnt!=0) errorDict[itm].Add(255);
+                    else errorDict[itm].Add(0);
+
+                    // 清空错误计数
+                    currentErrCnt[itm] = 0;
+                }
+            }
+            
+            hslStatusManagement_err.SetColorAll(PackColorFromValue());
+
+            Console.WriteLine("update the error status.");
+        }
+
+        private Color[] PackColorFromValue()
+        {
+            // 如果 value.Item2 为0，即错误次数为 0，则将不透明度设为 0，那么就没有颜色了
+            Color[] colors = new Color[errStatusCol*errStatusRow];
+
+            for(int i = 0; i < errStatusRow; i++)
+            {
+                for(int j = 0;j < errStatusCol; j++)
+                {
+                    if (errorDict[(ErrorCode)i][j] == 0) colors[i * errStatusCol + j] = Color.FromArgb(224, 224, 224);
+                    else colors[i * errStatusCol + j] = errorColorMap[(ErrorCode)i];
+                }
+            }
+
+            return colors;
+        }
+    }
+}

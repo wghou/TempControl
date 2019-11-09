@@ -310,7 +310,7 @@ namespace Device
             if (err != TempProtocol.Err_t.NoError)
             {
                 // 如果发生错误，则记录错误
-                _deviceErrorMonitor[ErrorCode.TemptError]++;
+                SetErrorStatus(ErrorCode.TemptError);
 
                 nlogger.Error("读取主槽温度时发生错误，errorCode: " + err.ToString());
                 goto next;
@@ -324,7 +324,7 @@ namespace Device
             if (err != TempProtocol.Err_t.NoError)
             {
                 // 如果发生错误，则记录错误
-                _deviceErrorMonitor[ErrorCode.TemptError]++;
+                SetErrorStatus(ErrorCode.TemptError);
 
                 nlogger.Error("读取主槽功率时发生错误，errorCode: " + err.ToString());
                 goto next;
@@ -338,7 +338,7 @@ namespace Device
             if (err != TempProtocol.Err_t.NoError)
             {
                 // 如果发生错误，则记录错误
-                _deviceErrorMonitor[ErrorCode.TemptError]++;
+                SetErrorStatus(ErrorCode.TemptError);
 
                 nlogger.Error("读取辅槽温度时发生错误，errorCode: " + err.ToString());
                 return;
@@ -350,7 +350,7 @@ namespace Device
             if (err != TempProtocol.Err_t.NoError)
             {
                 // 如果发生错误，则记录错误
-                _deviceErrorMonitor[ErrorCode.TemptError]++;
+                SetErrorStatus(ErrorCode.TemptError);
 
                 nlogger.Error("读取辅槽功率时发生错误，errorCode: " + err.ToString());
                 return;

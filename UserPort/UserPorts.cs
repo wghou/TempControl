@@ -38,7 +38,6 @@ namespace UserPort
         Control = 1
     }
 
-
     public partial class UserPorts
     {
         private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
@@ -51,7 +50,7 @@ namespace UserPort
         /// <summary>
         /// 用于连接 socket 的客户端
         /// </summary>
-        private MySocketClient _socketClient = new MySocketClient();
+        private MySocket.MySocketServer _socketClient = new MySocket.MySocketServer();
 
         /// <summary>
         /// 用于连接本地 mqtt 服务器的客户端

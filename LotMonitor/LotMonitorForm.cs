@@ -51,6 +51,7 @@ namespace LotMonitor
         private void LotMonitorForm_Shown(object sender, EventArgs e)
         {
             setupLotClient();
+            init_err_st();
         }
 
         ///////////////////////////////////////////////////
@@ -71,6 +72,7 @@ namespace LotMonitor
             pictureBox_lot.Image = mBmpLot;
         }
 
+        // 点击继电器开关 - 任意一个
         private void hslSwitch_RelayM0_Click_1(object sender, EventArgs e)
         {
 

@@ -54,7 +54,7 @@
       "DeviceId": "public"
     },
     "MqttLocal": {
-      "Enable": true,
+      "Enable": false,
       "ServerUrl": "192.168.1.105",
       "Port": 5001,
       "ApiKey": "public",

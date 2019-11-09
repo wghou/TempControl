@@ -70,6 +70,10 @@ namespace Device
         /// 设备错误状态
         /// </summary>
         private Dictionary<ErrorCode, uint> _deviceErrorMonitor = new Dictionary<ErrorCode, uint>();
+        /// <summary>
+        /// 当前时间步骤内错误状态
+        /// </summary>
+        private Dictionary<ErrorCode, uint> _deviceCurrentError = new Dictionary<ErrorCode, uint>();
         private object _errLocker = new object();
         private uint lastErrCnt = 0;
 
@@ -83,6 +87,7 @@ namespace Device
                 foreach (ErrorCode item in Enum.GetValues(typeof(ErrorCode)))
                 {
                     _deviceErrorMonitor[item] = 0;
+                    _deviceCurrentError[item] = 0;
                 }
             }
         }
@@ -104,6 +109,7 @@ namespace Device
             return err;
         }
 
+
         /// <summary>
         /// 读取设备错误状态
         /// </summary>
@@ -118,11 +124,63 @@ namespace Device
         }
 
 
+
+        /// <summary>
+        /// 清空当前时间步骤内错误状态
+        /// </summary>
+        public void ResetCurrentErrorStatus()
+        {
+            lock (_errLocker)
+            {
+                foreach (ErrorCode item in Enum.GetValues(typeof(ErrorCode)))
+                {
+                    _deviceCurrentError[item] = 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 查看当前时间步骤内错误状态
+        /// </summary>
+        /// <returns></returns>
+        public uint CheckCurrentErrorStatus()
+        {
+            uint err = 0;
+            lock (_errLocker)
+            {
+                foreach (ErrorCode item in Enum.GetValues(typeof(ErrorCode)))
+                {
+                    err += _deviceCurrentError[item];
+                }
+            }
+            return err;
+        }
+
+
+        /// <summary>
+        /// 读取当前时间步骤内设备错误状态
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public Dictionary<ErrorCode, uint> GetCurrentErrorStatus()
+        {
+            lock (_errLocker)
+            {
+                return _deviceCurrentError;
+            }
+        }
+
+
+        /// <summary>
+        /// 向 Monitor 写入错误状态
+        /// </summary>
+        /// <param name="err"></param>
         private void SetErrorStatus(ErrorCode err)
         {
             lock (_errLocker)
             {
                 _deviceErrorMonitor[err]++;
+                _deviceCurrentError[err]++;
             }
         }
 

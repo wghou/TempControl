@@ -60,6 +60,7 @@
             this.label_err = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.hslStatusManagement_err = new HslControls.HslStatusManagement();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_lot)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -68,7 +69,7 @@
             // 
             // hslGaugeChart_temptM
             // 
-            this.hslGaugeChart_temptM.Location = new System.Drawing.Point(6, 6);
+            this.hslGaugeChart_temptM.Location = new System.Drawing.Point(6, -5);
             this.hslGaugeChart_temptM.Name = "hslGaugeChart_temptM";
             this.hslGaugeChart_temptM.Size = new System.Drawing.Size(254, 136);
             this.hslGaugeChart_temptM.TabIndex = 1;
@@ -78,7 +79,7 @@
             // 
             // hslGaugeChart_temptS
             // 
-            this.hslGaugeChart_temptS.Location = new System.Drawing.Point(6, 201);
+            this.hslGaugeChart_temptS.Location = new System.Drawing.Point(6, 180);
             this.hslGaugeChart_temptS.Name = "hslGaugeChart_temptS";
             this.hslGaugeChart_temptS.Size = new System.Drawing.Size(254, 136);
             this.hslGaugeChart_temptS.TabIndex = 2;
@@ -93,7 +94,7 @@
             this.hslLedDisplay_temptSetM.DisplayNumber = 7;
             this.hslLedDisplay_temptSetM.DisplayText = "10.0000";
             this.hslLedDisplay_temptSetM.LedNumberSize = 4;
-            this.hslLedDisplay_temptSetM.Location = new System.Drawing.Point(610, 88);
+            this.hslLedDisplay_temptSetM.Location = new System.Drawing.Point(610, 77);
             this.hslLedDisplay_temptSetM.Name = "hslLedDisplay_temptSetM";
             this.hslLedDisplay_temptSetM.Size = new System.Drawing.Size(313, 68);
             this.hslLedDisplay_temptSetM.TabIndex = 3;
@@ -101,7 +102,7 @@
             // 
             // hslGauge_powerM
             // 
-            this.hslGauge_powerM.Location = new System.Drawing.Point(285, 25);
+            this.hslGauge_powerM.Location = new System.Drawing.Point(285, 14);
             this.hslGauge_powerM.Name = "hslGauge_powerM";
             this.hslGauge_powerM.PointerColor = System.Drawing.Color.Cyan;
             this.hslGauge_powerM.Size = new System.Drawing.Size(260, 131);
@@ -116,7 +117,7 @@
             this.hslLedDisplay_temptSetS.DisplayNumber = 7;
             this.hslLedDisplay_temptSetS.DisplayText = "10.0000";
             this.hslLedDisplay_temptSetS.LedNumberSize = 4;
-            this.hslLedDisplay_temptSetS.Location = new System.Drawing.Point(610, 269);
+            this.hslLedDisplay_temptSetS.Location = new System.Drawing.Point(610, 248);
             this.hslLedDisplay_temptSetS.Name = "hslLedDisplay_temptSetS";
             this.hslLedDisplay_temptSetS.Size = new System.Drawing.Size(313, 68);
             this.hslLedDisplay_temptSetS.TabIndex = 6;
@@ -126,7 +127,7 @@
             // 
             this.hslSwitch_RelayM0.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM0.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM0.Location = new System.Drawing.Point(6, 388);
+            this.hslSwitch_RelayM0.Location = new System.Drawing.Point(6, 367);
             this.hslSwitch_RelayM0.Name = "hslSwitch_RelayM0";
             this.hslSwitch_RelayM0.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM0.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -139,7 +140,7 @@
             // 
             this.hslSwitch_RelayM1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM1.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM1.Location = new System.Drawing.Point(125, 388);
+            this.hslSwitch_RelayM1.Location = new System.Drawing.Point(125, 367);
             this.hslSwitch_RelayM1.Name = "hslSwitch_RelayM1";
             this.hslSwitch_RelayM1.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM1.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -152,7 +153,7 @@
             // 
             this.hslSwitch_RelayM2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM2.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM2.Location = new System.Drawing.Point(244, 388);
+            this.hslSwitch_RelayM2.Location = new System.Drawing.Point(244, 367);
             this.hslSwitch_RelayM2.Name = "hslSwitch_RelayM2";
             this.hslSwitch_RelayM2.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM2.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -165,7 +166,7 @@
             // 
             this.hslSwitch_RelayM3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM3.Location = new System.Drawing.Point(363, 388);
+            this.hslSwitch_RelayM3.Location = new System.Drawing.Point(363, 367);
             this.hslSwitch_RelayM3.Name = "hslSwitch_RelayM3";
             this.hslSwitch_RelayM3.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM3.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -178,7 +179,7 @@
             // 
             this.hslSwitch_RelayM4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM4.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM4.Location = new System.Drawing.Point(482, 388);
+            this.hslSwitch_RelayM4.Location = new System.Drawing.Point(482, 367);
             this.hslSwitch_RelayM4.Name = "hslSwitch_RelayM4";
             this.hslSwitch_RelayM4.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM4.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -191,7 +192,7 @@
             // 
             this.hslSwitch_RelayM5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM5.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM5.Location = new System.Drawing.Point(601, 388);
+            this.hslSwitch_RelayM5.Location = new System.Drawing.Point(601, 367);
             this.hslSwitch_RelayM5.Name = "hslSwitch_RelayM5";
             this.hslSwitch_RelayM5.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM5.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -204,7 +205,7 @@
             // 
             this.hslSwitch_RelayM6.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM6.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM6.Location = new System.Drawing.Point(720, 388);
+            this.hslSwitch_RelayM6.Location = new System.Drawing.Point(720, 367);
             this.hslSwitch_RelayM6.Name = "hslSwitch_RelayM6";
             this.hslSwitch_RelayM6.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM6.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -217,7 +218,7 @@
             // 
             this.hslSwitch_RelayM7.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayM7.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayM7.Location = new System.Drawing.Point(839, 388);
+            this.hslSwitch_RelayM7.Location = new System.Drawing.Point(839, 367);
             this.hslSwitch_RelayM7.Name = "hslSwitch_RelayM7";
             this.hslSwitch_RelayM7.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayM7.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -230,7 +231,7 @@
             // 
             this.hslSwitch_RelayS7.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS7.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS7.Location = new System.Drawing.Point(839, 512);
+            this.hslSwitch_RelayS7.Location = new System.Drawing.Point(839, 491);
             this.hslSwitch_RelayS7.Name = "hslSwitch_RelayS7";
             this.hslSwitch_RelayS7.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS7.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -243,7 +244,7 @@
             // 
             this.hslSwitch_RelayS6.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS6.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS6.Location = new System.Drawing.Point(720, 512);
+            this.hslSwitch_RelayS6.Location = new System.Drawing.Point(720, 491);
             this.hslSwitch_RelayS6.Name = "hslSwitch_RelayS6";
             this.hslSwitch_RelayS6.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS6.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -256,7 +257,7 @@
             // 
             this.hslSwitch_RelayS5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS5.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS5.Location = new System.Drawing.Point(601, 512);
+            this.hslSwitch_RelayS5.Location = new System.Drawing.Point(601, 491);
             this.hslSwitch_RelayS5.Name = "hslSwitch_RelayS5";
             this.hslSwitch_RelayS5.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS5.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -269,7 +270,7 @@
             // 
             this.hslSwitch_RelayS4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS4.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS4.Location = new System.Drawing.Point(482, 512);
+            this.hslSwitch_RelayS4.Location = new System.Drawing.Point(482, 491);
             this.hslSwitch_RelayS4.Name = "hslSwitch_RelayS4";
             this.hslSwitch_RelayS4.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS4.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -282,7 +283,7 @@
             // 
             this.hslSwitch_RelayS3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS3.Location = new System.Drawing.Point(363, 512);
+            this.hslSwitch_RelayS3.Location = new System.Drawing.Point(363, 491);
             this.hslSwitch_RelayS3.Name = "hslSwitch_RelayS3";
             this.hslSwitch_RelayS3.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS3.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -295,7 +296,7 @@
             // 
             this.hslSwitch_RelayS2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS2.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS2.Location = new System.Drawing.Point(244, 512);
+            this.hslSwitch_RelayS2.Location = new System.Drawing.Point(244, 491);
             this.hslSwitch_RelayS2.Name = "hslSwitch_RelayS2";
             this.hslSwitch_RelayS2.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS2.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -308,7 +309,7 @@
             // 
             this.hslSwitch_RelayS1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS1.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS1.Location = new System.Drawing.Point(125, 512);
+            this.hslSwitch_RelayS1.Location = new System.Drawing.Point(125, 491);
             this.hslSwitch_RelayS1.Name = "hslSwitch_RelayS1";
             this.hslSwitch_RelayS1.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS1.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -321,7 +322,7 @@
             // 
             this.hslSwitch_RelayS0.Cursor = System.Windows.Forms.Cursors.Hand;
             this.hslSwitch_RelayS0.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.hslSwitch_RelayS0.Location = new System.Drawing.Point(6, 512);
+            this.hslSwitch_RelayS0.Location = new System.Drawing.Point(6, 491);
             this.hslSwitch_RelayS0.Name = "hslSwitch_RelayS0";
             this.hslSwitch_RelayS0.Size = new System.Drawing.Size(113, 118);
             this.hslSwitch_RelayS0.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
@@ -332,7 +333,7 @@
             // 
             // hslGauge_powerS
             // 
-            this.hslGauge_powerS.Location = new System.Drawing.Point(285, 206);
+            this.hslGauge_powerS.Location = new System.Drawing.Point(285, 185);
             this.hslGauge_powerS.Name = "hslGauge_powerS";
             this.hslGauge_powerS.PointerColor = System.Drawing.Color.Cyan;
             this.hslGauge_powerS.Size = new System.Drawing.Size(260, 131);
@@ -344,7 +345,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(103, 164);
+            this.label1.Location = new System.Drawing.Point(103, 153);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 16);
             this.label1.TabIndex = 24;
@@ -354,7 +355,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(103, 350);
+            this.label2.Location = new System.Drawing.Point(103, 329);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 16);
             this.label2.TabIndex = 25;
@@ -364,7 +365,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(380, 164);
+            this.label3.Location = new System.Drawing.Point(380, 153);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(104, 16);
             this.label3.TabIndex = 26;
@@ -374,7 +375,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.Location = new System.Drawing.Point(380, 350);
+            this.label4.Location = new System.Drawing.Point(380, 329);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(104, 16);
             this.label4.TabIndex = 27;
@@ -384,7 +385,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label5.Location = new System.Drawing.Point(607, 60);
+            this.label5.Location = new System.Drawing.Point(607, 49);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(120, 16);
             this.label5.TabIndex = 28;
@@ -394,7 +395,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label6.Location = new System.Drawing.Point(607, 238);
+            this.label6.Location = new System.Drawing.Point(607, 217);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(120, 16);
             this.label6.TabIndex = 29;
@@ -402,7 +403,7 @@
             // 
             // pictureBox_lot
             // 
-            this.pictureBox_lot.Location = new System.Drawing.Point(883, 25);
+            this.pictureBox_lot.Location = new System.Drawing.Point(883, 14);
             this.pictureBox_lot.Name = "pictureBox_lot";
             this.pictureBox_lot.Size = new System.Drawing.Size(40, 10);
             this.pictureBox_lot.TabIndex = 43;
@@ -410,9 +411,9 @@
             // 
             // label_err
             // 
-            this.label_err.Location = new System.Drawing.Point(969, 98);
+            this.label_err.Location = new System.Drawing.Point(972, 25);
             this.label_err.Name = "label_err";
-            this.label_err.Size = new System.Drawing.Size(197, 239);
+            this.label_err.Size = new System.Drawing.Size(228, 291);
             this.label_err.TabIndex = 44;
             this.label_err.Text = "label7";
             // 
@@ -424,11 +425,12 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1204, 674);
+            this.tabControl1.Size = new System.Drawing.Size(1226, 855);
             this.tabControl1.TabIndex = 45;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.hslStatusManagement_err);
             this.tabPage1.Controls.Add(this.label_err);
             this.tabPage1.Controls.Add(this.hslGauge_powerM);
             this.tabPage1.Controls.Add(this.pictureBox_lot);
@@ -462,17 +464,30 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1196, 644);
+            this.tabPage1.Size = new System.Drawing.Size(1218, 825);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "监测界面";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // hslStatusManagement_err
+            // 
+            this.hslStatusManagement_err.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.hslStatusManagement_err.ColCount = 50;
+            this.hslStatusManagement_err.GeneralColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.hslStatusManagement_err.IsRenderBorder = false;
+            this.hslStatusManagement_err.Location = new System.Drawing.Point(68, 632);
+            this.hslStatusManagement_err.Name = "hslStatusManagement_err";
+            this.hslStatusManagement_err.RowCount = 11;
+            this.hslStatusManagement_err.Size = new System.Drawing.Size(1132, 140);
+            this.hslStatusManagement_err.SpacingOffect = 3F;
+            this.hslStatusManagement_err.TabIndex = 45;
             // 
             // tabPage2
             // 
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1196, 644);
+            this.tabPage2.Size = new System.Drawing.Size(1218, 825);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "控制界面";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -481,7 +496,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1216, 681);
+            this.ClientSize = new System.Drawing.Size(1240, 862);
             this.Controls.Add(this.tabControl1);
             this.Name = "LotMonitorForm";
             this.Text = "Form1";
@@ -529,6 +544,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
+        private HslControls.HslStatusManagement hslStatusManagement_err;
     }
 }
 

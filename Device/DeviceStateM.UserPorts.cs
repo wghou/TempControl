@@ -29,9 +29,16 @@ namespace Device
         /// <param name="message"></param>
         private void _userPorts_UserPortMsgRvEvent(UserPortType Ptype, SubTopic topic, string message)
         {
+            nlogger.Info("receive user port message from UserPortType: " + Ptype.ToString());
+            nlogger.Info("the message topic is " + topic.ToString() + ", and the message is: " + message);
+
             switch (topic)
             {
                 case SubTopic.Control:
+
+                    break;
+
+                case SubTopic.Data:
 
                     break;
 
@@ -47,22 +54,28 @@ namespace Device
             JObject allData = new JObject();
 
             // 主槽温度
-            JProperty mTp = new JProperty("mTp",tpDeviceM.temperatures.Last());
+            if(tpDeviceM.temperatures.Count != 0)
+            {
+                JProperty mTp = new JProperty("mTp", tpDeviceM.temperatures.Last()); allData.Add(mTp);
+            }
             // 主槽功率
             JProperty mPw = new JProperty("mPw", tpDeviceM.tpPowerShow);
             // 主槽设定值
             JProperty mSt = new JProperty("mSt", tpDeviceM.tpParam[0]);
             // 添加
-            allData.Add(mTp); allData.Add(mPw); allData.Add(mSt);
+            allData.Add(mPw); allData.Add(mSt);
 
             // 辅槽温度
-            JProperty sTp = new JProperty("sTp", tpDeviceS.temperatures.Last());
+            if (tpDeviceS.temperatures.Count != 0)
+            {
+                JProperty sTp = new JProperty("sTp", tpDeviceS.temperatures.Last()); allData.Add(sTp);
+            }
             // 辅槽功率
             JProperty sPw = new JProperty("sPw", tpDeviceS.tpPowerShow);
             // 辅槽设定值
             JProperty sSt = new JProperty("sSt", tpDeviceS.tpParam[0]);
             // 添加
-            allData.Add(sTp); allData.Add(sPw); allData.Add(sSt);
+            allData.Add(sPw); allData.Add(sSt);
 
             // 继电器 M
             JProperty mRy = new JProperty("mRy", ryDeviceM.ryStatus);
@@ -72,7 +85,8 @@ namespace Device
             allData.Add(mRy); allData.Add(sRy);
 
             // 错误状态
-            string errStr = string.Join(";", _deviceErrorMonitor.Select(x => Enum.GetName(typeof(ErrorCode), x.Key) + "=" + x.Value.ToString()).ToArray());
+            string errStr = string.Join(";", GetCurrentErrorStatus().Select(x => Enum.GetName(typeof(ErrorCode), x.Key) + "=" + x.Value.ToString()).ToArray());
+            ResetCurrentErrorStatus();
             JProperty err = new JProperty("err", errStr);
             // 添加
             allData.Add(err);

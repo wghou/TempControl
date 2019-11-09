@@ -34,7 +34,7 @@ namespace LotMonitor
         private bool setupLotClient()
         {
             // json config file
-            string confFile = @"./cfgLocal.json";
+            string confFile = @"./cfgCloud.json";
             try
             {
                 System.IO.StreamReader file = System.IO.File.OpenText(confFile);
@@ -127,9 +127,20 @@ namespace LotMonitor
                                 }
 
                                 this.label_err.Text = "";
-                                foreach(var itm in err)
+                                lock (errLocker)
                                 {
-                                    this.label_err.Text += itm.Key + ": " + itm.Value.ToString() + "\n";
+
+
+                                    foreach (var itm in err)
+                                    {
+                                        this.label_err.Text += itm.Key + ": " + itm.Value.ToString() + "\n";
+
+                                        ErrorCode code;
+                                        if (Enum.TryParse(itm.Key, out code))
+                                        {
+                                            currentErrCnt[code] += itm.Value;
+                                        }
+                                    }
                                 }
                             }
                             catch(Exception ex)

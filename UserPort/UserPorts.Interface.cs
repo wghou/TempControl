@@ -48,7 +48,8 @@ namespace UserPort
                     if (child.ContainsKey("Enable") ? (bool)child["Enable"] : true)
                     {
                         confOK &= _socketClient.Initialize(child, SubTopic.Control);
-                        _socketClient.MessageReceievedEvent += _socketClient_MessageReceievedEvent;
+                        _socketClient.MessageReceievedPostEvent += _socketClient_MessageReceievedPostEvent;
+                        _socketClient.MessageReceievedRequestEvent += _socketClient_MessageReceievedRequestEvent;
 
                         if (!confOK) nlogger.Error("配置 socketClient 失败");
                         else nlogger.Debug("配置 socketClient 成功");
@@ -188,11 +189,18 @@ namespace UserPort
             nlogger.Debug("收到来自 serialClient 的数据: SubTopic - " + topic.ToString() + "  message - " + message);
         }
 
-        // receive message from the socket
-        private void _socketClient_MessageReceievedEvent(SubTopic topic, string message)
+        // receive post message from the socket
+        private void _socketClient_MessageReceievedPostEvent(SubTopic topic, string message)
         {
             UserPortMsgRvEvent?.Invoke(UserPortType.Socket, topic, message);
-            nlogger.Debug("收到来自 socketClient 的数据: SubTopic - " + topic.ToString() + "  message - " + message);
+            nlogger.Debug("收到来自 socketClient 的 post 数据: SubTopic - " + topic.ToString() + "  message - " + message);
+        }
+
+        // receive request message from the socket
+        private void _socketClient_MessageReceievedRequestEvent(SubTopic topic, string message)
+        {
+            UserPortMsgRvEvent?.Invoke(UserPortType.Socket, topic, message);
+            nlogger.Debug("收到来自 socketClient 的 request 数据: SubTopic - " + topic.ToString() + "  message - " + message);
         }
 
         // receive message from the mqtt local
