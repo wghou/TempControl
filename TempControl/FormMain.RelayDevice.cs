@@ -5,35 +5,6 @@ namespace TempControl
 {
     public partial class FormMain
     {
-        private delegate void ry();
-        ////////////////    勾选框    /////////////
-        private void checkBox_tempS_CheckedChanged(object sender, EventArgs e)
-        {
-            _device.tpDeviceS.Enable = checkBox_tempS.Checked;
-            this.groupBox_tempS.Enabled = checkBox_tempS.Checked;
-        }
-
-        private void checkBox_ryEn2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.checkBox_ryEn2.Checked) {
-                _device.ryDeviceS.Enable = true;
-                _device.ryDeviceM.numCoils = 8;
-                this.groupBox_ry2.Text = "继电器模块 2";
-            }
-            else {
-                _device.ryDeviceS.Enable = false;
-                _device.ryDeviceM.numCoils = 16;
-                this.groupBox_ry2.Text = "继电器模块 1 (备用)";
-            }
-        }
-
-        private void checkBox_protect_CheckedChanged(object sender, EventArgs e)
-        {
-            _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
-            _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
-        }
-
-
         /// <summary> 设置继电器设备状态 - 委托 </summary>
         private delegate void RySetHandler(bool cntErr);
 
@@ -73,8 +44,98 @@ namespace TempControl
             }
             else
             {
-                nlogger.Info("关闭电源: " + (sender as CheckBox).Text);
-                Utils.Logger.Op("关闭电源: " + (sender as CheckBox).Text);
+                nlogger.Info("关闭电源 M6!");
+                Utils.Logger.Op("关闭电源 M6!");
+            }
+        }
+
+        private void checkBox_ryM7_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryM7.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryM7.Checked == true)
+            {
+                nlogger.Info("打开电源 M7!");
+                Utils.Logger.Op("打开电源 M7!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 M7!");
+                Utils.Logger.Op("关闭电源 M7!");
+            }
+        }
+
+        private void checkBox_ryS0_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceS.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryS0.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceS);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryS0.Checked == true)
+            {
+                nlogger.Info("打开电源 S0!");
+                Utils.Logger.Op("打开电源 S0!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 S0!");
+                Utils.Logger.Op("关闭电源 S0!");
+            }
+        }
+
+        private void checkBox_ryS1_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceS.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryS1.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceS);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryS1.Checked == true)
+            {
+                nlogger.Info("打开电源 S1!");
+                Utils.Logger.Op("打开电源 S1!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 S1!");
+                Utils.Logger.Op("关闭电源 S1!");
+            }
+        }
+
+        private void checkBox_ryS2_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceS.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryS2.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceS);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryS2.Checked == true)
+            {
+                nlogger.Info("打开电源 S2!");
+                Utils.Logger.Op("打开电源 S2!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 S2!");
+                Utils.Logger.Op("关闭电源 S2!");
+            }
+        }
+
+        private void checkBox_ryS3_Click(object sender, EventArgs e)
+        {
+            _device.ryDeviceS.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryS3.Checked;
+            RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceS);
+            setRyStatus.BeginInvoke(false, null, null);
+
+            if (checkBox_ryS3.Checked == true)
+            {
+                nlogger.Info("打开电源 S3!");
+                Utils.Logger.Op("打开电源 S3!");
+            }
+            else
+            {
+                nlogger.Info("关闭电源 S3!");
+                Utils.Logger.Op("关闭电源 S3!");
             }
         }
 
@@ -135,6 +196,25 @@ namespace TempControl
         }
 
         private void checkBox_logM_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/OperationLog");
+            }
+            catch (Exception ex) { }
+        }
+
+
+        private void checkBox_data_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(System.IO.Directory.GetCurrentDirectory() + "/Logs/Data");
+            }
+            catch (Exception ex) { }
+        }
+
+        private void checkBox_logS_Click(object sender, EventArgs e)
         {
             try
             {
