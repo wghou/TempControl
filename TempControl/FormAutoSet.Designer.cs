@@ -82,7 +82,6 @@
             this.checkBox_shutDown = new System.Windows.Forms.CheckBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -622,14 +621,6 @@
             this.checkBox_shutDown.Text = "实验完成后\r\n关闭计算机";
             this.checkBox_shutDown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_shutDown.UseVisualStyleBackColor = true;
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(941, 24);
-            this.menuStrip1.TabIndex = 77;
-            this.menuStrip1.Text = "menuStrip1";
             // 
             // FormAutoSet
             // 

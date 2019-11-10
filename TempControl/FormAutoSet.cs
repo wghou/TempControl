@@ -1348,66 +1348,85 @@ namespace TempControl
             tx.BackColor = System.Drawing.SystemColors.Window;
             dataGridView1.ClearSelection();
         }
+    }
 
-        internal class ParamShow
-        {
-            public int _index;
-            public string tpName;
-            public string _finish;
-            public string editSave;
-            /// <summary>
-            /// 温控设备的参数值
-            /// </summary>
-            public float[] param = new float[7];
+    internal class ParamShow
+    {
+        public int _index;
+        public string tpName;
+        public string editSave;
+        /// <summary>
+        /// 温控设备的参数值
+        /// </summary>
+        public float[] param = new float[7];
 
-
-            /// <summary>
-            /// 编号
-            /// </summary>
-            public string Index { get { return _index.ToString("0"); } }
-            /// <summary>
-            /// 主槽 / 辅槽 （名称）
-            /// </summary>
-            public string TpName { get { return tpName; } }
-            /// <summary>
-            /// 温度值
-            /// </summary>
-            public string TemptSet { get { return param[0].ToString("0.0000"); } }
-            /// <summary>
-            /// 温度修订值
-            /// </summary>
-            public string TempAdjust { get { return param[1].ToString("0.0000"); } }
-            /// <summary>
-            /// 超前调整值
-            /// </summary>
-            public string Advance { get { return param[2].ToString("0.000"); } }
-            /// <summary>
-            /// 模糊系数
-            /// </summary>
-            public string Fuzzy { get { return param[3].ToString("0"); } }
-            /// <summary>
-            /// 比例系数
-            /// </summary>
-            public string Ratio { get { return param[4].ToString("0"); } }
-            /// <summary>
-            /// 积分系数
-            /// </summary>
-            public string Integration { get { return param[5].ToString("0"); } }
-            /// <summary>
-            /// 功率系数
-            /// </summary>
-            public string Power { get { return param[6].ToString("0"); } }
-            /// <summary>
-            /// 波动度阈值
-            /// </summary>
-            public string FlucThr { get { return param[7].ToString("0.000"); } }
-            /// <summary>
-            /// 温度阈值
-            /// </summary>
-            public string TempThr { get { return param[8].ToString("0.000"); } }
-
-            public string Edit { get { return editSave; } }
+            tx = this.textBox_tpSetS;
+            tx.BackColor = System.Drawing.SystemColors.Window;
+            dataGridView1.ClearSelection();
         }
+
+        /// <summary>
+        /// 编号
+        /// </summary>
+        public string Index { get { return _index.ToString("0"); } }
+        /// <summary>
+        /// 主槽 / 辅槽 （名称）
+        /// </summary>
+        public string TpName { get { return tpName; } }
+        /// <summary>
+        /// 温度值
+        /// </summary>
+        public string TemptSet { get { return param[0].ToString("0.0000"); } }
+        /// <summary>
+        /// 温度修订值
+        /// </summary>
+        public string TempAdjust { get { return param[1].ToString("0.0000"); } }
+        /// <summary>
+        /// 超前调整值
+        /// </summary>
+        public string Advance { get { return param[2].ToString("0.000"); } }
+        /// <summary>
+        /// 模糊系数
+        /// </summary>
+        public string Fuzzy { get { return param[3].ToString("0"); } }
+        /// <summary>
+        /// 比例系数
+        /// </summary>
+        public string Ratio { get { return param[4].ToString("0"); } }
+        /// <summary>
+        /// 积分系数
+        /// </summary>
+        public string Integration { get { return param[5].ToString("0"); } }
+        /// <summary>
+        /// 功率系数
+        /// </summary>
+        public string Power { get { return param[6].ToString("0"); } }
+        /// <summary>
+        /// 波动度阈值
+        /// </summary>
+        public string FlucThr { get { return param[7].ToString("0.000"); } }
+        /// <summary>
+        /// 温度阈值
+        /// </summary>
+        public string TempThr { get { return param[8].ToString("0.000"); } }
+
+        public string Edit { get { return editSave; } }
+    }
+
+    /// <summary>
+    /// 温度点设定状态
+    /// </summary>
+    internal class TempParam : IComparable
+    {
+        public bool finished = false;
+        /// <summary>
+        /// 主槽温控设备的参数值
+        /// </summary>
+        public float[] paramM = new float[7];
+        /// <summary>
+        /// 辅槽温控设备的参数值
+        /// </summary>
+        public float[] paramS = new float[7];
 
         /// <summary>
         /// 温度点设定状态

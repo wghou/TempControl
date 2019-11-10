@@ -73,7 +73,8 @@ namespace TempControl
                 // 波动度显示
                 float fluc = 0.0f;
                 getDataFlucPtr?.Invoke(steadyTimeSec / dataIntervalSec, out fluc);
-                if(digits == 3) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
+                
+                if(digits==3) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
                 else if(digits == 4) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
                 else this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
             }));
