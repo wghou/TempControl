@@ -62,6 +62,12 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.hslStatusManagement_err = new HslControls.HslStatusManagement();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label_tm5 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label_tm1 = new System.Windows.Forms.Label();
+            this.label_tm2 = new System.Windows.Forms.Label();
+            this.label_tm3 = new System.Windows.Forms.Label();
+            this.label_tm4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_lot)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -430,6 +436,12 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label8);
+            this.tabPage1.Controls.Add(this.label_tm4);
+            this.tabPage1.Controls.Add(this.label_tm3);
+            this.tabPage1.Controls.Add(this.label_tm2);
+            this.tabPage1.Controls.Add(this.label_tm1);
+            this.tabPage1.Controls.Add(this.label_tm5);
             this.tabPage1.Controls.Add(this.hslStatusManagement_err);
             this.tabPage1.Controls.Add(this.label_err);
             this.tabPage1.Controls.Add(this.hslGauge_powerM);
@@ -475,7 +487,7 @@
             this.hslStatusManagement_err.ColCount = 50;
             this.hslStatusManagement_err.GeneralColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.hslStatusManagement_err.IsRenderBorder = false;
-            this.hslStatusManagement_err.Location = new System.Drawing.Point(68, 632);
+            this.hslStatusManagement_err.Location = new System.Drawing.Point(26, 632);
             this.hslStatusManagement_err.Name = "hslStatusManagement_err";
             this.hslStatusManagement_err.RowCount = 11;
             this.hslStatusManagement_err.Size = new System.Drawing.Size(1132, 140);
@@ -491,6 +503,60 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "控制界面";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label_tm5
+            // 
+            this.label_tm5.AutoSize = true;
+            this.label_tm5.Location = new System.Drawing.Point(1107, 775);
+            this.label_tm5.Name = "label_tm5";
+            this.label_tm5.Size = new System.Drawing.Size(48, 16);
+            this.label_tm5.TabIndex = 46;
+            this.label_tm5.Text = "13:14";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(585, 404);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(48, 16);
+            this.label8.TabIndex = 47;
+            this.label8.Text = "13:14";
+            // 
+            // label_tm1
+            // 
+            this.label_tm1.AutoSize = true;
+            this.label_tm1.Location = new System.Drawing.Point(23, 775);
+            this.label_tm1.Name = "label_tm1";
+            this.label_tm1.Size = new System.Drawing.Size(48, 16);
+            this.label_tm1.TabIndex = 46;
+            this.label_tm1.Text = "13:14";
+            // 
+            // label_tm2
+            // 
+            this.label_tm2.AutoSize = true;
+            this.label_tm2.Location = new System.Drawing.Point(294, 775);
+            this.label_tm2.Name = "label_tm2";
+            this.label_tm2.Size = new System.Drawing.Size(48, 16);
+            this.label_tm2.TabIndex = 46;
+            this.label_tm2.Text = "13:14";
+            // 
+            // label_tm3
+            // 
+            this.label_tm3.AutoSize = true;
+            this.label_tm3.Location = new System.Drawing.Point(565, 775);
+            this.label_tm3.Name = "label_tm3";
+            this.label_tm3.Size = new System.Drawing.Size(48, 16);
+            this.label_tm3.TabIndex = 46;
+            this.label_tm3.Text = "13:14";
+            // 
+            // label_tm4
+            // 
+            this.label_tm4.AutoSize = true;
+            this.label_tm4.Location = new System.Drawing.Point(836, 775);
+            this.label_tm4.Name = "label_tm4";
+            this.label_tm4.Size = new System.Drawing.Size(48, 16);
+            this.label_tm4.TabIndex = 46;
+            this.label_tm4.Text = "13:14";
             // 
             // LotMonitorForm
             // 
@@ -545,6 +611,12 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private HslControls.HslStatusManagement hslStatusManagement_err;
+        private System.Windows.Forms.Label label_tm5;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label_tm1;
+        private System.Windows.Forms.Label label_tm4;
+        private System.Windows.Forms.Label label_tm3;
+        private System.Windows.Forms.Label label_tm2;
     }
 }
 
