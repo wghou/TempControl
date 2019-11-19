@@ -128,23 +128,6 @@ namespace Device
         /// </summary>
         public bool shutDownComputer = false;
 
-        /// <summary>
-        /// 控温板 1 端口
-        /// </summary>
-        public string portTp1 = "COM0";
-        /// <summary>
-        /// 控温板 2 端口
-        /// </summary>
-        public string portTp2 = "COM1";
-        /// <summary>
-        /// 继电器 1 端口
-        /// </summary>
-        public string portRy1 = "COM2";
-        /// <summary>
-        /// 继电器 2 端口
-        /// </summary>
-        public string portRy2 = "COM3";
-
 
         public bool ReadValueConfig(string configFilePath)
         {
@@ -180,12 +163,6 @@ namespace Device
                 sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
                 ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
                 shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
-
-                // 端口
-                portTp1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp1", portTp1);
-                portTp2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp2", portTp2);
-                portRy1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy1", portRy1);
-                portRy2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy2", portRy2);
             }
             catch (Exception ex)
             {
@@ -224,12 +201,6 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", sort);
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", ryElecEnable ? "Enable" : "Disable");
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "shutDownComputer", shutDownComputer ? "Enable" : "Disable");
-
-                // 端口
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp1", portTp1);
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp2", portTp2);
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy1", portRy1);
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy2", portRy2);
             }
             catch(Exception ex)
             {
