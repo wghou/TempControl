@@ -223,10 +223,17 @@ namespace UserPort
                 // socket broad cast
                 foreach (var ses in _appServer.GetAllSessions())
                 {
+                    // wghou
+                    // 如果断开了，是不是应该删除相应的主题订阅
                     if (!ses.Connected) continue;
 
-                    byte[] arr = System.Text.Encoding.Default.GetBytes(string.Format("{0} {1}\r\n", topic.ToString(), Message));
-                    ses.Send(arr, 0, arr.Length);
+                    if (!topicsSubs.ContainsKey(topic)) continue;
+
+                    if (topicsSubs[topic].Contains(ses))
+                    {
+                        byte[] arr = System.Text.Encoding.Default.GetBytes(string.Format("{0} {1}\r\n", topic.ToString(), Message));
+                        ses.Send(arr, 0, arr.Length);
+                    }
                 }
             }
         }

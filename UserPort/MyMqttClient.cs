@@ -32,6 +32,7 @@ namespace UserPort
         //
         // Topic 的构成形式为： topicDeviceId/SubTopic
         // 也就是说，每制作一台设备时，都会新建一个 DeviceId，该设备下，有两个子主题（Data和Control）
+        // 所以，这个要在程序里面写死
         /// <summary>
         /// 设备序列号 - 在同一类产品中，每个单独的设备都有一个相应的编号
         /// </summary>
