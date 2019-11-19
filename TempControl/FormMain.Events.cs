@@ -157,6 +157,18 @@ namespace TempControl
                         this.label_controlState.Text = "空闲";
                         break;
                 }
+
+                // 自动流程中，禁止继电器按键
+                if(st == Device.State.Idle || st == Device.State.ShutdownPC)
+                {
+                    foreach (var itm in dictCheckBoxsRyM) itm.Value.Enabled = true;
+                    foreach (var itm in dictCheckBoxsRyS) itm.Value.Enabled = true;
+                }
+                else
+                {
+                    foreach (var itm in dictCheckBoxsRyM) itm.Value.Enabled = false;
+                    foreach (var itm in dictCheckBoxsRyS) itm.Value.Enabled = false;
+                }
             }));
         }
 
