@@ -115,6 +115,8 @@ namespace Device
         /// </summary>
         public float tempDownCoolFShutdownCool = 0.2f;
 
+        public float subCoolFNotDownThr = 5.0f;
+
         /// <summary>
         /// 温度点排序 - 升序 / 降序
         /// </summary>
@@ -127,6 +129,23 @@ namespace Device
         /// 实验完成后是否关闭计算机
         /// </summary>
         public bool shutDownComputer = false;
+
+        /// <summary>
+        /// 控温板 1 端口
+        /// </summary>
+        public string portTp1 = "COM0";
+        /// <summary>
+        /// 控温板 2 端口
+        /// </summary>
+        public string portTp2 = "COM1";
+        /// <summary>
+        /// 继电器 1 端口
+        /// </summary>
+        public string portRy1 = "COM2";
+        /// <summary>
+        /// 继电器 2 端口
+        /// </summary>
+        public string portRy2 = "COM3";
 
 
         public bool ReadValueConfig(string configFilePath)
@@ -158,11 +177,18 @@ namespace Device
                 tempDownCoolFShutdownDevision = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString()));
                 tempDownCoolFShutdownHot = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString()));
                 tempDownCoolFShutdownCool = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString()));
+                subCoolFNotDownThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "subCoolFNotDownThr", subCoolFNotDownThr.ToString()));
 
                 // 其他
                 sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
                 ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
                 shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
+
+                // 端口
+                portTp1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp1", portTp1);
+                portTp2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp2", portTp2);
+                portRy1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy1", portRy1);
+                portRy2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy2", portRy2);
             }
             catch (Exception ex)
             {
@@ -195,14 +221,21 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownDevision", tempDownCoolFShutdownDevision.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString());
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "subCoolFNotDownThr", subCoolFNotDownThr.ToString());
 
                 // 一些其他的调试参数
                 // 升序还是降序
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", sort);
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", ryElecEnable ? "Enable" : "Disable");
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "shutDownComputer", shutDownComputer ? "Enable" : "Disable");
+
+                // 端口
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp1", portTp1);
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp2", portTp2);
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy1", portRy1);
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy2", portRy2);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 nlogger.Error("从配置文件写入参数过程中发生异常：" + ex.Message.ToString());
                 return false;
