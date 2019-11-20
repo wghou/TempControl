@@ -12,9 +12,13 @@ namespace TempControl
 {
     public partial class FormDebug : Form
     {
+        /// <summary>
+        /// 参数的个数
+        /// </summary>
+        private const int paramNum = 16;
         private Device.RunningParamStruct paramAll;
 
-        private TextBox[] devParam = new TextBox[18];
+        private TextBox[] devParam = new TextBox[paramNum];
         private TextBox tx = null;
 
         public FormDebug(Device.RunningParamStruct pms)
@@ -38,7 +42,6 @@ namespace TempControl
             devParam[14] = textBox15;
             devParam[15] = textBox16;
             devParam[16] = textBox17;
-            devParam[17] = textBox18;
         }
 
         private void loadFromParam()
@@ -62,10 +65,10 @@ namespace TempControl
             textBox15.Text = paramAll.tempDownCoolFShutdownDevision.ToString("0.0000");
             textBox16.Text = paramAll.tempDownCoolFShutdownHot.ToString("0.0000");
             textBox17.Text = paramAll.tempDownCoolFShutdownCool.ToString("0.0000");
-            textBox18.Text = paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000");
 
             comboBox_sort.SelectedIndex = paramAll.sort == "ascend" ? 0 : 1;
             comboBox_elect.SelectedIndex = paramAll.ryElecEnable == true ? 0 : 1;
+            comboBox_bridge.SelectedIndex = paramAll.bridgeEnable == true ? 0 : 1;
         }
         private void FormDebug_Load(object sender, EventArgs e)
         {
@@ -75,9 +78,9 @@ namespace TempControl
 
         private void BntUpdate_Click(object sender, EventArgs e)
         {
-            float[] paramCache = new float[18];
+            float[] paramCache = new float[paramNum];
             // 设置温控设备参数
-            for (int i = 0; i < 18; i++)
+            for (int i = 0; i < paramNum; i++)
             {
                 float newVal = 0.0f;
 
@@ -109,7 +112,7 @@ namespace TempControl
             paramAll.tempDownCoolFShutdownDevision = paramCache[14];
             paramAll.tempDownCoolFShutdownHot = paramCache[15];
             paramAll.tempDownCoolFShutdownCool = paramCache[16];
-            paramAll.tempNotUpOrDwonFaultThrLow = paramCache[17];
+            //paramAll.tempNotUpOrDwonFaultThrLow = paramCache[17];
 
             if (comboBox_sort.SelectedIndex == 0)
             {
@@ -129,10 +132,19 @@ namespace TempControl
                 paramAll.ryElecEnable = false;
             }
 
+            if (comboBox_bridge.SelectedIndex == 0)
+            {
+                paramAll.bridgeEnable = true;
+            }
+            else
+            {
+                paramAll.bridgeEnable = false;
+            }
+
 
             // 写入到文本中
             // 相关参数
-            if(paramAll.WriteValueConfig(@"./config.ini") == false)
+            if (paramAll.WriteValueConfig(@"./config.ini") == false)
             {
                 MessageBox.Show("保存参数失败！");
             }
@@ -639,17 +651,6 @@ namespace TempControl
             }
 
             tx = this.textBox17;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox18_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox18;
             tx.BackColor = System.Drawing.SystemColors.Window;
         }
     }

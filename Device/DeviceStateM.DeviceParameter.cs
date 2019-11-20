@@ -127,6 +127,10 @@ namespace Device
         /// 实验完成后是否关闭计算机
         /// </summary>
         public bool shutDownComputer = false;
+        /// <summary>
+        /// 是否读取电桥值
+        /// </summary>
+        public bool bridgeEnable = false;
 
 
         public bool ReadValueConfig(string configFilePath)
@@ -163,6 +167,7 @@ namespace Device
                 sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
                 ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
                 shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
+                bridgeEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "bridgeEnable", "Disable") == "Enable" ? true : false;
             }
             catch (Exception ex)
             {

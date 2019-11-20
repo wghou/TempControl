@@ -83,8 +83,8 @@
             this.label18 = new System.Windows.Forms.Label();
             this.textBox17 = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
-            this.textBox18 = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
+            this.comboBox_bridge = new System.Windows.Forms.ComboBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button10
@@ -620,30 +620,31 @@
             this.label19.TabIndex = 92;
             this.label19.Text = "降温-关主槽快冷-低温阈值";
             // 
-            // textBox18
+            // comboBox_bridge
             // 
-            this.textBox18.Location = new System.Drawing.Point(480, 88);
-            this.textBox18.Name = "textBox18";
-            this.textBox18.Size = new System.Drawing.Size(100, 21);
-            this.textBox18.TabIndex = 94;
-            this.textBox18.Enter += new System.EventHandler(this.textBox18_Enter);
+            this.comboBox_bridge.FormattingEnabled = true;
+            this.comboBox_bridge.Items.AddRange(new object[] {
+            "Enable 启用",
+            "Disable 禁用"});
+            this.comboBox_bridge.Location = new System.Drawing.Point(480, 85);
+            this.comboBox_bridge.Name = "comboBox_bridge";
+            this.comboBox_bridge.Size = new System.Drawing.Size(121, 20);
+            this.comboBox_bridge.TabIndex = 80;
             // 
-            // label20
+            // label21
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(334, 91);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(125, 12);
-            this.label20.TabIndex = 95;
-            this.label20.Text = "温度不下降-低温-阈值";
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(334, 88);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(77, 12);
+            this.label21.TabIndex = 81;
+            this.label21.Text = "电桥启用状态";
             // 
             // FormDebug
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(629, 578);
-            this.Controls.Add(this.label20);
-            this.Controls.Add(this.textBox18);
             this.Controls.Add(this.textBox17);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.textBox16);
@@ -656,6 +657,8 @@
             this.Controls.Add(this.label15);
             this.Controls.Add(this.textBox12);
             this.Controls.Add(this.label14);
+            this.Controls.Add(this.label21);
+            this.Controls.Add(this.comboBox_bridge);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.comboBox_elect);
             this.Controls.Add(this.comboBox_sort);
@@ -764,7 +767,7 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox textBox17;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox textBox18;
-        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox comboBox_bridge;
+        private System.Windows.Forms.Label label21;
     }
 }

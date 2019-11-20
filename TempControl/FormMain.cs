@@ -28,7 +28,6 @@ namespace TempControl
         // 闪烁等
         Bitmap mBmpM;
         Bitmap mBmpS;
-        Bitmap mBmpLot;
         private bool flp = false;
         private Timer timPic = new Timer();
 
@@ -56,14 +55,7 @@ namespace TempControl
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryM6;
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryM7;
 
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryS0;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryS1;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryS2;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryS3;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryS4;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryS5;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryS6;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryS7;
+            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_8] = this.checkBox_ryS0;
 
             // picture box
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryM0);
@@ -75,14 +67,7 @@ namespace TempControl
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_6, pictureBox_ryM6);
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_7, pictureBox_ryM7);
 
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryS0);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_1, pictureBox_ryS1);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_2, pictureBox_ryS2);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_3, pictureBox_ryS3);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_4, pictureBox_ryS4);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_5, pictureBox_ryS5);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_6, pictureBox_ryS6);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_7, pictureBox_ryS7);
+            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_8, pictureBox_ryS0);
 
             // 用于继电器的指示灯
             mBmpRelayRed = new Bitmap(this.pictureBox_ryM0.Width, pictureBox_ryM0.Height);
@@ -95,7 +80,6 @@ namespace TempControl
             // 用于状态指示灯
             mBmpM = new Bitmap(pictureBoxM.Width, pictureBoxM.Height);
             mBmpS = new Bitmap(pictureBoxS.Width, pictureBoxS.Height);
-            mBmpLot = new Bitmap(pictureBox_lot.Width, pictureBox_lot.Height);
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
@@ -113,9 +97,6 @@ namespace TempControl
             timer1.Interval = 200;
             timer1.Tick += Timer1_Tick;
             timer1.Start();
-
-            _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
-            _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
         }
 
         ///////////////////////////////////////////////////
@@ -124,26 +105,22 @@ namespace TempControl
         {
             Graphics mGhpM = Graphics.FromImage(mBmpM);
             Graphics mGhpS = Graphics.FromImage(mBmpS);
-            Graphics mGhpLot = Graphics.FromImage(mBmpLot);
             mGhpM.Clear(SystemColors.Control);
             if (flp)
             {
                 mGhpM.Clear(SystemColors.Control);
                 mGhpS.Clear(SystemColors.Control);
-                mGhpLot.Clear(SystemColors.Control);
                 flp = false;
             }
             else
             {
                 mGhpM.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
                 mGhpS.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
-                mGhpLot.Clear(this._device.isUserPortConnected ? Color.Green : Color.Red);
                 flp = true;
             }
 
             pictureBoxM.Image = mBmpM;
             pictureBoxS.Image = mBmpS;
-            pictureBox_lot.Image = mBmpLot;
         }
 
 
@@ -157,24 +134,6 @@ namespace TempControl
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            this.BeginInvoke(new EventHandler(delegate
-            {
-                _device.tpDeviceS.Enable = checkBox_tempS.Checked;
-                this.groupBox_tempS.Enabled = checkBox_tempS.Checked;
-
-                _device.ryDeviceM.Enable = true;
-                _device.ryDeviceS.Enable = this.checkBox_ryEn2.Checked;
-                if (this.checkBox_ryEn2.Checked) {
-                    this.groupBox_ry2.Text = "继电器模块 2";
-                }
-                else {
-                    this.groupBox_ry2.Text = "继电器模块 1 (备用)";
-                }
-
-                _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
-                _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
-            }));
-
             bool confDevice = _device.Configure();
             if (confDevice == false)
             {
