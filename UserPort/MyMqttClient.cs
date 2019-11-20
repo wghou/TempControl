@@ -129,6 +129,8 @@ namespace UserPort
 
                 mqttClient.ConnectAsync(options);
 
+                Console.WriteLine("finish the mqtt server config.");
+
                 _timer.Start();
 
                 Enabled = true;

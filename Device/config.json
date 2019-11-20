@@ -35,7 +35,9 @@
     "Bridge": {
       "Enable": false,
       "PortName": "COM5",
-      "BaudRate": 9600
+      "BaudRate": 9600,
+      "ReadInterval": 2,
+      "Channel": 0
     }
   },
   "?UserPort": "关于用户接口的配置信息",

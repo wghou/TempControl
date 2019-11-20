@@ -32,7 +32,18 @@ namespace Device
             // 驱动状态机执行流程
             currentTemptPointState.stateCounts++;
             _machine.Fire(_TickTrigger, _runningParameters.readTempIntervalSec * 1000);
-   
+
+            // 辅槽制冷延迟打开功能
+            if (ryDeviceM.subCoolWaiting == true)
+            {
+                if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes > ryDeviceM.waitingTime)
+                {
+                    ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+                    // 将继电器状态写入下位机
+                    WriteRelayDeviceM(true);
+                }
+            }
+
             // 定时器事件
             TimerTickEvent?.Invoke();
 
@@ -254,6 +265,24 @@ namespace Device
 
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+
+            if(currentTemptPointState.stateTemp > this._runningParameters.subCoolAndCircleShutdownThr)
+            {
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            }
+            else
+            {
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            }
+
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_8] = false;
+
             WriteRelayDeviceM(true);
             WriteRelayDeviceS(true);
 
@@ -285,6 +314,39 @@ namespace Device
                 _machine.Fire(Trigger.StartControl);
                 return;
             }
+
+            // 增加 - 升温过程中，辅槽温度达到设定温度点 0.6 C 时，开启辅槽制冷 4 和辅槽循环 5
+            if (tpDeviceS.temperatures.Last() > (currentTemptPointState.paramS[0] - 0.6))
+            {
+                // 最高优先级
+                // 当主槽温度设定点高于 xx（可设定） 时，4、5（辅槽制冷、辅槽循环）不开
+                if (this.currentTemptPointState.stateTemp > this._runningParameters.subCoolAndCircleShutdownThr)
+                {
+                    //ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.SubCool] = false;
+                    //ryDevice.ryStatusToSet[(int)RelayDevice.Cmd_r.SubCircle] = false;
+                }
+                // 如果主槽温度设定点低于 xx （可设定）时，4、5（辅槽制冷、辅槽循环）打开
+                else
+                {
+                    // subCool == Out_3
+                    if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_3] == false)
+                    {
+                        // 辅槽制冷关闭后需要等待十分钟才能再次打开
+                        if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
+                        {
+                            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+                            ryDeviceM.subCoolWaiting = true;
+                        }
+                        else
+                        {
+                            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+                        }
+                    }
+                }
+
+                // 写入继电器
+                WriteRelayDeviceM(true);
+            }
         }
 
         /// <summary>
@@ -304,6 +366,46 @@ namespace Device
             nlogger.Debug("TempDown Entry.");
 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_8] = false;
+
+            // 最高优先级
+            // 当主槽温度设定点高于 xx（可设定） 时，4、5（辅槽制冷、辅槽循环）不开
+            if (this.currentTemptPointState.stateTemp > this._runningParameters.subCoolAndCircleShutdownThr)
+            {
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            }
+            // 如果主槽温度设定点低于 xx （可设定）时，4、5（辅槽制冷、辅槽循环）打开
+            else
+            {
+                // 如果辅槽制冷本身就是打开的，则不操作
+                if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_3] == true)
+                {
+
+                }
+                // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
+                else
+                {
+                    if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
+                    {
+                        // 暂时先保持关闭，等待满 10 分钟后再打开
+                        ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+                        ryDeviceM.subCoolWaiting = true;
+                    }
+                    else
+                    {
+                        ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+                    }
+                }
+
+            }
 
             WriteRelayDeviceM(true);
             WriteRelayDeviceS(true);
@@ -337,6 +439,29 @@ namespace Device
                 _machine.Fire(Trigger.StartControl);
                 return;
             }
+
+            // 温度下降到设定点附近时，关闭快冷
+            float tpMainCoolFShutdownThr = 0.0f;
+            if (currentTemptPointState.stateTemp < _runningParameters.tempDownCoolFShutdownDevision)
+                tpMainCoolFShutdownThr = _runningParameters.tempDownCoolFShutdownCool;
+            else
+                tpMainCoolFShutdownThr = _runningParameters.tempDownCoolFShutdownHot;
+
+            // 主槽温度下降到主槽（设定点 + 阈值）以下时，关闭主槽快冷
+            if (tpDeviceM.temperatures.Last() < currentTemptPointState.stateTemp + tpMainCoolFShutdownThr)
+            {
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+                // 写入继电器
+                WriteRelayDeviceM(true);
+            }
+
+            // 辅槽温度下降到辅槽设定点以下时，关闭辅槽快冷
+            if (tpDeviceS.temperatures.Last() < currentTemptPointState.paramS[0])
+            {
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+                // 写入继电器
+                WriteRelayDeviceM(true);
+            }
         }
 
         /// <summary>
@@ -359,7 +484,46 @@ namespace Device
             // 首次进入该状态，应改变相应的继电器状态
             //  1 2 3 4 5 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_8] = false;
 
+            // 最高优先级
+            // 当主槽温度设定点高于 xx（可设定） 时，4、5（辅槽制冷、辅槽循环）不开
+            if (this.currentTemptPointState.stateTemp > this._runningParameters.subCoolAndCircleShutdownThr)
+            {
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            }
+            // 如果主槽温度设定点低于 xx （可设定）时，4、5（辅槽制冷、辅槽循环）打开
+            else
+            {
+                // 如果辅槽制冷本身就是打开的，则不操作
+                if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_3] == true)
+                {
+
+                }
+                // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
+                else
+                {
+                    if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
+                    {
+                        // 暂时先保持关闭，等待满 10 分钟后再打开
+                        ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+                        ryDeviceM.subCoolWaiting = true;
+                    }
+                    else
+                    {
+                        ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+                    }
+                }
+
+            }
 
             // 将继电器状态写入下位机
             WriteRelayDeviceM(true);
@@ -374,6 +538,8 @@ namespace Device
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
             WriteTempDeviceS(true);
+
+            return;
         }
 
         /// <summary>
@@ -418,6 +584,45 @@ namespace Device
             // 首次进入该状态，应改变相应的继电器状态
             // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_8] = false;
+
+            // 最高优先级
+            // 当主槽温度设定点高于 xx（可设定） 时，4、5（辅槽制冷、辅槽循环）不开
+            if (this.currentTemptPointState.stateTemp > this._runningParameters.subCoolAndCircleShutdownThr)
+            {
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            }
+            // 如果主槽温度设定点低于 xx （可设定）时，4、5（辅槽制冷、辅槽循环）打开
+            else
+            {
+                // 如果辅槽制冷本身就是打开的，则不操作
+                if (ryDeviceM.ryStatus[(int)RelayDevice.Cmd_r.OUT_3] == true)
+                {
+
+                }
+                // 如果辅槽制冷是关闭的，且距离辅槽制冷关闭不足十分钟，则等待
+                else
+                {
+                    if ((DateTime.Now - ryDeviceM.subCoolCloseTime).TotalMinutes < ryDeviceM.waitingTime)
+                    {
+                        // 暂时先保持关闭，等待满 10 分钟后再打开
+                        ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+                        ryDeviceM.subCoolWaiting = true;
+                    }
+                    else
+                    {
+                        ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+                    }
+                }
+            }
 
 
             // 将继电器状态写入下位机
@@ -443,9 +648,9 @@ namespace Device
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
                 // 电桥自检正常。。。
-                //if (tpBridge.tpBridgeReadInterval < 1) tpBridge.tpBridgeReadInterval = 1;
-                //bool steady = tpBridge.chekFluc(currentState.stateCounts / tpBridge.tpBridgeReadInterval, flucValue);
-                if (true)
+                if (tpBridge.tpBridgeReadInterval < 1) tpBridge.tpBridgeReadInterval = 1;
+                bool steady = tpBridge.chekFluc((int)currentTemptPointState.stateCounts / tpBridge.tpBridgeReadInterval, _runningParameters.flucValue);
+                if (steady || !_runningParameters.bridgeEnable)
                 {
                     // 温度稳定度达到了要求，进入下一个状态 - 测量
                     _machine.Fire(Trigger.StartMeasure);
@@ -481,8 +686,25 @@ namespace Device
         {
             nlogger.Debug("MeasureTick: " + tic.ToString() + " ms");
 
-            // measure
+            Utils.Logger.TempData("开始测量海水电导率");
+            Utils.Logger.BridgeData("开始测量海水电导率");
 
+            // measure
+            if (_runningParameters.bridgeEnable)
+            {
+                Utils.Logger.Sys("传感器数据...");
+
+                try
+                {
+                    Utils.Logger.Sys("电桥温度： " + tpBridge.temperatures.Last().ToString("0.0000"));
+                    Utils.Logger.ConductivityData(tpBridge.temperatures.Last(), 10.0f);
+                }
+                catch (Exception ex)
+                {
+                    Utils.Logger.Sys("记录电导率时发生错误");
+                }
+            }
+            
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;

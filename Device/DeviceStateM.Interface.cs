@@ -104,6 +104,18 @@ namespace Device
                 {
                     JObject child = (JObject)obj["SensorDev"];
 
+                    // 测温电桥
+                    if (child.ContainsKey("Bridge"))
+                    {
+                        JObject child2 = (JObject)child["Bridge"];
+
+                        confOK &= tpBridge.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        tpBridge.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                        tpBridge.tpBridgeReadInterval = child2.ContainsKey("ReadInterval") ? (int)child2["ReadInterval"] : 2;
+                        tpBridge.tpBridgeChannel = child2.ContainsKey("Channel") ? (int)child2["Channel"] : 0;
+                        if (!confOK) nlogger.Error("配置测温点电桥失败! 端口号: " + tpBridge.tpBridgePortName);
+                        else nlogger.Debug("配置测温电桥成功! 端口号: " + tpBridge.tpBridgePortName);
+                    }
                 }
 
                 // 设置接口

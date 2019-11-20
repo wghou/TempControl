@@ -244,6 +244,11 @@ namespace Device
         public TempDevice tpDeviceS = new TempDevice() { tpDeviceName = "辅槽控温设备" };
 
         /// <summary>
+        /// 测温电桥
+        /// </summary>
+        public TempBridge tpBridge = new TempBridge() { tpBridgeName = "电桥设备" };
+
+        /// <summary>
         /// 系统开始运行的时间
         /// </summary>
         public DateTime startTime = new DateTime();

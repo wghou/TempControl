@@ -96,6 +96,7 @@
     <Compile Include="DeviceStateM.StateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelayDevice.cs" />
+    <Compile Include="TempBridge.cs" />
     <Compile Include="TempDevice.cs" />
     <Compile Include="TempProtocol.cs" />
   </ItemGroup>
