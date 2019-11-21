@@ -39,6 +39,10 @@ namespace Device
         /// 进入该状态计时
         /// </summary>
         public UInt32 stateCounts = 0;
+        /// <summary>
+        /// 在当前状态需要持续的时间
+        /// </summary>
+        public UInt32 stateHoldCounts = 1;
     }
 
 
@@ -238,6 +242,8 @@ namespace Device
         /// </summary>
         public TempDevice tpDeviceS = new TempDevice() { tpDeviceName = "辅槽控温设备" };
 
+        
+
         /// <summary>
         /// 系统开始运行的时间
         /// </summary>
@@ -284,48 +290,10 @@ namespace Device
                 SetErrorStatus(ErrorCode.TemptError);
 
                 nlogger.Error("读取主槽温度时发生错误，errorCode: " + err.ToString());
-                goto next;
             }
             // 记录主槽温度
             Utils.Logger.TempData(tpDeviceM.temperatures.Last());
 
-
-            // 读取主槽功率系数
-            err = tpDeviceM.GetPowerShow(out val);
-            if (err != TempProtocol.Err_t.NoError)
-            {
-                // 如果发生错误，则记录错误
-                SetErrorStatus(ErrorCode.TemptError);
-
-                nlogger.Error("读取主槽功率时发生错误，errorCode: " + err.ToString());
-                goto next;
-            }
-
-            /// Label:
-            next:
-            if (tpDeviceS.Enable == false) return;
-
-            err = tpDeviceS.GetTemperatureShow(out val, 3);
-            if (err != TempProtocol.Err_t.NoError)
-            {
-                // 如果发生错误，则记录错误
-                SetErrorStatus(ErrorCode.TemptError);
-
-                nlogger.Error("读取辅槽温度时发生错误，errorCode: " + err.ToString());
-                return;
-            }
-
-
-            // 读取辅槽功率系数
-            err = tpDeviceS.GetPowerShow(out val);
-            if (err != TempProtocol.Err_t.NoError)
-            {
-                // 如果发生错误，则记录错误
-                SetErrorStatus(ErrorCode.TemptError);
-
-                nlogger.Error("读取辅槽功率时发生错误，errorCode: " + err.ToString());
-                return;
-            }
             return;
         }
     }

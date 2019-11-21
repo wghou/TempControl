@@ -37,30 +37,11 @@ namespace TempControl
 
         private void checkBox_paramM_Click(object sender, EventArgs e)
         {
-            bool formExist = false;
-            foreach (Form fm in Application.OpenForms)
-            {
-                if (fm.Name == "FormSettingM")
-                {
-                    // Avoid form being minimized
-                    fm.WindowState = FormWindowState.Normal;
+            // 下一点
+            _device.ask4nextPoint();
 
-                    fm.BringToFront();
-                    formExist = true;
-                }
-            }
-
-            if (!formExist)
-            {
-                FormSetting fm = new FormSetting(_device.tpDeviceM, _device);
-                fm.Name = "FormSettingM";
-                fm.Text = "主槽控温参数设置";
-                //fm.Location = new System.Drawing.Point(600,300);
-                fm.Show();
-            }
-
-            nlogger.Info("打开主槽控温设备参数设置界面!");
-            Utils.Logger.Op("打开主槽控温设备参数设置界面!");
+            nlogger.Info("下一个点!");
+            Utils.Logger.Op("下一个点!");
         }
 
         private void checkBox_logM_Click(object sender, EventArgs e)

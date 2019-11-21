@@ -67,13 +67,6 @@ namespace Device
                 return !Enable;
             }
 
-            // 更新参数
-            if (UpdateParamFromDevice() != TempProtocol.Err_t.NoError){
-                nlogger.Error("从主槽控温设备读取参数失败！");
-                currentComStatus = false;
-                return !Enable;
-            }
-
             currentComStatus = true;
             return true;
         }
@@ -101,59 +94,14 @@ namespace Device
 
 
         /// <summary>
-        /// 温控设备自检
-        /// </summary>
-        /// <returns></returns>
-        public TempProtocol.Err_t SelfCheck()
-        {
-            float val = 0.0f;
-            TempProtocol.Err_t err = TempProtocol.Err_t.NoError;
-            lock (tpLocker)
-            {
-                // 读取温度显示值
-                err = tpDevice.ReadData(TempProtocol.Cmd_t.TempShow, out val);
-                if (err != TempProtocol.Err_t.NoError)
-                    return err;
-                AddTemperature(val);
-                Thread.Sleep(100);
-
-                // 读取功率显示值
-                err = tpDevice.ReadData(TempProtocol.Cmd_t.PowerShow, out val);
-                if (err != TempProtocol.Err_t.NoError)
-                    return err;
-                tpPowerShow = val;
-                Thread.Sleep(100);
-
-                // 读取温控设备其他参数
-                for (int i = 0;i<7;i++)
-                {
-                    err = tpDevice.ReadData((TempProtocol.Cmd_t)i, out val);
-                    if (err != TempProtocol.Err_t.NoError)
-                        break;
-
-                    tpParam[i] = val;
-                    // wghou
-                    // 时间间隔可以再调整
-                    Thread.Sleep(100);
-                }
-            }
-
-            // 当前通讯状态
-            if (err == TempProtocol.Err_t.NoError) currentComStatus = true;
-            else currentComStatus = false;
-
-            // 从温控设备读取全部参数值，返回错误标志
-            return err;
-        }
-
-
-        /// <summary>
         /// 将参数更新入下位机，返回错误状态，触发温度参数更新事件；
         /// 
         /// </summary>
         /// <returns></returns>
         public TempProtocol.Err_t UpdateParamToDevice()
         {
+            return TempProtocol.Err_t.NoError;
+
             TempProtocol.Err_t err = TempProtocol.Err_t.NoError;
 
             // 更新硬件设备参数
@@ -194,6 +142,9 @@ namespace Device
         /// </summary>
         public TempProtocol.Err_t UpdateParamFromDevice()
         {
+            return TempProtocol.Err_t.NoError;
+
+
             TempProtocol.Err_t err = TempProtocol.Err_t.NoError;
 
             lock(tpLocker)
@@ -311,6 +262,9 @@ namespace Device
         /// <returns>返回错误标志</returns>
         public TempProtocol.Err_t GetPowerShow( out float val)
         {
+            val = 0.0f; return TempProtocol.Err_t.NoError;
+
+
             TempProtocol.Err_t err = TempProtocol.Err_t.NoError;
             lock (tpLocker)
             {

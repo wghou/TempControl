@@ -77,7 +77,7 @@
             this.label_tempM.Name = "label_tempM";
             this.label_tempM.Size = new System.Drawing.Size(321, 60);
             this.label_tempM.TabIndex = 0;
-            this.label_tempM.Text = "0.0000℃";
+            this.label_tempM.Text = "0.00%";
             this.label_tempM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_tempSetM
@@ -88,7 +88,7 @@
             this.label_tempSetM.Name = "label_tempSetM";
             this.label_tempSetM.Size = new System.Drawing.Size(150, 35);
             this.label_tempSetM.TabIndex = 1;
-            this.label_tempSetM.Text = "0.0000℃";
+            this.label_tempSetM.Text = "0.000%";
             this.label_tempSetM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_powerM
@@ -99,7 +99,7 @@
             this.label_powerM.Name = "label_powerM";
             this.label_powerM.Size = new System.Drawing.Size(111, 35);
             this.label_powerM.TabIndex = 2;
-            this.label_powerM.Text = "00%";
+            this.label_powerM.Text = "加氧";
             this.label_powerM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label3
@@ -147,11 +147,11 @@
             // 
             this.checkBox_paramM.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_paramM.AutoCheck = false;
-            this.checkBox_paramM.Location = new System.Drawing.Point(137, 464);
+            this.checkBox_paramM.Location = new System.Drawing.Point(141, 20);
             this.checkBox_paramM.Name = "checkBox_paramM";
-            this.checkBox_paramM.Size = new System.Drawing.Size(79, 37);
+            this.checkBox_paramM.Size = new System.Drawing.Size(81, 50);
             this.checkBox_paramM.TabIndex = 15;
-            this.checkBox_paramM.Text = "参数设置";
+            this.checkBox_paramM.Text = "下一点";
             this.checkBox_paramM.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_paramM.UseVisualStyleBackColor = true;
             this.checkBox_paramM.Click += new System.EventHandler(this.checkBox_paramM_Click);
@@ -211,7 +211,7 @@
             this.checkBox_ryM4.Name = "checkBox_ryM4";
             this.checkBox_ryM4.Size = new System.Drawing.Size(81, 50);
             this.checkBox_ryM4.TabIndex = 25;
-            this.checkBox_ryM4.Text = "制冷";
+            this.checkBox_ryM4.Text = "氧气";
             this.checkBox_ryM4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM4.UseVisualStyleBackColor = true;
             this.checkBox_ryM4.Click += new System.EventHandler(this.checkBox_ryAll_Click);
@@ -223,7 +223,7 @@
             this.checkBox_ryM5.Name = "checkBox_ryM5";
             this.checkBox_ryM5.Size = new System.Drawing.Size(81, 50);
             this.checkBox_ryM5.TabIndex = 22;
-            this.checkBox_ryM5.Text = "快冷";
+            this.checkBox_ryM5.Text = "氮气";
             this.checkBox_ryM5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM5.UseVisualStyleBackColor = true;
             this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryAll_Click);
@@ -244,9 +244,9 @@
             // 
             this.checkBox_data.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_data.AutoCheck = false;
-            this.checkBox_data.Location = new System.Drawing.Point(141, 20);
+            this.checkBox_data.Location = new System.Drawing.Point(137, 464);
             this.checkBox_data.Name = "checkBox_data";
-            this.checkBox_data.Size = new System.Drawing.Size(81, 50);
+            this.checkBox_data.Size = new System.Drawing.Size(79, 37);
             this.checkBox_data.TabIndex = 29;
             this.checkBox_data.Text = "数据查询";
             this.checkBox_data.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -260,12 +260,12 @@
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryM5);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryM4);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryM0);
-            this.groupBox_ry1.Controls.Add(this.checkBox_data);
             this.groupBox_ry1.Controls.Add(this.checkBox_exit);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM0);
             this.groupBox_ry1.Controls.Add(this.checkBox_auto);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM5);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM4);
+            this.groupBox_ry1.Controls.Add(this.checkBox_paramM);
             this.groupBox_ry1.Location = new System.Drawing.Point(499, 204);
             this.groupBox_ry1.Name = "groupBox_ry1";
             this.groupBox_ry1.Size = new System.Drawing.Size(228, 243);
@@ -316,7 +316,7 @@
             this.groupBox_tempM.Size = new System.Drawing.Size(333, 165);
             this.groupBox_tempM.TabIndex = 33;
             this.groupBox_tempM.TabStop = false;
-            this.groupBox_tempM.Text = "控温槽 1";
+            this.groupBox_tempM.Text = "水槽 1";
             // 
             // label5
             // 
@@ -324,9 +324,9 @@
             this.label5.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.Location = new System.Drawing.Point(8, 44);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(47, 19);
+            this.label5.Size = new System.Drawing.Size(104, 19);
             this.label5.TabIndex = 35;
-            this.label5.Text = "槽温";
+            this.label5.Text = "当前含氧量";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label2
@@ -337,7 +337,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(85, 19);
             this.label2.TabIndex = 34;
-            this.label2.Text = "加热功率";
+            this.label2.Text = "当前状态";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label4
@@ -346,16 +346,16 @@
             this.label4.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.Location = new System.Drawing.Point(6, 89);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(104, 19);
+            this.label4.Size = new System.Drawing.Size(123, 19);
             this.label4.TabIndex = 35;
-            this.label4.Text = "温度设定值";
+            this.label4.Text = "含氧量设定值";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // TempPic
             // 
             this.TempPic.Location = new System.Drawing.Point(12, 204);
             this.TempPic.Name = "TempPic";
-            this.TempPic.Size = new System.Drawing.Size(455, 240);
+            this.TempPic.Size = new System.Drawing.Size(455, 243);
             this.TempPic.TabIndex = 34;
             this.TempPic.TabStop = false;
             // 
@@ -402,11 +402,11 @@
             this.Controls.Add(this.label_time);
             this.Controls.Add(this.checkBox_clear);
             this.Controls.Add(this.TempPic);
+            this.Controls.Add(this.checkBox_data);
             this.Controls.Add(this.groupBox_tempM);
             this.Controls.Add(this.groupBox_ry1);
             this.Controls.Add(this.checkBox_debug);
             this.Controls.Add(this.label_fluc);
-            this.Controls.Add(this.checkBox_paramM);
             this.Controls.Add(this.label_controlState);
             this.Controls.Add(this.checkBox_logM);
             this.Controls.Add(this.label3);

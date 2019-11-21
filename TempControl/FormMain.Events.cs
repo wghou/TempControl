@@ -34,17 +34,17 @@ namespace TempControl
                 // 波动度
                 float fluc = 0.0f;
                 _device.tpDeviceM.GetFlucDurCountOrLess(_device._runningParameters.steadyTimeSec / _device._runningParameters.readTempIntervalSec, out fluc);
-                this.label_fluc.Text = "波动度: " + fluc.ToString("0.0000") + "℃/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
+                this.label_fluc.Text = "波动度: " + fluc.ToString("0.00") + "%/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
 
                 // 主槽功率系数
-                label_powerM.Text = this._device.tpDeviceM.tpPowerShow.ToString("0") + "%";
+                //label_powerM.Text = this._device.tpDeviceM.tpPowerShow.ToString("0") + "%";
 
                 // 主槽温度显示值
                 if (this._device.tpDeviceM.temperatures.Count != 0)
-                    label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.0000") + "℃";
+                    label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.00") + "%";
 
                 // 主槽温度设定值
-                label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
+                //label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
 
                 TempPic.Image = mDrawChart.Draw();
             }));
@@ -118,19 +118,15 @@ namespace TempControl
                 {
                     case Device.State.Start:
                         // 系统流程
-                        this.label_controlState.Text = "开始自动控温";
+                        this.label_controlState.Text = "开始自动控制";
                         break;
-                    case Device.State.TempUp:
+                    case Device.State.AddOxygen:
                         // 系统流程
-                        this.label_controlState.Text = "升温";
+                        this.label_controlState.Text = "加氧气";
                         break;
-                    case Device.State.TempDown:
+                    case Device.State.AddNitrogen:
                         // 系统流程
-                        this.label_controlState.Text = "降温";
-                        break;
-                    case Device.State.Control:
-                        // 系统流程
-                        this.label_controlState.Text = "控温";
+                        this.label_controlState.Text = "加氮气";
                         break;
                     case Device.State.Stable:
                         // 系统流程

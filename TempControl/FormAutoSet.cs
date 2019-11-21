@@ -249,9 +249,8 @@ namespace TempControl
 
                 // 判断是否已开始自动控温流程
                 if (this.devicesAll._state == Device.State.Start ||
-                        devicesAll._state == Device.State.TempDown ||
-                        devicesAll._state == Device.State.TempUp ||
-                        devicesAll._state == Device.State.Control ||
+                        devicesAll._state == Device.State.AddNitrogen ||
+                        devicesAll._state == Device.State.AddOxygen ||
                         devicesAll._state == Device.State.Stable ||
                         devicesAll._state == Device.State.Measure)
                 {

@@ -62,7 +62,7 @@
       "DeviceId": "mydeviceId"
     },
     "MqttCloud": {
-      "Enable": true,
+      "Enable": false,
       "ServerUrl": "183.230.40.39",
       "Port": 6002,
       "ApiKey": "123123123",

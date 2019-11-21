@@ -15,12 +15,10 @@ namespace Device
     {
         /// <summary> 开始 </summary>
         Start,
-        /// <summary> 升温 </summary>
-        TempUp,
-        /// <summary> 降温 </summary>
-        TempDown,
-        /// <summary> 控温 </summary>
-        Control,
+        /// <summary> 加氧 </summary>
+        AddOxygen,
+        /// <summary> 加氮 </summary>
+        AddNitrogen,
         /// <summary> 稳定 </summary>
         Stable,
         /// <summary> 测量 </summary>
@@ -40,12 +38,10 @@ namespace Device
         StartAutoStep,
         /// <summary> 时刻 </summary>
         TimerTick,
-        /// <summary> 下一温度设定点 </summary>
-        NextTemptPoint,
-        /// <summary> 开始控温 </summary>
-        StartControl,
+        /// <summary> 进入加氧 / 加氮 / 稳定阶段 </summary>
+        NextOxygenPoint,
         /// <summary> 到达稳定 </summary>
-        AchieveSteady,
+        WaitSteady,
         /// <summary> 开始测量 </summary>
         StartMeasure,
         /// <summary> 暂停自动控温 </summary>
@@ -89,7 +85,7 @@ namespace Device
         {
             // new object
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);
-            _nextPointTrigger = _machine.SetTriggerParameters<float>(Trigger.NextTemptPoint);
+            _nextPointTrigger = _machine.SetTriggerParameters<float>(Trigger.NextOxygenPoint);
             _TickTrigger = _machine.SetTriggerParameters<int>(Trigger.TimerTick);
 
             // on transition action
@@ -116,40 +112,32 @@ namespace Device
                 .OnEntry(t => StartEntry())
                 .OnExit(t => StartExit())
                 .InternalTransition(_TickTrigger, (tic, t) => StartTick(tic))
-                .Permit(Trigger.StartControl,State.Control)
-                .PermitIf<float>(_nextPointTrigger, State.TempUp, tp => !nextPointDown(tp))
-                .PermitIf<float>(_nextPointTrigger, State.TempDown, tp => nextPointDown(tp))
+                .Permit(Trigger.WaitSteady,State.Stable)
+                .PermitIf<float>(_nextPointTrigger, State.AddOxygen, tp => !nextPointDown(tp))
+                .PermitIf<float>(_nextPointTrigger, State.AddNitrogen, tp => nextPointDown(tp))
                 .Permit(Trigger.FinishedAll,State.Idle)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
-            // state TempUp
-            _machine.Configure(State.TempUp)
-                .OnEntry(t => TempUpEntry())
-                .OnExit(t => TempUpExit())
-                .InternalTransition(_TickTrigger, (tic, t) => TempUpTick(tic))
-                .Permit(Trigger.StartControl, State.Control)
+            // state AddOxygen
+            _machine.Configure(State.AddOxygen)
+                .OnEntry(t => AddOxygenEntry())
+                .OnExit(t => AddOxygenExit())
+                .InternalTransition(_TickTrigger, (tic, t) => AddOxygenTick(tic))
+                .PermitIf<float>(_nextPointTrigger, State.AddNitrogen, tp => nextPointDown(tp))
+                .Permit(Trigger.WaitSteady, State.Stable)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
-            // state TempDown
-            _machine.Configure(State.TempDown)
-                .OnEntry(t => TempDownEntry())
-                .OnExit(t => TempDownExit())
-                .InternalTransition(_TickTrigger, (tic, t) => TempDownTick(tic))
-                .Permit(Trigger.StartControl, State.Control)
-                .Permit(Trigger.SuspendAutoControl, State.Idle)
-                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
-
-
-            // state Control
-            _machine.Configure(State.Control)
-                .OnEntry(t => ControlEntry())
-                .OnExit(t => ControlExit())
-                .InternalTransition(_TickTrigger, (tic, t) => ControlTick(tic))
-                .Permit(Trigger.AchieveSteady, State.Stable)
+            // state AddNitrogen
+            _machine.Configure(State.AddNitrogen)
+                .OnEntry(t => AddNitrogenEntry())
+                .OnExit(t => AddNitrogenExit())
+                .InternalTransition(_TickTrigger, (tic, t) => AddNitrogenTick(tic))
+                .PermitIf<float>(_nextPointTrigger, State.AddOxygen, tp => !nextPointDown(tp))
+                .Permit(Trigger.WaitSteady, State.Stable)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
@@ -159,6 +147,8 @@ namespace Device
                 .OnEntry(t => StableEntry())
                 .OnExit(t => StableExit())
                 .InternalTransition(_TickTrigger, (tic, t) => StableTick(tic))
+                .PermitIf<float>(_nextPointTrigger, State.AddOxygen, tp => !nextPointDown(tp))
+                .PermitIf<float>(_nextPointTrigger, State.AddNitrogen, tp => nextPointDown(tp))
                 .Permit(Trigger.StartMeasure, State.Measure)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
@@ -169,8 +159,8 @@ namespace Device
                 .OnEntry(t => MeasureEntry())
                 .OnExit(t => MeasureExit())
                 .InternalTransition(_TickTrigger, (tic, t) => MeasureTick(tic))
-                .PermitIf<float>(_nextPointTrigger, State.TempUp, tp => !nextPointDown(tp))
-                .PermitIf<float>(_nextPointTrigger, State.TempDown, tp => nextPointDown(tp))
+                .PermitIf<float>(_nextPointTrigger, State.AddOxygen, tp => !nextPointDown(tp))
+                .PermitIf<float>(_nextPointTrigger, State.AddNitrogen, tp => nextPointDown(tp))
                 .Permit(Trigger.FinishedAll, State.Idle)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);

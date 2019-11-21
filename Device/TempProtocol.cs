@@ -157,6 +157,8 @@ namespace Device
         /// <returns></returns>
         internal Err_t SendData(Cmd_t cmd, float val)
         {
+            return Err_t.NoError;
+
             // 不支持这四条指令
             Debug.Assert(cmd != Cmd_t.TempShow);
             Debug.Assert(cmd != Cmd_t.PowerShow);
