@@ -128,6 +128,16 @@ namespace TempControl
                     ps1.editSave = "已测量";
                 else
                     ps1.editSave = "未测量";
+
+                if(paramList[i].autoSample == true)
+                {
+                    ps1.autoSp = "是";
+                }
+                else
+                {
+                    ps1.autoSp = "否";
+                }
+
                 paramList[i].paramM.CopyTo(ps1.param, 0);
                 BList.Add(ps1);
                 ParamShow ps2 = new ParamShow();
@@ -153,6 +163,7 @@ namespace TempControl
             integration.DataPropertyName = "Integration";
             power.DataPropertyName = "Power";
             edit.DataPropertyName = "Edit";
+            sample.DataPropertyName = "Sample";
 
 
             dataGridView1.AutoGenerateColumns = false;
@@ -171,6 +182,7 @@ namespace TempControl
                         st.paramM.CopyTo(ts.paramM, 0);
                         st.paramS.CopyTo(ts.paramS, 0);
                         ts.finished = st.finished;
+                        ts.autoSample = st.autoSample;
                         paramList.Add(ts);
                     }
                 }
@@ -372,6 +384,7 @@ namespace TempControl
                         paramList[i].paramM.CopyTo(tp.paramM, 0);
                         paramList[i].paramS.CopyTo(tp.paramS, 0);
                         tp.finished = paramList[i].finished;
+                        tp.autoSample = paramList[i].autoSample;
                         devicesAll.temperaturePointList.Add(tp);
                     }
 
@@ -401,6 +414,8 @@ namespace TempControl
                     nlogger.Info(st.paramM[0].ToString("0.0000"));
                     Utils.Logger.Op("是否已测量：" + st.finished.ToString());
                     nlogger.Info("是否已测量：" + st.finished.ToString());
+                    Utils.Logger.Op("是否自动取样：" + st.autoSample.ToString());
+                    nlogger.Info("是否自动取样：" + st.autoSample.ToString());
                 }
 
                 // 自动控温流程已开始
@@ -431,6 +446,7 @@ namespace TempControl
                             st.paramM.CopyTo(ts.paramM, 0);
                             st.paramS.CopyTo(ts.paramS, 0);
                             ts.finished = st.finished;
+                            ts.autoSample = st.autoSample;
                             paramList.Add(ts);
                         }
                     }
@@ -470,6 +486,7 @@ namespace TempControl
             if (flowStart)
                 return;
 
+            
 
             float valuef = 0.0f;
             // 主槽参数
@@ -544,6 +561,8 @@ namespace TempControl
             TempParam ts = new TempParam();
             paramMCache.CopyTo(ts.paramM, 0);
             paramSCache.CopyTo(ts.paramS, 0);
+            ts.autoSample = checkBox_sp.Checked;
+            checkBox_sp.Checked = false;
             // 添加到 
             paramList.Add(ts);
 
@@ -557,6 +576,18 @@ namespace TempControl
             Utils.Logger.Op("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
             nlogger.Info("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
 
+        }
+
+        private void checkBox_sp_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox_sp.Checked == true)
+            {
+                if (DialogResult.No == MessageBox.Show("您确定要自动取样吗？", "确认自动取样", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    checkBox_sp.Checked = false;
+                    return;
+                }
+            }
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -651,6 +682,9 @@ namespace TempControl
                             paramSTextBox[i].Text = paramSCache[i].ToString("0");
                         }
                     }
+
+                    checkBox_sp.Checked = false;
+
                     // 从 paramList 中删除该项
                     paramList.RemoveAt(e.RowIndex / 2);
                     // 重新显示
@@ -1355,6 +1389,7 @@ namespace TempControl
             public string tpName;
             public string _finish;
             public string editSave;
+            public string autoSp;
             /// <summary>
             /// 温控设备的参数值
             /// </summary>
@@ -1407,6 +1442,8 @@ namespace TempControl
             public string TempThr { get { return param[8].ToString("0.000"); } }
 
             public string Edit { get { return editSave; } }
+
+            public string Sample { get { return autoSp; } } 
         }
 
         /// <summary>
@@ -1415,6 +1452,7 @@ namespace TempControl
         internal class TempParam : IComparable
         {
             public bool finished = false;
+            public bool autoSample = false;
             /// <summary>
             /// 主槽温控设备的参数值
             /// </summary>

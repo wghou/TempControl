@@ -23,6 +23,13 @@ namespace Device
         /// </summary>
         public event StateChangedEventHandler StateChangedEvent;
 
+        // 
+        public delegate void SampleStateChangedEventHandler(AutoSample.StateSample st);
+        /// <summary>
+        /// 状态改变事件
+        /// </summary>
+        public event SampleStateChangedEventHandler SampleStateChangedEvent;
+
 
         //
         public delegate void ErrorStatusChangedEventHandler(Dictionary<ErrorCode, uint> errDict);

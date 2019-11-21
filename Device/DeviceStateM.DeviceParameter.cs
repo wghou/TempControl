@@ -24,6 +24,10 @@ namespace Device
         /// </summary>
         public bool finished = false;
         /// <summary>
+        /// 是否自动取样
+        /// </summary>
+        public bool autoSample = false;
+        /// <summary>
         /// 当前工作状态下的应达到的温度值
         /// </summary>
         public float stateTemp { get { return paramM[0]; } }
