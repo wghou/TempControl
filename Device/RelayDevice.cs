@@ -227,31 +227,41 @@ namespace Device
             if (Enable == false) return true;
 
             bool rlt = true;
-            try
-            {
-                // open the serial port
-                if (!sPort.IsOpen) sPort.Open();
 
-                if(numCoils == 8)
+            lock (ryLocker)
+            {
+                // 关闭所有继电器
+                for(int i = 0; i < 16; i++)
                 {
-                    bool[] st = { false, false, false, false, false, false, false, false};
-                    master.WriteMultipleCoils(slaveId, startAddress, st);
-                }
-                else
-                {
-                    bool[] st = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-                    master.WriteMultipleCoils(slaveId, startAddress, st);
+                    ryStatusToSet[i] = false;
                 }
 
-                sPort.Close();
+                try
+                {
+                    // open the serial port
+                    if (!sPort.IsOpen) sPort.Open();
+
+                    if (numCoils == 8)
+                    {
+                        bool[] st = { false, false, false, false, false, false, false, false };
+                        master.WriteMultipleCoils(slaveId, startAddress, st);
+                    }
+                    else
+                    {
+                        bool[] st = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+                        master.WriteMultipleCoils(slaveId, startAddress, st);
+                    }
+
+                    sPort.Close();
+                }
+                catch (Exception ex)
+                {
+                    rlt = false;
+                    nlogger.Error("关闭继电器设备失败 - 16。");
+                }
             }
-            catch (Exception ex)
-            {
-                rlt = false;
-                nlogger.Error("关闭继电器设备失败 - 16。");
-            }
+
             return rlt;
-
         }
 
     }
