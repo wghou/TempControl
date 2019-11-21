@@ -510,7 +510,7 @@ namespace Device
             // 等待 xx 分钟后，第二次点击
             if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
             {
-                if(currentTemptPointState.stateCounts * _runningParameters.readTempIntervalSec > sampleParam.tim_prepare)
+                if(currentTemptPointState.stateCounts * _runningParameters.readTempIntervalSec > _runningParameters.sampleParam.tim_prepare)
                 {
                     SampleButtonClick();
                 }

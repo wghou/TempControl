@@ -135,21 +135,9 @@ namespace Device
         public bool shutDownComputer = false;
 
         /// <summary>
-        /// 控温板 1 端口
+        /// 关于自动取样的一些参数
         /// </summary>
-        public string portTp1 = "COM0";
-        /// <summary>
-        /// 控温板 2 端口
-        /// </summary>
-        public string portTp2 = "COM1";
-        /// <summary>
-        /// 继电器 1 端口
-        /// </summary>
-        public string portRy1 = "COM2";
-        /// <summary>
-        /// 继电器 2 端口
-        /// </summary>
-        public string portRy2 = "COM3";
+        public AutoSample.SampleParam sampleParam = new AutoSample.SampleParam();
 
 
         public bool ReadValueConfig(string configFilePath)
@@ -160,6 +148,8 @@ namespace Device
                 if (!File.Exists(configFilePath))
                 {
                     WriteValueConfig(configFilePath);
+
+                    sampleParam.WriteValueConfig(configFilePath);
                 }
 
                 ////////////////////////////////////////
@@ -188,11 +178,8 @@ namespace Device
                 ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
                 shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
 
-                // 端口
-                portTp1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp1", portTp1);
-                portTp2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp2", portTp2);
-                portRy1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy1", portRy1);
-                portRy2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy2", portRy2);
+                // 读取自动采样参数
+                sampleParam.ReadValueConfig(configFilePath);
             }
             catch (Exception ex)
             {
@@ -233,11 +220,8 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", ryElecEnable ? "Enable" : "Disable");
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "shutDownComputer", shutDownComputer ? "Enable" : "Disable");
 
-                // 端口
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp1", portTp1);
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp2", portTp2);
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy1", portRy1);
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy2", portRy2);
+                // 读取自动采样参数
+                sampleParam.WriteValueConfig(configFilePath);
             }
             catch (Exception ex)
             {

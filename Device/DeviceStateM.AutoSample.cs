@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Stateless;
 using System.Timers;
+using System.IO;
+using NLog;
 
 namespace Device
 {
@@ -32,6 +34,9 @@ namespace Device
 			OnSample
         }
 
+        /// <summary>
+        /// 自动采样触发事件
+        /// </summary>
 		public enum TriggerSample
         {
             /// <summary>
@@ -60,8 +65,14 @@ namespace Device
             ForceStop
         }
 
+
+        /// <summary>
+        /// 自动采样参数
+        /// </summary>
         public class SampleParam
         {
+            private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
+
             /// <summary>
             /// 定时器时间间隔
             /// </summary>
@@ -81,6 +92,63 @@ namespace Device
             /// 取样时长 - 1 分钟
             /// </summary>
             public int tim_onsample = 1 * 60;
+
+
+
+            /// <summary>
+            /// 从配置文件读取参数值
+            /// </summary>
+            /// <param name="configFilePath"></param>
+            /// <returns></returns>
+            public bool ReadValueConfig(string configFilePath)
+            {
+                try
+                {
+                    // 如果配置文件不存在，则新建
+                    if (!File.Exists(configFilePath))
+                    {
+                        WriteValueConfig(configFilePath);
+                    }
+
+                    ////////////////////////////////////////
+                    // 参数设置
+                    timer_interval = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "timer_interval", timer_interval.ToString()));
+                    tim_1 = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_1", tim_1.ToString()));
+                    tim_prepare = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_prepare", tim_prepare.ToString()));
+                    tim_onsample = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_onsample", tim_onsample.ToString()));
+                }
+                catch (Exception ex)
+                {
+                    nlogger.Error("从配置文件读取自动采样参数过程中发生异常：" + ex.Message.ToString());
+                    return false;
+                }
+
+                return true;
+            }
+
+            /// <summary>
+            /// 写入自动采样参数
+            /// </summary>
+            /// <param name="configFilePath"></param>
+            /// <returns></returns>
+            public bool WriteValueConfig(string configFilePath)
+            {
+                try
+                {
+                    // 相关参数
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "timer_interval", timer_interval.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_1", tim_1.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_prepare", tim_prepare.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_onsample", tim_onsample.ToString());
+                }
+                catch (Exception ex)
+                {
+                    nlogger.Error("从配置文件写入自动采样参数过程中发生异常：" + ex.Message.ToString());
+                    return false;
+                }
+
+                return true;
+            }
         }
     }
 
@@ -103,11 +171,6 @@ namespace Device
         /// 自动取样 - 状态计数器
         /// </summary>
         uint sampleStateCounts = 0;
-
-        /// <summary>
-        /// 关于自动取样的一些参数
-        /// </summary>
-        AutoSample.SampleParam sampleParam = new AutoSample.SampleParam();
 
 
 		private void ConfigStatelessSample()
@@ -156,7 +219,7 @@ namespace Device
 
             // 设置定时器
             _tickTimerSample = new Timer();
-            _tickTimerSample.Interval = sampleParam.timer_interval * 1000; // 默认 5s
+            _tickTimerSample.Interval = _runningParameters.sampleParam.timer_interval * 1000; // 默认 5s
             _tickTimerSample.AutoReset = true;
             _tickTimerSample.Elapsed += _tickTimerSample_Elapsed;
         }
@@ -166,7 +229,7 @@ namespace Device
             // 计数
             sampleStateCounts++;
 
-            _sampleMachine.Fire(_sampleTickTrigger, sampleParam.timer_interval * 1000);
+            _sampleMachine.Fire(_sampleTickTrigger, _runningParameters.sampleParam.timer_interval * 1000);
         }
 
 
@@ -289,7 +352,7 @@ namespace Device
             nlogger.Debug("Sample Prepare_1 Tick: " + tic.ToString() + " ms");
 
             // 5 分钟后，进入 SampleState.Prepare_2
-            if (sampleStateCounts > sampleParam.tim_1 / sampleParam.timer_interval) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
+            if (sampleStateCounts > _runningParameters.sampleParam.tim_1 / _runningParameters.sampleParam.timer_interval) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
         }
 
         /// <summary>
@@ -358,7 +421,7 @@ namespace Device
             nlogger.Debug("Sample Start Tick: " + tic.ToString() + " ms");
 
             // 1 分钟后，结束采样
-            if (sampleStateCounts > sampleParam.tim_onsample / sampleParam.timer_interval) {
+            if (sampleStateCounts > _runningParameters.sampleParam.tim_onsample / _runningParameters.sampleParam.timer_interval) {
                 _sampleMachine.Fire(AutoSample.TriggerSample.End);
             }
         }
