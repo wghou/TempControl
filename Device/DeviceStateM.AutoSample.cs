@@ -59,6 +59,29 @@ namespace Device
             /// </summary>
             ForceStop
         }
+
+        public class SampleParam
+        {
+            /// <summary>
+            /// 定时器时间间隔
+            /// </summary>
+            public int timer_interval = 5;
+
+            /// <summary>
+            /// 继电器 1 通电时长 - 5 分钟
+            /// </summary>
+            public int tim_1 = 5 * 60;
+
+            /// <summary>
+            /// 取样准备时长
+            /// </summary>
+            public int tim_prepare = 1 * 60;
+
+            /// <summary>
+            /// 取样时长 - 1 分钟
+            /// </summary>
+            public int tim_onsample = 1 * 60;
+        }
     }
 
     public partial class DeviceStateM
@@ -76,7 +99,15 @@ namespace Device
         /// </summary>
         private Timer _tickTimerSample;
 
+        /// <summary>
+        /// 自动取样 - 状态计数器
+        /// </summary>
         uint sampleStateCounts = 0;
+
+        /// <summary>
+        /// 关于自动取样的一些参数
+        /// </summary>
+        AutoSample.SampleParam sampleParam = new AutoSample.SampleParam();
 
 
 		private void ConfigStatelessSample()
@@ -125,7 +156,7 @@ namespace Device
 
             // 设置定时器
             _tickTimerSample = new Timer();
-            _tickTimerSample.Interval = 5000; // 默认 5s
+            _tickTimerSample.Interval = sampleParam.timer_interval * 1000; // 默认 5s
             _tickTimerSample.AutoReset = true;
             _tickTimerSample.Elapsed += _tickTimerSample_Elapsed;
         }
@@ -135,9 +166,8 @@ namespace Device
             // 计数
             sampleStateCounts++;
 
-            _sampleMachine.Fire(_sampleTickTrigger, 5000);
+            _sampleMachine.Fire(_sampleTickTrigger, sampleParam.timer_interval * 1000);
         }
-
 
 
         /// <summary>
@@ -259,7 +289,7 @@ namespace Device
             nlogger.Debug("Sample Prepare_1 Tick: " + tic.ToString() + " ms");
 
             // 5 分钟后，进入 SampleState.Prepare_2
-            if (sampleStateCounts > 12) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
+            if (sampleStateCounts > sampleParam.tim_1 / sampleParam.timer_interval) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
         }
 
         /// <summary>
@@ -328,7 +358,9 @@ namespace Device
             nlogger.Debug("Sample Start Tick: " + tic.ToString() + " ms");
 
             // 1 分钟后，结束采样
-            if (sampleStateCounts > 6) _sampleMachine.Fire(AutoSample.TriggerSample.End);
+            if (sampleStateCounts > sampleParam.tim_onsample / sampleParam.timer_interval) {
+                _sampleMachine.Fire(AutoSample.TriggerSample.End);
+            }
         }
 
         /// <summary>

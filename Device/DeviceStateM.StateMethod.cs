@@ -487,6 +487,12 @@ namespace Device
         private void MeasureEntry()
         {
             nlogger.Debug("Measure Entry.");
+
+            // 如果需要自动采样
+            if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
+            {
+                SampleButtonClick();
+            }
         }
 
         /// <summary>
@@ -500,6 +506,17 @@ namespace Device
             // measure
             // 电导率测量
             // 海水取样
+
+            // 等待 xx 分钟后，第二次点击
+            if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
+            {
+                if(currentTemptPointState.stateCounts * _runningParameters.readTempIntervalSec > sampleParam.tim_prepare)
+                {
+                    SampleButtonClick();
+                }
+            }
+
+
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;
