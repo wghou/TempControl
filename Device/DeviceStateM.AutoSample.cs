@@ -14,17 +14,50 @@ namespace Device
         /// </summary>
 		public enum StateSample : int
         {
+            /// <summary>
+            /// 常态，所有按键都关闭
+            /// </summary>
 			Normal = 0,
-			FirstStep,
-			SecondStep
+            /// <summary>
+            /// 自动取样 - 准备中 - 第一阶段：开电磁阀 1，5分钟后关闭电磁阀 1
+            /// </summary>
+			Prepare_1,
+            /// <summary>
+            /// 自动取样准备中 - 第二阶段：开电磁阀 4-3-2
+            /// </summary>
+            Prepare_2,
+            /// <summary>
+            /// 自动取样 - 取样中：关 3-4，开 1-2，一分钟（可调）后关闭，并回到常态
+            /// </summary>
+			OnSample
         }
 
 		public enum TriggerSample
         {
-			Prepare = 0,
-			Start = 1,
+            /// <summary>
+            /// 第一次按键：进入 Prepare_1
+            /// </summary>
+			ClickFist = 0,
+            /// <summary>
+            /// 5分钟后，从 Prepare_1 进入 Prepare_2
+            /// </summary>
+            ClickFist_5m = 1,
+            /// <summary>
+            /// 第二次按键：进入 OnSample
+            /// </summary>
+            ClickSecond = 2,
+            /// <summary>
+            /// 一分钟（可调）取样之后，回到常态 Normal
+            /// </summary>
 			End = 3,
-			TimerTick
+            /// <summary>
+            /// 时钟事件
+            /// </summary>
+			TimerTick,
+            /// <summary>
+            /// 强制停止当前自动采样流程
+            /// </summary>
+            ForceStop
         }
     }
 
@@ -57,30 +90,38 @@ namespace Device
             // on unhandled trigger
             _sampleMachine.OnUnhandledTrigger(sampleOnUnhandledTrigger);
 
-            // State.Idle
-            // -> State.Start
-            // -> State.Stop
+            // StateSample.Normal
             _sampleMachine.Configure(AutoSample.StateSample.Normal)
-                .OnEntry(t => sampleIdleEntry())
-                .OnExit(t => sampleIdleExit())
-                .InternalTransition(_sampleTickTrigger, (tic, t) => sampleIdleTick(tic))
-                .Permit(AutoSample.TriggerSample.Prepare, AutoSample.StateSample.FirstStep);
+                .OnEntry(t => sampleNormalEntry())
+                .OnExit(t => sampleNormalExit())
+                .InternalTransition(_sampleTickTrigger, (tic, t) => sampleNormalTick(tic))
+                .Permit(AutoSample.TriggerSample.ClickFist, AutoSample.StateSample.Prepare_1);
 
 
-            // State.Start
-            _sampleMachine.Configure(AutoSample.StateSample.FirstStep)
-                .OnEntry(t => samplePrepareEntry())
-                .OnExit(t => samplePrepareExit())
-                .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepareTick(tic))
-                .Permit(AutoSample.TriggerSample.Start, AutoSample.StateSample.SecondStep);
+            // StateSample.Prepare_1
+            _sampleMachine.Configure(AutoSample.StateSample.Prepare_1)
+                .OnEntry(t => samplePrepare_1Entry())
+                .OnExit(t => samplePrepare_1Exit())
+                .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepare_1Tick(tic))
+                .Permit(AutoSample.TriggerSample.ClickFist_5m, AutoSample.StateSample.Prepare_2)
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Normal);
+
+            // StateSample.Prepare_2
+            _sampleMachine.Configure(AutoSample.StateSample.Prepare_2)
+                .OnEntry(t => samplePrepare_2Entry())
+                .OnExit(t => samplePrepare_2Exit())
+                .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepare_2Tick(tic))
+                .Permit(AutoSample.TriggerSample.ClickSecond, AutoSample.StateSample.OnSample)
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Normal);
 
 
-            // state TempUp
-            _sampleMachine.Configure(AutoSample.StateSample.SecondStep)
+            // StateSample.OnSample
+            _sampleMachine.Configure(AutoSample.StateSample.OnSample)
                 .OnEntry(t => sampleStartEntry())
                 .OnExit(t => sampleStartExit())
                 .InternalTransition(_sampleTickTrigger, (tic, t) => sampleStartTick(tic))
-                .Permit(AutoSample.TriggerSample.End, AutoSample.StateSample.Normal);
+                .Permit(AutoSample.TriggerSample.End, AutoSample.StateSample.Normal)
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Normal);
 
             // 设置定时器
             _tickTimerSample = new Timer();
@@ -95,6 +136,38 @@ namespace Device
             sampleStateCounts++;
 
             _sampleMachine.Fire(_sampleTickTrigger, 5000);
+        }
+
+
+
+        /// <summary>
+        /// 自动采样，按键
+        /// </summary>
+        public void SampleButtonClick()
+        {
+            switch (_sampleState)
+            {
+                case AutoSample.StateSample.Normal:
+                    // 当处于常态时，按一次按键，则进入下一状态
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
+                    break;
+                case AutoSample.StateSample.Prepare_2:
+                    // 当处于 准备二时，则进入采样
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 强制终止采样流程
+        /// </summary>
+        public void SampleForceStop()
+        {
+            if (_sampleMachine.IsInState(AutoSample.StateSample.Normal)) return;
+
+            _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
         }
 
 
@@ -129,74 +202,137 @@ namespace Device
         }
 
         /// <summary>
-        /// Idle Entry
+        /// Normal Entry
         /// </summary>
-        private void sampleIdleEntry()
+        private void sampleNormalEntry()
         {
             nlogger.Debug("Sample Idle Entry.");
+
+            // 1-2-3-4 全部关闭
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+
+            WriteRelayDeviceS(true);
         }
 
         /// <summary>
-        /// Idle Tick
+        /// Normal Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
-        private void sampleIdleTick(int tic)
+        private void sampleNormalTick(int tic)
         {
             nlogger.Debug("Sample Idle Tick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
-        /// Idle Exit
+        /// Normal Exit
         /// </summary>
-        private void sampleIdleExit()
+        private void sampleNormalExit()
         {
             nlogger.Debug("Sample Idle Exit.");
         }
 
         /// <summary>
-        /// Idle Entry
+        /// Prepare_1 Entry
         /// </summary>
-        private void samplePrepareEntry()
+        private void samplePrepare_1Entry()
         {
-            nlogger.Debug("Sample Prepare Entry.");
+            nlogger.Debug("Sample Prepare_1 Entry.");
+
+            // 开 1 ，并关闭 2-3-4
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+
+            WriteRelayDeviceS(true);
         }
 
         /// <summary>
-        /// Idle Tick
+        /// Prepare_1 Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
-        private void samplePrepareTick(int tic)
+        private void samplePrepare_1Tick(int tic)
         {
-            nlogger.Debug("Sample Prepare Tick: " + tic.ToString() + " ms");
+            nlogger.Debug("Sample Prepare_1 Tick: " + tic.ToString() + " ms");
+
+            // 5 分钟后，进入 SampleState.Prepare_2
+            if (sampleStateCounts > 12) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
         }
 
         /// <summary>
-        /// Idle Exit
+        /// Prepare_1 Exit
         /// </summary>
-        private void samplePrepareExit()
+        private void samplePrepare_1Exit()
         {
-            nlogger.Debug("Sample Prepare Exit.");
+            nlogger.Debug("Sample Prepare_1 Exit.");
         }
 
         /// <summary>
-        /// Idle Entry
+        /// Prepare_2 Entry
+        /// </summary>
+        private void samplePrepare_2Entry()
+        {
+            nlogger.Debug("Sample Prepare_2 Entry.");
+
+            // 5分钟后，关闭 1，开 4-3-2
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+
+            WriteRelayDeviceS(true);
+        }
+
+        /// <summary>
+        /// Prepare_2 Tick
+        /// </summary>
+        /// <param name="tic"> 时间步长 </param>
+        private void samplePrepare_2Tick(int tic)
+        {
+            nlogger.Debug("Sample Prepare_2 Tick: " + tic.ToString() + " ms");
+        }
+
+        /// <summary>
+        /// Prepare_2 Exit
+        /// </summary>
+        private void samplePrepare_2Exit()
+        {
+            nlogger.Debug("Sample Prepare_2 Exit.");
+        }
+
+        /// <summary>
+        /// OnSample Entry
         /// </summary>
         private void sampleStartEntry()
         {
             nlogger.Debug("Sample Start Entry.");
+
+            // 关闭 3-4 ，打开 1-2 ，一分钟后结束
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+
+            WriteRelayDeviceS(true);
         }
 
         /// <summary>
-        /// Idle Tick
+        /// OnSample Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
         private void sampleStartTick(int tic)
         {
             nlogger.Debug("Sample Start Tick: " + tic.ToString() + " ms");
+
+            // 1 分钟后，结束采样
+            if (sampleStateCounts > 6) _sampleMachine.Fire(AutoSample.TriggerSample.End);
         }
 
         /// <summary>
-        /// Idle Exit
+        /// OnSample Exit
         /// </summary>
         private void sampleStartExit()
         {

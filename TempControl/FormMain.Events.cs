@@ -18,6 +18,7 @@ namespace TempControl
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEvent += _device_TimerTickEvent;
+            _device.SampleStateChangedEvent += _device_SampleStateChangedEvent;
         }
 
         public delegate void mainFormTimeTickEvent();
@@ -155,6 +156,48 @@ namespace TempControl
                     case Device.State.Idle:
                         // 系统流程
                         this.label_controlState.Text = "空闲";
+                        break;
+                }
+            }));
+        }
+
+        private void _device_SampleStateChangedEvent(Device.AutoSample.StateSample st)
+        {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                switch(st)
+                {
+                    case Device.AutoSample.StateSample.Normal:
+                        this.checkBox_data.Text = "自动采样";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = true;
+                        }
+                        break;
+                    case Device.AutoSample.StateSample.Prepare_1:
+                        this.checkBox_data.Text = "自动采样\n准备中";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = false;
+                        }
+                        break;
+                    case Device.AutoSample.StateSample.Prepare_2:
+                        this.checkBox_data.Text = "自动采样\n准备中";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = false;
+                        }
+                        break;
+                    case Device.AutoSample.StateSample.OnSample:
+                        this.checkBox_data.Text = "自动采样\n采样中";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = false;
+                        }
                         break;
                 }
             }));

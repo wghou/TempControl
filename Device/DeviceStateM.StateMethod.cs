@@ -71,6 +71,8 @@ namespace Device
             _tickTimer.Start();
 
             _ryConnectTimer.Start();
+
+            _tickTimerSample.Start();
         }
 
 
@@ -141,11 +143,7 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
         /// <summary>
@@ -254,11 +252,7 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
@@ -315,11 +309,7 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
 
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 向主槽 / 辅槽控温设备写入全部参数
             //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
@@ -383,11 +373,7 @@ namespace Device
             if (currentTemptPointState.stateTemp <= _runningParameters.subCoolFNotDownThr)
                 ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
 
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
@@ -454,11 +440,7 @@ namespace Device
             if (currentTemptPointState.stateTemp <= _runningParameters.subCoolFNotDownThr)
                 ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
 
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
 
