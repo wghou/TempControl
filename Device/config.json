@@ -7,7 +7,7 @@
       "BaudRate": 2400
     },
     "TempS": {
-      "Enable": true,
+      "Enable": false,
       "PortName": "COM5",
       "BaudRate": 2400
     }
@@ -20,7 +20,7 @@
       "BaudRate": 9600
     },
     "RelayS": {
-      "Enable": true,
+      "Enable": false,
       "PortName": "COM9",
       "BaudRate": 9600
     }

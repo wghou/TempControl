@@ -249,6 +249,8 @@ namespace UserPort
         /// <returns></returns>
         private async Task Connected(MqttClientConnectedEventArgs e)
         {
+            if (!Enabled) return;
+
             try
             {
                 List<TopicFilter> listTopic = new List<TopicFilter>();

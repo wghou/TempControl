@@ -499,19 +499,8 @@ namespace TempControl
                     Utils.Logger.Op("删除了温度设定点: " + BList[i - 1].TemptSet);
                     Utils.Logger.Sys("删除了温度设定点: " + BList[i - 1].TemptSet);
 
-                    if (i % 2 == 0)
-                    {
-                        BList.RemoveAt(i - 1);
-                        BList.RemoveAt(i - 2);
-                        paramList.RemoveAt((i / 2) - 1);
-                        i--;
-                    }
-                    else
-                    {
-                        BList.RemoveAt(i);
-                        BList.RemoveAt(i - 1);
-                        paramList.RemoveAt(i / 2);
-                    }
+                    BList.RemoveAt(i - 1);
+                    paramList.RemoveAt(i - 1);
 
                     break;
                 }

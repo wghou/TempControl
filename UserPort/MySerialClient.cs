@@ -64,8 +64,6 @@ namespace UserPort
                 topicsSubs.Add(topicDeviceId + "/" + Enum.GetName(typeof(SubTopic), itm));
             }
 
-
-
             return true;
 
         }

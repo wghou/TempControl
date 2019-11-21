@@ -131,29 +131,12 @@ namespace Device
         /// </summary>
         private void IdleEntry()
         {
-            nlogger.Debug("Idle Entry.");
+            nlogger.Trace("Idle Entry.");
 
-            // 空闲
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
-
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
-
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
         /// <summary>
@@ -162,7 +145,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void IdleTick(int tic)
         {
-            nlogger.Debug("IdleTick: " + tic.ToString() + " ms");
+            nlogger.Trace("IdleTick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
@@ -170,7 +153,7 @@ namespace Device
         /// </summary>
         private void IdleExit()
         {
-            nlogger.Debug("Idle Exit.");
+            nlogger.Trace("Idle Exit.");
         }
 
 
@@ -179,7 +162,7 @@ namespace Device
         /// </summary>
         private void StartEntry()
         {
-            nlogger.Debug("Start Entry.");
+            nlogger.Trace("Start Entry.");
         }
 
         /// <summary>
@@ -188,7 +171,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StartTick(int tic)
         {
-            nlogger.Debug("StartTick: " + tic.ToString() + " ms");
+            nlogger.Trace("StartTick: " + tic.ToString() + " ms");
 
             // 如果 temperaturePointList 为空
             if (temperaturePointList.Count == 0)
@@ -218,7 +201,8 @@ namespace Device
             {
                 if (tpDeviceM.temperatures.Count == 0)
                 {
-                    _machine.Fire(Trigger.ForceShutdownPC);
+                    _machine.Fire(Trigger.SuspendAutoControl);
+                    SetErrorStatus(ErrorCode.TemptError);
                     return;
                 }
 
@@ -241,8 +225,9 @@ namespace Device
         /// </summary>
         private void StartExit()
         {
-            nlogger.Debug("Start Exit.");
+            nlogger.Trace("Start Exit.");
         }
+
 
 
         /// <summary>
@@ -250,22 +235,27 @@ namespace Device
         /// </summary>
         private void TempUpEntry()
         {
-            nlogger.Debug("TempUp Entry.");
-
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
-            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-            //currentTemptPointState.paramS[1] = 0.0f;    // 将修正值清零
-            currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-            WriteTempDeviceS(true);
+
+            if (tpDeviceS.Enable == true)
+            {
+                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
+                // 将参数更新到下位机
+                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
+                WriteTempDeviceS(true);
+            }
+
+            nlogger.Trace("TempUp Entry.");
         }
 
         /// <summary>
@@ -274,7 +264,7 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempUpTick(int tic)
         {
-            nlogger.Debug("TempUp Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("TempUp Tick: " + tic.ToString() + " ms");
 
             ErrorCheckTempNotUp();  // 温度不升高
 
@@ -292,8 +282,9 @@ namespace Device
         /// </summary>
         private void TempUpExit()
         {
-            nlogger.Debug("TempUp Exit.");
+            nlogger.Trace("TempUp Exit.");
         }
+
 
 
         /// <summary>
@@ -301,22 +292,27 @@ namespace Device
         /// </summary>
         private void TempDownEntry()
         {
-            nlogger.Debug("TempDown Entry.");
-
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
+            // 设置主槽 / 辅槽控温设备的参数
             // 向主槽 / 辅槽控温设备写入全部参数
-            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
-            currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-            WriteTempDeviceS(true);   
+
+            if (tpDeviceS.Enable == true)
+            {
+                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
+                // 将参数更新到下位机
+                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
+                WriteTempDeviceS(true);
+            }
+
+            nlogger.Trace("TempDown Entry.");
         }
 
         /// <summary>
@@ -325,10 +321,11 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void TempDownTick(int tic)
         {
-            nlogger.Debug("TempDown Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("TempDown Tick: " + tic.ToString() + " ms");
 
             // error check
             ErrorCheckTempNotDown();    // 温度不降低
+
 
             // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
             if (tpDeviceM.temperatures.Last() < currentTemptPointState.stateTemp + 0.1)
@@ -344,36 +341,37 @@ namespace Device
         /// </summary>
         private void TempDownExit()
         {
-            nlogger.Debug("TempDown Exit.");
+            nlogger.Trace("TempDown Exit.");
         }
 
-        
+
 
         /// <summary>
         /// Control Entry
         /// </summary>
         private void ControlEntry()
         {
-            nlogger.Debug("Control Entry.");
+            nlogger.Trace("Control Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            //  1 2 3 4 5 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
-
-            // 将继电器状态写入下位机
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
-            // 向主槽 / 辅槽控温设备写入全部参数
-            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
+            // 设置主槽 / 辅槽控温设备的参数
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
-            currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
+            // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-            WriteTempDeviceS(true);
+
+            if (tpDeviceS.Enable == true)
+            {
+                currentTemptPointState.paramS.CopyTo(tpDeviceM.tpParamToSet, 0);
+                // 将参数更新到下位机
+                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
+                WriteTempDeviceS(true);
+            }
         }
 
         /// <summary>
@@ -382,11 +380,12 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void ControlTick(int tic)
         {
-            nlogger.Debug("Control Tick: " + tic.ToString() + " ms");
+            nlogger.Trace("Control Tick: " + tic.ToString() + " ms");
 
             // error check
             ErrorCheckBasis();          // 当前温度偏离温度设定点过大
             ErrorCheckTempFlucLarge();  // 波动度过大
+
 
             // 判断 - 控温状态下，温度波动度满足判断条件（5 分钟 0.001），则立即进入稳定状态
             bool steady = tpDeviceM.checkFlucCount(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
@@ -403,7 +402,7 @@ namespace Device
         /// </summary>
         private void ControlExit()
         {
-            nlogger.Debug("Control Exit.");
+            nlogger.Trace("Control Exit.");
         }
 
 
@@ -413,17 +412,13 @@ namespace Device
         /// </summary>
         private void StableEntry()
         {
-            nlogger.Debug("Stable Entry.");
+            nlogger.Trace("Stable Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-
-
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
 
@@ -433,24 +428,23 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void StableTick(int tic)
         {
-            nlogger.Debug("Stableick: " + tic.ToString() + " ms");
+            nlogger.Trace("Stableick: " + tic.ToString() + " ms");
 
             // error check
             ErrorCheckBasis();          // 当前温度与设定温度点偏离过大
             ErrorCheckTempFlucLarge();  // 波动度过大
 
+
             // 判断 - 测温电桥温度值的波动度满足条件（2 分钟 0.001），则进入测量状态
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
-                // 电桥自检正常。。。
-                //if (tpBridge.tpBridgeReadInterval < 1) tpBridge.tpBridgeReadInterval = 1;
-                //bool steady = tpBridge.chekFluc(currentState.stateCounts / tpBridge.tpBridgeReadInterval, flucValue);
-                if (true)
-                {
-                    // 温度稳定度达到了要求，进入下一个状态 - 测量
-                    _machine.Fire(Trigger.StartMeasure);
 
-                    nlogger.Info((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
+                bool steady = tpDeviceM.checkFlucCount(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                if (steady)
+                {
+                    // 进入下一个状态，下一个状态应该是 稳定
+                    _machine.Fire(Trigger.StartMeasure);
+                    nlogger.Info((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
                 }
             }
         }
@@ -460,17 +454,17 @@ namespace Device
         /// </summary>
         private void StableExit()
         {
-            nlogger.Debug("Stable Exit.");
+            nlogger.Trace("Stable Exit.");
         }
 
-        
+
 
         /// <summary>
         /// Measure Entry
         /// </summary>
         private void MeasureEntry()
         {
-            nlogger.Debug("Measure Entry.");
+            nlogger.Trace("Measure Entry.");
         }
 
         /// <summary>
@@ -479,13 +473,15 @@ namespace Device
         /// <param name="tic"> 时间步长 </param>
         private void MeasureTick(int tic)
         {
-            nlogger.Debug("MeasureTick: " + tic.ToString() + " ms");
+            nlogger.Trace("MeasureTick: " + tic.ToString() + " ms");
 
             // measure
+            // 电导率测量，海水取样
 
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;
+
 
             // 查找下一个未测量的温度点
             int i = currentTemptPointState.tempPointIndex + 1;
@@ -525,7 +521,7 @@ namespace Device
         /// </summary>
         private void MeasureExit()
         {
-            nlogger.Debug("Measure Exit.");
+            nlogger.Trace("Measure Exit.");
         }
 
 
