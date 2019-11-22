@@ -1,21 +1,21 @@
 {
   "TempM": {
-    "PortName": "COM1",
+    "PortName": "COM2",
     "BaudRate": 2400,
     "Enable": true
   },
   "TempS": {
-    "PortName": "COM3",
+    "PortName": "COM4",
     "BaudRate": 2400,
     "Enable": true
   },
   "RelayM": {
-    "PortName": "COM2",
+    "PortName": "COM6",
     "BaudRate": 9600,
     "Enable": false
   },
   "RelayS": {
-    "PortName": "COM3",
+    "PortName": "COM8",
     "BaudRate": 9600,
     "Enable": false
   },
