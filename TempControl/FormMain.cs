@@ -209,46 +209,9 @@ namespace TempControl
             if (!fmExit)
             {
                 FormAutoSet fm = new FormAutoSet(_device);
-                fm.SetAutoButtonEvent += SetAutoButton;
                 fm.Name = "FormAutoSet";
                 fm.Show();
             }
-        }
-
-        void SetAutoButton(bool st)
-        {
-            this.BeginInvoke(new EventHandler(delegate
-            {
-                if (st == true)
-                {
-                    this.checkBox_auto.Text = "停止";
-
-                    foreach (var chk in dictCheckBoxsRyM)
-                    {
-                        chk.Value.Enabled = false;
-                    }
-
-                    foreach (var chk in dictCheckBoxsRyS)
-                    {
-                        chk.Value.Enabled = false;
-                    }
-                }
-                else
-                {
-                    this.checkBox_auto.Text = "自动";
-
-                    foreach (var chk in dictCheckBoxsRyM)
-                    {
-                        chk.Value.Enabled = true;
-                    }
-
-                    foreach (var chk in dictCheckBoxsRyS)
-                    {
-                        chk.Value.Enabled = true;
-                    }
-                }
-            }));
-
         }
 
         private void checkBox_exit_Click(object sender, EventArgs e)

@@ -158,6 +158,26 @@ namespace TempControl
                         this.label_controlState.Text = "空闲";
                         break;
                 }
+
+                // 启用 / 禁用 按键
+                switch (st)
+                {
+                    case Device.State.Idle:
+                    case Device.State.ShutdownPC:
+                        foreach (var itm in dictCheckBoxsRyM)
+                            itm.Value.Enabled = true;
+                        foreach (var itm in dictCheckBoxsRyS)
+                            itm.Value.Enabled = true;
+                        checkBox_data.Enabled = true;
+                        break;
+                    default:
+                        foreach (var itm in dictCheckBoxsRyM)
+                            itm.Value.Enabled = false;
+                        foreach (var itm in dictCheckBoxsRyS)
+                            itm.Value.Enabled = false;
+                        checkBox_data.Enabled = false;
+                        break;
+                }
             }));
         }
 

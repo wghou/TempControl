@@ -14,7 +14,7 @@ namespace TempControl
     {
         private Device.RunningParamStruct paramAll;
 
-        private TextBox[] devParam = new TextBox[22];
+        private TextBox[] devParam = new TextBox[21];
         private TextBox tx = null;
 
         public FormDebug(Device.RunningParamStruct pms)
@@ -43,8 +43,7 @@ namespace TempControl
 
             // 自动采样参数
             devParam[19] = textBox_sample_tim1;
-            devParam[20] = textBox_sample_prepare;
-            devParam[21] = textBox_onsample;
+            devParam[20] = textBox_onsample;
         }
 
         private void loadFromParam()
@@ -75,8 +74,7 @@ namespace TempControl
             comboBox_elect.SelectedIndex = paramAll.ryElecEnable == true ? 0 : 1;
 
             // 自动采样参数
-            textBox_sample_tim1.Text = paramAll.sampleParam.tim_1.ToString("0");
-            textBox_sample_prepare.Text = paramAll.sampleParam.tim_prepare.ToString("0");
+            textBox_sample_tim1.Text = paramAll.sampleParam.tim_prepare.ToString("0");
             textBox_onsample.Text = paramAll.sampleParam.tim_onsample.ToString("0");
         }
         private void FormDebug_Load(object sender, EventArgs e)
@@ -87,9 +85,9 @@ namespace TempControl
 
         private void BntUpdate_Click(object sender, EventArgs e)
         {
-            float[] paramCache = new float[22];
+            float[] paramCache = new float[21];
             // 设置温控设备参数
-            for (int i = 0; i < 22; i++)
+            for (int i = 0; i < 21; i++)
             {
                 float newVal = 0.0f;
 
@@ -143,9 +141,8 @@ namespace TempControl
             }
 
             // 自动采样参数
-            paramAll.sampleParam.tim_1 = (int)paramCache[19];
-            paramAll.sampleParam.tim_prepare = (int)paramCache[20];
-            paramAll.sampleParam.tim_onsample = (int)paramCache[21];
+            paramAll.sampleParam.tim_prepare = (int)paramCache[19];
+            paramAll.sampleParam.tim_onsample = (int)paramCache[20];
 
             // 写入到文本中
             // 相关参数

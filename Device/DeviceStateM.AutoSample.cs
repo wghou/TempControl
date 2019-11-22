@@ -81,12 +81,7 @@ namespace Device
             /// <summary>
             /// 继电器 1 通电时长 - 5 分钟
             /// </summary>
-            public int tim_1 = 5 * 60;
-
-            /// <summary>
-            /// 取样准备时长
-            /// </summary>
-            public int tim_prepare = 1 * 60;
+            public int tim_prepare = 5 * 60;
 
             /// <summary>
             /// 取样时长 - 1 分钟
@@ -113,8 +108,7 @@ namespace Device
                     ////////////////////////////////////////
                     // 参数设置
                     timer_interval = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "timer_interval", timer_interval.ToString()));
-                    tim_1 = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_1", tim_1.ToString()));
-                    tim_prepare = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_prepare", tim_prepare.ToString()));
+                    tim_prepare = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_1", tim_prepare.ToString()));
                     tim_onsample = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_onsample", tim_onsample.ToString()));
                 }
                 catch (Exception ex)
@@ -137,8 +131,7 @@ namespace Device
                 {
                     // 相关参数
                     Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "timer_interval", timer_interval.ToString());
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_1", tim_1.ToString());
-                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_prepare", tim_prepare.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_1", tim_prepare.ToString());
                     Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_onsample", tim_onsample.ToString());
                 }
                 catch (Exception ex)
@@ -352,7 +345,7 @@ namespace Device
             nlogger.Debug("Sample Prepare_1 Tick: " + tic.ToString() + " ms");
 
             // 5 分钟后，进入 SampleState.Prepare_2
-            if (sampleStateCounts > _runningParameters.sampleParam.tim_1 / _runningParameters.sampleParam.timer_interval) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
+            if (sampleStateCounts >= _runningParameters.sampleParam.tim_prepare / _runningParameters.sampleParam.timer_interval) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
         }
 
         /// <summary>
@@ -421,7 +414,7 @@ namespace Device
             nlogger.Debug("Sample Start Tick: " + tic.ToString() + " ms");
 
             // 1 分钟后，结束采样
-            if (sampleStateCounts > _runningParameters.sampleParam.tim_onsample / _runningParameters.sampleParam.timer_interval) {
+            if (sampleStateCounts >= _runningParameters.sampleParam.tim_onsample / _runningParameters.sampleParam.timer_interval) {
                 _sampleMachine.Fire(AutoSample.TriggerSample.End);
             }
         }

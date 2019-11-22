@@ -385,6 +385,20 @@ namespace Device
 
             WriteTempDeviceM(true);
             WriteTempDeviceS(true);
+
+            // 自动采样
+            if(currentTemptPointState.autoSample == true)
+            {
+                if (_sampleMachine.IsInState(AutoSample.StateSample.Normal)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
+                else
+                {
+                    // 自动采样出现问题
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
+                    nlogger.Error("在自动控温中，自动采样出现问题：_sampleMachine.IsInState(Normal)");
+                    SetErrorStatus(ErrorCode.CodeError);
+                }
+            }
         }
 
         /// <summary>
@@ -491,7 +505,13 @@ namespace Device
             // 如果需要自动采样
             if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
             {
-                SampleButtonClick();
+                if (_sampleMachine.IsInState(AutoSample.StateSample.Prepare_2)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
+                else
+                {
+                    nlogger.Error("自动控温流程中，自动采样失败： _sampleMachine.IsInState(Normal)");
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+                    SetErrorStatus(ErrorCode.CodeError);
+                }
             }
         }
 
@@ -510,13 +530,12 @@ namespace Device
             // 等待 xx 分钟后，第二次点击
             if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
             {
-                if(currentTemptPointState.stateCounts * _runningParameters.readTempIntervalSec > _runningParameters.sampleParam.tim_prepare)
-                {
-                    SampleButtonClick();
+                if (_sampleMachine.IsInState(AutoSample.StateSample.OnSample)) return;
+                else if (!_sampleMachine.IsInState(AutoSample.StateSample.Normal)){
+                    nlogger.Error("自动控温中，自动采样出现错误：_sampleMachine.IsInState(OnSample or Normal)");
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
                 }
             }
-
-
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;

@@ -32,9 +32,6 @@ namespace TempControl
         /// </summary>
         bool flowStart = false;
 
-        public delegate void SetAutoButtonEventHandler(bool st);
-        public event SetAutoButtonEventHandler SetAutoButtonEvent;
-
 
         private TextBox tx = null;
         private TextBox[] paramMTextBox = new TextBox[7];
@@ -271,7 +268,6 @@ namespace TempControl
                     this.checkBox_start.Checked = true;
                     this.checkBox_start.Text = "停止";
                     flowStart = true;
-                    SetAutoButtonEvent(true);
 
                     // 判断是否已设定完成实验测量后关机
                     this.checkBox_shutDown.Checked = devicesAll._runningParameters.shutDownComputer;
@@ -284,7 +280,6 @@ namespace TempControl
                     this.checkBox_start.Checked = false;
                     this.checkBox_start.Text = "开始";
                     flowStart = false;
-                    SetAutoButtonEvent(false);
 
                     // 判断是否已设定完成实验测量后关机
                     this.checkBox_shutDown.Checked = false;
@@ -329,7 +324,6 @@ namespace TempControl
                 if (paramList.Count == 0)
                 {
                     flowStart = false;
-                    SetAutoButtonEvent(false);
                     this.checkBox_start.Checked = false;
                     this.checkBox_start.Text = "开始";
                     return;
@@ -420,7 +414,6 @@ namespace TempControl
 
                 // 自动控温流程已开始
                 flowStart = true;
-                SetAutoButtonEvent(true);
                 checkBox_start.Text = "停止";
 
                 // 开启定时器 - 状态更新
@@ -463,7 +456,6 @@ namespace TempControl
 
                 // 自动控温流程已停止
                 flowStart = false;
-                SetAutoButtonEvent(false);
                 checkBox_start.Text = "开始";
             }
 

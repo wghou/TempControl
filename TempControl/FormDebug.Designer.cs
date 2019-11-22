@@ -89,8 +89,6 @@
             this.textBox19 = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
             this.textBox_sample_tim1 = new System.Windows.Forms.TextBox();
-            this.textBox_sample_prepare = new System.Windows.Forms.TextBox();
-            this.label23 = new System.Windows.Forms.Label();
             this.textBox_onsample = new System.Windows.Forms.TextBox();
             this.label24 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -664,7 +662,7 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(334, 149);
+            this.label22.Location = new System.Drawing.Point(334, 156);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(125, 12);
             this.label22.TabIndex = 86;
@@ -672,32 +670,15 @@
             // 
             // textBox_sample_tim1
             // 
-            this.textBox_sample_tim1.Location = new System.Drawing.Point(480, 146);
+            this.textBox_sample_tim1.Location = new System.Drawing.Point(480, 153);
             this.textBox_sample_tim1.Name = "textBox_sample_tim1";
             this.textBox_sample_tim1.Size = new System.Drawing.Size(100, 21);
             this.textBox_sample_tim1.TabIndex = 87;
             this.textBox_sample_tim1.Enter += new System.EventHandler(this.textBox14_Enter);
             // 
-            // textBox_sample_prepare
-            // 
-            this.textBox_sample_prepare.Location = new System.Drawing.Point(480, 180);
-            this.textBox_sample_prepare.Name = "textBox_sample_prepare";
-            this.textBox_sample_prepare.Size = new System.Drawing.Size(100, 21);
-            this.textBox_sample_prepare.TabIndex = 94;
-            this.textBox_sample_prepare.Enter += new System.EventHandler(this.textBox18_Enter);
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(334, 183);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(107, 12);
-            this.label23.TabIndex = 95;
-            this.label23.Text = "自动取样-准备时长";
-            // 
             // textBox_onsample
             // 
-            this.textBox_onsample.Location = new System.Drawing.Point(480, 209);
+            this.textBox_onsample.Location = new System.Drawing.Point(480, 184);
             this.textBox_onsample.Name = "textBox_onsample";
             this.textBox_onsample.Size = new System.Drawing.Size(100, 21);
             this.textBox_onsample.TabIndex = 96;
@@ -705,7 +686,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(334, 212);
+            this.label24.Location = new System.Drawing.Point(334, 187);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(107, 12);
             this.label24.TabIndex = 97;
@@ -719,9 +700,7 @@
             this.Controls.Add(this.label24);
             this.Controls.Add(this.textBox_onsample);
             this.Controls.Add(this.label21);
-            this.Controls.Add(this.label23);
             this.Controls.Add(this.textBox19);
-            this.Controls.Add(this.textBox_sample_prepare);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.textBox18);
             this.Controls.Add(this.textBox17);
@@ -852,8 +831,6 @@
         private System.Windows.Forms.TextBox textBox19;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox textBox_sample_tim1;
-        private System.Windows.Forms.TextBox textBox_sample_prepare;
-        private System.Windows.Forms.Label label23;
         private System.Windows.Forms.TextBox textBox_onsample;
         private System.Windows.Forms.Label label24;
     }
