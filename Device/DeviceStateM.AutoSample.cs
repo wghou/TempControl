@@ -31,7 +31,11 @@ namespace Device
             /// <summary>
             /// 自动取样 - 取样中：关 3-4，开 1-2，一分钟（可调）后关闭，并回到常态
             /// </summary>
-			OnSample
+			OnSample,
+            /// <summary>
+            /// 强制停止
+            /// </summary>
+            Stop
         }
 
         /// <summary>
@@ -182,7 +186,8 @@ namespace Device
                 .OnEntry(t => sampleNormalEntry())
                 .OnExit(t => sampleNormalExit())
                 .InternalTransition(_sampleTickTrigger, (tic, t) => sampleNormalTick(tic))
-                .Permit(AutoSample.TriggerSample.ClickFist, AutoSample.StateSample.Prepare_1);
+                .Permit(AutoSample.TriggerSample.ClickFist, AutoSample.StateSample.Prepare_1)
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
 
             // StateSample.Prepare_1
@@ -191,7 +196,7 @@ namespace Device
                 .OnExit(t => samplePrepare_1Exit())
                 .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepare_1Tick(tic))
                 .Permit(AutoSample.TriggerSample.ClickFist_5m, AutoSample.StateSample.Prepare_2)
-                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Normal);
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
             // StateSample.Prepare_2
             _sampleMachine.Configure(AutoSample.StateSample.Prepare_2)
@@ -199,7 +204,7 @@ namespace Device
                 .OnExit(t => samplePrepare_2Exit())
                 .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepare_2Tick(tic))
                 .Permit(AutoSample.TriggerSample.ClickSecond, AutoSample.StateSample.OnSample)
-                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Normal);
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
 
             // StateSample.OnSample
@@ -208,6 +213,12 @@ namespace Device
                 .OnExit(t => sampleStartExit())
                 .InternalTransition(_sampleTickTrigger, (tic, t) => sampleStartTick(tic))
                 .Permit(AutoSample.TriggerSample.End, AutoSample.StateSample.Normal)
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
+
+            _sampleMachine.Configure(AutoSample.StateSample.Stop)
+                .OnEntry(t => stopEntry())
+                .OnExit(t => stoptExit())
+                .InternalTransition(_sampleTickTrigger, (tic, t) => stopTick(tic))
                 .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Normal);
 
             // 设置定时器
@@ -263,7 +274,7 @@ namespace Device
         /// <param name="act"></param>
         private void sampleOnTransitionedAction(StateMachine<AutoSample.StateSample, AutoSample.TriggerSample>.Transition act)
         {
-            nlogger.Debug("On State Transitioned.");
+            nlogger.Debug("On State Transitioned. " + act.Destination.ToString());
 
             AutoSample.TriggerSample trigger = act.Trigger;
             AutoSample.StateSample source = act.Source;
@@ -272,7 +283,6 @@ namespace Device
             // 状态计数器 清零
             sampleStateCounts = 0;
 
-            // wghou
             SampleStateChangedEvent?.Invoke(dest);
         }
 
@@ -282,9 +292,25 @@ namespace Device
         /// <param name="act"></param>
         private void sampleOnUnhandledTrigger(AutoSample.StateSample st, AutoSample.TriggerSample tg)
         {
-            nlogger.Error("Unhandled trigger: state.");
+            nlogger.Error("Unhandled trigger: state. " + st.ToString());
 
             SetErrorStatus(ErrorCode.CodeError);
+        }
+
+        void WriteRelayDeviceS2()
+        {
+            RelayDevice.Err_r err = ryDeviceS.UpdateStatusToDevice();
+
+            // 记录错误状态
+            // 仅记录，在 timerTickEvent 中检查全局错误状态
+            if (err != RelayDevice.Err_r.NoError)
+            {
+                SetErrorStatus(ErrorCode.RelayError);
+            }
+
+            RelayDeviceSStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceS.ryStatus);
+
+            if (err != RelayDevice.Err_r.NoError) _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
         }
 
         /// <summary>
@@ -333,7 +359,7 @@ namespace Device
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
 
-            WriteRelayDeviceS(true);
+            WriteRelayDeviceS2();
         }
 
         /// <summary>
@@ -369,7 +395,7 @@ namespace Device
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
 
-            WriteRelayDeviceS(true);
+            WriteRelayDeviceS2();
         }
 
         /// <summary>
@@ -402,7 +428,7 @@ namespace Device
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
 
-            WriteRelayDeviceS(true);
+            WriteRelayDeviceS2();
         }
 
         /// <summary>
@@ -425,6 +451,33 @@ namespace Device
         private void sampleStartExit()
         {
             nlogger.Debug("Sample Start Exit.");
+        }
+
+        /// <summary>
+        /// stop Entry
+        /// </summary>
+        private void stopEntry()
+        {
+            nlogger.Debug("Sample Stop Entry.");
+        }
+
+        /// <summary>
+        /// stop Tick
+        /// </summary>
+        /// <param name="tic"> 时间步长 </param>
+        private void stopTick(int tic)
+        {
+            nlogger.Debug("Sample stop Tick: " + tic.ToString() + " ms");
+
+            _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+        }
+
+        /// <summary>
+        /// OnSample Exit
+        /// </summary>
+        private void stoptExit()
+        {
+            nlogger.Debug("Sample stop Exit.");
         }
     }
 }

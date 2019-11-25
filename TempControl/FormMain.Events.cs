@@ -219,6 +219,20 @@ namespace TempControl
                             itm.Value.Enabled = false;
                         }
                         break;
+                    case Device.AutoSample.StateSample.Stop:
+                        this.checkBox_data.Text = "自动采样";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = true;
+                        }
+                        if(_device._state == Device.State.Idle || _device._state == Device.State.ShutdownPC)
+                        {
+                            if(_device.currentTemptPointState.autoSample != true) MessageBox.Show("自动采样过程中，继电器写入错误！");
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }));
         }

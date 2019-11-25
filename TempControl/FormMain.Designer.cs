@@ -555,7 +555,7 @@
             this.groupBox_tempM.Size = new System.Drawing.Size(419, 260);
             this.groupBox_tempM.TabIndex = 33;
             this.groupBox_tempM.TabStop = false;
-            this.groupBox_tempM.Text = "控温槽 1";
+            this.groupBox_tempM.Text = "主槽";
             // 
             // label5
             // 
@@ -624,7 +624,7 @@
             this.groupBox_tempS.Size = new System.Drawing.Size(413, 260);
             this.groupBox_tempS.TabIndex = 34;
             this.groupBox_tempS.TabStop = false;
-            this.groupBox_tempS.Text = "控温槽 2";
+            this.groupBox_tempS.Text = "辅槽";
             // 
             // label1
             // 

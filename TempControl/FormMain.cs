@@ -99,8 +99,6 @@ namespace TempControl
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            RegistEventHandler();
-
             backgroundWorker1.DoWork += BackgroundWorker1_DoWork;
             timer1.Interval = 200;
             timer1.Tick += Timer1_Tick;
