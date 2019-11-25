@@ -3,11 +3,13 @@
   "TempDev": {
     "TempM": {
       "Enable": true,
+      "£¿PortName": "Ö÷²Û¶Ë¿ÚºÅ",
       "PortName": "COM3",
       "BaudRate": 2400
     },
     "TempS": {
       "Enable": true,
+      "£¿PortName": "¸¨²Û¶Ë¿ÚºÅ",
       "PortName": "COM5",
       "BaudRate": 2400
     }
@@ -16,11 +18,13 @@
   "RelayDev": {
     "RelayM": {
       "Enable": true,
+      "£¿PortName": "¼ÌµçÆ÷ 1 ¶Ë¿ÚºÅ",
       "PortName": "COM7",
       "BaudRate": 9600
     },
     "RelayS": {
       "Enable": true,
+      "£¿PortName": "¼ÌµçÆ÷ 2 ¶Ë¿ÚºÅ",
       "PortName": "COM9",
       "BaudRate": 9600
     }
