@@ -290,6 +290,8 @@ namespace Device
                 SetErrorStatus(ErrorCode.TemptError);
 
                 nlogger.Error("读取主槽温度时发生错误，errorCode: " + err.ToString());
+
+                return;
             }
             // 记录主槽温度
             Utils.Logger.TempData(tpDeviceM.temperatures.Last());

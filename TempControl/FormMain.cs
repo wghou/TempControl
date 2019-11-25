@@ -168,6 +168,8 @@ namespace TempControl
         // Button Click 事件
         private void checkBox_auto_Click(object sender, EventArgs e)
         {
+            return;
+
             bool fmExit = false;
             foreach (Form fm in Application.OpenForms)
             {
