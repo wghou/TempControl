@@ -87,6 +87,9 @@ namespace Device
             State dest = act.Destination;
 
             // 状态计数器 清零
+            // wghou
+            // 如果是 ignore 里面的事件，是否会触发 onTransitionAction，也就是计数器会不会清零
+            // 至少这样就能知道，一个状态（供氧 / 供氮）多久了
             currentTemptPointState.stateCounts = 0;
 
             StateChangedEvent?.Invoke(dest);
@@ -101,28 +104,6 @@ namespace Device
             nlogger.Error("Unhandled trigger: state.");
 
             SetErrorStatus(ErrorCode.CodeError);
-        }
-
-        /// <summary>
-        /// 下一个温度设定点，是否执行降温状态
-        /// </summary>
-        /// <param name="tpPoint">下一个温度点设定值</param>
-        /// <returns></returns>
-        private bool nextPointDown(float tpPoint)
-        {
-            nlogger.Debug("Next point: " + tpPoint.ToString());
-
-            if(tpDeviceM.temperatures.Count == 0)
-            {
-                nlogger.Debug("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
-                SetErrorStatus(ErrorCode.CodeError);
-                return true;
-            }
-
-            if (tpPoint < tpDeviceM.temperatures.Last())
-                return true;
-            else
-                return false;
         }
 
 
@@ -209,17 +190,17 @@ namespace Device
                 // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
-                    // 稳定 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
                     // 状态 - 稳定
                     _machine.Fire(Trigger.WaitSteady);
                 }
-                // 当前温度点小于温度设定点，则升温
+                // 当前氧气含量大于设定值，则加氮气
+                else if( tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
+                {
+                    _machine.Fire(Trigger.NeedNitrogen);
+                }
                 else
                 {
-                    // 加氧 / 加氮 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
-                    _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
+                    _machine.Fire(Trigger.NeedNitrogen);
                 }
             }
         }
@@ -239,7 +220,10 @@ namespace Device
         /// </summary>
         private void AddOxygenEntry()
         {
-            // 升温
+            // 加氮 5 分钟
+            currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+
+            // 加氧
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
@@ -258,26 +242,24 @@ namespace Device
 
             //ErrorCheckTempNotUp();  // 温度不升高
 
-            // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
+            // 
             if (currentTemptPointState.stateCounts > currentTemptPointState.stateHoldCounts)
             {
 
-                // 计算
-                // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
-                    // 稳定 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
                     // 状态 - 稳定
                     _machine.Fire(Trigger.WaitSteady);
                 }
-                // 当前温度点小于温度设定点，则升温
+                // 当前氧气含量大于设定值，则加氮气
+                else if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
+                {
+                    _machine.Fire(Trigger.NeedNitrogen);
+                }
                 else
                 {
-                    // 加氧 / 加氮 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
-                    _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
+                    _machine.Fire(Trigger.NeedNitrogen);
                 }
             }
 
@@ -299,6 +281,10 @@ namespace Device
         /// </summary>
         private void AddNitrogenEntry()
         {
+            // 加氮 5 分钟
+            currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+
+            // 加氮
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
@@ -318,26 +304,24 @@ namespace Device
             // error check
             //ErrorCheckTempNotDown();    // 温度不降低
 
-            // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
+            //
             if (currentTemptPointState.stateCounts > currentTemptPointState.stateHoldCounts)
             {
 
-                // 计算
-                // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
-                    // 稳定 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
                     // 状态 - 稳定
                     _machine.Fire(Trigger.WaitSteady);
                 }
-                // 当前温度点小于温度设定点，则升温
+                // 当前氧气含量大于设定值，则加氮气
+                else if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
+                {
+                    _machine.Fire(Trigger.NeedNitrogen);
+                }
                 else
                 {
-                    // 加氧 / 加氮 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
-                    _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
+                    _machine.Fire(Trigger.NeedNitrogen);
                 }
             }
 
@@ -358,6 +342,9 @@ namespace Device
         /// </summary>
         private void StableEntry()
         {
+            // 加氮 5 分钟
+            currentTemptPointState.stateHoldCounts = _runningParameters.stableHoldCounts;
+
             nlogger.Trace("Stable Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
@@ -381,23 +368,23 @@ namespace Device
             //ErrorCheckTempFlucLarge();  // 波动度过大
 
 
-            // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
             if (currentTemptPointState.stateCounts > currentTemptPointState.stateHoldCounts)
             {
+
                 // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
-                    // 稳定 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
                     // 状态 - 稳定
                     _machine.Fire(Trigger.StartMeasure);
                 }
-                // 当前温度点小于温度设定点，则升温
+                // 当前氧气含量大于设定值，则加氮气
+                else if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
+                {
+                    _machine.Fire(Trigger.NeedNitrogen);
+                }
                 else
                 {
-                    // 加氧 / 加氮 5 分钟
-                    currentTemptPointState.stateHoldCounts = 6;
-                    _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
+                    _machine.Fire(Trigger.NeedNitrogen);
                 }
             }
         }
@@ -448,7 +435,9 @@ namespace Device
         /// </summary>
         public void ask4nextPoint()
         {
-            if (_machine.IsInState(State.Measure)) _machine.Fire(Trigger.NextOxygenPoint);
+            if (!_machine.IsInState(State.Measure)) return;
+
+            if (_machine.IsInState(State.Measure)) _machine.Fire(Trigger.StartMeasure);
         }
 
         /// <summary>
@@ -471,7 +460,7 @@ namespace Device
         {
             nlogger.Debug("StopTick: " + tic.ToString() + " ms");
 
-            System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
+            //System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
 
             _machine.Fire(Trigger.FinishedAll);
         }

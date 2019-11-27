@@ -133,6 +133,11 @@ namespace Device
         public bool shutDownComputer = false;
 
 
+        public uint stableHoldCounts = 6;
+
+        public uint addGasHoldCounts = 6;
+
+
         public bool ReadValueConfig(string configFilePath)
         {
             try
