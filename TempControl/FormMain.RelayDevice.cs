@@ -35,6 +35,27 @@ namespace TempControl
             }
         }
 
+
+        private void checkBox_ryM4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_ryM4.Checked == true && checkBox_ryM5.Checked == false)
+            {
+                label_powerM.Text = "加氧气";
+            }
+            else if (checkBox_ryM4.Checked == false && checkBox_ryM5.Checked == true)
+            {
+                label_powerM.Text = "加氮气";
+            }
+            else if (checkBox_ryM4.Checked == false && checkBox_ryM5.Checked == false)
+            {
+                label_powerM.Text = "未加气";
+            }
+            else
+            {
+                label_powerM.Text = "错误";
+            }
+        }
+
         private void checkBox_paramM_Click(object sender, EventArgs e)
         {
             // 下一点

@@ -48,6 +48,12 @@ namespace Device
             _userPorts.PublishMessage(UserPort.SubTopic.Data, packageDataJson(), false, UserPort.UserPortType.All);
         }
 
+
+        /// <summary>
+        /// 继电器模块自动连接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _ryConnectTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (ryDeviceM.DisconnectProtect == true)
@@ -62,6 +68,7 @@ namespace Device
                 if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
             }
         }
+
 
         /// <summary>
         /// 启动定时器
@@ -191,7 +198,7 @@ namespace Device
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
                     // 状态 - 稳定
-                    _machine.Fire(Trigger.WaitSteady);
+                    _machine.Fire(Trigger.StartStand);
                 }
                 // 当前氧气含量大于设定值，则加氮气
                 else if( tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
@@ -254,7 +261,7 @@ namespace Device
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
                     // 状态 - 稳定
-                    _machine.Fire(Trigger.WaitSteady);
+                    _machine.Fire(Trigger.StartStand);
                 }
                 // 当前氧气含量大于设定值，则加氮气
                 else if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
@@ -263,7 +270,7 @@ namespace Device
                 }
                 else
                 {
-                    _machine.Fire(Trigger.NeedNitrogen);
+                    _machine.Fire(Trigger.NeedOxygen);
                 }
             }
 
@@ -320,7 +327,7 @@ namespace Device
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
                     // 状态 - 稳定
-                    _machine.Fire(Trigger.WaitSteady);
+                    _machine.Fire(Trigger.StartStand);
                 }
                 // 当前氧气含量大于设定值，则加氮气
                 else if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
@@ -329,7 +336,7 @@ namespace Device
                 }
                 else
                 {
-                    _machine.Fire(Trigger.NeedNitrogen);
+                    _machine.Fire(Trigger.NeedOxygen);
                 }
             }
 
@@ -382,8 +389,8 @@ namespace Device
                 // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
                 {
-                    // 状态 - 稳定
-                    _machine.Fire(Trigger.StartMeasure);
+                    // 状态 - 进入稳定
+                    _machine.Fire(Trigger.WaitSteady);
                 }
                 // 当前氧气含量大于设定值，则加氮气
                 else if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
@@ -392,7 +399,7 @@ namespace Device
                 }
                 else
                 {
-                    _machine.Fire(Trigger.NeedNitrogen);
+                    _machine.Fire(Trigger.NeedOxygen);
                 }
             }
         }
@@ -403,6 +410,67 @@ namespace Device
         private void StandExit()
         {
             nlogger.Trace("Stand Exit.");
+        }
+
+
+        /// <summary>
+        /// Steady Entry
+        /// </summary>
+        private void SteadyEntry()
+        {
+            // 加氮 5 分钟
+            currentTemptPointState.stateHoldCounts = _runningParameters.standHoldCounts;
+
+            nlogger.Trace("Steady Entry.");
+
+            // 首次进入该状态，应改变相应的继电器状态
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            WriteRelayDeviceM(true);
+        }
+
+
+        /// <summary>
+        /// Steady Tick
+        /// </summary>
+        /// <param name="tic"> 时间步长 </param>
+        private void SteadyTick(int tic)
+        {
+            nlogger.Trace("Steady tick: " + tic.ToString() + " ms");
+
+            // error check
+            //ErrorCheckBasis();          // 当前温度与设定温度点偏离过大
+            //ErrorCheckTempFlucLarge();  // 波动度过大
+
+
+            if (currentTemptPointState.stateCounts > currentTemptPointState.stateHoldCounts)
+            {
+
+                // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
+                if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
+                {
+                    // 状态 - 稳定
+                    _machine.Fire(Trigger.StartMeasure);
+                }
+                // 当前氧气含量大于设定值，则加氮气
+                else if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp)
+                {
+                    _machine.Fire(Trigger.NeedNitrogen);
+                }
+                else
+                {
+                    _machine.Fire(Trigger.NeedOxygen);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Steady Exit
+        /// </summary>
+        private void SteadyExit()
+        {
+            nlogger.Trace("Steady Exit.");
         }
 
 

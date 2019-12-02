@@ -99,7 +99,7 @@
             this.label_powerM.Name = "label_powerM";
             this.label_powerM.Size = new System.Drawing.Size(111, 35);
             this.label_powerM.TabIndex = 2;
-            this.label_powerM.Text = "加氧";
+            this.label_powerM.Text = "未加气";
             this.label_powerM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label3
@@ -214,6 +214,7 @@
             this.checkBox_ryM4.Text = "氧气";
             this.checkBox_ryM4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM4.UseVisualStyleBackColor = true;
+            this.checkBox_ryM4.CheckedChanged += new System.EventHandler(this.checkBox_ryM4_CheckedChanged);
             this.checkBox_ryM4.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM5
@@ -226,6 +227,7 @@
             this.checkBox_ryM5.Text = "氮气";
             this.checkBox_ryM5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_ryM5.UseVisualStyleBackColor = true;
+            this.checkBox_ryM5.CheckedChanged += new System.EventHandler(this.checkBox_ryM4_CheckedChanged);
             this.checkBox_ryM5.Click += new System.EventHandler(this.checkBox_ryAll_Click);
             // 
             // checkBox_ryM0

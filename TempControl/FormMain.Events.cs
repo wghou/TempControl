@@ -132,6 +132,10 @@ namespace TempControl
                         // 系统流程
                         this.label_controlState.Text = "静置";
                         break;
+                    case Device.State.Steady:
+                        // 稳定
+                        this.label_controlState.Text = "稳定";
+                        break;
                     case Device.State.Measure:
                         // 系统流程
                         this.label_controlState.Text = "测量";
