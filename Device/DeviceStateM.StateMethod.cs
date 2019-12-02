@@ -223,6 +223,10 @@ namespace Device
             // 加氮 5 分钟
             currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
 
+
+            // 记录当前管路中的气体类型
+            _lastGasState = State.AddOxygen;
+
             // 加氧
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
@@ -284,6 +288,10 @@ namespace Device
             // 加氮 5 分钟
             currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
 
+
+            // 记录当前管路中的气体类型
+            _lastGasState = State.AddNitrogen;
+
             // 加氮
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
@@ -338,14 +346,14 @@ namespace Device
 
 
         /// <summary>
-        /// Stable Entry
+        /// Stand Entry
         /// </summary>
-        private void StableEntry()
+        private void StandEntry()
         {
             // 加氮 5 分钟
-            currentTemptPointState.stateHoldCounts = _runningParameters.stableHoldCounts;
+            currentTemptPointState.stateHoldCounts = _runningParameters.standHoldCounts;
 
-            nlogger.Trace("Stable Entry.");
+            nlogger.Trace("Stand Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
@@ -356,12 +364,12 @@ namespace Device
 
 
         /// <summary>
-        /// Stable Tick
+        /// Stand Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
-        private void StableTick(int tic)
+        private void StandTick(int tic)
         {
-            nlogger.Trace("Stableick: " + tic.ToString() + " ms");
+            nlogger.Trace("Stand tick: " + tic.ToString() + " ms");
 
             // error check
             //ErrorCheckBasis();          // 当前温度与设定温度点偏离过大
@@ -390,11 +398,11 @@ namespace Device
         }
 
         /// <summary>
-        /// Stable Exit
+        /// Stand Exit
         /// </summary>
-        private void StableExit()
+        private void StandExit()
         {
-            nlogger.Trace("Stable Exit.");
+            nlogger.Trace("Stand Exit.");
         }
 
 

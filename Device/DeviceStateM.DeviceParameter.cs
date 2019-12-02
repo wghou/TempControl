@@ -59,10 +59,6 @@ namespace Device
         /// </summary>
         public int steadyTimeSec = 300;
         /// <summary>
-        /// 电桥温度稳定时间
-        /// </summary>
-        public int bridgeSteadyTimeSec = 120;
-        /// <summary>
         /// 波动度判断
         /// </summary>
         public float flucValue = 0.001f;
@@ -131,10 +127,13 @@ namespace Device
         /// 实验完成后是否关闭计算机
         /// </summary>
         public bool shutDownComputer = false;
-
-
-        public uint stableHoldCounts = 6;
-
+        /// <summary>
+        /// 静置时间长度
+        /// </summary>
+        public uint standHoldCounts = 6;
+        /// <summary>
+        /// 单次加气最长时间
+        /// </summary>
         public uint addGasHoldCounts = 6;
 
 
@@ -152,7 +151,6 @@ namespace Device
                 // 参数设置
                 readTempIntervalSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "readTempIntervalSec", readTempIntervalSec.ToString()));
                 steadyTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "SteadyTimeSecond", steadyTimeSec.ToString()));
-                bridgeSteadyTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "bridgeSteadyTimeSec", bridgeSteadyTimeSec.ToString()));
                 flucValue = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "FlucValue", flucValue.ToString()));
                 controlTempThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "controlTempThr", controlTempThr.ToString()));
                 tempNotUpOrDownFaultTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempNotUpOrDownFaultTimeSec", tempNotUpOrDownFaultTimeSec.ToString()));
@@ -172,6 +170,9 @@ namespace Device
                 sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
                 ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
                 shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
+
+                standHoldCounts = uint.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "standHoldCounts", standHoldCounts.ToString()));
+                addGasHoldCounts = uint.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "addGasHoldCounts", addGasHoldCounts.ToString()));
             }
             catch (Exception ex)
             {
@@ -189,7 +190,6 @@ namespace Device
                 // 相关参数
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "readTempIntervalSec", readTempIntervalSec.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "steadyTimeSec", steadyTimeSec.ToString());
-                Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "bridgeSteadyTimeSec", bridgeSteadyTimeSec.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "flucValue", flucValue.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "controlTempThr", controlTempThr.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempNotUpOrDownFaultTimeSec", tempNotUpOrDownFaultTimeSec.ToString());
@@ -210,6 +210,9 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", sort);
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", ryElecEnable ? "Enable" : "Disable");
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "shutDownComputer", shutDownComputer ? "Enable" : "Disable");
+
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "standHoldCounts", standHoldCounts.ToString());
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "addGasHoldCounts", addGasHoldCounts.ToString());
             }
             catch(Exception ex)
             {

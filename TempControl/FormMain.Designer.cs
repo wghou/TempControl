@@ -88,7 +88,7 @@
             this.label_tempSetM.Name = "label_tempSetM";
             this.label_tempSetM.Size = new System.Drawing.Size(150, 35);
             this.label_tempSetM.TabIndex = 1;
-            this.label_tempSetM.Text = "0.000%";
+            this.label_tempSetM.Text = "0.00%";
             this.label_tempSetM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label_powerM

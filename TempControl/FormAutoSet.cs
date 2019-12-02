@@ -251,7 +251,7 @@ namespace TempControl
                 if (this.devicesAll._state == Device.State.Start ||
                         devicesAll._state == Device.State.AddNitrogen ||
                         devicesAll._state == Device.State.AddOxygen ||
-                        devicesAll._state == Device.State.Stable ||
+                        devicesAll._state == Device.State.Stand ||
                         devicesAll._state == Device.State.Measure)
                 {
                     // 正在自动控温

@@ -128,9 +128,9 @@ namespace TempControl
                         // 系统流程
                         this.label_controlState.Text = "加氮气";
                         break;
-                    case Device.State.Stable:
+                    case Device.State.Stand:
                         // 系统流程
-                        this.label_controlState.Text = "稳定";
+                        this.label_controlState.Text = "静置";
                         break;
                     case Device.State.Measure:
                         // 系统流程

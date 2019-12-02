@@ -14,7 +14,7 @@ namespace TempControl
     {
         private Device.RunningParamStruct paramAll;
 
-        private TextBox[] devParam = new TextBox[18];
+        private TextBox[] devParam = new TextBox[19];
         private TextBox tx = null;
 
         public FormDebug(Device.RunningParamStruct pms)
@@ -22,7 +22,7 @@ namespace TempControl
             InitializeComponent();
             paramAll = pms;
             devParam[0] = textBox1;
-            devParam[1] = textBox2;
+            
             devParam[2] = textBox3;
             devParam[3] = textBox4;
             devParam[4] = textBox5;
@@ -39,12 +39,14 @@ namespace TempControl
             devParam[15] = textBox16;
             devParam[16] = textBox17;
             devParam[17] = textBox18;
+
+            devParam[1] = textBox2;
+            devParam[18] = textBox19;
         }
 
         private void loadFromParam()
         {
             textBox1.Text = paramAll.steadyTimeSec.ToString("0");
-            textBox2.Text = paramAll.bridgeSteadyTimeSec.ToString("0");
             textBox3.Text = paramAll.flucValue.ToString("0.0000");
             textBox4.Text = paramAll.controlTempThr.ToString("0.0000");
             textBox5.Text = paramAll.tempNotUpOrDownFaultTimeSec.ToString("0");
@@ -66,6 +68,9 @@ namespace TempControl
 
             comboBox_sort.SelectedIndex = paramAll.sort == "ascend" ? 0 : 1;
             comboBox_elect.SelectedIndex = paramAll.ryElecEnable == true ? 0 : 1;
+
+            textBox2.Text = paramAll.standHoldCounts.ToString();
+            textBox19.Text = paramAll.addGasHoldCounts.ToString();
         }
         private void FormDebug_Load(object sender, EventArgs e)
         {
@@ -75,7 +80,7 @@ namespace TempControl
 
         private void BntUpdate_Click(object sender, EventArgs e)
         {
-            float[] paramCache = new float[18];
+            float[] paramCache = new float[19];
             // 设置温控设备参数
             for (int i = 0; i < 18; i++)
             {
@@ -93,7 +98,6 @@ namespace TempControl
             }
 
             paramAll.steadyTimeSec = (int)paramCache[0];
-            paramAll.bridgeSteadyTimeSec = (int)paramCache[1];
             paramAll.flucValue = paramCache[2];
             paramAll.controlTempThr = paramCache[3];
             paramAll.tempNotUpOrDownFaultTimeSec = (int)paramCache[4];
@@ -129,10 +133,13 @@ namespace TempControl
                 paramAll.ryElecEnable = false;
             }
 
+            paramAll.standHoldCounts = (uint)paramCache[1];
+            paramAll.addGasHoldCounts = (uint)paramCache[18];
+
 
             // 写入到文本中
             // 相关参数
-            if(paramAll.WriteValueConfig(@"./config.ini") == false)
+            if (paramAll.WriteValueConfig(@"./config.ini") == false)
             {
                 MessageBox.Show("保存参数失败！");
             }
