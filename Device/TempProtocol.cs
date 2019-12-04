@@ -16,7 +16,7 @@ namespace Device
         #region Members
 
         #region Serial Port
-        private const int baudrate = 2400;
+        private const int baudrate = 38400;
         private const int dataBits = 8;
         private const StopBits stopBits = StopBits.One;
         private const Parity parity = Parity.None;
@@ -37,7 +37,7 @@ namespace Device
         };
 
         /// <summary>串口读-写时间间隔</summary>
-        private const int intervalOfWR = 20;
+        private const int intervalOfWR = 50;
         #endregion
 
         #region Error Code
@@ -184,7 +184,7 @@ namespace Device
                 this.sPort.Write(command + "\r\n");
                 // 读取返回数据
                 Thread.Sleep(intervalOfWR);
-                data = this.sPort.ReadTo(cmdFinish);
+                data = this.sPort.ReadExisting();
                 //Improve: Add BCC checker
                 sPort.DiscardInBuffer();
                 sPort.Close();
@@ -213,7 +213,7 @@ namespace Device
         {
             // 读取 温度设定值 / 温度调整值 / 超前调整值 / 模糊系数 / 比例系数 / 积分系数 / 功率系数 / 温度显示值 / 功率显示值
             // 创建指令
-            string command = ConstructCommand(cmd, 0.0f, false);
+            byte[] command = { 0x11, 0x11, 0x70, 0x76, 0x61, 0x6c, 0x2c, 0x0d };
             // 用于存放返回的数据
             string data = string.Empty;
 
@@ -223,10 +223,10 @@ namespace Device
                     this.sPort.Open();
 
                 // 写入数据
-                this.sPort.Write(command + "\r\n");
+                this.sPort.Write(command,0,command.Length);
                 // 读取返回数据
                 Thread.Sleep(intervalOfWR);
-                data = this.sPort.ReadTo(cmdFinish);
+                data = this.sPort.ReadTo(",0,");
                 //Improve: Add BCC checker
                 sPort.DiscardInBuffer();
                 sPort.Close();
@@ -241,21 +241,16 @@ namespace Device
             }
 
             // 检查错误并提取参数值
-            Err_t err = IsError(data);
-            if (err != Err_t.NoError)
+            Err_t err = Err_t.NoError;
+
+            string[] ds = data.Split(',');
+            if (!float.TryParse(ds[2], out val))
             {
-                // 发生错误
-                val = 0.0f;
+                err = Err_t.BCCError;
             }
             else
             {
-                // 未发生错误
-                // 如果格式转化错误，则返回 ComErr
-                if(cmd == Cmd_t.TempShow) nlogger.Trace("温度值原始数据： " + data);
 
-
-                if (!float.TryParse(data.Substring(5), out val))
-                    err = Err_t.ComError;
             }
 
             return err;

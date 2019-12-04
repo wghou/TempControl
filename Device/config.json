@@ -4,7 +4,7 @@
     "TempM": {
       "Enable": true,
       "PortName": "COM3",
-      "BaudRate": 2400
+      "BaudRate": 38400
     },
     "TempS": {
       "Enable": false,
@@ -16,7 +16,7 @@
   "RelayDev": {
     "RelayM": {
       "Enable": true,
-      "PortName": "COM7",
+      "PortName": "COM4",
       "BaudRate": 9600
     },
     "RelayS": {
