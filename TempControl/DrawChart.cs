@@ -53,6 +53,11 @@ namespace TempControl
 
         // Time line
         private const int timeColInt = 2;           // Time interval to tag time on x-Axis
+        // wghou 20191209
+        // tempChartFixLen = 601 的值，应该跟总的曲线长度有关系
+        // 这里 601 是 column = 10 的值
+        // 当 column = 6 的时候，应该是 360
+        // 依次类比计算
         private const int tempChartFixLen = 601;    // Count of point used in chart, 
                                                     // 661 is suitable for 800*? chart
                                                     // Use for saving temperature data only for chart drawing
