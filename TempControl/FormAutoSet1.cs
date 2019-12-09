@@ -262,6 +262,8 @@ namespace TempControl
         /// <param name="e"></param>
         private void checkBox_start_Click(object sender, EventArgs e)
         {
+            return;
+
             if (this.checkBox_start.Checked == true)
             {
                 // 如果列表中没有温度点，则不开始控温流程
