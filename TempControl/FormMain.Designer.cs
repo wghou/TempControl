@@ -180,7 +180,7 @@
             this.checkBox_exit.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_exit.AutoCheck = false;
             this.checkBox_exit.ForeColor = System.Drawing.Color.Red;
-            this.checkBox_exit.Location = new System.Drawing.Point(298, 164);
+            this.checkBox_exit.Location = new System.Drawing.Point(298, 154);
             this.checkBox_exit.Name = "checkBox_exit";
             this.checkBox_exit.Size = new System.Drawing.Size(81, 50);
             this.checkBox_exit.TabIndex = 18;
