@@ -19,7 +19,7 @@ namespace Device
         public string tpDevicePortName = string.Empty;
         /// <summary> 当前控温板通讯状态 / true - 正常 / false - 错误 </summary>
         public bool currentComStatus = true;
-        public bool Enable = true;
+        public bool Enable = false;
         private TempProtocol tpDevice = new TempProtocol();
         /// <summary>
         /// 设备参数值 - 7个
