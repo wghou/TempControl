@@ -34,14 +34,17 @@ namespace TempControl
                 // 波动度
                 float fluc = 0.0f;
                 _device.tpDeviceM.GetFlucDurCountOrLess(_device._runningParameters.steadyTimeSec / _device._runningParameters.readTempIntervalSec, out fluc);
-                this.label_fluc.Text = "波动度: " + fluc.ToString("0.00") + "%/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
+                this.label_fluc.Text = "波动度: " + fluc.ToString("0.000") + "%/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
 
                 // 主槽功率系数
                 //label_powerM.Text = this._device.tpDeviceM.tpPowerShow.ToString("0") + "%";
 
                 // 主槽温度显示值
                 if (this._device.tpDeviceM.temperatures.Count != 0)
-                    label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.00") + "%";
+                    label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.000") + "%";
+
+
+                label_tempValue.Text = this._device.tpDeviceM.tpParam[2].ToString("0.000") + "℃";
 
                 // 主槽温度设定值
                 //label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
@@ -102,7 +105,7 @@ namespace TempControl
             this.BeginInvoke(new EventHandler(delegate
             {
                 this.ErrorAskForClose = true;
-                nlogger.Info("出现错误，用户未做处理，关闭系统软件！");
+                nlogger.Error("出现错误，用户未做处理，关闭系统软件！");
 
                 _device.ShutdownComputer();
 
@@ -160,6 +163,8 @@ namespace TempControl
                 {
                     foreach (var itm in dictCheckBoxsRyM) itm.Value.Enabled = false;
                     foreach (var itm in dictCheckBoxsRyS) itm.Value.Enabled = false;
+
+                    this.label_tempSetM.Text = _device.currentTemptPointState.stateTemp.ToString("0.000");
                 }
             }));
         }

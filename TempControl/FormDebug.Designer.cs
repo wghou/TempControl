@@ -720,6 +720,7 @@
             this.Controls.Add(this.BntUpdate);
             this.Controls.Add(this.BntRead);
             this.Name = "FormDebug";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormDebug";
             this.Load += new System.EventHandler(this.FormDebug_Load);
             this.ResumeLayout(false);

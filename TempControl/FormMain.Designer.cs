@@ -59,6 +59,8 @@
             this.checkBox_clear = new System.Windows.Forms.CheckBox();
             this.label_time = new System.Windows.Forms.Label();
             this.pictureBox_logo = new System.Windows.Forms.PictureBox();
+            this.label_tempValue = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM5)).BeginInit();
@@ -107,7 +109,7 @@
             this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label3.Location = new System.Drawing.Point(365, 12);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(385, 148);
+            this.label3.Size = new System.Drawing.Size(385, 108);
             this.label3.TabIndex = 3;
             // 
             // label_controlState
@@ -397,15 +399,39 @@
             this.pictureBox_logo.TabIndex = 37;
             this.pictureBox_logo.TabStop = false;
             // 
+            // label_tempValue
+            // 
+            this.label_tempValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_tempValue.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_tempValue.Location = new System.Drawing.Point(549, 125);
+            this.label_tempValue.Name = "label_tempValue";
+            this.label_tempValue.Size = new System.Drawing.Size(150, 35);
+            this.label_tempValue.TabIndex = 1;
+            this.label_tempValue.Text = "0.000℃";
+            this.label_tempValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Location = new System.Drawing.Point(439, 135);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(104, 19);
+            this.label6.TabIndex = 35;
+            this.label6.Text = "当前温度值";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(764, 515);
             this.Controls.Add(this.label_time);
             this.Controls.Add(this.checkBox_clear);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.TempPic);
             this.Controls.Add(this.checkBox_data);
             this.Controls.Add(this.groupBox_tempM);
+            this.Controls.Add(this.label_tempValue);
             this.Controls.Add(this.groupBox_ry1);
             this.Controls.Add(this.checkBox_debug);
             this.Controls.Add(this.label_fluc);
@@ -415,7 +441,8 @@
             this.Controls.Add(this.pictureBox_logo);
             this.MaximizeBox = false;
             this.Name = "FormMain";
-            this.Text = "自动控温系统 - 北京三原兆兴";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "自动氧饱和度试验系统 - 北京三原兆兴";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();
@@ -463,5 +490,7 @@
         private System.Windows.Forms.CheckBox checkBox_clear;
         private System.Windows.Forms.Label label_time;
         private System.Windows.Forms.PictureBox pictureBox_logo;
+        private System.Windows.Forms.Label label_tempValue;
+        private System.Windows.Forms.Label label6;
     }
 }

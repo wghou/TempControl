@@ -35,7 +35,7 @@ namespace TempControl
         private const float spaceLeft = 79;
         private const float spaceRight = 25;
         private const float spaceTop = 25;
-        private const float spaceBottom = 25;
+        private const float spaceBottom = 30;
         private const float startText = 30;
 
         // Color parameters
@@ -53,7 +53,7 @@ namespace TempControl
 
         // Time line
         private const int timeColInt = 2;           // Time interval to tag time on x-Axis
-        private const int tempChartFixLen = 601;    // Count of point used in chart, 
+        private const int tempChartFixLen = 361;    // Count of point used in chart, 
                                                     // 661 is suitable for 800*? chart
                                                     // Use for saving temperature data only for chart drawing
         private List<float> tempListForChart;// 所有要绘制的温度数据

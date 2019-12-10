@@ -44,8 +44,8 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["TempM"];
 
+                        tpDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : false;
                         confOK &= tpDeviceM.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
-                        tpDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
                         if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                         else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
                     }
@@ -55,8 +55,8 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["TempS"];
 
+                        tpDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : false;
                         confOK &= tpDeviceS.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
-                        tpDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
                         if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                         else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
                     }
@@ -72,8 +72,8 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["RelayM"];
 
+                        ryDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : false;
                         confOK &= ryDeviceM.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
-                        ryDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
                         if (!confOK) nlogger.Error("配置主继电器失败! 端口号: " + ryDeviceM.ryDevicePortName);
                         else nlogger.Debug("配置主继电器成功! 端口号: " + ryDeviceM.ryDevicePortName);
                     }
@@ -83,8 +83,8 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["RelayS"];
 
+                        ryDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : false;
                         confOK &= ryDeviceS.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
-                        ryDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
                         if (!confOK) nlogger.Error("配置辅继电器失败! 端口号: " + ryDeviceS.ryDevicePortName);
                         else nlogger.Debug("配置辅继电器成功! 端口号: " + ryDeviceS.ryDevicePortName);
                     }

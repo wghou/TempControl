@@ -41,18 +41,24 @@ namespace TempControl
             if (checkBox_ryM4.Checked == true && checkBox_ryM5.Checked == false)
             {
                 label_powerM.Text = "加氧气";
+                checkBox_ryM5.Enabled = false;
             }
             else if (checkBox_ryM4.Checked == false && checkBox_ryM5.Checked == true)
             {
                 label_powerM.Text = "加氮气";
+                checkBox_ryM4.Enabled = false;
             }
             else if (checkBox_ryM4.Checked == false && checkBox_ryM5.Checked == false)
             {
                 label_powerM.Text = "未加气";
+                checkBox_ryM4.Enabled = true;
+                checkBox_ryM5.Enabled = true;
             }
             else
             {
                 label_powerM.Text = "错误";
+                checkBox_ryM4.Enabled = true;
+                checkBox_ryM5.Enabled = true;
             }
         }
 

@@ -3,12 +3,12 @@
   "TempDev": {
     "TempM": {
       "Enable": true,
-      "PortName": "COM3",
+      "PortName": "COM1",
       "BaudRate": 38400
     },
     "TempS": {
       "Enable": false,
-      "PortName": "COM5",
+      "PortName": "COM",
       "BaudRate": 2400
     }
   },
@@ -16,12 +16,12 @@
   "RelayDev": {
     "RelayM": {
       "Enable": true,
-      "PortName": "COM4",
+      "PortName": "COM2",
       "BaudRate": 9600
     },
     "RelayS": {
       "Enable": false,
-      "PortName": "COM9",
+      "PortName": "COM",
       "BaudRate": 9600
     }
   },
@@ -29,12 +29,12 @@
   "SensorDev": {
     "Sensor": {
       "Enable": false,
-      "PortName": "COM4",
+      "PortName": "COM",
       "BaudRate": 9600
     },
     "Bridge": {
       "Enable": false,
-      "PortName": "COM5",
+      "PortName": "COM",
       "BaudRate": 9600
     }
   },
@@ -42,7 +42,7 @@
   "UserPort": {
     "Serial": {
       "Enable": false,
-      "PortName": "COM5",
+      "PortName": "COM",
       "BaudRate": 9600
     },
     "Socket": {

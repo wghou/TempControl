@@ -106,6 +106,7 @@ namespace Device
 
         #endregion
 
+        public float currentTempValue = 0.0f;
 
 
         #region Public Methods
@@ -226,19 +227,39 @@ namespace Device
                 this.sPort.Write(command,0,command.Length);
                 // 读取返回数据
                 Thread.Sleep(intervalOfWR);
-                data = this.sPort.ReadTo(",0,");
-                //Improve: Add BCC checker
-                sPort.DiscardInBuffer();
-                sPort.Close();
             }
             catch (Exception ex)
             {
                 val = 0.0f;
-                nlogger.Error("温控设备读取参数 " + cmd.ToString() + " 异常: " + ex.Message);
+                nlogger.Error("1 - 设备读取参数异常 + 写入命令错误: " + ex.Message);
                 // 关闭串口
                 try { sPort.Close(); } catch { }
                 return Err_t.ComError;
             }
+
+            try
+            {
+                data = this.sPort.ReadTo(",0,");
+            }
+            catch(Exception ex)
+            {
+                nlogger.Error("2 - 设备读取参数异常 + ReadTo(',0,'): " + data + "  error: " + ex.Message);
+
+                if (data.Length == 0)
+                {
+                    data = sPort.ReadExisting();
+                }
+            }
+
+            if(data.Length == 0)
+            {
+                val = 0.0f;
+                nlogger.Error("3 - 设备读取参数异常 + data.Length == 0: ");
+                // 关闭串口
+                try { sPort.Close(); } catch { }
+                return Err_t.ComError;
+            }
+
 
             // 检查错误并提取参数值
             Err_t err = Err_t.NoError;
@@ -247,6 +268,18 @@ namespace Device
             if (!float.TryParse(ds[2], out val))
             {
                 err = Err_t.BCCError;
+                nlogger.Error("4 - 设备读取参数异常: float.TryParse(oxygen Value) error - data: " + data);
+            }
+            else
+            {
+
+            }
+
+
+            if (!float.TryParse(ds[1], out currentTempValue))
+            {
+                err = Err_t.BCCError;
+                nlogger.Error("5 - 设备读取参数异常: float.TryParse(temperature) error - data: " + data);
             }
             else
             {

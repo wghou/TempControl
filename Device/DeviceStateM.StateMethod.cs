@@ -121,9 +121,9 @@ namespace Device
         {
             nlogger.Trace("Idle Entry.");
 
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             WriteRelayDeviceM(true);
         }
 
@@ -235,9 +235,9 @@ namespace Device
             _lastGasState = State.AddOxygen;
 
             // 加氧
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             WriteRelayDeviceM(true);
 
             nlogger.Trace("TempUp Entry.");
@@ -300,9 +300,9 @@ namespace Device
             _lastGasState = State.AddNitrogen;
 
             // 加氮
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
             WriteRelayDeviceM(true);
 
             nlogger.Trace("TempDown Entry.");
@@ -363,9 +363,9 @@ namespace Device
             nlogger.Trace("Stand Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             WriteRelayDeviceM(true);
         }
 
@@ -424,9 +424,9 @@ namespace Device
             nlogger.Trace("Steady Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             WriteRelayDeviceM(true);
         }
 
@@ -536,7 +536,7 @@ namespace Device
         {
             nlogger.Debug("StopTick: " + tic.ToString() + " ms");
 
-            //System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
+            System.Diagnostics.Process.Start("shutdown.exe", "-s -t 60");
 
             _machine.Fire(Trigger.FinishedAll);
         }
