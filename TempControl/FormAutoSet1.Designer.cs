@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.button_cancel = new System.Windows.Forms.Button();
             this.textBox_tpSetM = new System.Windows.Forms.TextBox();
             this.button_add = new System.Windows.Forms.Button();
@@ -52,23 +52,13 @@
             this.textBox_advanceM = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox_fuzzyM = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox_ratioM = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textBox_integM = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.textBox_powerM = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.index = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tpSet = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.advance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fuzzy = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ratio = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.integration = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.power = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.finish = new System.Windows.Forms.DataGridViewLinkColumn();
             this.edit = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.label8 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.button_chkParam = new System.Windows.Forms.Button();
             this.checkBox_start = new System.Windows.Forms.CheckBox();
@@ -80,7 +70,7 @@
             // 
             // button_cancel
             // 
-            this.button_cancel.Location = new System.Drawing.Point(672, 332);
+            this.button_cancel.Location = new System.Drawing.Point(534, 332);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(128, 60);
             this.button_cancel.TabIndex = 4;
@@ -91,7 +81,7 @@
             // textBox_tpSetM
             // 
             this.textBox_tpSetM.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox_tpSetM.Location = new System.Drawing.Point(50, 429);
+            this.textBox_tpSetM.Location = new System.Drawing.Point(40, 429);
             this.textBox_tpSetM.Name = "textBox_tpSetM";
             this.textBox_tpSetM.Size = new System.Drawing.Size(72, 21);
             this.textBox_tpSetM.TabIndex = 6;
@@ -100,7 +90,7 @@
             // 
             // button_add
             // 
-            this.button_add.Location = new System.Drawing.Point(672, 264);
+            this.button_add.Location = new System.Drawing.Point(534, 264);
             this.button_add.Name = "button_add";
             this.button_add.Size = new System.Drawing.Size(128, 60);
             this.button_add.TabIndex = 7;
@@ -111,16 +101,16 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(40, 408);
+            this.label1.Location = new System.Drawing.Point(30, 408);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 12);
             this.label1.TabIndex = 10;
-            this.label1.Text = "氧气浓度设定值";
+            this.label1.Text = "氧饱和度设定值";
             // 
             // buttonNegtive
             // 
             this.buttonNegtive.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonNegtive.Location = new System.Drawing.Point(604, 264);
+            this.buttonNegtive.Location = new System.Drawing.Point(466, 264);
             this.buttonNegtive.Name = "buttonNegtive";
             this.buttonNegtive.Size = new System.Drawing.Size(60, 60);
             this.buttonNegtive.TabIndex = 51;
@@ -132,7 +122,7 @@
             // buttonClear
             // 
             this.buttonClear.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonClear.Location = new System.Drawing.Point(740, 128);
+            this.buttonClear.Location = new System.Drawing.Point(602, 128);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(60, 60);
             this.buttonClear.TabIndex = 50;
@@ -144,7 +134,7 @@
             // buttonBack
             // 
             this.buttonBack.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonBack.Location = new System.Drawing.Point(740, 60);
+            this.buttonBack.Location = new System.Drawing.Point(602, 60);
             this.buttonBack.Name = "buttonBack";
             this.buttonBack.Size = new System.Drawing.Size(60, 60);
             this.buttonBack.TabIndex = 49;
@@ -156,7 +146,7 @@
             // buttonPoint
             // 
             this.buttonPoint.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.buttonPoint.Location = new System.Drawing.Point(740, 196);
+            this.buttonPoint.Location = new System.Drawing.Point(602, 196);
             this.buttonPoint.Name = "buttonPoint";
             this.buttonPoint.Size = new System.Drawing.Size(60, 60);
             this.buttonPoint.TabIndex = 48;
@@ -168,7 +158,7 @@
             // button0
             // 
             this.button0.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button0.Location = new System.Drawing.Point(536, 264);
+            this.button0.Location = new System.Drawing.Point(398, 264);
             this.button0.Name = "button0";
             this.button0.Size = new System.Drawing.Size(60, 60);
             this.button0.TabIndex = 47;
@@ -180,7 +170,7 @@
             // button8
             // 
             this.button8.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button8.Location = new System.Drawing.Point(604, 60);
+            this.button8.Location = new System.Drawing.Point(466, 60);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(60, 60);
             this.button8.TabIndex = 46;
@@ -192,7 +182,7 @@
             // button9
             // 
             this.button9.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button9.Location = new System.Drawing.Point(672, 60);
+            this.button9.Location = new System.Drawing.Point(534, 60);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(60, 60);
             this.button9.TabIndex = 45;
@@ -204,7 +194,7 @@
             // button4
             // 
             this.button4.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button4.Location = new System.Drawing.Point(536, 128);
+            this.button4.Location = new System.Drawing.Point(398, 128);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(60, 60);
             this.button4.TabIndex = 44;
@@ -216,7 +206,7 @@
             // button5
             // 
             this.button5.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button5.Location = new System.Drawing.Point(604, 128);
+            this.button5.Location = new System.Drawing.Point(466, 128);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(60, 60);
             this.button5.TabIndex = 43;
@@ -228,7 +218,7 @@
             // button6
             // 
             this.button6.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button6.Location = new System.Drawing.Point(672, 128);
+            this.button6.Location = new System.Drawing.Point(534, 128);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(60, 60);
             this.button6.TabIndex = 42;
@@ -240,7 +230,7 @@
             // button7
             // 
             this.button7.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button7.Location = new System.Drawing.Point(536, 60);
+            this.button7.Location = new System.Drawing.Point(398, 60);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(60, 60);
             this.button7.TabIndex = 41;
@@ -252,7 +242,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button1.Location = new System.Drawing.Point(536, 196);
+            this.button1.Location = new System.Drawing.Point(398, 196);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(60, 60);
             this.button1.TabIndex = 40;
@@ -264,7 +254,7 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button3.Location = new System.Drawing.Point(672, 196);
+            this.button3.Location = new System.Drawing.Point(534, 196);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(60, 60);
             this.button3.TabIndex = 39;
@@ -276,7 +266,7 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button2.Location = new System.Drawing.Point(604, 196);
+            this.button2.Location = new System.Drawing.Point(466, 196);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(60, 60);
             this.button2.TabIndex = 38;
@@ -288,98 +278,42 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(135, 408);
+            this.label3.Location = new System.Drawing.Point(125, 408);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 12);
+            this.label3.Size = new System.Drawing.Size(41, 12);
             this.label3.TabIndex = 55;
-            this.label3.Text = "超前调整值";
+            this.label3.Text = "参数 1";
             // 
             // textBox_advanceM
             // 
             this.textBox_advanceM.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox_advanceM.Location = new System.Drawing.Point(128, 429);
+            this.textBox_advanceM.Location = new System.Drawing.Point(118, 429);
             this.textBox_advanceM.Name = "textBox_advanceM";
             this.textBox_advanceM.Size = new System.Drawing.Size(72, 21);
             this.textBox_advanceM.TabIndex = 54;
+            this.textBox_advanceM.Text = "10.0";
             this.textBox_advanceM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textBox_advanceM.Enter += new System.EventHandler(this.textBox_advance_Enter);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(213, 408);
+            this.label4.Location = new System.Drawing.Point(203, 408);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(53, 12);
+            this.label4.Size = new System.Drawing.Size(41, 12);
             this.label4.TabIndex = 57;
-            this.label4.Text = "模糊系数";
+            this.label4.Text = "参数 2";
             // 
             // textBox_fuzzyM
             // 
             this.textBox_fuzzyM.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox_fuzzyM.Location = new System.Drawing.Point(206, 429);
+            this.textBox_fuzzyM.Location = new System.Drawing.Point(196, 429);
             this.textBox_fuzzyM.Name = "textBox_fuzzyM";
             this.textBox_fuzzyM.Size = new System.Drawing.Size(72, 21);
             this.textBox_fuzzyM.TabIndex = 56;
+            this.textBox_fuzzyM.Text = "10.0";
             this.textBox_fuzzyM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.textBox_fuzzyM.Enter += new System.EventHandler(this.textBox_fuzzy_Enter);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(291, 408);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(53, 12);
-            this.label5.TabIndex = 59;
-            this.label5.Text = "比例系数";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // textBox_ratioM
-            // 
-            this.textBox_ratioM.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox_ratioM.Location = new System.Drawing.Point(284, 429);
-            this.textBox_ratioM.Name = "textBox_ratioM";
-            this.textBox_ratioM.Size = new System.Drawing.Size(72, 21);
-            this.textBox_ratioM.TabIndex = 58;
-            this.textBox_ratioM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox_ratioM.Enter += new System.EventHandler(this.textBox_ratio_Enter);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(369, 408);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 12);
-            this.label6.TabIndex = 61;
-            this.label6.Text = "积分系数";
-            // 
-            // textBox_integM
-            // 
-            this.textBox_integM.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox_integM.Location = new System.Drawing.Point(362, 429);
-            this.textBox_integM.Name = "textBox_integM";
-            this.textBox_integM.Size = new System.Drawing.Size(72, 21);
-            this.textBox_integM.TabIndex = 60;
-            this.textBox_integM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox_integM.Enter += new System.EventHandler(this.textBox_integ_Enter);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(447, 408);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 12);
-            this.label7.TabIndex = 63;
-            this.label7.Text = "功率系数";
-            // 
-            // textBox_powerM
-            // 
-            this.textBox_powerM.BackColor = System.Drawing.SystemColors.Control;
-            this.textBox_powerM.Location = new System.Drawing.Point(440, 429);
-            this.textBox_powerM.Name = "textBox_powerM";
-            this.textBox_powerM.Size = new System.Drawing.Size(72, 21);
-            this.textBox_powerM.TabIndex = 62;
-            this.textBox_powerM.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox_powerM.Enter += new System.EventHandler(this.textBox_power_Enter);
             // 
             // dataGridView1
             // 
@@ -387,17 +321,14 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.index,
             this.tpSet,
             this.advance,
             this.fuzzy,
-            this.ratio,
-            this.integration,
-            this.power,
             this.finish,
             this.edit});
             this.dataGridView1.Location = new System.Drawing.Point(0, 1);
@@ -407,7 +338,7 @@
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(530, 391);
+            this.dataGridView1.Size = new System.Drawing.Size(376, 391);
             this.dataGridView1.TabIndex = 9;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
@@ -424,16 +355,15 @@
             // 
             // tpSet
             // 
-            this.tpSet.HeaderText = "温度设定值";
+            this.tpSet.HeaderText = "氧饱和度设定值";
             this.tpSet.Name = "tpSet";
             this.tpSet.ReadOnly = true;
             this.tpSet.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.tpSet.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.tpSet.Width = 72;
             // 
             // advance
             // 
-            this.advance.HeaderText = "超前调整值";
+            this.advance.HeaderText = "参数 1";
             this.advance.Name = "advance";
             this.advance.ReadOnly = true;
             this.advance.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -442,39 +372,12 @@
             // 
             // fuzzy
             // 
-            this.fuzzy.HeaderText = "模糊系数";
+            this.fuzzy.HeaderText = "参数 2";
             this.fuzzy.Name = "fuzzy";
             this.fuzzy.ReadOnly = true;
             this.fuzzy.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.fuzzy.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.fuzzy.Width = 60;
-            // 
-            // ratio
-            // 
-            this.ratio.HeaderText = "比例系数";
-            this.ratio.Name = "ratio";
-            this.ratio.ReadOnly = true;
-            this.ratio.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ratio.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ratio.Width = 60;
-            // 
-            // integration
-            // 
-            this.integration.HeaderText = "积分系数";
-            this.integration.Name = "integration";
-            this.integration.ReadOnly = true;
-            this.integration.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.integration.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.integration.Width = 60;
-            // 
-            // power
-            // 
-            this.power.HeaderText = "功率系数";
-            this.power.Name = "power";
-            this.power.ReadOnly = true;
-            this.power.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.power.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.power.Width = 60;
             // 
             // finish
             // 
@@ -491,27 +394,18 @@
             this.edit.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.edit.Width = 40;
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(7, 429);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(29, 12);
-            this.label8.TabIndex = 64;
-            this.label8.Text = "主槽";
-            // 
             // label10
             // 
             this.label10.Font = new System.Drawing.Font("宋体", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label10.Location = new System.Drawing.Point(591, 14);
+            this.label10.Location = new System.Drawing.Point(453, 14);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(165, 39);
             this.label10.TabIndex = 73;
-            this.label10.Text = "温度点设定";
+            this.label10.Text = "氧饱和度设定";
             // 
             // button_chkParam
             // 
-            this.button_chkParam.Location = new System.Drawing.Point(536, 404);
+            this.button_chkParam.Location = new System.Drawing.Point(398, 404);
             this.button_chkParam.Name = "button_chkParam";
             this.button_chkParam.Size = new System.Drawing.Size(128, 60);
             this.button_chkParam.TabIndex = 74;
@@ -522,7 +416,7 @@
             // checkBox_start
             // 
             this.checkBox_start.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_start.Location = new System.Drawing.Point(536, 332);
+            this.checkBox_start.Location = new System.Drawing.Point(398, 332);
             this.checkBox_start.Name = "checkBox_start";
             this.checkBox_start.Size = new System.Drawing.Size(128, 60);
             this.checkBox_start.TabIndex = 75;
@@ -536,7 +430,7 @@
             this.checkBox_shutDown.AutoSize = true;
             this.checkBox_shutDown.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.checkBox_shutDown.ForeColor = System.Drawing.Color.Red;
-            this.checkBox_shutDown.Location = new System.Drawing.Point(688, 418);
+            this.checkBox_shutDown.Location = new System.Drawing.Point(550, 418);
             this.checkBox_shutDown.Name = "checkBox_shutDown";
             this.checkBox_shutDown.Size = new System.Drawing.Size(112, 36);
             this.checkBox_shutDown.TabIndex = 76;
@@ -548,18 +442,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(812, 471);
+            this.ClientSize = new System.Drawing.Size(680, 471);
             this.Controls.Add(this.checkBox_shutDown);
             this.Controls.Add(this.checkBox_start);
             this.Controls.Add(this.button_chkParam);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.textBox_powerM);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox_integM);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox_ratioM);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.textBox_fuzzyM);
             this.Controls.Add(this.label3);
@@ -588,7 +475,7 @@
             this.MinimizeBox = false;
             this.Name = "FormAutoSet1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "自动控温参数设置";
+            this.Text = "自动氧饱和度控制参数设置";
             this.Load += new System.EventHandler(this.FormAutoSet1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
@@ -619,14 +506,7 @@
         private System.Windows.Forms.TextBox textBox_advanceM;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBox_fuzzyM;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox_ratioM;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox_integM;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox_powerM;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button_chkParam;
         private System.Windows.Forms.CheckBox checkBox_start;
@@ -637,9 +517,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn tpSet;
         private System.Windows.Forms.DataGridViewTextBoxColumn advance;
         private System.Windows.Forms.DataGridViewTextBoxColumn fuzzy;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ratio;
-        private System.Windows.Forms.DataGridViewTextBoxColumn integration;
-        private System.Windows.Forms.DataGridViewTextBoxColumn power;
         private System.Windows.Forms.DataGridViewLinkColumn finish;
         private System.Windows.Forms.DataGridViewLinkColumn edit;
     }

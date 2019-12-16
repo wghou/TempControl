@@ -29,7 +29,7 @@ namespace Device
         ushort startAddress = 0;
         /// <summary>串口读-写时间间隔</summary>
         private const int intervalOfWR = 20;
-        public int numCoils = 16;
+        public int numCoils = 8;
 
         /// <summary>
         /// 继电器断网保护功能，如果勾选，则需要持续与继电器通讯

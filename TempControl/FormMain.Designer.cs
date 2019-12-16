@@ -275,7 +275,7 @@
             this.groupBox_ry1.Size = new System.Drawing.Size(228, 243);
             this.groupBox_ry1.TabIndex = 31;
             this.groupBox_ry1.TabStop = false;
-            this.groupBox_ry1.Text = "继电器模块 1";
+            this.groupBox_ry1.Text = "继电器模块";
             // 
             // pictureBox_ryM5
             // 
@@ -320,7 +320,7 @@
             this.groupBox_tempM.Size = new System.Drawing.Size(333, 165);
             this.groupBox_tempM.TabIndex = 33;
             this.groupBox_tempM.TabStop = false;
-            this.groupBox_tempM.Text = "水槽 1";
+            this.groupBox_tempM.Text = "海水槽";
             // 
             // label5
             // 
@@ -442,7 +442,7 @@
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "自动氧饱和度试验系统 - 北京三原兆兴";
+            this.Text = "氧饱和系统 - 北京三原兆兴";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();

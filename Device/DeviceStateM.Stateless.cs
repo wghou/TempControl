@@ -71,7 +71,7 @@ namespace Device
         /// <summary>
         /// 上一次接通的气体。也就是管路中残存的气体类型
         /// </summary>
-        private State _lastGasState = State.AddNitrogen;
+        private State _lastGasState = State.Idle;
 
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Device
                 .Permit(Trigger.StartStand, State.Stand)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC)
-                .Ignore(Trigger.NeedOxygen);
+                .InternalTransition(Trigger.NeedOxygen, AddOxygenRefresh);
 
 
             // state AddNitrogen
@@ -149,7 +149,7 @@ namespace Device
                 .Permit(Trigger.StartStand, State.Stand)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC)
-                .Ignore(Trigger.NeedNitrogen);
+                .InternalTransition(Trigger.NeedNitrogen, addNitrogenRefresh);
 
 
             // state Stand

@@ -33,18 +33,18 @@ namespace TempControl
             {
                 // 波动度
                 float fluc = 0.0f;
-                _device.tpDeviceM.GetFlucDurCountOrLess(_device._runningParameters.steadyTimeSec / _device._runningParameters.readTempIntervalSec, out fluc);
-                this.label_fluc.Text = "波动度: " + fluc.ToString("0.000") + "%/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
+                _device.tpDeviceM.GetFlucDurCountOrLess(300 / _device._runningParameters.readTempIntervalSec, out fluc);
+                this.label_fluc.Text = "波动度: " + fluc.ToString("0.000") + "%/" + (300 / 60).ToString("0") + "分钟";
 
                 // 主槽功率系数
                 //label_powerM.Text = this._device.tpDeviceM.tpPowerShow.ToString("0") + "%";
 
-                // 主槽温度显示值
+                // 氧饱和度显示值
                 if (this._device.tpDeviceM.temperatures.Count != 0)
                     label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.000") + "%";
 
-
-                label_tempValue.Text = this._device.tpDeviceM.tpParam[2].ToString("0.000") + "℃";
+                // 实时温度值
+                label_tempValue.Text = this._device.tpDeviceM.tpTempShow.ToString("0.000") + "℃";
 
                 // 主槽温度设定值
                 //label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";

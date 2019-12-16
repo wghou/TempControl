@@ -44,6 +44,8 @@ namespace Device
         public object tpShowLocker = new object();
         public List<float> temperaturesShow = new List<float>();
 
+        public float tpTempShow = 0.0f;
+
         /// <summary>
         /// 温控设备设备线程锁，同一时间只允许单一线程访问设备资源（串口 / 数据）
         /// </summary>
@@ -189,7 +191,7 @@ namespace Device
                 // 从下位机读取温度显示值
                 err = tpDevice.ReadData(TempProtocol.Cmd_t.TempShow, out val);
 
-                tpParam[2] = tpDevice.currentTempValue;
+                tpTempShow = tpDevice.currentTempValue;
 
                 if(err == TempProtocol.Err_t.NoError)
                 {
@@ -230,7 +232,7 @@ namespace Device
                 // 从下位机读取温度显示值
                 err = tpDevice.ReadData(TempProtocol.Cmd_t.TempShow, out val);
 
-                tpParam[2] = tpDevice.currentTempValue;
+                tpTempShow = tpDevice.currentTempValue;
 
                 try { val = (float)Math.Round(val, digits); } catch { }
 

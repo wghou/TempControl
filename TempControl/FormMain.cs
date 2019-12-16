@@ -162,10 +162,12 @@ namespace TempControl
                 pictureBox_logo.Dispose();
             }));
 
-
-            _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_7] = true;
-            RySetHandler setRyMStatus = new RySetHandler(this._device.WriteRelayDeviceM);
-            setRyMStatus.BeginInvoke(false, null, null);
+            if(confDevice == true)
+            {
+                _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_7] = true;
+                RySetHandler setRyMStatus = new RySetHandler(this._device.WriteRelayDeviceM);
+                setRyMStatus.BeginInvoke(false, null, null);
+            }
         }
 
 
@@ -173,8 +175,6 @@ namespace TempControl
         // Button Click 事件
         private void checkBox_auto_Click(object sender, EventArgs e)
         {
-            return;
-
             bool fmExit = false;
             foreach (Form fm in Application.OpenForms)
             {

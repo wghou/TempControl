@@ -94,9 +94,6 @@ namespace Device
             State dest = act.Destination;
 
             // 状态计数器 清零
-            // wghou
-            // 如果是 ignore 里面的事件，是否会触发 onTransitionAction，也就是计数器会不会清零
-            // 至少这样就能知道，一个状态（供氧 / 供氮）多久了
             currentTemptPointState.stateCounts = 0;
 
             StateChangedEvent?.Invoke(dest);
@@ -207,7 +204,7 @@ namespace Device
                 }
                 else
                 {
-                    _machine.Fire(Trigger.NeedNitrogen);
+                    _machine.Fire(Trigger.NeedOxygen);
                 }
             }
         }
@@ -228,7 +225,33 @@ namespace Device
         private void AddOxygenEntry()
         {
             // 加氮 5 分钟
-            currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+            // wghou
+            float gasExpect = currentTemptPointState.stateTemp - tpDeviceM.temperatures.Last();
+            if ( gasExpect > currentTemptPointState.paramM[1])
+            {
+                currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+            }
+            else
+            {
+                uint gasCount = _runningParameters.addGasHoldCounts;
+                try
+                {
+                    float gasFluc = tpDeviceM.temperatures.Last() - tpDeviceM.temperatures[(int)_runningParameters.addGasHoldCounts];
+                    gasCount = (uint)(gasExpect / gasFluc * _runningParameters.addGasHoldCounts);
+
+                    if (_lastGasState == State.AddNitrogen) gasCount += 12;
+                }
+                catch(Exception ex) { }
+                 
+                if(gasCount > _runningParameters.addGasHoldCounts)
+                {
+                    currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+                }
+                else
+                {
+                    currentTemptPointState.stateHoldCounts = gasCount;
+                }
+            }
 
 
             // 记录当前管路中的气体类型
@@ -286,6 +309,45 @@ namespace Device
         }
 
 
+        /// <summary>
+        /// 更新
+        /// </summary>
+        private void AddOxygenRefresh()
+        {
+            currentTemptPointState.stateCounts = 0;
+
+
+            // 加氧 5 分钟
+            // wghou
+            float gasExpect = currentTemptPointState.stateTemp - tpDeviceM.temperatures.Last();
+            if (gasExpect > currentTemptPointState.paramM[1])
+            {
+                currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+            }
+            else
+            {
+                uint gasCount = _runningParameters.addGasHoldCounts;
+                try
+                {
+                    float gasFluc = tpDeviceM.temperatures.Last() - tpDeviceM.temperatures[(int)_runningParameters.addGasHoldCounts];
+                    gasCount = (uint)(gasExpect / gasFluc * _runningParameters.addGasHoldCounts);
+                }
+                catch (Exception ex) { }
+
+                if (gasCount > _runningParameters.addGasHoldCounts)
+                {
+                    currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+                }
+                else
+                {
+                    currentTemptPointState.stateHoldCounts = gasCount;
+                }
+            }
+
+            nlogger.Trace("Add Oxygen refresh state hold counts.");
+        }
+
+
 
         /// <summary>
         /// TempDown Entry
@@ -293,8 +355,33 @@ namespace Device
         private void AddNitrogenEntry()
         {
             // 加氮 5 分钟
-            currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+            // wghou
+            float gasExpect = tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp;
+            if (gasExpect > currentTemptPointState.paramM[1])
+            {
+                currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+            }
+            else
+            {
+                uint gasCount = _runningParameters.addGasHoldCounts;
+                try
+                {
+                    float gasFluc = tpDeviceM.temperatures[(int)_runningParameters.addGasHoldCounts] - tpDeviceM.temperatures.Last();
+                    gasCount = (uint)(gasExpect / gasFluc * _runningParameters.addGasHoldCounts);
 
+                    if (_lastGasState == State.AddOxygen) gasCount += 12;
+                }
+                catch (Exception ex) { }
+
+                if (gasCount > _runningParameters.addGasHoldCounts)
+                {
+                    currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+                }
+                else
+                {
+                    currentTemptPointState.stateHoldCounts = gasCount;
+                }
+            }
 
             // 记录当前管路中的气体类型
             _lastGasState = State.AddNitrogen;
@@ -349,6 +436,45 @@ namespace Device
         private void AddNitrogenExit()
         {
             nlogger.Trace("TempDown Exit.");
+        }
+
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        private void addNitrogenRefresh()
+        {
+            currentTemptPointState.stateCounts = 0;
+
+            // 加氮 5 分钟
+            // wghou
+            float gasExpect = tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp;
+            if (gasExpect > currentTemptPointState.paramM[1])
+            {
+                currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+            }
+            else
+            {
+                uint gasCount = _runningParameters.addGasHoldCounts;
+                try
+                {
+                    float gasFluc = tpDeviceM.temperatures[(int)_runningParameters.addGasHoldCounts] - tpDeviceM.temperatures.Last();
+                    gasCount = (uint)(gasExpect / gasFluc * _runningParameters.addGasHoldCounts);
+                }
+                catch (Exception ex) { }
+
+                if (gasCount > _runningParameters.addGasHoldCounts)
+                {
+                    currentTemptPointState.stateHoldCounts = _runningParameters.addGasHoldCounts;
+                }
+                else
+                {
+                    currentTemptPointState.stateHoldCounts = gasCount;
+                }
+            }
+
+
+            nlogger.Trace("Add Nitrogen refresh state hold counts.");
         }
 
 

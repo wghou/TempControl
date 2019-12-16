@@ -34,21 +34,16 @@ namespace TempControl
 
 
         private TextBox tx = null;
-        private TextBox[] paramMTextBox = new TextBox[7];
-        private float[] paramMCache = new float[7];
-        private float[] paramSCache = new float[7];
+        private TextBox[] paramMTextBox = new TextBox[3];
+        private float[] paramMCache = new float[3];
 
         public FormAutoSet1(Device.DeviceStateM dev)
         {
             InitializeComponent();
             devicesAll = dev;
             paramMTextBox[0] = textBox_tpSetM;
-            paramMTextBox[1] = null;
-            paramMTextBox[2] = textBox_advanceM;
-            paramMTextBox[3] = textBox_fuzzyM;
-            paramMTextBox[4] = textBox_ratioM;
-            paramMTextBox[5] = textBox_integM;
-            paramMTextBox[6] = textBox_powerM;
+            paramMTextBox[1] = textBox_advanceM;
+            paramMTextBox[2] = textBox_fuzzyM;
 
             this.timer1.Interval = 10000;
             this.timer1.Tick += Timer1_Tick;
@@ -130,12 +125,8 @@ namespace TempControl
             index.DataPropertyName = "Index";
 
             tpSet.DataPropertyName = "TemptSet";
-            //tpAdjust.DataPropertyName = "TempAdjust";
-            advance.DataPropertyName = "Advance";
-            fuzzy.DataPropertyName = "Fuzzy";
-            ratio.DataPropertyName = "Ratio";
-            integration.DataPropertyName = "Integration";
-            power.DataPropertyName = "Power";
+            advance.DataPropertyName = "TempAdjust";
+            fuzzy.DataPropertyName = "Advance";
             edit.DataPropertyName = "Edit";
             finish.DataPropertyName = "Finish";
 
@@ -157,6 +148,13 @@ namespace TempControl
                         ts.finished = st.finished;
                         paramList.Add(ts);
                     }
+
+                    // 输入窗口的默认数值
+                    //devicesAll.tpDeviceM.tpParam.CopyTo(paramMCache, 0);
+                    Array.Copy(devicesAll.tpDeviceM.tpParam, paramMCache, 3);
+
+                    paramMTextBox[1].Text = paramMCache[1].ToString("0.000");
+                    paramMTextBox[2].Text = paramMCache[2].ToString("0.000");
                 }
                 else
                 {
@@ -178,14 +176,6 @@ namespace TempControl
                                 if (float.TryParse(parmM[1], out vl)) ts.paramM[1] = vl;
                                 else break;
                                 if (float.TryParse(parmM[2], out vl)) ts.paramM[2] = vl;
-                                else break;
-                                if (float.TryParse(parmM[3], out vl)) ts.paramM[3] = vl;
-                                else break;
-                                if (float.TryParse(parmM[4], out vl)) ts.paramM[4] = vl;
-                                else break;
-                                if (float.TryParse(parmM[5], out vl)) ts.paramM[5] = vl;
-                                else break;
-                                if (float.TryParse(parmM[6], out vl)) ts.paramM[6] = vl;
                                 else break;
                             }
                             else
@@ -236,21 +226,6 @@ namespace TempControl
 
             // 更新表格显示
             updateDataGridView();
-
-            // 输入窗口的默认数值
-            devicesAll.tpDeviceM.tpParam.CopyTo(paramMCache, 0);
-            for (int i = 2; i < 7; i++)
-            {
-                if (i < 3)
-                {
-                    paramMTextBox[i].Text = paramMCache[i].ToString("0.000");
-                }
-                else
-                {
-                    paramMTextBox[i].Text = paramMCache[i].ToString("0");
-                }
-            }
-
         }
 
 
@@ -421,15 +396,8 @@ namespace TempControl
 
             float valuef = 0.0f;
             // 主槽参数
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 3; i++)
             {
-                // 跳过温度修订值，其值设为 0
-                if (i == 1)
-                {
-                    paramMCache[1] = 0;
-                    continue;
-                }
-
                 // 将相应的参数加入到 paramMCache 中
                 if (float.TryParse(this.paramMTextBox[i].Text, out valuef))
                 {
@@ -533,27 +501,13 @@ namespace TempControl
             if (dataGridView1.Columns[e.ColumnIndex].Name == "edit")
             {
                 // 获取该行的参数
-                paramList[e.RowIndex].paramM.CopyTo(paramMCache, 0);
+                //paramList[e.RowIndex].paramM.CopyTo(paramMCache, 0);
+                Array.Copy(paramList[e.RowIndex].paramM, paramMCache, 3);
                 //paramList[e.RowIndex / 2].paramS.CopyTo(paramSCache, 0);
                 // 将参数写入到文本框中
-                for (int i = 0; i < 7; i++)
+                for (int i = 0; i < 3; i++)
                 {
-                    // 跳过温度修订值，其值设为 0
-                    if (i == 1)
-                    {
-                        //paramMCache[1] = 0;
-                        continue;
-                    }
-
-
-                    if (i < 3)
-                    {
-                        paramMTextBox[i].Text = paramMCache[i].ToString("0.000");
-                    }
-                    else
-                    {
-                        paramMTextBox[i].Text = paramMCache[i].ToString("0");
-                    }
+                    paramMTextBox[i].Text = paramMCache[i].ToString("0.000");
                 }
                 // 从 paramList 中删除该项
                 paramList.RemoveAt(e.RowIndex);
@@ -651,6 +605,8 @@ namespace TempControl
         /// <param name="e"></param>
         private void button_chk_Click(object sender, EventArgs e)
         {
+            return;
+
             float val = 0.0f;
             // 从数据库中查询主槽温度设定参数
             if (float.TryParse(textBox_tpSetM.Text, out val))
@@ -1021,42 +977,6 @@ namespace TempControl
             }
 
             tx = this.textBox_fuzzyM;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-            dataGridView1.ClearSelection();
-        }
-
-        private void textBox_ratio_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox_ratioM;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-            dataGridView1.ClearSelection();
-        }
-
-        private void textBox_integ_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox_integM;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-            dataGridView1.ClearSelection();
-        }
-
-        private void textBox_power_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox_powerM;
             tx.BackColor = System.Drawing.SystemColors.Window;
             dataGridView1.ClearSelection();
         }

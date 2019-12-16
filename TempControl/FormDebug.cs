@@ -14,63 +14,33 @@ namespace TempControl
     {
         private Device.RunningParamStruct paramAll;
 
-        private TextBox[] devParam = new TextBox[19];
+        private TextBox[] devParam = new TextBox[7];
         private TextBox tx = null;
 
         public FormDebug(Device.RunningParamStruct pms)
         {
             InitializeComponent();
             paramAll = pms;
-            devParam[0] = textBox1;
-            
-            devParam[2] = textBox3;
-            devParam[3] = textBox4;
-            devParam[4] = textBox5;
-            devParam[5] = textBox6;
-            devParam[6] = textBox7;
-            devParam[7] = textBox8;
-            devParam[8] = textBox9;
-            devParam[9] = textBox10;
-            devParam[10] = textBox11;
-            devParam[11] = textBox12;
-            devParam[12] = textBox13;
-            devParam[13] = textBox14;
-            devParam[14] = textBox15;
-            devParam[15] = textBox16;
-            devParam[16] = textBox17;
-            devParam[17] = textBox18;
-
-            devParam[1] = textBox2;
-            devParam[18] = textBox19;
+            devParam[0] = textBox0;
+            devParam[1] = textBox1;
+            devParam[2] = textBox2;
+            devParam[3] = textBox3;
+            devParam[4] = textBox4;
+            devParam[5] = textBox5;
+            devParam[6] = textBox6;
         }
 
         private void loadFromParam()
         {
-            textBox1.Text = paramAll.steadyTimeSec.ToString("0");
-            textBox3.Text = paramAll.flucValue.ToString("0.0000");
-            textBox4.Text = paramAll.controlTempThr.ToString("0.0000");
-            textBox5.Text = paramAll.tempNotUpOrDownFaultTimeSec.ToString("0");
-            textBox6.Text = paramAll.tempNotUpOrDwonFaultThr.ToString("0.0000");
-            textBox7.Text = paramAll.flucFaultTimeSec.ToString("0");
-            textBox8.Text = paramAll.flucFaultThr.ToString("0.0000");
-            textBox9.Text = paramAll.tempBiasFaultThr.ToString("0.0000");
-            textBox10.Text = paramAll.tempMaxValue.ToString("0.0000");
-            textBox11.Text = paramAll.tempMinValue.ToString("0.0000");
-            textBox12.Text = "0";
-            textBox13.Text = "0";
-            //textBox12.Text = paramAll.tpBridge.tpBridgeChannel.ToString("0");
-            //textBox13.Text = paramAll.tpBridge.tpBridgeReadInterval.ToString("0");
-            textBox14.Text = paramAll.subCoolAndCircleShutdownThr.ToString("0.0000");
-            textBox15.Text = paramAll.tempDownCoolFShutdownDevision.ToString("0.0000");
-            textBox16.Text = paramAll.tempDownCoolFShutdownHot.ToString("0.0000");
-            textBox17.Text = paramAll.tempDownCoolFShutdownCool.ToString("0.0000");
-            textBox18.Text = paramAll.tempNotUpOrDwonFaultThrLow.ToString("0.0000");
-
+            textBox0.Text = paramAll.readTempIntervalSec.ToString("0");
+            textBox1.Text = paramAll.flucValue.ToString("0.000");
+            textBox1.Text = paramAll.controlTempThr.ToString("0.0000");
+            textBox2.Text = paramAll.controlTempThr.ToString("0.0000");
+            textBox3.Text = paramAll.tempMaxValue.ToString("0.0000");
+            textBox4.Text = paramAll.tempMinValue.ToString("0.0000");
+            textBox5.Text = paramAll.standHoldCounts.ToString("0");
+            textBox6.Text = paramAll.addGasHoldCounts.ToString("0");
             comboBox_sort.SelectedIndex = paramAll.sort == "ascend" ? 0 : 1;
-            comboBox_elect.SelectedIndex = paramAll.ryElecEnable == true ? 0 : 1;
-
-            textBox2.Text = paramAll.standHoldCounts.ToString();
-            textBox19.Text = paramAll.addGasHoldCounts.ToString();
         }
         private void FormDebug_Load(object sender, EventArgs e)
         {
@@ -80,9 +50,9 @@ namespace TempControl
 
         private void BntUpdate_Click(object sender, EventArgs e)
         {
-            float[] paramCache = new float[19];
+            float[] paramCache = new float[7];
             // 设置温控设备参数
-            for (int i = 0; i < 18; i++)
+            for (int i = 0; i < 7; i++)
             {
                 float newVal = 0.0f;
 
@@ -97,24 +67,20 @@ namespace TempControl
                 paramCache[i] = newVal;
             }
 
-            paramAll.steadyTimeSec = (int)paramCache[0];
-            paramAll.flucValue = paramCache[2];
-            paramAll.controlTempThr = paramCache[3];
-            paramAll.tempNotUpOrDownFaultTimeSec = (int)paramCache[4];
-            paramAll.tempNotUpOrDwonFaultThr = paramCache[5];
-            paramAll.flucFaultTimeSec = (int)paramCache[6];
-            paramAll.flucFaultThr = paramCache[7];
-            paramAll.tempBiasFaultThr = paramCache[8];
-            paramAll.tempMaxValue = paramCache[9];
-            paramAll.tempMinValue = paramCache[10];
-            //paramAll.tpBridge.tpBridgeChannel = (int)paramCache[11];
-            //paramAll.tpBridge.tpBridgeReadInterval = (int)paramCache[12];
-            paramAll.subCoolAndCircleShutdownThr = paramCache[13];
-            paramAll.tempDownCoolFShutdownDevision = paramCache[14];
-            paramAll.tempDownCoolFShutdownHot = paramCache[15];
-            paramAll.tempDownCoolFShutdownCool = paramCache[16];
-            paramAll.tempNotUpOrDwonFaultThrLow = paramCache[17];
+            if(paramCache[5] <=0 || paramCache[6] <= 0)
+            {
+                MessageBox.Show("参数格式错误，请检查！");
+                return;
+            }
 
+            paramAll.readTempIntervalSec = (int)paramCache[0];
+            paramAll.flucValue = paramCache[1];
+            paramAll.controlTempThr = paramCache[2];
+            paramAll.tempMaxValue = paramCache[3];
+            paramAll.tempMinValue = paramCache[4];
+            paramAll.standHoldCounts = (uint)paramCache[5];
+            paramAll.addGasHoldCounts = (uint)paramCache[6];
+            
             if (comboBox_sort.SelectedIndex == 0)
             {
                 paramAll.sort = "ascend";
@@ -123,19 +89,6 @@ namespace TempControl
             {
                 paramAll.sort = "descend";
             }
-
-            if (comboBox_elect.SelectedIndex == 0)
-            {
-                paramAll.ryElecEnable = true;
-            }
-            else
-            {
-                paramAll.ryElecEnable = false;
-            }
-
-            paramAll.standHoldCounts = (uint)paramCache[1];
-            paramAll.addGasHoldCounts = (uint)paramCache[18];
-
 
             // 写入到文本中
             // 相关参数
@@ -392,6 +345,8 @@ namespace TempControl
         {
             if (tx != null)
             {
+                if (tx == textBox0 || tx == textBox5 || tx == textBox6) return;
+
                 if (tx.Text == "")
                 {
                     tx.Text = "-";
@@ -462,201 +417,14 @@ namespace TempControl
             //}
         }
 
-        private void textBox1_Enter(object sender, EventArgs e)
+        private void textBox_Enter(object sender, EventArgs e)
         {
             if (tx != null)
             {
                 tx.BackColor = System.Drawing.SystemColors.Control;
             }
 
-            tx = this.textBox1;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox2_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox2;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox3_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox3;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox4_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox4;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox5_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox5;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox6_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox6;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox7_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox7;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox8_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox8;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox9_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox9;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox10_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox10;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox11_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox11;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox12_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox12;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox13_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox13;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox14_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox14;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox15_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox15;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox16_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox16;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox17_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox17;
-            tx.BackColor = System.Drawing.SystemColors.Window;
-        }
-
-        private void textBox18_Enter(object sender, EventArgs e)
-        {
-            if (tx != null)
-            {
-                tx.BackColor = System.Drawing.SystemColors.Control;
-            }
-
-            tx = this.textBox18;
+            tx = (TextBox)sender;
             tx.BackColor = System.Drawing.SystemColors.Window;
         }
     }

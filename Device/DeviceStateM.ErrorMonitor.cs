@@ -207,13 +207,13 @@ namespace Device
         /// <returns></returns>
         private void ErrorCheckBasis()
         {
-            if (tpDeviceM.temperatures.Count == 0) return;
+            //if (tpDeviceM.temperatures.Count == 0) return;
 
-            // 判断温度偏离设定点
-            if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) > _runningParameters.tempBiasFaultThr)
-            {
-                SetErrorStatus(ErrorCode.TempBasis);
-            }
+            //// 判断温度偏离设定点
+            //if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) > _runningParameters.tempBiasFaultThr)
+            //{
+            //    SetErrorStatus(ErrorCode.TempBasis);
+            //}
 
             return;
         }
@@ -227,21 +227,21 @@ namespace Device
         {
             if (tpDeviceM.temperatures.Count == 0) return;
 
-            // 故障判断 - 温度不下降 / 温度持续上升
-            // 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
-            int count = _runningParameters.tempNotUpOrDownFaultTimeSec / _runningParameters.readTempIntervalSec;
-            if (currentTemptPointState.stateCounts < count)
-                return;
+            //// 故障判断 - 温度不下降 / 温度持续上升
+            //// 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
+            //int count = _runningParameters.tempNotUpOrDownFaultTimeSec / _runningParameters.readTempIntervalSec;
+            //if (currentTemptPointState.stateCounts < count)
+            //    return;
 
-            // 判断温度不下降
-            // 如果 tpDeviceM.temperatures 中存储的温度值过少，即系统运行时间太短，则不检测 
-            //int count = 1 * 10 * 1000 / tpDeviceM.readTempInterval;
-            if (tpDeviceM.temperatures.Count > count)
-            {
-                // 如果count 个之前的温度值减去当前温度 小于 0.4 ，说明温度没有下降
-                if (tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] - tpDeviceM.temperatures.Last() < _runningParameters.tempNotUpOrDwonFaultThr)
-                    SetErrorStatus(ErrorCode.TempNotDown);
-            }
+            //// 判断温度不下降
+            //// 如果 tpDeviceM.temperatures 中存储的温度值过少，即系统运行时间太短，则不检测 
+            ////int count = 1 * 10 * 1000 / tpDeviceM.readTempInterval;
+            //if (tpDeviceM.temperatures.Count > count)
+            //{
+            //    // 如果count 个之前的温度值减去当前温度 小于 0.4 ，说明温度没有下降
+            //    if (tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] - tpDeviceM.temperatures.Last() < _runningParameters.tempNotUpOrDwonFaultThr)
+            //        SetErrorStatus(ErrorCode.TempNotDown);
+            //}
 
             return;
         }
@@ -255,20 +255,20 @@ namespace Device
         {
             if (tpDeviceM.temperatures.Count == 0) return;
 
-            // 进入某一状态后，等待 flucFaultTimeSec 再判断波动度 flucFaultThr
-            int count = _runningParameters.flucFaultTimeSec / _runningParameters.readTempIntervalSec;
-            if (currentTemptPointState.stateCounts < count)
-                return;
+            //// 进入某一状态后，等待 flucFaultTimeSec 再判断波动度 flucFaultThr
+            //int count = _runningParameters.flucFaultTimeSec / _runningParameters.readTempIntervalSec;
+            //if (currentTemptPointState.stateCounts < count)
+            //    return;
 
-            // 判断温度波动大
-            // 如果 tpDeviceM.temperatures 中存储的温度值过少，即系统运行时间太短，则不检测 
-            //int count = 1 * 10 * 1000 / tpDeviceM.readTempInterval;
-            float fluc = 0.0f;
-            // 如果获取波动度大于 0.4，说明波动度过大
-            if (tpDeviceM.GetFluc(count, out fluc) && fluc > _runningParameters.flucFaultThr)
-            {
-                SetErrorStatus(ErrorCode.TempFlucLarge);
-            }
+            //// 判断温度波动大
+            //// 如果 tpDeviceM.temperatures 中存储的温度值过少，即系统运行时间太短，则不检测 
+            ////int count = 1 * 10 * 1000 / tpDeviceM.readTempInterval;
+            //float fluc = 0.0f;
+            //// 如果获取波动度大于 0.4，说明波动度过大
+            //if (tpDeviceM.GetFluc(count, out fluc) && fluc > _runningParameters.flucFaultThr)
+            //{
+            //    SetErrorStatus(ErrorCode.TempFlucLarge);
+            //}
 
             return;
         }
@@ -282,21 +282,21 @@ namespace Device
         {
             if (tpDeviceM.temperatures.Count == 0) return;
 
-            // 故障判断 - 温度不升高 / 温度持续下降
-            // 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
-            int count = _runningParameters.tempNotUpOrDownFaultTimeSec / _runningParameters.readTempIntervalSec;
-            if (currentTemptPointState.stateCounts < count)
-                return;
+            //// 故障判断 - 温度不升高 / 温度持续下降
+            //// 进入某一状态后，等待 tempNotUpOrDownFaultTimeSec 再判断温度是否上升 tempNotUpOrDwonFaultThr
+            //int count = _runningParameters.tempNotUpOrDownFaultTimeSec / _runningParameters.readTempIntervalSec;
+            //if (currentTemptPointState.stateCounts < count)
+            //    return;
 
-            // 温度没有上升
-            // 如果 tpDeviceM.temperatures 中存储的温度值过少，即系统运行时间太短，则不检测 
-            //int count = 1 * 10 * 1000 / tpDeviceM.readTempInterval;
-            if (tpDeviceM.temperatures.Count > count)
-            {
-                // 如果count 个之前的温度值 减去 当前温度，小于 0.4 ，说明温度没有上升
-                if (tpDeviceM.temperatures.Last() - tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] < _runningParameters.tempNotUpOrDwonFaultThr)
-                    SetErrorStatus(ErrorCode.TempNotUp);
-            }
+            //// 温度没有上升
+            //// 如果 tpDeviceM.temperatures 中存储的温度值过少，即系统运行时间太短，则不检测 
+            ////int count = 1 * 10 * 1000 / tpDeviceM.readTempInterval;
+            //if (tpDeviceM.temperatures.Count > count)
+            //{
+            //    // 如果count 个之前的温度值 减去 当前温度，小于 0.4 ，说明温度没有上升
+            //    if (tpDeviceM.temperatures.Last() - tpDeviceM.temperatures[tpDeviceM.temperatures.Count - count] < _runningParameters.tempNotUpOrDwonFaultThr)
+            //        SetErrorStatus(ErrorCode.TempNotUp);
+            //}
 
             return;
         }

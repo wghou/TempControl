@@ -42,6 +42,7 @@ namespace TempControl
             {
                 label_powerM.Text = "加氧气";
                 checkBox_ryM5.Enabled = false;
+
             }
             else if (checkBox_ryM4.Checked == false && checkBox_ryM5.Checked == true)
             {
