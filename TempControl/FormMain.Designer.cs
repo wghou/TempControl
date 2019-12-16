@@ -385,7 +385,7 @@
             this.label_time.Name = "label_time";
             this.label_time.Size = new System.Drawing.Size(88, 16);
             this.label_time.TabIndex = 36;
-            this.label_time.Text = "控温时间：";
+            this.label_time.Text = "控制时间：";
             this.label_time.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pictureBox_logo

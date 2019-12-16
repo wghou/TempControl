@@ -119,7 +119,7 @@ namespace TempControl
             pictureBoxM.Image = mBmpM;
 
             System.TimeSpan tmSpan = System.DateTime.Now - _device.startTime;
-            this.label_time.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
+            this.label_time.Text = "控制时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
         }
 
 
