@@ -1,8 +1,5 @@
 ﻿
 #define OUT1
-
-
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +8,9 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Diagnostics;
 using System.Drawing;
+using System.Timers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ComTest
 {
@@ -236,6 +236,30 @@ namespace ComTest
         /// </summary>
         bool srCodeErr = false;
 
+        // 发送数据定时器
+        Timer srTimer = new Timer();
+        // 计数时长定时器
+        Timer srTimer2 = new Timer();
+
+
+        private void Receive()
+        {
+            //  为什么用telnet客户端可以，但这个就不行。
+            while (true)
+            {
+                //获取发送过来的消息
+                byte[] buffer = new byte[1024 * 1024 * 2];
+                var effective = socketClient.Receive(buffer);
+                if (effective == 0)
+                {
+                    break;
+                }
+                var str = Encoding.UTF8.GetString(buffer, 0, effective);
+                Console.WriteLine("来自服务器 --- " + str);
+               System.Threading.Thread.Sleep(2000);
+            }
+        }
+
 
         ////////////////////////////////////
         // 端口数据传输函数
@@ -252,7 +276,7 @@ namespace ComTest
 
             try
             {
-                dataRev = sPortSr.ReadTo(":");
+                dataRev = sPortSr.ReadLine();
                 sPortSr.DiscardInBuffer();
             }
             catch(Exception ex)
@@ -273,47 +297,25 @@ namespace ComTest
                 {
                     switch (srErrStatus)
                     {
-                        case SrStatus.OK:
-                            // 正常工作状态
-                            if (dataRev.Contains("R"))
-                            {
-                                // 上位机读取数据
-                                float temp = srValue;
-                                dataRev += temp.ToString("0.000");
-                                dataRev += ":";
-                                sPortSr.WriteLine(dataRev);
-                            }
-                            else
-                            {
-                                // 未知指令
-                                // 指令不存在
-                                sPortSr.WriteLine("@35EB:");
-                            }
-                            //Debug.WriteLine("传感器设备返回了数据：" + dataRev.ToString());
-                            break;
                         case SrStatus.DisConnected:
                             // 连接断开状态 - 不返回任何数据
                             break;
                         case SrStatus.DataErr:
                             // 错误状态
-                            sPortSr.WriteLine("@35EB:");
                             //Debug.WriteLine("传感器错误数据： @035EB.");
                             break;
                         default:
                             // 默认，正常工作状态
-                            if (dataRev.Contains("R"))
+                            if (dataRev.Contains("start"))
                             {
-                                // 上位机读取数据
-                                float temp = 12.0f;
-                                dataRev += temp.ToString("0.000");
-                                dataRev += ":";
-                                sPortSr.WriteLine(dataRev);
+                                this.srTimer2.Interval = 5000 * 10;
+                                this.srTimer2.Start();
                             }
                             else
                             {
                                 // 未知指令
                                 // 指令不存在
-                                sPortSr.WriteLine("@35EB:");
+                                //sPortSr.WriteLine("@35EB:");
                             }
                             //Debug.WriteLine("传感器设备返回了数据：" + dataRev.ToString());
                             break;
@@ -331,6 +333,64 @@ namespace ComTest
                 if (!srErrLast && srErrStatus != SrStatus.OK)
                     this.BeginInvoke(new EventHandler(delegate { srErrStatus = SrStatus.OK; this.comboBox_SrStatus.SelectedIndex = 0; }));
             }
+        }
+
+
+
+        private void SrTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            // 读取温度显示值
+            // 计算出当前的温度显示值
+
+            // 如果未稳定，则使温度发生一个变化
+            if (!tsParam.Steady) tsParam.CurTemp += (tsParam.ChangeRate + tsParam.ChangeRatePlus) * Math.Sign(tsParam.SetTemp - tsParam.CurTemp);
+
+            // 如果改变后的温度值接近温度设定点，则设当前温度点为温度设定值
+            if (Math.Abs(tsParam.CurTemp - tsParam.SetTemp) <= Math.Abs((tsParam.ChangeRate + tsParam.ChangeRatePlus) / 2))
+            {
+                tsParam.CurTemp = tsParam.SetTemp;
+                tsParam.Steady = true;
+            }
+
+            // 计算波动度
+            tsParam.PhaseCount++;
+            if (tsParam.PhaseCount >= 20) tsParam.PhaseCount = 0;
+
+            float fluc = (tsParam.Fluc + tsParam.FlucPlus) * (float)Math.Sin(3.1415 * tsParam.PhaseCount / 10) / 2;
+
+            // 如果稳定，则波动度为零
+            //if (tsParam.Steady) fluc = 0;
+
+            // 最终的显示值 = 当前温度值 + 附加温度值 + 计算波动度 + 附加波动度
+            float val = tsParam.CurTemp + tsParam.CurTempPlus + fluc;
+
+            // 界面显示的当前温度值为 curTemp + 波动度
+            this.BeginInvoke(new EventHandler(delegate { this.label_CurTempS.Text = val.ToString("0.000"); }));
+
+            try
+            {
+                if (!sPortSr.IsOpen) sPortSr.Open();
+
+                string tp = "data:";
+                tp = tp + val.ToString("0.000");
+                tp = tp + "\r\n";
+                sPortSr.WriteLine(tp);
+            }
+            catch { }
+        }
+
+        // 结束
+        private void SrTimer2_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            srTimer2.Stop();
+            try
+            {
+                if (!sPortSr.IsOpen) sPortSr.Open();
+
+                string tp = "finish\r\n";
+                sPortSr.WriteLine(tp);
+            }
+            catch { }
         }
 
 

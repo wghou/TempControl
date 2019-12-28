@@ -11,6 +11,9 @@ using System.IO.Ports;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 
 namespace ComTest
 {
@@ -47,6 +50,12 @@ namespace ComTest
         /// </summary>
         private SerialPort sPortSr = new SerialPort();
         private bool SportSr_enable = false;
+
+        /// <summary>
+        /// Server
+        /// </summary>
+        private Socket socketClient = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private bool socket_enable = false;
 
         Bitmap mBmp_Sr;
 
@@ -174,6 +183,26 @@ namespace ComTest
                         sPortSr.WriteBufferSize = 64;
                     }
                 }
+
+                // 传感器 - 通信端口
+                if (obj.ContainsKey("Socket"))
+                {
+                    JObject child = (JObject)obj["Socket"];
+
+                    socket_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (socket_enable)
+                    {
+                        IPAddress ip = IPAddress.Parse(child.ContainsKey("ServerUrl") ? child["ServerUrl"].ToString() : "192.168.1.1");
+                        IPEndPoint point = new IPEndPoint(ip, child.ContainsKey("Port") ? (int)child["Port"] : 2012);
+                        socketClient.Connect(point);
+
+                        socketClient.Send(Encoding.UTF8.GetBytes("Subscribe Control\r\n"));
+
+                        Thread thread = new Thread(Receive);
+                        thread.IsBackground = true;
+                        thread.Start();
+                    }
+                }
             }
             catch(Exception ex)
             {
@@ -218,8 +247,16 @@ namespace ComTest
             Graphics mGhp_Sr = Graphics.FromImage(mBmp_Sr);
             mGhp_Sr.Clear(Color.Green);
             pictureBox_Sr.Image = mBmp_Sr;
-        }
 
+            srTimer.Interval = 5000;
+            srTimer.AutoReset = true;
+            srTimer.Elapsed += SrTimer_Elapsed;
+            srTimer.Start();
+
+            srTimer2.Interval = 5000 * 10;
+            srTimer2.AutoReset = false;
+            srTimer2.Elapsed += SrTimer2_Elapsed;
+        }
 
 
         /// <summary>
@@ -408,6 +445,11 @@ namespace ComTest
             this.label_Sr.Text = (12.0f + (hScrollBar_Sr.Value - 50) * 0.2f).ToString("0.000");
 
             lock (srLocker) { this.srValue = 12.0f + (hScrollBar_Sr.Value - 50) * 0.2f; }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            socketClient.Send(Encoding.UTF8.GetBytes("Post Control Start\r\n"));
         }
     }
 }

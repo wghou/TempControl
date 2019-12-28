@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Stateless;
 using System.Diagnostics;
 using System.Timers;
+using Newtonsoft.Json.Linq;
 
 namespace Device
 {
@@ -28,6 +29,9 @@ namespace Device
             UpdateTemptValue();
             // error check
             ErrorCheckOutRange();   // 温度超出界限
+
+            // 检查传感器设备的错误状态
+            if (srDevice.FetchErrorStatus() != SensorDevice.Err_s.NoError) SetErrorStatus(ErrorCode.SensorError);
 
             // 驱动状态机执行流程
             currentTemptPointState.stateCounts++;
@@ -513,6 +517,8 @@ namespace Device
                     SetErrorStatus(ErrorCode.CodeError);
                 }
             }
+
+            srDevice.StartMeasure();
         }
 
         /// <summary>
@@ -535,6 +541,11 @@ namespace Device
                     nlogger.Error("自动控温中，自动采样出现错误：_sampleMachine.IsInState(OnSample or Normal)");
                     _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
                 }
+            }
+
+            if(srDevice.FetchRqt() != true)
+            {
+                return;
             }
 
             // 测量完成，标记
@@ -560,6 +571,18 @@ namespace Device
             // 未查找到，则表示已经测量完成了
             if (i == temperaturePointList.Count)
             {
+                // 所有数据
+                JObject allData = new JObject();
+                // 主题
+                JProperty tp = new JProperty("Topic", "Control");
+                allData.Add(tp);
+                // 主题
+                JProperty cmd = new JProperty("Cmd", "Finish");
+                allData.Add(cmd);
+
+                _userPorts.PublishMessage(UserPort.SubTopic.Control, allData.ToString(), false, UserPort.UserPortType.Socket);
+                
+                
                 // 控制状态序列为空，说明实验已经结束了
                 if (_runningParameters.shutDownComputer == true)
                 {

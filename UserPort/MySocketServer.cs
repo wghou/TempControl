@@ -105,7 +105,6 @@ namespace UserPort
 
                 SubTopic topic;
                 SocketCmd cmd;
-                string data = requestInfo.Parameters[0];
 
                 if (!Enum.TryParse(requestInfo.Key, out cmd))
                 {
@@ -113,7 +112,7 @@ namespace UserPort
                     return;
                 }
 
-                if (!Enum.TryParse(requestInfo.Body, out topic))
+                if (!Enum.TryParse(requestInfo.Parameters[0], out topic))
                 {
                     nlogger.Error("cannot parse the SubTopic from the requestInfo.body: " + requestInfo.Body);
                     return;
@@ -150,11 +149,11 @@ namespace UserPort
                         break;
 
                     case SocketCmd.Post:
-                        MessageReceievedPostEvent?.Invoke(topic, data);
+                        if(requestInfo.Parameters.Length>=2) MessageReceievedPostEvent?.Invoke(topic, requestInfo.Parameters[1]);
                         break;
 
                     case SocketCmd.Request:
-                        MessageReceievedRequestEvent?.Invoke(topic, data);
+                        if (requestInfo.Parameters.Length >= 2) MessageReceievedRequestEvent?.Invoke(topic, requestInfo.Parameters[1]);
                         break;
 
                     default:
@@ -181,7 +180,8 @@ namespace UserPort
             {
                 try
                 {
-                    if (!_appServer.Setup((int)socketConfig["port"]))
+
+                    if (!_appServer.Setup(socketConfig["ServerUrl"].ToString(), (int)socketConfig["Port"]))
                     {
                         nlogger.Error("Failed to setup!");
                         Enabled = false;
@@ -231,7 +231,7 @@ namespace UserPort
 
                     if (topicsSubs[topic].Contains(ses))
                     {
-                        byte[] arr = System.Text.Encoding.Default.GetBytes(string.Format("{0} {1}\r\n", topic.ToString(), Message));
+                        byte[] arr = System.Text.Encoding.Default.GetBytes(Message);
                         ses.Send(arr, 0, arr.Length);
                     }
                 }

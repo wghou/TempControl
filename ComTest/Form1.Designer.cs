@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.groupBox_Sr = new System.Windows.Forms.GroupBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.hScrollBar_Sr = new System.Windows.Forms.HScrollBar();
+            this.label_Sr = new System.Windows.Forms.Label();
             this.pictureBox_Sr = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -93,10 +97,7 @@
             this.label_CurTempS = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
-            this.label_Sr = new System.Windows.Forms.Label();
-            this.hScrollBar_Sr = new System.Windows.Forms.HScrollBar();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox_Sr.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Sr)).BeginInit();
             this.groupBox_Ry.SuspendLayout();
@@ -125,6 +126,46 @@
             this.groupBox_Sr.TabIndex = 0;
             this.groupBox_Sr.TabStop = false;
             this.groupBox_Sr.Text = "传感器设备";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label28.Location = new System.Drawing.Point(299, 115);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(42, 14);
+            this.label28.TabIndex = 9;
+            this.label28.Text = "10.00";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label26.Location = new System.Drawing.Point(202, 115);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(49, 14);
+            this.label26.TabIndex = 8;
+            this.label26.Text = "-10.00";
+            // 
+            // hScrollBar_Sr
+            // 
+            this.hScrollBar_Sr.Location = new System.Drawing.Point(205, 144);
+            this.hScrollBar_Sr.Maximum = 109;
+            this.hScrollBar_Sr.Name = "hScrollBar_Sr";
+            this.hScrollBar_Sr.Size = new System.Drawing.Size(143, 17);
+            this.hScrollBar_Sr.TabIndex = 7;
+            this.hScrollBar_Sr.Value = 50;
+            this.hScrollBar_Sr.ValueChanged += new System.EventHandler(this.hScrollBar_Sr_ValueChanged);
+            // 
+            // label_Sr
+            // 
+            this.label_Sr.AutoSize = true;
+            this.label_Sr.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_Sr.Location = new System.Drawing.Point(52, 144);
+            this.label_Sr.Name = "label_Sr";
+            this.label_Sr.Size = new System.Drawing.Size(49, 14);
+            this.label_Sr.TabIndex = 6;
+            this.label_Sr.Text = "12.000";
             // 
             // pictureBox_Sr
             // 
@@ -183,6 +224,7 @@
             // 
             // groupBox_Ry
             // 
+            this.groupBox_Ry.Controls.Add(this.button1);
             this.groupBox_Ry.Controls.Add(this.pictureBox_Ry);
             this.groupBox_Ry.Controls.Add(this.label4);
             this.groupBox_Ry.Controls.Add(this.comboBox_RyStatus);
@@ -842,45 +884,15 @@
             this.label39.TabIndex = 26;
             this.label39.Text = "CurTemp:";
             // 
-            // label_Sr
+            // button1
             // 
-            this.label_Sr.AutoSize = true;
-            this.label_Sr.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_Sr.Location = new System.Drawing.Point(52, 144);
-            this.label_Sr.Name = "label_Sr";
-            this.label_Sr.Size = new System.Drawing.Size(49, 14);
-            this.label_Sr.TabIndex = 6;
-            this.label_Sr.Text = "12.000";
-            // 
-            // hScrollBar_Sr
-            // 
-            this.hScrollBar_Sr.Location = new System.Drawing.Point(205, 144);
-            this.hScrollBar_Sr.Maximum = 109;
-            this.hScrollBar_Sr.Name = "hScrollBar_Sr";
-            this.hScrollBar_Sr.Size = new System.Drawing.Size(143, 17);
-            this.hScrollBar_Sr.TabIndex = 7;
-            this.hScrollBar_Sr.Value = 50;
-            this.hScrollBar_Sr.ValueChanged += new System.EventHandler(this.hScrollBar_Sr_ValueChanged);
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label26.Location = new System.Drawing.Point(202, 115);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(49, 14);
-            this.label26.TabIndex = 8;
-            this.label26.Text = "-10.00";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label28.Location = new System.Drawing.Point(299, 115);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(42, 14);
-            this.label28.TabIndex = 9;
-            this.label28.Text = "10.00";
+            this.button1.Location = new System.Drawing.Point(172, 137);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(117, 39);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "开始自动控温";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -983,6 +995,7 @@
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.HScrollBar hScrollBar_Sr;
         private System.Windows.Forms.Label label_Sr;
+        private System.Windows.Forms.Button button1;
     }
 }
 

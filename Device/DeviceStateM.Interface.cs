@@ -104,6 +104,16 @@ namespace Device
                 {
                     JObject child = (JObject)obj["SensorDev"];
 
+                    // 设置辅控温表
+                    if (child.ContainsKey("Sensor"))
+                    {
+                        JObject child2 = (JObject)child["Sensor"];
+
+                        confOK &= srDevice.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        srDevice.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                        if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + srDevice.srDevicePortName);
+                        else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + srDevice.srDevicePortName);
+                    }
                 }
 
                 // 设置接口

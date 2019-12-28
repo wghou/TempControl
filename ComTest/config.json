@@ -1,32 +1,40 @@
 {
   "TempM": {
-    "PortName": "COM1",
+    "PortName": "COM2",
     "BaudRate": 2400,
     "Enable": true
   },
   "TempS": {
-    "PortName": "COM3",
+    "PortName": "COM4",
     "BaudRate": 2400,
     "Enable": true
   },
   "RelayM": {
-    "PortName": "COM2",
+    "PortName": "COM6",
     "BaudRate": 9600,
     "Enable": false
   },
   "RelayS": {
-    "PortName": "COM3",
+    "PortName": "COM8",
     "BaudRate": 9600,
     "Enable": false
   },
   "Sensor": {
-    "PortName": "COM4",
+    "PortName": "COM10",
     "BaudRate": 9600,
-    "Enable": false
+    "Enable": true
   },
   "Bridge": {
     "PortName": "COM5",
     "BaudRate": 9600,
     "Enable": false
+  },
+  "Socket": {
+    "Enable": true,
+    "ServerUrl": "192.168.1.114",
+    "Port": 5002,
+    "ApiKey": "",
+    "ProductId": "admin",
+    "DeviceId": "public"
   }
 }

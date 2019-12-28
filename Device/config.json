@@ -32,8 +32,8 @@
   "?SensorDev": "关于其他传感器的配置信息",
   "SensorDev": {
     "Sensor": {
-      "Enable": false,
-      "PortName": "COM4",
+      "Enable": true,
+      "PortName": "COM11",
       "BaudRate": 9600
     },
     "Bridge": {
@@ -50,8 +50,8 @@
       "BaudRate": 9600
     },
     "Socket": {
-      "Enable": false,
-      "ServerUrl": "192.168.1.101",
+      "Enable": true,
+      "ServerUrl": "192.168.1.114",
       "Port": 5002,
       "ApiKey": "",
       "ProductId": "admin",
@@ -66,7 +66,7 @@
       "DeviceId": "mydeviceId"
     },
     "MqttCloud": {
-      "Enable": true,
+      "Enable": false,
       "ServerUrl": "183.230.40.39",
       "Port": 6002,
       "ApiKey": "123123123",

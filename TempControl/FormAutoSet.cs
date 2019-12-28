@@ -1441,7 +1441,7 @@ namespace TempControl
         /// <summary>
         /// 温度点设定状态
         /// </summary>
-        internal class TempParam : IComparable
+        public class TempParam : IComparable
         {
             public bool finished = false;
             public bool autoSample = false;
