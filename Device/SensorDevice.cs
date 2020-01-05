@@ -198,7 +198,7 @@ namespace Device
                     sPort.WriteLine("ERROR@");
                 }
             }
-            else if(dataRev.Contains("NEXTP:"))
+            else if(dataRev.Contains("CNEXTP:"))
             {
                 // 下一个温度点
                 if (float.TryParse(dataRev.Substring(6), out val))
@@ -206,7 +206,7 @@ namespace Device
                     lock (srLocker) { nextTempPointRQT = true; nextTempPoint = val; }
                     Thread.Sleep(intervalOfWR);
                     // 返回错误标志
-                    sPort.WriteLine("NEXTP@");
+                    sPort.WriteLine("CNEXTP@");
                 }
                 else
                 {
@@ -216,13 +216,19 @@ namespace Device
                     sPort.WriteLine("ERROR@");
                 }
             }
-            else if(dataRev.Contains("STOPR"))
+            else if(dataRev.Contains("CSTOP"))
             {
                 // 停止测量，并关闭软件
                 lock (srLocker) { stopRunRQT = true; }
                 Thread.Sleep(intervalOfWR);
                 // 返回错误标志
-                sPort.WriteLine("STOPR@");
+                sPort.WriteLine("CSTOP@");
+            }
+            else if (dataRev.Contains("CECHO"))
+            {
+                Thread.Sleep(intervalOfWR);
+                // 返回错误标志
+                sPort.WriteLine("CECHO@");
             }
             else
             {

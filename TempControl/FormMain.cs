@@ -160,6 +160,9 @@ namespace TempControl
             _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_3] = true;
             RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
             setRyStatus.BeginInvoke(true, null, null);
+
+            // 更新控温表参数
+            _device.ReadTempDeviceM(false);
         }
 
 

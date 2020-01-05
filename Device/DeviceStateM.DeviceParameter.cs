@@ -143,6 +143,10 @@ namespace Device
         /// 继电器 2 端口
         /// </summary>
         public string portRy2 = "COM3";
+        /// <summary>
+        /// 传感器端口
+        /// </summary>
+        public string portSr = "COM4";
 
 
         public bool ReadValueConfig(string configFilePath)
@@ -186,6 +190,7 @@ namespace Device
                 portTp2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp2", portTp2);
                 portRy1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy1", portRy1);
                 portRy2 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portRy2", portRy2);
+                portSr = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portSr", portSr);
             }
             catch (Exception ex)
             {
@@ -231,6 +236,7 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp2", portTp2);
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy1", portRy1);
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portRy2", portRy2);
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portSr", portSr);
             }
             catch(Exception ex)
             {
