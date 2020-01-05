@@ -330,6 +330,13 @@ namespace Device
                 Utils.Logger.Sys("读取主槽功率时发生错误，errorCode: " + err.ToString());
                 return;
             }
+
+            // 检查辅槽/传感器错误状态
+            bool st = srDevice.CheckStatus();
+            if(st == false)
+            {
+                SetErrorStatus(ErrorCode.SensorError);
+            }
         }
     }
 }

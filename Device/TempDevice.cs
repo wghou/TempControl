@@ -65,11 +65,11 @@ namespace Device
             }
 
             // 更新参数
-            if (UpdateParamFromDevice() != TempProtocol.Err_t.NoError){
-                Utils.Logger.Sys("从主槽控温设备读取参数失败！");
-                currentComStatus = false;
-                return !Enable;
-            }
+            //if (UpdateParamFromDevice() != TempProtocol.Err_t.NoError){
+            //    Utils.Logger.Sys("从主槽控温设备读取参数失败！");
+            //    currentComStatus = false;
+            //    return !Enable;
+            //}
 
             currentComStatus = true;
             return true;

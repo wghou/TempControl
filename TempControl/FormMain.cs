@@ -160,6 +160,8 @@ namespace TempControl
             _device.ryDeviceM.ryStatusToSet[(int)Device.RelayDevice.Cmd_r.OUT_3] = true;
             RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
             setRyStatus.BeginInvoke(true, null, null);
+
+            _device.tpDeviceM.UpdateParamFromDevice();
         }
 
 
@@ -331,6 +333,11 @@ namespace TempControl
         private void checkBox1_Click(object sender, EventArgs e)
         {
            
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

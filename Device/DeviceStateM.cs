@@ -51,15 +51,15 @@ namespace Device
                 if (!confOK) Utils.Logger.Sys("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                 else Debug.WriteLine("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
 
-                if(tpDeviceM.Enable == true)
-                {
-                    if (tpDeviceM.UpdateParamFromDevice() != TempProtocol.Err_t.NoError)
-                    {
-                        Utils.Logger.Sys("初始化时，从主槽控温设备读取参数失败");
-                        Debug.WriteLine("初始化时，从主槽控温设备读取参数失败");
-                        confOK = false;
-                    }
-                }
+                //if(tpDeviceM.Enable == true)
+                //{
+                //    if (tpDeviceM.UpdateParamFromDevice() != TempProtocol.Err_t.NoError)
+                //    {
+                //        Utils.Logger.Sys("初始化时，从主槽控温设备读取参数失败");
+                //        Debug.WriteLine("初始化时，从主槽控温设备读取参数失败");
+                //        confOK = false;
+                //    }
+                //}
 
                 // 辅槽控温设备
                 confOK &= srDevice.ConfigSyn(_runningParameters.portTp2);

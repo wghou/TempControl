@@ -119,10 +119,10 @@ namespace Device
                 // 串口打开 / 关闭测试
                 if (!sPort.IsOpen)
                     sPort.Open();
-                Thread.Sleep(intervalOfWR);
-                if (sPort.IsOpen)
-                    sPort.Close();
-                srDevicePortName = portName;
+                //Thread.Sleep(intervalOfWR);
+                //if (sPort.IsOpen)
+                //    sPort.Close();
+                //srDevicePortName = portName;
 
                 sPort.DataReceived += SPort_DataReceived;
 
@@ -151,12 +151,14 @@ namespace Device
             }
             catch(Exception ex)
             {
+                currentComStatus = false;
+
                 Debug.WriteLine("接收另外一台计算机数据时发生错误：" + ex.Message);
                 Utils.Logger.Sys("接收另外一台计算机数据时发生错误：" + ex.Message);
 
                 Thread.Sleep(intervalOfWR);
                 // 返回错误标志
-                sPort.WriteLine("ERROR@");
+                try { sPort.WriteLine("ERROR@"); } catch { }
                 return;
             }
 
@@ -185,17 +187,20 @@ namespace Device
                         temperaturesShow.Add(val);
                     }
 
+                    currentComStatus = true;
 
                     Thread.Sleep(intervalOfWR);
-                    // 返回错误标志
-                    sPort.WriteLine("CTEMP@");
+                    // 返回正确标志
+                    try{ sPort.WriteLine("CTEMP@"); } catch { }
                 }
                 else
                 {
+                    currentComStatus = false;
+
                     // error
                     Thread.Sleep(intervalOfWR);
                     // 返回错误标志
-                    sPort.WriteLine("ERROR@");
+                    try{ sPort.WriteLine("ERROR@"); } catch { }
                 }
             }
             else if(dataRev.Contains("NEXTP:"))
@@ -203,33 +208,41 @@ namespace Device
                 // 下一个温度点
                 if (float.TryParse(dataRev.Substring(6), out val))
                 {
+                    currentComStatus = true;
+
                     lock (srLocker) { nextTempPointRQT = true; nextTempPoint = val; }
                     Thread.Sleep(intervalOfWR);
-                    // 返回错误标志
-                    sPort.WriteLine("NEXTP@");
+                    // 返回正确标志
+                    try{ sPort.WriteLine("NEXTP@"); } catch { }
                 }
                 else
                 {
+                    currentComStatus = false;
+
                     // error
                     Thread.Sleep(intervalOfWR);
                     // 返回错误标志
-                    sPort.WriteLine("ERROR@");
+                    try{ sPort.WriteLine("ERROR@"); } catch { }
                 }
             }
             else if(dataRev.Contains("STOPR"))
             {
+                currentComStatus = true;
+
                 // 停止测量，并关闭软件
                 lock (srLocker) { stopRunRQT = true; }
                 Thread.Sleep(intervalOfWR);
-                // 返回错误标志
-                sPort.WriteLine("STOPR@");
+                // 返回正确标志
+                try{ sPort.WriteLine("STOPR@"); } catch { }
             }
             else
             {
+                currentComStatus = false;
+
                 // 未知指令，错误
                 Thread.Sleep(intervalOfWR);
                 // 返回错误标志
-                sPort.WriteLine("ERROR@");
+                try { sPort.WriteLine("ERROR@"); } catch { }
             }
 
             return;
@@ -247,6 +260,19 @@ namespace Device
         }
 
 
+        public bool CheckStatus()
+        {
+            try
+            {
+                if (!sPort.IsOpen) sPort.Open();
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+
+            return currentComStatus;
+        }
 
         /// <summary>
         /// 查询当前 后端水槽温度
