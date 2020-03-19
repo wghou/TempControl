@@ -1,0 +1,87 @@
+本软件运行流程：
+1 - 软件启动，（如果未发生错误），进入 Idle （空闲状态）；
+2 - 本软件持续广播实时的状态数据：[Data:0] [message:alldata]
+3 - 当接收到 [Control:1] [message:start] 的指令后，启动自动控温流程；
+在整个控温流程中：
+4 - 每当开始下一个温度点时（包括进入第一个温度点），广播指令[Control:1] [message:next]；
+5 - 当温度点控稳后，开始测量相关数据，此时广播指令[Control:1] [message:measure]；
+6 - 当所有温度点都完成后，广播指令[Control:1] [message:finish]；
+7 - 在控温过程中，如果收到指令[Control:1] [message:stop]，则暂停/停止自动控温流程。
+自动控温结束后，回到Idle状态/或关闭计算机。
+
+指令为字符串，格式为：[topic] + 空格 + [message] + "\r\n"
+其中，topic分两种，Data:0 和 Control:1 ；message 则是具体的内容
+例如，开始控温指令为字符串："1 start\r\n"
+停止控温指令为字符串："1 stop\r\n"
+状态数据字符串为："0 具体数据的Json格式字符串\r\n"
+
+状态数据的Json格式，格式为："Name": "Value"
+"mTp": "12.0", (说明：主槽槽温，类型为 float)
+"mPw": "12.0", (说明：主槽加热功率，类型为 float)
+"mSt": "12.0", (说明：主槽温度设定值，类型为 float)
+"sTp": "12.0", (说明：辅槽槽温，类型为 float)
+"sPw": "12.0", (说明：辅槽加热功率，类型为 float)
+"sSt": "12.0", (说明：辅槽温度设定值，类型为 float)
+"mRy": "[false, false, false, false, ... false]", （说明：数组，为继电器1状态，分别是:总电源，主槽控温，辅槽控温，辅槽制冷，辅槽循环，主槽快冷，辅槽快冷，海水进）
+"sRy": "[false, false, false, false, ... false]", （说明：数组，为继电器2状态，分别是：海水出，空闲，空闲，xxx）
+"err": "TempNotDown=0;TempNotUp=0;TempFlucLarge=0;TempBasis=0;TempOutRange=0;SensorError=0;RelayError=0;TemptError=2;TempParamSetError=0;BridgeError=0;CodeError=0;ClearErrorStatus=0", （本次新发生的错误）
+
+实例：
+{
+  "mPw": 0.0,
+  "mSt": 0.0,
+  "sPw": 0.0,
+  "sSt": 0.0,
+  "mRy": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "sRy": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "err": "TempNotDown=0;TempNotUp=0;TempFlucLarge=0;TempBasis=0;TempOutRange=0;SensorError=0;RelayError=0;TemptError=0;TempParamSetError=0;BridgeError=0;CodeError=0;ClearErrorStatus=0"
+}
+
+
+三方之间的相互配合：
+设：证书报告出具软件为 A；温度采集模块为 B；温度控制装置为 C；
+
+0 - 开始后，A B C 模块分别启动。
+1 - 首先，A 向 C 发送指令["1 start\r\n"]，C 开始自动控温流程；
+2 - C 开始某温度点控温后，向 A B 广播指令 ["1 next\r\n"]，表明开始了某个点的温度控制；
+3 - 当 C 将温度控制稳定后，分别向 A B 广播指令 ["1 measure\r\n"]，表明槽温已经稳定，可以开始相关测量了；
+4 - （问题1：此时，应该怎么确定测量的时间，由谁决定进入下一个温度点）
+  - （问题2：在控温过程中，B 的测量到的数据发给谁，C 是否需要根据 B 的数据判断是否稳定？）
+5 - 当 C 进入下一个温度点后，重复 2 ～ 4
+6 - 如果此时温度点全部完成，则分别向 A B 广播指令 ["1 finish\r\n"]，表明开始了某个点的温度控制；
+7 - 如果在这个过程中，需要暂停，则 A 向 C 发送指令 ["1 stop\r\n"]，C 则暂停控温流程；
+8 - 在 C 运行的整个过程中，C 持续向 A 广播状态数据 ["0 data\r\n"]。

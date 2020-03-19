@@ -99,68 +99,22 @@ namespace UserPort
                 Console.WriteLine(requestInfo.Body);
 
                 // session 中数据的格式
-                // key: Subscribe / UnSubscribe / Post / Request
-                // body: Topic
-                // parameter: data
+                // session: [Key] [body ...] 其中，将 [body ...] 分割开，组成了 [parameter0][1][...]
+                // key: [topic]: Subscribe / UnSubscribe / Post / Request
+                // body: [cmd + data]
+                // parameter: [cmd] [data]
+                // 合起来便是：[topic] [cmd] [data]
 
                 SubTopic topic;
-                SocketCmd cmd;
-                string data = requestInfo.Parameters[0];
+                string data = requestInfo.Body;
 
-                if (!Enum.TryParse(requestInfo.Key, out cmd))
-                {
-                    nlogger.Error("cannot parse the SocketCmd from the requestInfo.key: " + requestInfo.Body);
-                    return;
-                }
-
-                if (!Enum.TryParse(requestInfo.Body, out topic))
+                if (!Enum.TryParse(requestInfo.Key, out topic))
                 {
                     nlogger.Error("cannot parse the SubTopic from the requestInfo.body: " + requestInfo.Body);
                     return;
                 }
 
-                switch (cmd)
-                {
-                    case SocketCmd.Subscribe:
-                        if (!topicsSubs.ContainsKey(topic))
-                        {
-                            topicsSubs.Add(topic, new List<AppSession>());
-                        }
-
-                        List<AppSession> itm = topicsSubs[topic];
-                        if (!itm.Contains(session))
-                        {
-                            itm.Add(session);
-                            nlogger.Info("new topic " + topic.ToString() + " subscribed from sessionID " + session.SessionID);
-                        }
-                        break;
-
-                    case SocketCmd.UnSubscribe:
-                        if (topicsSubs.ContainsKey(topic))
-                        {
-                            List<AppSession> itm2 = topicsSubs[topic];
-
-                            int idx = itm2.IndexOf(session);
-                            if (idx != -1)
-                            {
-                                itm2.RemoveAt(idx);
-                                nlogger.Info("remove topic " + topic.ToString() + " from sessionID " + session.SessionID);
-                            }
-                        }
-                        break;
-
-                    case SocketCmd.Post:
-                        MessageReceievedPostEvent?.Invoke(topic, data);
-                        break;
-
-                    case SocketCmd.Request:
-                        MessageReceievedRequestEvent?.Invoke(topic, data);
-                        break;
-
-                    default:
-
-                        break;
-                }
+                MessageReceievedPostEvent?.Invoke(topic, data);
             }
 
 
@@ -227,13 +181,9 @@ namespace UserPort
                     // 如果断开了，是不是应该删除相应的主题订阅
                     if (!ses.Connected) continue;
 
-                    if (!topicsSubs.ContainsKey(topic)) continue;
-
-                    if (topicsSubs[topic].Contains(ses))
-                    {
-                        byte[] arr = System.Text.Encoding.Default.GetBytes(string.Format("{0} {1}\r\n", topic.ToString(), Message));
-                        ses.Send(arr, 0, arr.Length);
-                    }
+                    // 进行广播
+                    byte[] arr = System.Text.Encoding.Default.GetBytes(string.Format("{0} {1}\r\n", topic.ToString(), Message));
+                    ses.Send(arr, 0, arr.Length);
                 }
             }
         }

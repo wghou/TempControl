@@ -19,6 +19,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotMonitorApp", "LotMonitor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserPort", "UserPort\UserPort.csproj", "{7CB47CC8-BB87-4D8E-9EB0-5FDE4D17746D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F18DDC86-9940-41AA-828B-DE02D703EA22}"
+	ProjectSection(SolutionItems) = preProject
+		自动控制流程及接口说明.txt = 自动控制流程及接口说明.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

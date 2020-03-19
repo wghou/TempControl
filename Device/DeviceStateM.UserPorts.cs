@@ -35,7 +35,21 @@ namespace Device
             switch (topic)
             {
                 case SubTopic.Control:
-
+                    if (message.Contains("start"))
+                    {
+                        // wghou
+                        // 添加控温点
+                        StartAutoControl();
+                    }
+                    else if (message.Contains("stop"))
+                    {
+                        // 保存控温点
+                        SuspendAutoControl();
+                    }
+                    else
+                    {
+                        nlogger.Warn("Unknow message from control: " + message);
+                    }
                     break;
 
                 case SubTopic.Data:
