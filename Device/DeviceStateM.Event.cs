@@ -13,7 +13,7 @@ namespace Device
         /// <summary>
         /// 时刻触发事件
         /// </summary>
-        public event TimerTickEventHandler TimerTickEvent;
+        public event TimerTickEventHandler TimerTickEndEvent;
 
 
         // 
@@ -54,5 +54,12 @@ namespace Device
         /// 继电器模块 2 状态更新事件
         /// </summary>
         public event RelayDeviceStatusUpdatedEventHandler RelayDeviceSStatusUpdatedEvent;
+
+        //
+        public delegate void DeviceClosedEventHandler();
+        /// <summary>
+        /// 设备关闭触发事件
+        /// </summary>
+        public event DeviceClosedEventHandler DeviceClosedEvent;
     }
 }

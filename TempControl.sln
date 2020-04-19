@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotMonitor", "LotMonitor\Lo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotMonitorApp", "LotMonitorApp\LotMonitorApp.csproj", "{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserPort", "UserPort\UserPort.csproj", "{7CB47CC8-BB87-4D8E-9EB0-5FDE4D17746D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotPort", "UserPort\LotPort.csproj", "{7CB47CC8-BB87-4D8E-9EB0-5FDE4D17746D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

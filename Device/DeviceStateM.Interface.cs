@@ -107,15 +107,16 @@ namespace Device
                 }
 
                 // 设置接口
-                if (obj.ContainsKey("UserPort"))
+                if (obj.ContainsKey("LotPort"))
                 {
-                    JObject child = (JObject)obj["UserPort"];
+                    JObject child = (JObject)obj["LotPort"];
 
-                    confOK &= _userPorts.configUserPorts(child);
+                    LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay };
+                    confOK &= _userPorts.configUserPorts(child,tpSub);
                     if (!confOK) nlogger.Error("配置 UserPort 失败");
                     else nlogger.Debug("配置 UserPort 失败");
 
-                    _userPorts.UserPortMsgRvEvent += _userPorts_UserPortMsgRvEvent;
+                    InitLotPort();
                 }
             }
             catch(Exception ex)
@@ -172,13 +173,17 @@ namespace Device
             _machine.Fire(Trigger.ForceShutdownPC);
         }
 
-        public void closeDevice()
+        /// <summary>
+        /// 退出系统
+        /// </summary>
+        public void ExitDevice()
         {
+            _machine.Fire(Trigger.SuspendAutoControl);
+
             ryDeviceM.closeDevice();
             ryDeviceS.closeDevice();
 
-            // 向 mqtt server 发布主题信息
-            _userPorts.PublishMessage(UserPort.SubTopic.Data, packageDataJson(), true, UserPort.UserPortType.All);
+            DeviceClosedEvent?.Invoke();
         }
 
 

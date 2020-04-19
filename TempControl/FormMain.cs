@@ -354,7 +354,7 @@ namespace TempControl
                 }
             }
 
-            _device.closeDevice();
+            _device.ExitDevice();
         }
     }
 }

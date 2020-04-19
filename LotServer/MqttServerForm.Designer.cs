@@ -57,7 +57,8 @@
             // 
             this.richTextBox_log.Location = new System.Drawing.Point(410, 12);
             this.richTextBox_log.Name = "richTextBox_log";
-            this.richTextBox_log.Size = new System.Drawing.Size(309, 426);
+            this.richTextBox_log.ReadOnly = true;
+            this.richTextBox_log.Size = new System.Drawing.Size(382, 426);
             this.richTextBox_log.TabIndex = 1;
             this.richTextBox_log.Text = "";
             // 
@@ -203,7 +204,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(731, 450);
+            this.ClientSize = new System.Drawing.Size(804, 450);
             this.Controls.Add(this.checkBox_log);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBox_password);

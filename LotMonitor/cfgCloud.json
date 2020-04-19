@@ -1,7 +1,21 @@
 {
-  "ServerUrl": "183.230.40.39",
-  "Port": 6002,
-  "ApiKey": "123123123M",
-  "ProductId": "270595",
-  "DeviceId": "542228212"
+  "?LotPort": "关于用户接口的配置信息",
+  "LotPort": {
+    "MqttCloud": {
+      "Enable": true,
+      "ServerUrl": "172.26.12.68",
+      "Port": 5001,
+      "ApiKey": "public",
+      "ProductId": "admin",
+      "DeviceId": "myMonitorId"
+    },
+    "?MqttCloud": {
+      "Enable": true,
+      "ServerUrl": "183.230.40.39",
+      "Port": 6002,
+      "ApiKey": "123123123",
+      "ProductId": "270595",
+      "DeviceId": "542228212"
+    }
+  }
 }

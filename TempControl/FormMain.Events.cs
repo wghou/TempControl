@@ -17,7 +17,7 @@ namespace TempControl
             _device.TempDeviceSParamUpdatedEvent += _device_TempDeviceSParamUpdatedEvent;
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
-            _device.TimerTickEvent += _device_TimerTickEvent;
+            _device.TimerTickEndEvent += _device_TimerTickEvent;
         }
 
         public delegate void mainFormTimeTickEvent();

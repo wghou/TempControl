@@ -33,9 +33,6 @@ namespace Device
             currentTemptPointState.stateCounts++;
             _machine.Fire(_TickTrigger, _runningParameters.readTempIntervalSec * 1000);
    
-            // 定时器事件
-            TimerTickEvent?.Invoke();
-
             // 全局错误信息 - 事件
             uint errCnt = CheckErrorStatus();
             if(errCnt !=0 && errCnt != lastErrCnt)
@@ -44,8 +41,8 @@ namespace Device
             }
             lastErrCnt = errCnt;
 
-            // 向 mqtt server 发布主题信息
-            _userPorts.PublishMessage(UserPort.SubTopic.Data, packageDataJson(), false, UserPort.UserPortType.All);
+            // 定时器事件
+            TimerTickEndEvent?.Invoke();
         }
 
         private void _ryConnectTimer_Elapsed(object sender, ElapsedEventArgs e)

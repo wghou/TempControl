@@ -5,57 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
+using LotPort;
 
 namespace LotMonitor
 {
-    public enum ErrorCode : int
-    {
-        /// <summary>
-        /// 温度不降
-        /// </summary>
-        TempNotDown = 0,
-        /// <summary>
-        /// 温度持续下降
-        /// </summary>
-        TempNotUp,
-        /// <summary>
-        /// 温度波动过大
-        /// </summary>
-        TempFlucLarge,
-        /// <summary>
-        /// 温度持续上升
-        /// </summary>
-        TempBasis,
-        /// <summary>
-        /// 控温槽中的温度超出界限
-        /// </summary>
-        TempOutRange,
-        /// <summary>
-        /// 读电桥温度错误
-        /// </summary>
-        SensorError,
-        /// <summary>
-        /// 继电器设备错误
-        /// </summary>
-        RelayError,
-        /// <summary>
-        /// 温控设备错误
-        /// </summary>
-        TemptError,
-        /// <summary>
-        /// 温控设备参数写入错误
-        /// </summary>
-        TempParamSetError,
-        /// <summary>
-        /// 测温电桥错误
-        /// </summary>
-        BridgeError,
-        /// <summary>
-        /// 其他错误
-        /// </summary>
-        CodeError
-    }
-
     public partial class LotMonitorForm
     {
         /// <summary>
@@ -80,7 +33,7 @@ namespace LotMonitor
         const int errStatusRow = 11;
 
         Dictionary<ErrorCode, List<int>> errorDict = new Dictionary<ErrorCode, List<int>>();
-        Dictionary<ErrorCode, int> currentErrCnt = new Dictionary<ErrorCode, int>();
+        Dictionary<ErrorCode, uint> currentErrCnt = new Dictionary<ErrorCode, uint>();
         object errLocker = new object();
 
         Timer timer_errSt = new Timer();
@@ -123,9 +76,14 @@ namespace LotMonitor
                 {
                     errorDict[itm].RemoveAt(0);
 
-                    int errCnt = currentErrCnt[itm];
-                    if(errCnt!=0) errorDict[itm].Add(255);
-                    else errorDict[itm].Add(155);
+                    uint errCnt = currentErrCnt[itm];
+                    if (errCnt != 0)
+                    {
+                        errorDict[itm].Add(0);
+                    }
+                    else {
+                        errorDict[itm].Add(155);
+                    }
 
                     // 清空错误计数
                     currentErrCnt[itm] = 0;
@@ -146,8 +104,13 @@ namespace LotMonitor
             {
                 for(int j = 0;j < errStatusCol; j++)
                 {
-                    if (errorDict[(ErrorCode)i][j] == 0) colors[i * errStatusCol + (errStatusCol - j - 1)] = Color.FromArgb(224, 224, 224);
-                    else colors[i * errStatusCol + (errStatusCol - j - 1)] = errorColorMap[(ErrorCode)i];
+                    if (errorDict[(ErrorCode)i][j] == 0)
+                    {
+                        colors[i * errStatusCol + (errStatusCol - j - 1)] = Color.FromArgb(224, 224, 224);
+                    }
+                    else {
+                        colors[i * errStatusCol + (errStatusCol - j - 1)] = errorColorMap[(ErrorCode)i];
+                    }
                 }
             }
 

@@ -14,9 +14,9 @@ using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace UserPort
+namespace LotPort
 {
-    public class MyMqttClient
+    internal class MyMqttClient
     {
         private MqttClient mqttClient = null;
         private IMqttClientOptions options = null;
@@ -50,7 +50,7 @@ namespace UserPort
 
 
         //
-        public delegate void MessageReceievedEventHandler(SubTopic topic, string message);
+        public delegate void MessageReceievedEventHandler(Topic topic, string message);
         /// <summary>
         /// 事件 - 接收到消息
         /// </summary>
@@ -84,7 +84,7 @@ namespace UserPort
         /// 初始化
         /// </summary>
         /// <returns></returns>
-        public bool Initialize(JObject mqttConfig, params SubTopic[] topics)
+        public bool Initialize(JObject mqttConfig, params Topic[] topics)
         {
             // 清空原有主题
             topicsSubs.Clear();
@@ -92,7 +92,7 @@ namespace UserPort
             // 添加主题
             foreach(var itm in topics)
             {
-                topicsSubs.Add(topicDeviceId + "/" + Enum.GetName(typeof(SubTopic), itm));
+                topicsSubs.Add(topicDeviceId + "/" + Enum.GetName(typeof(Topic), itm));
             }
 
             if (mqttClient == null)
@@ -147,7 +147,7 @@ namespace UserPort
         /// 发布主题
         /// </summary>
         /// <param name="Message"></param>
-        public void Publish(SubTopic topic, string Message, bool isWait = false)
+        public void Publish(Topic topic, string Message, bool isWait = false)
         {
             if (!Enabled) return;
 
@@ -163,7 +163,7 @@ namespace UserPort
                     return;
                 }
 
-                string tp = topicDeviceId + "/" + Enum.GetName(typeof(SubTopic), topic);
+                string tp = topicDeviceId + "/" + Enum.GetName(typeof(Topic), topic);
 
                 Console.WriteLine("Publish >>Message: " + Message);
                 MqttApplicationMessageBuilder mamb = new MqttApplicationMessageBuilder()
@@ -211,29 +211,29 @@ namespace UserPort
             try
             {
                 string text = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-                string Topic = e.ApplicationMessage.Topic;
+                string tpString = e.ApplicationMessage.Topic;
                 string QoS = e.ApplicationMessage.QualityOfServiceLevel.ToString();
                 string Retained = e.ApplicationMessage.Retain.ToString();
-                Console.WriteLine("MessageReceived >>Topic:" + Topic + "; QoS: " + QoS + "; Retained: " + Retained + ";");
+                Console.WriteLine("MessageReceived >>Topic:" + tpString + "; QoS: " + QoS + "; Retained: " + Retained + ";");
                 Console.WriteLine("MessageReceived >>Msg: " + text);
 
-                switch (Topic)
+                // 解析主题
+                string[] tp = tpString.Split('/');
+                if (tp[0] != topicDeviceId)
                 {
-                    // control cmd from the monitor
-                    case "lot_tst/Control":
-                        MessageReceievedEvent?.Invoke(SubTopic.Control, text);
-                        break;
-
-                    // Data from the monitor
-                    case "lot_tst/Data":
-                        MessageReceievedEvent?.Invoke(SubTopic.Data, text);
-                        break;
-
-                    // default
-                    default:
-                        Console.WriteLine("Error: unknown from server.");
-                        break;
+                    Console.WriteLine("Error: unknown topicDeviceId from server.");
+                    return;
                 }
+
+                Topic tpE;
+                if(!Enum.TryParse(tp[1], out tpE))
+                {
+                    Console.WriteLine("Error: unknown LotPort.Topic.type from server.");
+                    return;
+                }
+
+                // 触发事件
+                MessageReceievedEvent?.Invoke(tpE, text);
             }
             catch (Exception exp)
             {

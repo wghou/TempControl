@@ -13,23 +13,19 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using UserPort;
+using LotPort;
 
 namespace LotMonitor
 {
     public partial class LotMonitorForm
     {
-        private MyMqttClient _lotClient = new MyMqttClient();
+        private LotPorts _lotClient = new LotPorts();
 
         /// <summary>
         /// 是否与 mqtt server 连接成功
         /// </summary>
-        public bool isMqttConnected { get { return _lotClient.isConnected; } }
+        public bool isMqttConnected { get { return _lotClient.isConnected(); } }
 
-        public void setMqttEnable(bool st)
-        {
-            _lotClient.Enabled = st;
-        }
 
         private bool setupLotClient()
         {
@@ -41,8 +37,16 @@ namespace LotMonitor
                 JsonTextReader reader = new JsonTextReader(file);
                 JObject obj = (JObject)JToken.ReadFrom(reader);
 
-                _lotClient.Initialize(obj, SubTopic.Data);
-                _lotClient.MessageReceievedEvent += LotClient_MessageReceievedEvent;
+                // 设置接口
+                if (obj.ContainsKey("LotPort"))
+                {
+                    JObject child = (JObject)obj["LotPort"];
+
+                    Topic[] tpSub = new Topic[] {
+                        Topic.ParamT, Topic.Relay, Topic.Error, Topic.AutoState };
+                    _lotClient.configUserPorts(child, tpSub);
+                    _lotClient.LotPortRvMsgDisplayEvent += LotClient_MessageReceievedEvent;
+                }  
             }
             catch(Exception ex)
             {
@@ -57,103 +61,100 @@ namespace LotMonitor
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="message"></param>
-        private void LotClient_MessageReceievedEvent(SubTopic topic, string message)
+        private void LotClient_MessageReceievedEvent(Topic topic, JObject message)
         {
             switch (topic)
             {
-                case SubTopic.Data:
-                    JObject allData = (JObject)JsonConvert.DeserializeObject(message);
+                case Topic.ParamT:
+
+                    JsonParamTs jP = message.ToObject<JsonParamTs>();
+
                     this.BeginInvoke(new EventHandler(delegate
                     {
-                        // temptM
-                        if (allData.ContainsKey("mTp"))
-                        {
-                            var data = JsonConvert.DeserializeObject<double>(allData["mTp"].ToString()); this.hslGaugeChart_temptM.Value = data;
-                        }
-                        if (allData.ContainsKey("mPw"))
-                        {
-                            var data = JsonConvert.DeserializeObject<float>(allData["mPw"].ToString()); this.hslGauge_powerM.Value = data;
-                        }
-                        if (allData.ContainsKey("mSt"))
-                        {
-                            var data = JsonConvert.DeserializeObject<float>(allData["mSt"].ToString()); this.hslLedDisplay_temptSetM.DisplayText = data.ToString("0.0000");
-                        }
+                        // tempM
+                        this.hslGaugeChart_temptM.Value = Math.Round(jP.paramM.TempShow, 3);
+                        this.hslGauge_powerM.Value = (float)Math.Round(jP.paramM.PowerShow, 3);
+                        this.hslLedDisplay_temptSetM.DisplayText = jP.paramM.TemptSet.ToString("0.0000");
 
-                        // temptS
-                        if (allData.ContainsKey("sTp"))
-                        {
-                            var data = JsonConvert.DeserializeObject<double>(allData["sTp"].ToString()); this.hslGaugeChart_temptS.Value = data;
-                        }
-                        if (allData.ContainsKey("sPw"))
-                        {
-                            var data = JsonConvert.DeserializeObject<float>(allData["sPw"].ToString()); this.hslGauge_powerS.Value = data;
-                        }
-                        if (allData.ContainsKey("sSt"))
-                        {
-                            var data = JsonConvert.DeserializeObject<float>(allData["sSt"].ToString()); this.hslLedDisplay_temptSetS.DisplayText = data.ToString("0.0000");
-                        }
+                        // tempS
+                        this.hslGaugeChart_temptS.Value = Math.Round(jP.paramS.TempShow, 3);
+                        this.hslGauge_powerS.Value = (float)Math.Round(jP.paramS.PowerShow, 3);
+                        this.hslLedDisplay_temptSetS.DisplayText = jP.paramS.TemptSet.ToString("0.0000");
+                    }));
+                    break;
 
+                case Topic.Relay:
+
+                    JsonRelay88 jR = message.ToObject<JsonRelay88>();
+
+                    this.BeginInvoke(new EventHandler(delegate
+                    {
                         // relayM
-                        if(allData.ContainsKey("mRy"))
+                        for (int i = 0; i < 8; i++)
                         {
-                            var data = JsonConvert.DeserializeObject<bool[]>(allData["mRy"].ToString());
-                            for(int i = 0; i < 8; i++)
-                            {
-                                switchRyM[i].SwitchStatus = data[i];
-                            }
+                            switchRyM[i].SwitchStatus = jR.relayM.getValue()[i];
                         }
 
-                        // relayM
-                        if (allData.ContainsKey("sRy"))
+                        // relayS
+                        for (int i = 0; i < 8; i++)
                         {
-                            var data = JsonConvert.DeserializeObject<bool[]>(allData["sRy"].ToString());
-                            for (int i = 0; i < 8; i++)
-                            {
-                                switchRyS[i].SwitchStatus = data[i];
-                            }
+                            switchRyS[i].SwitchStatus = jR.relayS.getValue()[i];
                         }
+                    }));
+                    break;
+                    
+                case Topic.Error:
+                    JsonError err = message.ToObject<JsonError>();
 
-                        // error
-                        if(allData.ContainsKey("err"))
+                    foreach (ErrorCode itm in Enum.GetValues(typeof(ErrorCode)))
+                    {
+                        // 记录这段时间内的错误
+                        currentErrCnt[itm] += err.errCnt[itm];
+
+                        if(err.errCnt[itm] > 0)
                         {
-                            try
-                            {
-                                string[] data = allData["err"].ToString().Split(';');
-                                Dictionary<string, int> err = new Dictionary<string, int>();
-                                foreach(var itm in data)
-                                {
-                                    string[] subdata = itm.Split('=');
-                                    err[subdata[0]] = int.Parse(subdata[1]);
-                                }
-
-                                this.label_err.Text = "";
-                                lock (errLocker)
-                                {
-
-
-                                    foreach (var itm in err)
-                                    {
-                                        this.label_err.Text += itm.Key + ": " + itm.Value.ToString() + "\n";
-
-                                        ErrorCode code;
-                                        if (Enum.TryParse(itm.Key, out code))
-                                        {
-                                            currentErrCnt[code] += itm.Value;
-                                        }
-                                    }
-                                }
-                            }
-                            catch(Exception ex)
-                            {
-
-                            }
+                            //writeLog(DateTime.Now.ToString("hh-mm-ss") + " : " + itm.ToString());
                         }
+                    }
+
+                    break;
+
+                case Topic.AutoState:
+                    JsonAutoState st = message.ToObject<JsonAutoState>();
+                    this.BeginInvoke(new EventHandler(delegate
+                    {
+                        label_state.Text = "当前状态：" + st.state.ToString();
                     }));
                     break;
 
                 default:
                     Console.WriteLine("Unknown message receieved.");
                     break;
+            }
+        }
+
+
+        private void writeLog(string log)
+        {
+            richTextBox_log.AppendText(log);
+            richTextBox_log.AppendText(Environment.NewLine);
+            richTextBox_log.ScrollToCaret();
+
+            limitLine(20);
+        }
+
+        private void limitLine(int maxLength)
+        {
+            if (richTextBox_log.Lines.Length > maxLength)
+            {
+                int moreLines = richTextBox_log.Lines.Length - maxLength;
+                string[] lines = richTextBox_log.Lines;
+                Array.Copy(lines, moreLines, lines, 0, maxLength);
+                Array.Resize(ref lines, maxLength);
+                richTextBox_log.Lines = lines;
+                richTextBox_log.SelectionStart = richTextBox_log.Text.Length;
+                richTextBox_log.SelectionLength = 0;
+                richTextBox_log.Focus();
             }
         }
     }
