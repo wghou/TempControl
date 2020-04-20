@@ -109,11 +109,9 @@ namespace LotMonitor
                     foreach (ErrorCode itm in Enum.GetValues(typeof(ErrorCode)))
                     {
                         // 记录这段时间内的错误
-                        currentErrCnt[itm] += err.errCnt[itm];
-
                         if(err.errCnt[itm] > 0)
                         {
-                            //writeLog(DateTime.Now.ToString("hh-mm-ss") + " : " + itm.ToString());
+                            writeLog(DateTime.Now.ToString("hh-mm-ss") + " : " + itm.ToString());
                         }
                     }
 

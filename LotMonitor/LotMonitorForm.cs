@@ -51,7 +51,6 @@ namespace LotMonitor
         private void LotMonitorForm_Shown(object sender, EventArgs e)
         {
             setupLotClient();
-            init_err_st();
         }
 
         ///////////////////////////////////////////////////

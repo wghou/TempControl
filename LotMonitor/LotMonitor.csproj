@@ -92,9 +92,6 @@
     <Compile Include="LotMonitorForm.Designer.cs">
       <DependentUpon>LotMonitorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LotMonitorForm.ErrStuts.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="LotMonitorForm.Mqtt.cs">
       <SubType>Form</SubType>
     </Compile>
