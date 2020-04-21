@@ -283,8 +283,7 @@ namespace Device
             // 状态计数器 清零
             sampleStateCounts = 0;
 
-            // wghou
-            //SampleStateChangedEvent?.Invoke(dest);
+            SampleStateChangedEvent?.Invoke(dest);
         }
 
         /// <summary>

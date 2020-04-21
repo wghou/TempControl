@@ -245,6 +245,9 @@ namespace ComTest
                 if (sPortTs.IsOpen) sPortTs.Close();
                 if (sPortSr.IsOpen) sPortSr.Close();
                 if (sPortBg.IsOpen) sPortBg.Close();
+
+                slaveThreadM?.Abort();
+                slaveThreadS?.Abort();
             }
             catch(Exception ex) { }
         }

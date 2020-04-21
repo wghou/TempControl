@@ -204,7 +204,7 @@ namespace TempControl
                         }
                         break;
                     case Device.AutoSample.StateSample.Prepare_2:
-                        this.checkBox_data.Text = "自动采样\n准备中";
+                        this.checkBox_data.Text = "自动采样\n准备完毕";
                         // 继电器状态 S
                         foreach (var itm in dictCheckBoxsRyS)
                         {

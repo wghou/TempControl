@@ -16,8 +16,13 @@ namespace Device
         /// </summary>
         private LotPorts _userPorts = new LotPorts();
 
-        void InitLotPort()
+        bool InitLotPort(JObject child)
         {
+            LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay, Topic.Error, Topic.SampleState };
+            bool confOK = _userPorts.configUserPorts(child, tpSub);
+            if (!confOK) nlogger.Error("配置 UserPort 失败");
+            else nlogger.Debug("配置 UserPort 失败");
+
             _userPorts.LotPortRvMsgSetEvent += _userPorts_UserPortMsgRvSetEvent;
             TimerTickEndEvent += DeviceStateM_TimerTickEndEvent;
             StateChangedEvent += DeviceStateM_StateChangedEvent;
@@ -25,6 +30,18 @@ namespace Device
             RelayDeviceSStatusUpdatedEvent += DeviceStateM_RelayDeviceStatusUpdatedEvent;
             ErrorStatusChangedEvent += DeviceStateM_ErrorStatusChangedEvent;
             DeviceClosedEvent += DeviceStateM_DeviceClosedEvent;
+            SampleStateChangedEvent += DeviceStateM_SampleStateChangedEvent;
+
+            // 初始时，刷新一下状态
+            DeviceStateM_DeviceClosedEvent();
+
+            return confOK;
+        }
+
+        // 当自动采样状态发生改变时，发布
+        private void DeviceStateM_SampleStateChangedEvent(AutoSample.StateSample st)
+        {
+            lotPublishMessage(Topic.SampleState);
         }
 
         // 当设备关闭时，发布继电器、自动控温状态
@@ -32,6 +49,7 @@ namespace Device
         {
             lotPublishMessage(Topic.Relay);
             lotPublishMessage(Topic.AutoState);
+            lotPublishMessage(Topic.SampleState);
         }
 
         // 当错误状态改变时，发布错误信息
@@ -164,6 +182,18 @@ namespace Device
                     string jerString = JsonConvert.SerializeObject(jEr);
 
                     _userPorts.PublishMessage(Topic.Error, jerString);
+                    break;
+
+                case Topic.SampleState:
+                    JsonAutoState jSample = new JsonAutoState();
+                    jSample.d_s = DorS.Display;
+                    jSample.state = new DeviceState();
+
+                    jSample.state = (DeviceState)_sampleMachine.State;
+
+                    string jspString = JsonConvert.SerializeObject(jSample);
+
+                    _userPorts.PublishMessage(Topic.SampleState, jspString);
                     break;
 
                 default:

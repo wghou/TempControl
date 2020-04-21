@@ -43,7 +43,7 @@ namespace LotMonitor
                     JObject child = (JObject)obj["LotPort"];
 
                     Topic[] tpSub = new Topic[] {
-                        Topic.ParamT, Topic.Relay, Topic.Error, Topic.AutoState };
+                        Topic.ParamT, Topic.Relay, Topic.Error, Topic.AutoState, Topic.Error, Topic.SampleState };
                     _lotClient.configUserPorts(child, tpSub);
                     _lotClient.LotPortRvMsgDisplayEvent += LotClient_MessageReceievedEvent;
                 }  
@@ -122,6 +122,14 @@ namespace LotMonitor
                     this.BeginInvoke(new EventHandler(delegate
                     {
                         label_state.Text = "当前状态：" + st.state.ToString();
+                    }));
+                    break;
+
+                case Topic.SampleState:
+                    JsonSampleState sm = message.ToObject<JsonSampleState>();
+                    this.BeginInvoke(new EventHandler(delegate
+                    {
+                        label_sample.Text = "采样状态：" + sm.state.ToString();
                     }));
                     break;
 

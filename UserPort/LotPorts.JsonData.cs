@@ -18,7 +18,9 @@ namespace LotPort
         /// <summary> 错误信息 </summary>
         Error,
         /// <summary> 自动控温步骤 </summary>
-        AutoState
+        AutoState,
+        /// <summary> 自动采样状态 </summary>
+        SampleState
     }
 
     /// <summary>
@@ -368,5 +370,49 @@ namespace LotPort
         /// 当前的错误状态
         /// </summary>
         public Dictionary<ErrorCode, uint> errCnt { set; get; }
+    }
+
+
+    /// <summary>
+    /// 自动采样的状态 / forked from Device.DeviceStateM.AutoSample.cs
+    /// </summary>
+    public enum StateSample : int
+    {
+        /// <summary>
+        /// 常态，所有按键都关闭
+        /// </summary>
+        Normal = 0,
+        /// <summary>
+        /// 自动取样 - 准备中 - 第一阶段：开电磁阀 1，5分钟后关闭电磁阀 1
+        /// </summary>
+        Prepare_1,
+        /// <summary>
+        /// 自动取样准备中 - 第二阶段：开电磁阀 4-3-2
+        /// </summary>
+        Prepare_2,
+        /// <summary>
+        /// 自动取样 - 取样中：关 3-4，开 1-2，一分钟（可调）后关闭，并回到常态
+        /// </summary>
+        OnSample,
+        /// <summary>
+        /// 强制停止
+        /// </summary>
+        Stop
+    }
+
+    /// <summary>
+    /// 自动采样状态
+    /// </summary>
+    public class JsonSampleState
+    {
+        /// <summary>
+        /// 该数据用于显示 or 设置
+        /// </summary>
+        public DorS d_s { set; get; }
+
+        /// <summary>
+        /// 当前自动采样状态
+        /// </summary>
+        public StateSample state { set; get; }
     }
 }

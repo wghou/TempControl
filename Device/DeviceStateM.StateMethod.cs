@@ -569,19 +569,6 @@ namespace Device
             // 未查找到，则表示已经测量完成了
             if (i == temperaturePointList.Count)
             {
-                // 所有数据
-                JObject allData = new JObject();
-                // 主题
-                JProperty tp = new JProperty("Topic", "Control");
-                allData.Add(tp);
-                // 主题
-                JProperty cmd = new JProperty("Cmd", "Finish");
-                allData.Add(cmd);
-
-                // wghou
-                //_userPorts.PublishMessage(UserPort.SubTopic.Control, allData.ToString(), false, UserPort.UserPortType.Socket);
-                
-                
                 // 控制状态序列为空，说明实验已经结束了
                 if (_runningParameters.shutDownComputer == true)
                 {

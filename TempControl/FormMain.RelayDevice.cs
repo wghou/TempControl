@@ -117,7 +117,6 @@ namespace TempControl
         private void checkBox_data_Click_1(object sender, EventArgs e)
         {
             // 自动取样
-            // wghou
             _device.SampleButtonClick();
         }
 

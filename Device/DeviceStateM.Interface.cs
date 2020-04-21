@@ -121,12 +121,7 @@ namespace Device
                 {
                     JObject child = (JObject)obj["LotPort"];
 
-                    LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay };
-                    confOK &= _userPorts.configUserPorts(child, tpSub);
-                    if (!confOK) nlogger.Error("配置 UserPort 失败");
-                    else nlogger.Debug("配置 UserPort 失败");
-
-                    InitLotPort();
+                    confOK = InitLotPort(child);
                 }
             }
             catch(Exception ex)

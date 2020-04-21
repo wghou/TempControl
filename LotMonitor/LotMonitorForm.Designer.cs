@@ -59,19 +59,21 @@
             this.pictureBox_lot = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.richTextBox_log = new System.Windows.Forms.RichTextBox();
+            this.label_sample = new System.Windows.Forms.Label();
             this.label_state = new System.Windows.Forms.Label();
             this.label_tm4 = new System.Windows.Forms.Label();
             this.label_tm3 = new System.Windows.Forms.Label();
             this.label_tm2 = new System.Windows.Forms.Label();
             this.label_tm1 = new System.Windows.Forms.Label();
             this.label_tm5 = new System.Windows.Forms.Label();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.richTextBox_log = new System.Windows.Forms.RichTextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_lot)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -480,6 +482,7 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.richTextBox_log);
+            this.tabPage1.Controls.Add(this.label_sample);
             this.tabPage1.Controls.Add(this.label_state);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.label_tm4);
@@ -494,6 +497,7 @@
             this.tabPage1.Controls.Add(this.hslGaugeChart_temptS);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.hslLedDisplay_temptSetM);
+            this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.label11);
             this.tabPage1.Controls.Add(this.label10);
             this.tabPage1.Controls.Add(this.label4);
@@ -528,10 +532,29 @@
             this.tabPage1.Text = "监测界面";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // richTextBox_log
+            // 
+            this.richTextBox_log.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBox_log.Location = new System.Drawing.Point(406, 376);
+            this.richTextBox_log.Name = "richTextBox_log";
+            this.richTextBox_log.Size = new System.Drawing.Size(470, 269);
+            this.richTextBox_log.TabIndex = 48;
+            this.richTextBox_log.Text = "";
+            // 
+            // label_sample
+            // 
+            this.label_sample.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label_sample.Location = new System.Drawing.Point(543, 307);
+            this.label_sample.Name = "label_sample";
+            this.label_sample.Size = new System.Drawing.Size(282, 36);
+            this.label_sample.TabIndex = 47;
+            this.label_sample.Text = "未连接...";
+            this.label_sample.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // label_state
             // 
             this.label_state.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_state.Location = new System.Drawing.Point(543, 251);
+            this.label_state.Location = new System.Drawing.Point(543, 232);
             this.label_state.Name = "label_state";
             this.label_state.Size = new System.Drawing.Size(282, 36);
             this.label_state.TabIndex = 47;
@@ -583,44 +606,35 @@
             this.label_tm5.TabIndex = 46;
             this.label_tm5.Text = "13:14";
             // 
-            // tabPage2
+            // label12
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 26);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(879, 647);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "控制界面";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label12.Location = new System.Drawing.Point(540, 288);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(72, 16);
+            this.label12.TabIndex = 27;
+            this.label12.Text = "采样状态";
             // 
-            // richTextBox_log
+            // label11
             // 
-            this.richTextBox_log.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.richTextBox_log.Location = new System.Drawing.Point(406, 339);
-            this.richTextBox_log.Name = "richTextBox_log";
-            this.richTextBox_log.Size = new System.Drawing.Size(470, 306);
-            this.richTextBox_log.TabIndex = 48;
-            this.richTextBox_log.Text = "";
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label11.Location = new System.Drawing.Point(406, 357);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(80, 16);
+            this.label11.TabIndex = 27;
+            this.label11.Text = "错误日志 ";
             // 
-            // label7
+            // label10
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label7.Location = new System.Drawing.Point(8, 425);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(48, 16);
-            this.label7.TabIndex = 25;
-            this.label7.Text = "M4-M7";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label8.Location = new System.Drawing.Point(8, 511);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(48, 16);
-            this.label8.TabIndex = 25;
-            this.label8.Text = "S0-S3";
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label10.Location = new System.Drawing.Point(540, 213);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(72, 16);
+            this.label10.TabIndex = 27;
+            this.label10.Text = "当前流程";
             // 
             // label9
             // 
@@ -632,25 +646,35 @@
             this.label9.TabIndex = 25;
             this.label9.Text = "S4-S7";
             // 
-            // label10
+            // label8
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label10.Location = new System.Drawing.Point(540, 232);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(72, 16);
-            this.label10.TabIndex = 27;
-            this.label10.Text = "当前流程";
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label8.Location = new System.Drawing.Point(8, 511);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(48, 16);
+            this.label8.TabIndex = 25;
+            this.label8.Text = "S0-S3";
             // 
-            // label11
+            // label7
             // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label11.Location = new System.Drawing.Point(406, 320);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(80, 16);
-            this.label11.TabIndex = 27;
-            this.label11.Text = "错误日志 ";
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(8, 425);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(48, 16);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "M4-M7";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 26);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(879, 647);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "控制界面";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // LotMonitorForm
             // 
@@ -715,6 +739,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label_sample;
+        private System.Windows.Forms.Label label12;
     }
 }
 
