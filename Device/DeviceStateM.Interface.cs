@@ -104,6 +104,16 @@ namespace Device
                 {
                     JObject child = (JObject)obj["SensorDev"];
 
+                    // 设置辅控温表
+                    if (child.ContainsKey("Sensor"))
+                    {
+                        JObject child2 = (JObject)child["Sensor"];
+
+                        confOK &= srDevice.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        srDevice.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                        if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + srDevice.srDevicePortName);
+                        else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + srDevice.srDevicePortName);
+                    }
                 }
 
                 // 设置接口
@@ -111,10 +121,9 @@ namespace Device
                 {
                     JObject child = (JObject)obj["LotPort"];
 
-                    LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay };
-                    confOK &= _userPorts.configUserPorts(child,tpSub);
-                    if (!confOK) nlogger.Error("配置 UserPort 失败");
-                    else nlogger.Debug("配置 UserPort 失败");
+                    confOK &= _userPorts.configUserPorts(child);
+                    if (!confOK) nlogger.Error("配置 LotPort 失败");
+                    else nlogger.Debug("配置 LotPort 失败");
 
                     InitLotPort();
                 }
@@ -173,10 +182,7 @@ namespace Device
             _machine.Fire(Trigger.ForceShutdownPC);
         }
 
-        /// <summary>
-        /// 退出系统
-        /// </summary>
-        public void ExitDevice()
+        public void closeDevice()
         {
             _machine.Fire(Trigger.SuspendAutoControl);
 

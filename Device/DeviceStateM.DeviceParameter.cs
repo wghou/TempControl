@@ -24,6 +24,10 @@ namespace Device
         /// </summary>
         public bool finished = false;
         /// <summary>
+        /// 是否自动取样
+        /// </summary>
+        public bool autoSample = false;
+        /// <summary>
         /// 当前工作状态下的应达到的温度值
         /// </summary>
         public float stateTemp { get { return paramM[0]; } }
@@ -115,6 +119,8 @@ namespace Device
         /// </summary>
         public float tempDownCoolFShutdownCool = 0.2f;
 
+        public float subCoolFNotDownThr = 5.0f;
+
         /// <summary>
         /// 温度点排序 - 升序 / 降序
         /// </summary>
@@ -128,6 +134,11 @@ namespace Device
         /// </summary>
         public bool shutDownComputer = false;
 
+        /// <summary>
+        /// 关于自动取样的一些参数
+        /// </summary>
+        public AutoSample.SampleParam sampleParam = new AutoSample.SampleParam();
+
 
         public bool ReadValueConfig(string configFilePath)
         {
@@ -137,6 +148,8 @@ namespace Device
                 if (!File.Exists(configFilePath))
                 {
                     WriteValueConfig(configFilePath);
+
+                    sampleParam.WriteValueConfig(configFilePath);
                 }
 
                 ////////////////////////////////////////
@@ -158,11 +171,15 @@ namespace Device
                 tempDownCoolFShutdownDevision = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString()));
                 tempDownCoolFShutdownHot = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString()));
                 tempDownCoolFShutdownCool = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString()));
+                subCoolFNotDownThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "subCoolFNotDownThr", subCoolFNotDownThr.ToString()));
 
                 // 其他
                 sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
                 ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
                 shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
+
+                // 读取自动采样参数
+                sampleParam.ReadValueConfig(configFilePath);
             }
             catch (Exception ex)
             {
@@ -195,14 +212,18 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownDevision", tempDownCoolFShutdownDevision.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString());
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "subCoolFNotDownThr", subCoolFNotDownThr.ToString());
 
                 // 一些其他的调试参数
                 // 升序还是降序
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", sort);
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", ryElecEnable ? "Enable" : "Disable");
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "shutDownComputer", shutDownComputer ? "Enable" : "Disable");
+
+                // 读取自动采样参数
+                sampleParam.WriteValueConfig(configFilePath);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 nlogger.Error("从配置文件写入参数过程中发生异常：" + ex.Message.ToString());
                 return false;
@@ -237,6 +258,11 @@ namespace Device
         /// 辅槽控温设备
         /// </summary>
         public TempDevice tpDeviceS = new TempDevice() { tpDeviceName = "辅槽控温设备" };
+
+        /// <summary>
+        /// 传感器设备
+        /// </summary>
+        public SensorDevice srDevice = new SensorDevice() { srDevicName = "传感器设备" };
 
         /// <summary>
         /// 系统开始运行的时间

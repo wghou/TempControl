@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Stateless;
 using System.Diagnostics;
 using System.Timers;
+using Newtonsoft.Json.Linq;
 
 namespace Device
 {
@@ -29,13 +30,17 @@ namespace Device
             // error check
             ErrorCheckOutRange();   // 温度超出界限
 
+            // 检查传感器设备的错误状态
+            if (srDevice.FetchErrorStatus() != SensorDevice.Err_s.NoError) SetErrorStatus(ErrorCode.SensorError);
+
             // 驱动状态机执行流程
             currentTemptPointState.stateCounts++;
             _machine.Fire(_TickTrigger, _runningParameters.readTempIntervalSec * 1000);
-   
+
+            
             // 全局错误信息 - 事件
             uint errCnt = CheckErrorStatus();
-            if(errCnt !=0 && errCnt != lastErrCnt)
+            if (errCnt != 0 && errCnt != lastErrCnt)
             {
                 ErrorStatusChangedEvent?.Invoke(_deviceErrorMonitor);
             }
@@ -68,6 +73,8 @@ namespace Device
             _tickTimer.Start();
 
             _ryConnectTimer.Start();
+
+            _tickTimerSample.Start();
         }
 
 
@@ -109,7 +116,7 @@ namespace Device
         {
             nlogger.Debug("Next point: " + tpPoint.ToString());
 
-            if(tpDeviceM.temperatures.Count == 0)
+            if (tpDeviceM.temperatures.Count == 0)
             {
                 nlogger.Debug("tpDeviceM.temperatures.Count == 0  in nextPointDown.");
                 SetErrorStatus(ErrorCode.CodeError);
@@ -122,7 +129,6 @@ namespace Device
                 return false;
         }
 
-
         /// <summary>
         /// Idle Entry
         /// </summary>
@@ -130,8 +136,7 @@ namespace Device
         {
             nlogger.Debug("Idle Entry.");
 
-            // 空闲
-            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
@@ -140,17 +145,7 @@ namespace Device
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
-
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
         /// <summary>
@@ -215,7 +210,7 @@ namespace Device
             {
                 if (tpDeviceM.temperatures.Count == 0)
                 {
-                    _machine.Fire(Trigger.ForceShutdownPC);
+                    _machine.Fire(Trigger.SuspendAutoControl);
                     return;
                 }
 
@@ -251,8 +246,15 @@ namespace Device
 
             // 升温
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
+
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 设置主槽 / 辅槽控温设备的参数
             //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
@@ -301,9 +303,15 @@ namespace Device
             nlogger.Debug("TempDown Entry.");
 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = true;
 
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
             // 向主槽 / 辅槽控温设备写入全部参数
             //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
@@ -313,7 +321,7 @@ namespace Device
             // 将参数更新到下位机
             // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteTempDeviceM(true);
-            WriteTempDeviceS(true);   
+            WriteTempDeviceS(true);
         }
 
         /// <summary>
@@ -344,7 +352,7 @@ namespace Device
             nlogger.Debug("TempDown Exit.");
         }
 
-        
+
 
         /// <summary>
         /// Control Entry
@@ -354,23 +362,45 @@ namespace Device
             nlogger.Debug("Control Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            //  1 2 3 4 5 
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
+            // 温度点低于 5 度时，保持 辅槽快冷打开
+            if (currentTemptPointState.stateTemp <= _runningParameters.subCoolFNotDownThr)
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
 
-            // 将继电器状态写入下位机
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
 
-            // 向主槽 / 辅槽控温设备写入全部参数
+            // 设置主槽 / 辅槽控温设备的参数
             //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
-            //currentTemptPointState.paramM[1] = 0.0f;    // 将修正值清零
+            //currentTemptPointState.paramS[1] = 0.0f;    // 将修正值清零
             currentTemptPointState.paramS.CopyTo(tpDeviceS.tpParamToSet, 0);
             // 将参数更新到下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
+            // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
+
             WriteTempDeviceM(true);
             WriteTempDeviceS(true);
+
+            // 自动采样
+            if(currentTemptPointState.autoSample == true)
+            {
+                if (_sampleMachine.IsInState(AutoSample.StateSample.Normal)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
+                else
+                {
+                    // 自动采样出现问题
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
+                    nlogger.Error("在自动控温中，自动采样出现问题：_sampleMachine.IsInState(Normal)");
+                    SetErrorStatus(ErrorCode.CodeError);
+                }
+            }
         }
 
         /// <summary>
@@ -413,14 +443,20 @@ namespace Device
             nlogger.Debug("Stable Entry.");
 
             // 首次进入该状态，应改变相应的继电器状态
-            // 1 2 3 4 5 - 电桥 - 温度波动 <= 0.0005 C / 3 min
             ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = true;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
+            // 温度点低于 5 度时，保持 辅槽快冷打开
+            if (currentTemptPointState.stateTemp <= _runningParameters.subCoolFNotDownThr)
+                ryDeviceM.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = true;
 
-            // 将继电器状态写入下位机
-            // 如果出现错误，则通过 _deviceErrorMonitor 记录错误状态
             WriteRelayDeviceM(true);
-            WriteRelayDeviceS(true);
         }
 
 
@@ -440,9 +476,8 @@ namespace Device
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
                 // 电桥自检正常。。。
-                //if (tpBridge.tpBridgeReadInterval < 1) tpBridge.tpBridgeReadInterval = 1;
-                //bool steady = tpBridge.chekFluc(currentState.stateCounts / tpBridge.tpBridgeReadInterval, flucValue);
-                if (true)
+                bool steady = tpDeviceM.checkFlucCount(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                if (steady)
                 {
                     // 温度稳定度达到了要求，进入下一个状态 - 测量
                     _machine.Fire(Trigger.StartMeasure);
@@ -460,7 +495,7 @@ namespace Device
             nlogger.Debug("Stable Exit.");
         }
 
-        
+
 
         /// <summary>
         /// Measure Entry
@@ -468,6 +503,20 @@ namespace Device
         private void MeasureEntry()
         {
             nlogger.Debug("Measure Entry.");
+
+            // 如果需要自动采样
+            if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
+            {
+                if (_sampleMachine.IsInState(AutoSample.StateSample.Prepare_2)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
+                else
+                {
+                    nlogger.Error("自动控温流程中，自动采样失败： _sampleMachine.IsInState(Normal)");
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+                    SetErrorStatus(ErrorCode.CodeError);
+                }
+            }
+
+            srDevice.StartMeasure();
         }
 
         /// <summary>
@@ -479,7 +528,23 @@ namespace Device
             nlogger.Debug("MeasureTick: " + tic.ToString() + " ms");
 
             // measure
+            // 电导率测量
+            // 海水取样
 
+            // 等待 xx 分钟后，第二次点击
+            if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
+            {
+                if (_sampleMachine.IsInState(AutoSample.StateSample.OnSample)) return;
+                else if (!_sampleMachine.IsInState(AutoSample.StateSample.Normal)){
+                    nlogger.Error("自动控温中，自动采样出现错误：_sampleMachine.IsInState(OnSample or Normal)");
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+                }
+            }
+
+            if(srDevice.FetchRqt() != true)
+            {
+                return;
+            }
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;
@@ -504,6 +569,19 @@ namespace Device
             // 未查找到，则表示已经测量完成了
             if (i == temperaturePointList.Count)
             {
+                // 所有数据
+                JObject allData = new JObject();
+                // 主题
+                JProperty tp = new JProperty("Topic", "Control");
+                allData.Add(tp);
+                // 主题
+                JProperty cmd = new JProperty("Cmd", "Finish");
+                allData.Add(cmd);
+
+                // wghou
+                //_userPorts.PublishMessage(UserPort.SubTopic.Control, allData.ToString(), false, UserPort.UserPortType.Socket);
+                
+                
                 // 控制状态序列为空，说明实验已经结束了
                 if (_runningParameters.shutDownComputer == true)
                 {

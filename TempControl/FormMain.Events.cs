@@ -18,6 +18,7 @@ namespace TempControl
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEndEvent += _device_TimerTickEvent;
+            _device.SampleStateChangedEvent += _device_SampleStateChangedEvent;
         }
 
         public delegate void mainFormTimeTickEvent();
@@ -93,7 +94,7 @@ namespace TempControl
                 // 出现错误时，如果是首次出现，则新建 Alarm 窗口并弹出，但如果窗口已经存在，则只闪烁任务栏提示
                 if (formExist)
                 {
-                    
+
                 }
                 else
                 {
@@ -158,16 +159,80 @@ namespace TempControl
                         break;
                 }
 
-                // 自动流程中，禁止继电器按键
-                if(st == Device.State.Idle || st == Device.State.ShutdownPC)
+                // 启用 / 禁用 按键
+                switch (st)
                 {
-                    foreach (var itm in dictCheckBoxsRyM) itm.Value.Enabled = true;
-                    foreach (var itm in dictCheckBoxsRyS) itm.Value.Enabled = true;
+                    case Device.State.Idle:
+                    case Device.State.ShutdownPC:
+                        foreach (var itm in dictCheckBoxsRyM)
+                            itm.Value.Enabled = true;
+                        foreach (var itm in dictCheckBoxsRyS)
+                            itm.Value.Enabled = true;
+                        checkBox_data.Enabled = true;
+                        break;
+                    default:
+                        foreach (var itm in dictCheckBoxsRyM)
+                            itm.Value.Enabled = false;
+                        foreach (var itm in dictCheckBoxsRyS)
+                            itm.Value.Enabled = false;
+                        checkBox_data.Enabled = false;
+                        break;
                 }
-                else
+            }));
+        }
+
+        private void _device_SampleStateChangedEvent(Device.AutoSample.StateSample st)
+        {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                switch(st)
                 {
-                    foreach (var itm in dictCheckBoxsRyM) itm.Value.Enabled = false;
-                    foreach (var itm in dictCheckBoxsRyS) itm.Value.Enabled = false;
+                    case Device.AutoSample.StateSample.Normal:
+                        this.checkBox_data.Text = "自动采样";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = true;
+                        }
+                        break;
+                    case Device.AutoSample.StateSample.Prepare_1:
+                        this.checkBox_data.Text = "自动采样\n准备中";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = false;
+                        }
+                        break;
+                    case Device.AutoSample.StateSample.Prepare_2:
+                        this.checkBox_data.Text = "自动采样\n准备中";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = false;
+                        }
+                        break;
+                    case Device.AutoSample.StateSample.OnSample:
+                        this.checkBox_data.Text = "自动采样\n采样中";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = false;
+                        }
+                        break;
+                    case Device.AutoSample.StateSample.Stop:
+                        this.checkBox_data.Text = "自动采样";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = true;
+                        }
+                        if(_device._state == Device.State.Idle || _device._state == Device.State.ShutdownPC)
+                        {
+                            if(_device.currentTemptPointState.autoSample != true) MessageBox.Show("自动采样过程中，继电器写入错误！");
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }));
         }
@@ -198,18 +263,9 @@ namespace TempControl
                 foreach (var chk in this.dictCheckBoxsRyM) chk.Value.Checked = ryStatus[(int)chk.Key];
                 // 指示灯状态
                 foreach (var pic in this.pictureBoxRyM) pictureBoxRyM[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
-
-                // 如果禁用 ry2 ，则将全部 16 个按键作为 ry1 使用
-                if (this.checkBox_ryEn2.Checked == false)
-                {
-                    // 按钮状态
-                    foreach (var chk in this.dictCheckBoxsRyS) chk.Value.Checked = ryStatus[(int)chk.Key + 8];
-                    // 指示灯状态
-                    foreach ( var pic in this.pictureBoxRyM) pictureBoxRyS[pic.Key].Image = ryStatus[(int)pic.Key + 8] ? mBmpRelayGreen : mBmpRelayRed;
-                }
             }));
 
-            if(err != Device.RelayDevice.Err_r.NoError)
+            if (err != Device.RelayDevice.Err_r.NoError)
             {
                 MessageBox.Show("继电器模块 1 设置错误！");
             }
@@ -217,8 +273,6 @@ namespace TempControl
 
         private void _device_RelayDeviceSStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
         {
-            if (this.checkBox_ryEn2.Checked == false) return;
-
             this.BeginInvoke(new EventHandler(delegate
             {
                 // 按钮状态

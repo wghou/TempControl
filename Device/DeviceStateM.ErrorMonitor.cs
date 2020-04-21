@@ -139,7 +139,6 @@ namespace Device
             }
         }
 
-
         /// <summary>
         /// 查看当前时间步骤内错误状态
         /// </summary>

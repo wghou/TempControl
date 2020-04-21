@@ -23,6 +23,9 @@ namespace Device
             // 配置设备状态机
             ConfigStateless();
 
+            // 配置自动采样状态机
+            ConfigStatelessSample();
+
             // 配置设备错误状态监测器
             ResetErrorStatus();
 
