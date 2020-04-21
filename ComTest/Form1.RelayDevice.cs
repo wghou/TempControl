@@ -31,6 +31,7 @@ namespace ComTest
         /// </summary>
         byte unitIdM = 1;
         bool SportRyM_enable = false;
+        Thread slaveThreadM;
 
         /// <summary>
         /// 继电器板卡 S - 串口
@@ -45,6 +46,7 @@ namespace ComTest
         /// </summary>
         byte unitIdS = 1;
         bool SportRyS_enable = false;
+        Thread slaveThreadS;
 
 
         ////////////////////////////
@@ -109,8 +111,8 @@ namespace ComTest
                     ryDeviceM.DataStore = DataStoreFactory.CreateDefaultDataStore();
 
                     //ryDeviceM.Listen();
-                    Thread slaveThread = new Thread(new ThreadStart(ryDeviceM.Listen));
-                    slaveThread.Start();
+                    slaveThreadM = new Thread(new ThreadStart(ryDeviceM.Listen));
+                    slaveThreadM?.Start();
 
                     // 上位机写入完成
                     ryDeviceM.WriteComplete += RyDeviceM_WriteComplete;
@@ -138,8 +140,8 @@ namespace ComTest
                     ryDeviceS.DataStore = DataStoreFactory.CreateDefaultDataStore();
 
                     //ryDeviceS.Listen();
-                    Thread slaveThread = new Thread(new ThreadStart(ryDeviceS.Listen));
-                    slaveThread.Start();
+                    slaveThreadS = new Thread(new ThreadStart(ryDeviceS.Listen));
+                    slaveThreadS?.Start();
 
                     // 上位机写入完成
                     ryDeviceS.WriteComplete += RyDeviceM_WriteComplete;

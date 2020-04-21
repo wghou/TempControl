@@ -104,6 +104,12 @@ namespace Device
                 {
                     JObject child = (JObject)obj["SensorDev"];
 
+                    // 设置辅控温表
+                    if (child.ContainsKey("Sensor"))
+                    {
+                        JObject child2 = (JObject)child["Sensor"];
+
+                    }
                 }
 
                 // 设置接口
@@ -111,12 +117,7 @@ namespace Device
                 {
                     JObject child = (JObject)obj["LotPort"];
 
-                    LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay };
-                    confOK &= _userPorts.configUserPorts(child,tpSub);
-                    if (!confOK) nlogger.Error("配置 UserPort 失败");
-                    else nlogger.Debug("配置 UserPort 失败");
-
-                    InitLotPort();
+                    confOK = InitLotPort(child);
                 }
             }
             catch(Exception ex)
@@ -172,6 +173,7 @@ namespace Device
         {
             _machine.Fire(Trigger.ForceShutdownPC);
         }
+
 
         /// <summary>
         /// 退出系统

@@ -16,8 +16,13 @@ namespace Device
         /// </summary>
         private LotPorts _userPorts = new LotPorts();
 
-        void InitLotPort()
+        bool InitLotPort(JObject child)
         {
+            LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay, Topic.Error};
+            bool confOK = _userPorts.configUserPorts(child, tpSub);
+            if (!confOK) nlogger.Error("配置 UserPort 失败");
+            else nlogger.Debug("配置 UserPort 失败");
+
             _userPorts.LotPortRvMsgSetEvent += _userPorts_UserPortMsgRvSetEvent;
             TimerTickEndEvent += DeviceStateM_TimerTickEndEvent;
             StateChangedEvent += DeviceStateM_StateChangedEvent;
@@ -25,6 +30,11 @@ namespace Device
             RelayDeviceSStatusUpdatedEvent += DeviceStateM_RelayDeviceStatusUpdatedEvent;
             ErrorStatusChangedEvent += DeviceStateM_ErrorStatusChangedEvent;
             DeviceClosedEvent += DeviceStateM_DeviceClosedEvent;
+
+            // 初始时，刷新一下状态
+            DeviceStateM_DeviceClosedEvent();
+
+            return confOK;
         }
 
         // 当设备关闭时，发布继电器、自动控温状态
