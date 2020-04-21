@@ -121,9 +121,10 @@ namespace Device
                 {
                     JObject child = (JObject)obj["LotPort"];
 
-                    confOK &= _userPorts.configUserPorts(child);
-                    if (!confOK) nlogger.Error("配置 LotPort 失败");
-                    else nlogger.Debug("配置 LotPort 失败");
+                    LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay };
+                    confOK &= _userPorts.configUserPorts(child, tpSub);
+                    if (!confOK) nlogger.Error("配置 UserPort 失败");
+                    else nlogger.Debug("配置 UserPort 失败");
 
                     InitLotPort();
                 }
@@ -182,7 +183,11 @@ namespace Device
             _machine.Fire(Trigger.ForceShutdownPC);
         }
 
-        public void closeDevice()
+
+        /// <summary>
+        /// 退出系统
+        /// </summary>
+        public void ExitDevice()
         {
             _machine.Fire(Trigger.SuspendAutoControl);
 
