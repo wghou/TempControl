@@ -29,11 +29,6 @@ namespace ComTest
         private SerialPort sPortTs = new SerialPort();
         private bool SportTs_enable = false;
 
-        /// <summary>
-        /// 继电器 - 通信端口
-        /// </summary>
-        private SerialPort sPortRy = new SerialPort();
-        private bool SportRy_enable = false;
 
         /// <summary>
         /// 测温电桥 - 通信端口
@@ -112,31 +107,8 @@ namespace ComTest
                     } 
                 }
 
-                // 继电器 1 - 通信端口
-                if (obj.ContainsKey("RelayM"))
-                {
-                    JObject child = (JObject)obj["RelayM"];
-
-                    SportRy_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
-                    if (SportRy_enable)
-                    {
-                        sPortRy.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM2";
-                        sPortRy.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
-                        sPortRy.DataBits = 8;
-                        sPortRy.StopBits = StopBits.One;
-                        sPortRy.Parity = Parity.None;
-                        sPortRy.ReadBufferSize = 64;
-                        sPortRy.WriteBufferSize = 64;
-                    }
-                }
-
-                // 继电器 2 - 通信端口
-                if (obj.ContainsKey("RelayS"))
-                {
-                    JObject child = (JObject)obj["RelayS"];
-
-                    
-                }
+                // 继电器 - 通信端口
+                initNModbus(obj);
 
                 // 电桥 - 通信端口
                 if (obj.ContainsKey("Bridge"))
@@ -186,7 +158,6 @@ namespace ComTest
             // 添加串口收发信息事件
             if (SportTm_enable) sPortTm.DataReceived += SPortTm_DataReceived;
             if (SportTs_enable) sPortTs.DataReceived += SPortTs_DataReceived;
-            if (SportRy_enable) sPortRy.DataReceived += SPortRy_DataReceived;
             if (SportSr_enable) sPortSr.DataReceived += SPortSr_DataReceived;
             if (SportBg_enable) sPortBg.DataReceived += SPortBg_DataReceived;
 
@@ -196,7 +167,6 @@ namespace ComTest
             {
                 if (SportTm_enable) sPortTm.Open();
                 if (SportTs_enable) sPortTs.Open();
-                if (SportRy_enable) sPortRy.Open();
                 if (SportSr_enable) sPortSr.Open();
                 if (SportBg_enable) sPortBg.Open();
             }
@@ -273,7 +243,6 @@ namespace ComTest
                 // 关闭程序时，关闭串口
                 if (sPortTm.IsOpen) sPortTm.Close();
                 if (sPortTs.IsOpen) sPortTs.Close();
-                if (sPortRy.IsOpen) sPortRy.Close();
                 if (sPortSr.IsOpen) sPortSr.Close();
                 if (sPortBg.IsOpen) sPortBg.Close();
             }

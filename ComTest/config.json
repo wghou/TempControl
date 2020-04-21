@@ -12,12 +12,12 @@
   "RelayM": {
     "PortName": "COM6",
     "BaudRate": 9600,
-    "Enable": false
+    "Enable": true
   },
   "RelayS": {
     "PortName": "COM8",
     "BaudRate": 9600,
-    "Enable": false
+    "Enable": true
   },
   "Sensor": {
     "PortName": "COM4",
