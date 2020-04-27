@@ -20,7 +20,9 @@ namespace LotPort
         /// <summary> 自动控温步骤 </summary>
         AutoState,
         /// <summary> 自动采样状态 </summary>
-        SampleState
+        SampleState,
+        /// <summary> 传感器相关的数据 </summary>
+        Sensor
     }
 
     /// <summary>
@@ -400,6 +402,7 @@ namespace LotPort
         Stop
     }
 
+
     /// <summary>
     /// 自动采样状态
     /// </summary>
@@ -414,5 +417,76 @@ namespace LotPort
         /// 当前自动采样状态
         /// </summary>
         public StateSample state { set; get; }
+    }
+
+
+    /// <summary>
+    /// 传感器的类型 - forked from xxx
+    /// </summary>
+    public enum SensorType : int
+    {
+        Type0,
+        Type1
+    }
+
+
+    /// <summary>
+    /// 传感器当前的状态
+    /// </summary>
+    public enum StateSensor : int
+    {
+        /// <summary> 空闲 </summary>
+        Idle = 0,
+        /// <summary> 识别传感器 </summary>
+        Identify,
+        /// <summary> 读取数据 </summary>
+        Read,
+        /// <summary> 测量数据 </summary>
+        Measure,
+        /// <summary> 完成测量 </summary>
+        Finish,
+        /// <summary> 停止 </summary>
+        Stop
+    }
+
+
+    /// <summary>
+    /// 传感器状态 - json
+    /// </summary>
+    public class SensorData
+    {
+        /// <summary>
+        /// 传感器的类型
+        /// </summary>
+        public SensorType type { get; set; }
+        /// <summary>
+        /// 传感器的名称
+        /// </summary>
+        public string name { get; set; }
+        /// <summary>
+        /// 传感器当前的状态
+        /// </summary>
+        public StateSensor state { get; set; }
+        /// <summary>
+        /// 传感器测到的数据
+        /// </summary>
+        public float data { get; set; }
+    }
+
+
+    /// <summary>
+    /// 传感器状态及数据
+    /// </summary>
+    public class JsonSensor
+    {
+        /// <summary>
+        /// 该数据用于显示 or 设置
+        /// </summary>
+        public DorS d_s { set; get; }
+
+        /// <summary>
+        /// 所有传感器的数据及状态
+        /// </summary>
+        public List<SensorData> srDatas { set; get; }
     }
 }

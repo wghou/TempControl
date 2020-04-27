@@ -9,7 +9,7 @@ using NLog;
 
 namespace Device
 {
-    public class SensorDevice
+    public partial class SensorDevice
     {
         private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
 

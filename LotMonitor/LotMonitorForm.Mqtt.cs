@@ -133,6 +133,14 @@ namespace LotMonitor
                     }));
                     break;
 
+                case Topic.Sensor:
+                    JsonSensor sr = message.ToObject<JsonSensor>();
+                    this.BeginInvoke(new EventHandler(delegate
+                    {
+                        // 将传感器信息显示
+                    }));
+                    break;
+
                 default:
                     Console.WriteLine("Unknown message receieved.");
                     break;

@@ -196,6 +196,22 @@ namespace Device
                     _userPorts.PublishMessage(Topic.SampleState, jspString);
                     break;
 
+                case Topic.Sensor:
+                    JsonSensor jSensor = new JsonSensor();
+                    jSensor.d_s = DorS.Display;
+                    jSensor.srDatas = new List<SensorData>();
+                    SensorData data0 = new SensorData();
+                    data0.name = "null";
+                    data0.type = LotPort.SensorType.Type0;
+                    data0.state = LotPort.StateSensor.Idle;
+                    data0.data = 0.0f;
+                    jSensor.srDatas.Add(data0);
+
+                    string jsrString = JsonConvert.SerializeObject(jSensor);
+
+                    _userPorts.PublishMessage(Topic.Sensor, jsrString);
+                    break;
+
                 default:
                     break;
             }
