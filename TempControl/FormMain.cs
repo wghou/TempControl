@@ -276,18 +276,7 @@ namespace TempControl
 
             if (!formExist)
             {
-                ChartConfig cfg = new ChartConfig();
-                cfg.chartTitle = "主槽控温";
-                cfg.column = 10;
-                cfg.row = 7;
-                cfg.startTime = _device.startTime;
-                cfg.dataShow = _device.tpDeviceM.temperaturesShow;
-                cfg.digits = 4;
-                cfg.dataLocker = _device.tpDeviceM.tpShowLocker;
-                cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
-                cfg.funcPtr = _device.tpDeviceM.GetFlucDurCountOrLess;
-
-                FormChart fm = new FormChart(cfg, this);
+                FormChart fm = new FormChart(_device, FormChart.ChartDeviceType.MainDevice);
                 fm.Location = new System.Drawing.Point(10, 12);
                 fm.Name = "FormChartM";
                 fm.Show();
@@ -313,18 +302,7 @@ namespace TempControl
 
             if (!formExist)
             {
-                ChartConfig cfg = new ChartConfig();
-                cfg.chartTitle = "辅槽控温";
-                cfg.column = 10;
-                cfg.row = 7;
-                cfg.startTime = _device.startTime;
-                cfg.dataShow = _device.tpDeviceS.temperaturesShow;
-                cfg.digits = 3;
-                cfg.dataLocker = _device.tpDeviceS.tpShowLocker;
-                cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
-                cfg.funcPtr = _device.tpDeviceS.GetFlucDurCountOrLess;
-
-                FormChart fm = new FormChart(cfg, this);
+                FormChart fm = new FormChart(_device, FormChart.ChartDeviceType.SubDevice);
                 fm.Location = new System.Drawing.Point(10, 12);
                 fm.Name = "FormChartS";
                 fm.Show();

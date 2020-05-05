@@ -20,12 +20,6 @@ namespace TempControl
             _device.TimerTickEndEvent += _device_TimerTickEvent;
         }
 
-        public delegate void mainFormTimeTickEvent();
-        /// <summary>
-        /// 主界面定时器事件
-        /// </summary>
-        public event mainFormTimeTickEvent mainFormTimeTickEventHandler;
-
         // 定时器更新事件
         private void _device_TimerTickEvent()
         {
@@ -56,9 +50,6 @@ namespace TempControl
                 // 辅槽温度设定值
                 label_tempSetS.Text = this._device.tpDeviceS.tpParam[0].ToString("0.000") + "℃";
             }));
-
-            // 执行主界面定时器事件 handler
-            mainFormTimeTickEventHandler?.Invoke();
         }
 
         private void _device_ErrorStatusChangedEvent(System.Collections.Generic.Dictionary<Device.ErrorCode, uint> errDict)

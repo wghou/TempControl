@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.TempPic = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.LblCtrlTimeShow = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -38,18 +37,9 @@
             this.eventLog1 = new System.Diagnostics.EventLog();
             this.button_Clear = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.TempPic)).BeginInit();
+            this.hslCurve1 = new HslControls.HslCurve();
             ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // TempPic
-            // 
-            this.TempPic.Dock = System.Windows.Forms.DockStyle.Top;
-            this.TempPic.Location = new System.Drawing.Point(0, 0);
-            this.TempPic.Name = "TempPic";
-            this.TempPic.Size = new System.Drawing.Size(704, 280);
-            this.TempPic.TabIndex = 0;
-            this.TempPic.TabStop = false;
             // 
             // label1
             // 
@@ -119,19 +109,35 @@
             this.button_Clear.UseVisualStyleBackColor = true;
             this.button_Clear.Click += new System.EventHandler(this.button_Clear_Click);
             // 
+            // hslCurve1
+            // 
+            this.hslCurve1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.hslCurve1.ColorLinesAndText = System.Drawing.Color.White;
+            this.hslCurve1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.hslCurve1.IsRenderRightCoordinate = false;
+            this.hslCurve1.Location = new System.Drawing.Point(0, 0);
+            this.hslCurve1.Name = "hslCurve1";
+            this.hslCurve1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.hslCurve1.Size = new System.Drawing.Size(703, 282);
+            this.hslCurve1.StrechDataCountMax = 30;
+            this.hslCurve1.TabIndex = 5;
+            this.hslCurve1.ValueMaxLeft = 50F;
+            this.hslCurve1.ValueMinLeft = -10F;
+            this.hslCurve1.ValueSegment = 6;
+            // 
             // FormChart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(704, 328);
+            this.Controls.Add(this.hslCurve1);
             this.Controls.Add(this.button_Clear);
             this.Controls.Add(this.BtnClear);
             this.Controls.Add(this.LblCtrlTimeShow);
             this.Controls.Add(this.LblFlucShow);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.TempPic);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -140,7 +146,6 @@
             this.Text = "温度实时曲线";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TemperatureChart_FormClosing);
             this.Load += new System.EventHandler(this.TemperatureChart_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.TempPic)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -148,8 +153,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox TempPic;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label LblCtrlTimeShow;
         private System.Windows.Forms.Label label2;
@@ -158,5 +161,6 @@
         private System.Diagnostics.EventLog eventLog1;
         private System.Windows.Forms.Button button_Clear;
         private System.Windows.Forms.Timer timer1;
+        private HslControls.HslCurve hslCurve1;
     }
 }

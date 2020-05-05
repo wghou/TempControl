@@ -40,10 +40,6 @@ namespace Device
         public List<float> temperatures = new List<float>();
         private int tempMaxLen = 1000;
 
-        // 用于显示温度曲线的，只保存最新的数据，可以被清空
-        public object tpShowLocker = new object();
-        public List<float> temperaturesShow = new List<float>();
-
         /// <summary>
         /// 温控设备设备线程锁，同一时间只允许单一线程访问设备资源（串口 / 数据）
         /// </summary>
@@ -452,16 +448,6 @@ namespace Device
                 temperatures.RemoveAt(0);
             }
             temperatures.Add(val);
-
-            // 添加温度值，用于温度曲线显示
-            lock(tpShowLocker)
-            {
-                if (temperaturesShow.Count == tempMaxLen)
-                {
-                    temperaturesShow.RemoveAt(0);
-                }
-                temperaturesShow.Add(val);
-            }
         }
         #endregion
     }

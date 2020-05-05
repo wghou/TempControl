@@ -278,6 +278,13 @@ namespace Device
             // 读取主槽温度，取小数点后 4 位
             float val = 0.0f;
             err = tpDeviceM.GetTemperatureShow(out val, 4);
+
+            // 波动度
+            float fluc = 0.0f;
+            tpDeviceM.GetFlucDurCountOrLess(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, out fluc);
+            // 触发温度值读取事件
+            TempDeviceMReadTemptEvent?.Invoke(val, fluc, err != TempProtocol.Err_t.NoError);
+
             if (err != TempProtocol.Err_t.NoError)
             {
                 // 如果发生错误，则记录错误
@@ -306,6 +313,11 @@ namespace Device
             if (tpDeviceS.Enable == false) return;
 
             err = tpDeviceS.GetTemperatureShow(out val, 3);
+
+            tpDeviceS.GetFlucDurCountOrLess(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, out fluc);
+            // 触发温度值读取事件
+            TempDeviceSReadTemptEvent?.Invoke(val, fluc, err != TempProtocol.Err_t.NoError);
+
             if (err != TempProtocol.Err_t.NoError)
             {
                 // 如果发生错误，则记录错误

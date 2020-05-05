@@ -11,35 +11,18 @@ namespace TempControl
 {
     public partial class FormChart : Form
     {
-        Form fmain;         // 主窗体，这里有待进一步修改
+        Device.DeviceStateM _device;
+        private ChartDeviceType _deviceType;
+        private List<float> dataCache = new List<float>();
 
-        public delegate bool getDataFluc(int count, out float fluctuation);
-        private getDataFluc getDataFlucPtr;
-        private int steadyTimeSec = 300;
-        private int dataIntervalSec = 5;
-        private int digits = 4;
-
-        DrawChart mDrawChart;
-
-        DateTime startTime;     // 系统启动时间
-        List<float> dataShow;   // 绘图所显示的数据
-        object dataLocker;      // 源数据访问 - 锁
-
-        public FormChart(ChartConfig cfg, Form fm)
+        public FormChart(Device.DeviceStateM dev, ChartDeviceType type)
         {
             InitializeComponent();
 
-            fmain = fm;
+            _device = dev;
+            this._deviceType = type;
 
-            startTime = cfg.startTime;
-            dataShow = cfg.dataShow;
-            dataLocker = cfg.dataLocker;
-            this.Text = cfg.chartTitle;
-            this.getDataFlucPtr = cfg.funcPtr;
-            this.dataIntervalSec = cfg.dataIntervalSec;
-            this.digits = cfg.digits;
-
-            mDrawChart = new DrawChart(cfg, TempPic.Height, TempPic.Width);
+            hslCurve1.SetLeftCurve("A", null, Color.LimeGreen);
 
             timer1.Interval = 200;
             timer1.Tick += Timer1_Tick;
@@ -48,34 +31,61 @@ namespace TempControl
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            System.TimeSpan tmSpan = System.DateTime.Now - startTime;
+            System.TimeSpan tmSpan = System.DateTime.Now - _device.startTime;
             this.label1.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " : " + tmSpan.Minutes.ToString("00") + " : " + tmSpan.Seconds.ToString("00") + " s";
         }
 
         private void TemperatureChart_Load(object sender, EventArgs e)
         {
-            TempPic.Image = mDrawChart.Draw();
-
-            System.TimeSpan tmSpan = System.DateTime.Now - startTime;
+            System.TimeSpan tmSpan = System.DateTime.Now - _device.startTime;
             this.label1.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
 
-            (fmain as FormMain).mainFormTimeTickEventHandler += DeviceAll_TpTemperatureUpdateTimerEvent;
+            if(this._deviceType == ChartDeviceType.MainDevice)
+            {
+                this.Text = "主槽温度曲线";
+                _device.TempDeviceMReadTemptEvent += _device_TempDeviceReadTemptEvent;
+            }
+            else
+            {
+                this.Text = "辅槽温度曲线";
+                _device.TempDeviceSReadTemptEvent += _device_TempDeviceReadTemptEvent;
+            }
         }
 
-        private void DeviceAll_TpTemperatureUpdateTimerEvent()
+        private void _device_TempDeviceReadTemptEvent(float tempt, float fluc, bool isError)
         {
+            // 如果发生了错误，则暂时不更新曲线
+            if (isError == true) return;
+
+            // 用于计算曲线图的上下界限
+            dataCache.Add(tempt);
+            if (dataCache.Count >= hslCurve1.StrechDataCountMax) dataCache.RemoveAt(0);
+
+            double ValCent, valPhase;
+
+            if(_deviceType == ChartDeviceType.MainDevice)
+            {
+                ValCent = Math.Round((dataCache.Max() + dataCache.Min()) / 2, 4);
+                valPhase = Math.Round((dataCache.Max() - dataCache.Min()) / 6, 4) + 0.001;
+            }
+            else
+            {
+                ValCent = Math.Round((dataCache.Max() + dataCache.Min()) / 2, 3);
+                valPhase = Math.Round((dataCache.Max() - dataCache.Min()) / 6, 3) + 0.001;
+            }
+            
+
             // 只要是定时器函数执行了，不管有没有正确的从下位机读取到参数，都会重新绘制
             // 也就是说，不处理错误
             this.BeginInvoke(new EventHandler(delegate
             {
-                TempPic.Image = mDrawChart.Draw();
+                hslCurve1.ValueMaxLeft = (float)(ValCent + valPhase * 3);
+                hslCurve1.ValueMinLeft = (float)(ValCent - valPhase * 3);
 
-                // 波动度显示
-                float fluc = 0.0f;
-                getDataFlucPtr?.Invoke(steadyTimeSec / dataIntervalSec, out fluc);
-                if(digits == 3) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
-                else if(digits == 4) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
-                else this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
+                hslCurve1.AddCurveData("A", tempt);
+
+                if (_deviceType == ChartDeviceType.MainDevice) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.0000") + " ℃";
+                else if (_deviceType == ChartDeviceType.SubDevice) this.label2.Text = "5分钟波动度： " + fluc.ToString("0.000") + " ℃";
             }));
         }
 
@@ -86,66 +96,33 @@ namespace TempControl
 
         private void TemperatureChart_FormClosing(object sender, FormClosingEventArgs e)
         {
-            mDrawChart.Dispose();
-
-            (fmain as FormMain).mainFormTimeTickEventHandler -= DeviceAll_TpTemperatureUpdateTimerEvent;
+            if (this._deviceType == ChartDeviceType.MainDevice)
+            {
+                _device.TempDeviceMReadTemptEvent -= _device_TempDeviceReadTemptEvent;
+            }
+            else
+            {
+                _device.TempDeviceSReadTemptEvent -= _device_TempDeviceReadTemptEvent;
+            }
         }
 
         private void button_Clear_Click(object sender, EventArgs e)
         {
-            lock(dataLocker)
-            {
-                dataShow.Clear();
-            }
-            TempPic.Image = mDrawChart.Draw();
+            dataCache.Clear();
+            hslCurve1.ValueMaxLeft = 50.0f;
+            hslCurve1.ValueMinLeft = -10.0f;
+            hslCurve1.RemoveAllCurveData();
         }
-    }
-
-    public class ChartConfig
-    {
-        /// <summary>
-        /// 曲线名称
-        /// </summary>
-        public string chartTitle = "";
 
         /// <summary>
-        /// 设备运行的起始时间
+        /// 曲线显示的是哪一组设备 - 主槽温度 or 辅槽温度
         /// </summary>
-        public DateTime startTime = DateTime.Now;
-
-        /// <summary>
-        /// 所要显示的曲线
-        /// </summary>
-        public List<float> dataShow;
-
-        /// <summary>
-        /// 读取数据时的资源锁
-        /// </summary>
-        public object dataLocker;
-
-        /// <summary>
-        /// 显示数据的精度
-        /// </summary>
-        public int digits = 4;
-
-        /// <summary>
-        /// 数据间隔时长
-        /// </summary>
-        public int dataIntervalSec = 1;
-
-        /// <summary>
-        /// 行数
-        /// </summary>
-        public int column = 10;
-
-        /// <summary>
-        /// 列数
-        /// </summary>
-        public int row = 7;
-
-        /// <summary>
-        /// 获取波动度 - 函数指针
-        /// </summary>
-        public FormChart.getDataFluc funcPtr;
+        public enum ChartDeviceType : int
+        {
+            /// <summary> 主槽的数据曲线 </summary>
+            MainDevice = 0,
+            /// <summary> 辅槽的数据曲线 </summary>
+            SubDevice
+        }   
     }
 }

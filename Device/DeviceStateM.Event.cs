@@ -45,6 +45,18 @@ namespace Device
 
 
         //
+        public delegate void TempDeviceReadTemptEventHandler(float tempt, float fluc, bool isError);
+        /// <summary>
+        /// 主槽温度值读取事件 - （温度值、波动度、错误状态）
+        /// </summary>
+        public event TempDeviceReadTemptEventHandler TempDeviceMReadTemptEvent;
+        /// <summary>
+        /// 辅槽温度值读取事件 - （温度值、波动度、错误状态）
+        /// </summary>
+        public event TempDeviceReadTemptEventHandler TempDeviceSReadTemptEvent;
+
+
+        //
         public delegate void RelayDeviceStatusUpdatedEventHandler(Device.RelayDevice.Err_r err, bool[] ryStatus);
         /// <summary>
         /// 继电器模块 1 状态更新事件
