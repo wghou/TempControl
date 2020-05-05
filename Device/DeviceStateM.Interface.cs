@@ -113,11 +113,11 @@ namespace Device
                 }
 
                 // 设置接口
-                if (obj.ContainsKey("LotPort"))
+                if (obj.ContainsKey("IotPort"))
                 {
-                    JObject child = (JObject)obj["LotPort"];
+                    JObject child = (JObject)obj["IotPort"];
 
-                    confOK = InitLotPort(child);
+                    confOK = InitIotPort(child);
                 }
             }
             catch(Exception ex)

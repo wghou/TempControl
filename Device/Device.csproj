@@ -91,7 +91,7 @@
     <Compile Include="DeviceStateM.ErrorMonitor.cs" />
     <Compile Include="DeviceStateM.Event.cs" />
     <Compile Include="DeviceStateM.Interface.cs" />
-    <Compile Include="DeviceStateM.LotPorts.cs" />
+    <Compile Include="DeviceStateM.IotPorts.cs" />
     <Compile Include="DeviceStateM.Stateless.cs" />
     <Compile Include="DeviceStateM.StateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -100,9 +100,9 @@
     <Compile Include="TempProtocol.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UserPort\LotPort.csproj">
+    <ProjectReference Include="..\UserPort\IotPort.csproj">
       <Project>{7cb47cc8-bb87-4d8e-9eb0-5fde4d17746d}</Project>
-      <Name>LotPort</Name>
+      <Name>IotPort</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{665e85e4-8da9-4e1d-b628-767814c15df3}</Project>

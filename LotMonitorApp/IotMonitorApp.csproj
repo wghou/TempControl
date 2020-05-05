@@ -10,8 +10,8 @@
     <TemplateGuid>{84dd83c5-0fe3-4294-9419-09e7c8ba324f}</TemplateGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LotMonitorApp</RootNamespace>
-    <AssemblyName>LotMonitorApp</AssemblyName>
+    <RootNamespace>IotMonitorApp</RootNamespace>
+    <AssemblyName>IotMonitorApp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>

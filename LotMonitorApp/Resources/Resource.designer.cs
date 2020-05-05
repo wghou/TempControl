@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("LotMonitorApp.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("IotMonitorApp.Resource", IsApplication=true)]
 
-namespace LotMonitorApp
+namespace IotMonitorApp
 {
 	
 	

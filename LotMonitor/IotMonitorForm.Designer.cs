@@ -1,6 +1,6 @@
-﻿namespace LotMonitor
+﻿namespace IotMonitor
 {
-    partial class LotMonitorForm
+    partial class IotMonitorForm
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -56,7 +56,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.pictureBox_lot = new System.Windows.Forms.PictureBox();
+            this.pictureBox_iot = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.label_state = new System.Windows.Forms.Label();
@@ -72,7 +72,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_lot)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -457,13 +457,13 @@
             this.label6.TabIndex = 29;
             this.label6.Text = "辅槽设定温度值";
             // 
-            // pictureBox_lot
+            // pictureBox_iot
             // 
-            this.pictureBox_lot.Location = new System.Drawing.Point(816, 15);
-            this.pictureBox_lot.Name = "pictureBox_lot";
-            this.pictureBox_lot.Size = new System.Drawing.Size(40, 10);
-            this.pictureBox_lot.TabIndex = 43;
-            this.pictureBox_lot.TabStop = false;
+            this.pictureBox_iot.Location = new System.Drawing.Point(816, 15);
+            this.pictureBox_iot.Name = "pictureBox_iot";
+            this.pictureBox_iot.Size = new System.Drawing.Size(40, 10);
+            this.pictureBox_iot.TabIndex = 43;
+            this.pictureBox_iot.TabStop = false;
             // 
             // tabControl1
             // 
@@ -488,7 +488,7 @@
             this.tabPage1.Controls.Add(this.label_tm1);
             this.tabPage1.Controls.Add(this.label_tm5);
             this.tabPage1.Controls.Add(this.hslGauge_powerM);
-            this.tabPage1.Controls.Add(this.pictureBox_lot);
+            this.tabPage1.Controls.Add(this.pictureBox_iot);
             this.tabPage1.Controls.Add(this.hslGaugeChart_temptM);
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.hslGaugeChart_temptS);
@@ -652,16 +652,16 @@
             this.label11.TabIndex = 27;
             this.label11.Text = "错误日志 ";
             // 
-            // LotMonitorForm
+            // IotMonitorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(887, 677);
             this.Controls.Add(this.tabControl1);
-            this.Name = "LotMonitorForm";
+            this.Name = "IotMonitorForm";
             this.Text = "Form1";
-            this.Shown += new System.EventHandler(this.LotMonitorForm_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_lot)).EndInit();
+            this.Shown += new System.EventHandler(this.IotMonitorForm_Shown);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -699,7 +699,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.PictureBox pictureBox_lot;
+        private System.Windows.Forms.PictureBox pictureBox_iot;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;

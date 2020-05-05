@@ -15,9 +15,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 
-namespace LotPort
+namespace IotPort
 {
-    public partial class LotPorts
+    public partial class IotPorts
     {
         public bool configUserPorts(JObject cfg, params Topic[] topicsSub)
         {
@@ -65,11 +65,11 @@ namespace LotPort
         /// <summary>
         /// 事件 - 接收到需要显示的消息
         /// </summary>
-        public event UserPortMessageReceievedEventHandler LotPortRvMsgDisplayEvent;
+        public event UserPortMessageReceievedEventHandler IotPortRvMsgDisplayEvent;
         /// <summary>
         /// 事件 - 接收到需要执行的消息
         /// </summary>
-        public event UserPortMessageReceievedEventHandler LotPortRvMsgSetEvent;
+        public event UserPortMessageReceievedEventHandler IotPortRvMsgSetEvent;
 
         /// <summary>
         /// 向特定接口发布消息
@@ -108,11 +108,11 @@ namespace LotPort
             switch(d_s)
             {
                 case DorS.Display:
-                    LotPortRvMsgDisplayEvent?.Invoke(topic, jo);
+                    IotPortRvMsgDisplayEvent?.Invoke(topic, jo);
                     break;
 
                 case DorS.Set:
-                    LotPortRvMsgSetEvent?.Invoke(topic, jo);
+                    IotPortRvMsgSetEvent?.Invoke(topic, jo);
                     break;
 
                 default:

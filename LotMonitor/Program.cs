@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LotMonitor
+namespace IotMonitor
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace LotMonitor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new LotMonitorForm());
+            Application.Run(new IotMonitorForm());
         }
     }
 }

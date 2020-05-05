@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">LotMonitorApp</string>
+    <string name="app_name">IotMonitorApp</string>
     <string name="action_settings">Settings</string>
 </resources>

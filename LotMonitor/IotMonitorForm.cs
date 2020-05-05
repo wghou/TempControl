@@ -8,19 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LotMonitor
+namespace IotMonitor
 {
-    public partial class LotMonitorForm : Form
+    public partial class IotMonitorForm : Form
     {
         HslControls.HslSwitch[] switchRyM = new HslControls.HslSwitch[8];
         HslControls.HslSwitch[] switchRyS = new HslControls.HslSwitch[8];
 
         // 状态灯闪烁
-        Bitmap mBmpLot;
+        Bitmap mBmpIot;
         private bool flp = false;
         private Timer timPic = new Timer();
 
-        public LotMonitorForm()
+        public IotMonitorForm()
         {
             InitializeComponent();
 
@@ -42,33 +42,33 @@ namespace LotMonitor
             switchRyS[6] = this.hslSwitch_RelayS6;
             switchRyS[7] = this.hslSwitch_RelayS7;
 
-            mBmpLot = new Bitmap(pictureBox_lot.Width, pictureBox_lot.Height);
+            mBmpIot = new Bitmap(pictureBox_iot.Width, pictureBox_iot.Height);
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
         }
 
-        private void LotMonitorForm_Shown(object sender, EventArgs e)
+        private void IotMonitorForm_Shown(object sender, EventArgs e)
         {
-            setupLotClient();
+            setupIotClient();
         }
 
         ///////////////////////////////////////////////////
         // 状态指示灯闪烁
         private void TimPic_Tick(object sender, EventArgs e)
         {
-            Graphics mGhpLot = Graphics.FromImage(mBmpLot);
+            Graphics mGhpIot = Graphics.FromImage(mBmpIot);
             if (flp)
             {
-                mGhpLot.Clear(SystemColors.Control);
+                mGhpIot.Clear(SystemColors.Control);
                 flp = false;
             }
             else
             {
-                mGhpLot.Clear(isMqttConnected ? Color.Green : Color.Red);
+                mGhpIot.Clear(isMqttConnected ? Color.Green : Color.Red);
                 flp = true;
             }
-            pictureBox_lot.Image = mBmpLot;
+            pictureBox_iot.Image = mBmpIot;
         }
 
         // 点击继电器开关 - 任意一个

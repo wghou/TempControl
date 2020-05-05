@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using LotPort;
+using IotPort;
 
 namespace Device
 {
@@ -14,16 +14,16 @@ namespace Device
         /// <summary>
         /// 用户接口
         /// </summary>
-        private LotPorts _userPorts = new LotPorts();
+        private IotPorts _userPorts = new IotPorts();
 
-        bool InitLotPort(JObject child)
+        bool InitIotPort(JObject child)
         {
-            LotPort.Topic[] tpSub = new LotPort.Topic[] { LotPort.Topic.ParamT, LotPort.Topic.Relay, Topic.Error};
+            IotPort.Topic[] tpSub = new IotPort.Topic[] { IotPort.Topic.ParamT, IotPort.Topic.Relay, Topic.Error};
             bool confOK = _userPorts.configUserPorts(child, tpSub);
             if (!confOK) nlogger.Error("配置 UserPort 失败");
             else nlogger.Debug("配置 UserPort 失败");
 
-            _userPorts.LotPortRvMsgSetEvent += _userPorts_UserPortMsgRvSetEvent;
+            _userPorts.IotPortRvMsgSetEvent += _userPorts_UserPortMsgRvSetEvent;
             TimerTickEndEvent += DeviceStateM_TimerTickEndEvent;
             StateChangedEvent += DeviceStateM_StateChangedEvent;
             RelayDeviceMStatusUpdatedEvent += DeviceStateM_RelayDeviceStatusUpdatedEvent;
@@ -40,35 +40,35 @@ namespace Device
         // 当设备关闭时，发布继电器、自动控温状态
         private void DeviceStateM_DeviceClosedEvent()
         {
-            lotPublishMessage(Topic.Relay);
-            lotPublishMessage(Topic.AutoState);
+            iotPublishMessage(Topic.Relay);
+            iotPublishMessage(Topic.AutoState);
         }
 
         // 当错误状态改变时，发布错误信息
         private void DeviceStateM_ErrorStatusChangedEvent(Dictionary<ErrorCode, uint> errDict)
         {
-            lotPublishMessage(Topic.Error);
+            iotPublishMessage(Topic.Error);
         }
 
         // 当继电器状态改变时，发布
         private void DeviceStateM_RelayDeviceStatusUpdatedEvent(RelayDevice.Err_r err, bool[] ryStatus)
         {
-            lotPublishMessage(Topic.Relay);
+            iotPublishMessage(Topic.Relay);
         }
 
         // 当自动控温状态改变时，发布
         private void DeviceStateM_StateChangedEvent(State st)
         {
-            lotPublishMessage(Topic.AutoState);
+            iotPublishMessage(Topic.AutoState);
         }
 
         // 定时器事件，定时发布温度等数据
         private void DeviceStateM_TimerTickEndEvent()
         {
-            lotPublishMessage(Topic.ParamT);
+            iotPublishMessage(Topic.ParamT);
         }
 
-        // 查看 lot 连接是否正确
+        // 查看 iot 连接是否正确
         public bool isUserPortConnected
         {
             get { return true; }
@@ -100,7 +100,7 @@ namespace Device
             }
         }
 
-        public bool lotPublishMessage(Topic tp)
+        public bool iotPublishMessage(Topic tp)
         {
             switch (tp)
             {
@@ -164,11 +164,11 @@ namespace Device
                     JsonError jEr = new JsonError();
                     jEr.d_s = DorS.Display;
 
-                    jEr.errCnt = new Dictionary<LotPort.ErrorCode, uint>();
+                    jEr.errCnt = new Dictionary<IotPort.ErrorCode, uint>();
 
                     foreach (Device.ErrorCode item in Enum.GetValues(typeof(Device.ErrorCode)))
                     {
-                        jEr.errCnt[(LotPort.ErrorCode)item] = _deviceCurrentError[item];
+                        jEr.errCnt[(IotPort.ErrorCode)item] = _deviceCurrentError[item];
                     }
 
                     string jerString = JsonConvert.SerializeObject(jEr);

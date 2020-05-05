@@ -11,13 +11,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComTest", "ComTest\ComTest.csproj", "{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotServer", "LotServer\LotServer.csproj", "{0989D49A-956E-4493-9346-71FE017A237E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotServer", "LotServer\IotServer.csproj", "{0989D49A-956E-4493-9346-71FE017A237E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotMonitor", "LotMonitor\LotMonitor.csproj", "{AAC35BA0-C4DD-48F3-B33C-17346C4F9EBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotMonitor", "LotMonitor\IotMonitor.csproj", "{AAC35BA0-C4DD-48F3-B33C-17346C4F9EBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotMonitorApp", "LotMonitorApp\LotMonitorApp.csproj", "{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotMonitorApp", "LotMonitorApp\IotMonitorApp.csproj", "{3BC0AC7E-3B3B-4D3F-9CC0-B2BDECC460A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotPort", "UserPort\LotPort.csproj", "{7CB47CC8-BB87-4D8E-9EB0-5FDE4D17746D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IotPort", "UserPort\IotPort.csproj", "{7CB47CC8-BB87-4D8E-9EB0-5FDE4D17746D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

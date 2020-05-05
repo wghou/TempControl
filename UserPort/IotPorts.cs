@@ -15,9 +15,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 
-namespace LotPort
+namespace IotPort
 {
-    public partial class LotPorts
+    public partial class IotPorts
     {
         private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
 
