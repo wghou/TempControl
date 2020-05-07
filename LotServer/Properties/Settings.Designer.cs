@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LotServer.Properties
+namespace IotServer.Properties
 {
 
 

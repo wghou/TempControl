@@ -9,6 +9,15 @@ namespace Device
     public partial class SensorDevice
     {
         /// <summary>
+        /// 检查传感器设备的错误状态
+        /// </summary>
+        public bool FetchErrorStatus()
+        {
+            return err_Sr != Err_sr.NoError;
+        }
+
+
+        /// <summary>
         /// 开始识别传感器设备
         /// </summary>
         public bool startIdentify()

@@ -69,5 +69,12 @@ namespace Device
         /// 设备关闭触发事件
         /// </summary>
         public event DeviceClosedEventHandler DeviceClosedEvent;
+
+        //
+        public delegate void SensorIdentifiedEventHandler(SensorDevice.DeviceInfo info);
+        /// <summary>
+        /// 识别出传感器设备
+        /// </summary>
+        public event SensorIdentifiedEventHandler SensorIdentifiedEvent;
     }
 }

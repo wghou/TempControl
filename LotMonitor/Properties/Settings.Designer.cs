@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LotMonitor.Properties
+namespace IotMonitor.Properties
 {
 
 

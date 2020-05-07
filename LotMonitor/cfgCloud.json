@@ -1,6 +1,6 @@
 {
-  "?LotPort": "关于用户接口的配置信息",
-  "LotPort": {
+  "?IotPort": "关于用户接口的配置信息",
+  "IotPort": {
     "MqttCloud": {
       "Enable": true,
       "ServerUrl": "172.26.12.68",

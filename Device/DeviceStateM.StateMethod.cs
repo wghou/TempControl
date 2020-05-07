@@ -31,12 +31,20 @@ namespace Device
             ErrorCheckOutRange();   // 温度超出界限
 
             // 检查传感器设备的错误状态
-            if (srDevice.FetchErrorStatus() != SensorDevice.Err_s.NoError) SetErrorStatus(ErrorCode.SensorError);
+            foreach(var itm in srDevices)
+            {
+                if(itm.FetchErrorStatus()) SetErrorStatus(ErrorCode.SensorError);
+            }
 
             // 驱动状态机执行流程
             currentTemptPointState.stateCounts++;
             _machine.Fire(_TickTrigger, _runningParameters.readTempIntervalSec * 1000);
 
+            // 传感器步骤
+            foreach(var itm in srDevices)
+            {
+                itm._tickTimerSample_Elapsed(sender, e);
+            }
             
             // 全局错误信息 - 事件
             uint errCnt = CheckErrorStatus();
@@ -516,7 +524,11 @@ namespace Device
                 }
             }
 
-            srDevice.StartMeasure();
+            // 开始传感器测量温度
+            foreach (var itm in srDevices)
+            {
+                itm.startMeasure(currentTemptPointState.stateTemp);
+            }
         }
 
         /// <summary>
@@ -541,10 +553,7 @@ namespace Device
                 }
             }
 
-            if(srDevice.FetchRqt() != true)
-            {
-                return;
-            }
+            
 
             // 测量完成，标记
             temperaturePointList[currentTemptPointState.tempPointIndex].finished = true;

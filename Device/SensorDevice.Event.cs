@@ -30,5 +30,12 @@ namespace Device
         /// 状态状变触发事件
         /// </summary>
         public event SensorErrorEventHandler SensorErrorEvent;
+
+        //
+        public delegate void SensorIdentifiedEventHandler(DeviceInfo info);
+        /// <summary>
+        /// 识别出传感器设备
+        /// </summary>
+        public event SensorIdentifiedEventHandler SensorIdentifiedEvent;
     }
 }

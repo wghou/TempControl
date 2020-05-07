@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Stateless;
 using System.Timers;
+using Others;
 
 namespace Device
 {
@@ -15,7 +16,7 @@ namespace Device
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _tickTimerSample_Elapsed(object sender, ElapsedEventArgs e)
+        public void _tickTimerSample_Elapsed(object sender, ElapsedEventArgs e)
         {
             // 计数
             sensorStateCounts++;
@@ -24,6 +25,7 @@ namespace Device
 
             
             // 如果发生错误，则错误事件 - 触发
+            // todo
             SensorErrorEvent?.Invoke();
 
             // 时刻事件 - 触发
@@ -109,7 +111,16 @@ namespace Device
 
             // 如果正确识别到了设备
             // 开始读取数据
-            _sensorMachine.Fire(TriggerSensor.StartRead);
+            if (getDeviceStatus())
+            {
+                // todo: 创建记录
+                MySqlWriter.InstrumentDataSqlrd data = new MySqlWriter.InstrumentDataSqlrd();
+                sqlWriter.InsertValue(data);
+                _sensorMachine.Fire(TriggerSensor.StartRead);
+
+                // 事件触发 - 识别到设备
+                SensorIdentifiedEvent?.Invoke(deviceInfo);
+            }
         }
 
 
@@ -140,6 +151,13 @@ namespace Device
             nlogger.Debug("Sensor Idle Tick: " + tic.ToString() + " ms");
 
             // 读取数据
+            bool rt = readData();
+
+            if(rt == false)
+            {
+                // 读取数据发生了错误
+                // todo
+            }
         }
 
 
@@ -161,6 +179,9 @@ namespace Device
 
             // 新建数据库表/项
             // 辨识当前的温度点
+            // todo
+            MySqlWriter.InstrumentDataSqlrd data = new MySqlWriter.InstrumentDataSqlrd();
+            sqlWriter.InsertValue(data);
         }
 
 
@@ -173,9 +194,21 @@ namespace Device
             nlogger.Debug("Sensor Measure Tick: " + tic.ToString() + " ms");
 
             // 读取数据
+            bool rt = readData();
 
-            // 存储数据
-
+            if (rt == true)
+            {
+                // 正确读取了数据
+                // 存储数据
+                // todo
+                MySqlWriter.InstrumentDataSqlrd data = new MySqlWriter.InstrumentDataSqlrd();
+                sqlWriter.InsertValue(data);
+            }
+            else
+            {
+                // 读取数据发生了错误
+                // todo
+            }
         }
 
 

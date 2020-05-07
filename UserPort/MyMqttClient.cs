@@ -14,7 +14,7 @@ using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace LotPort
+namespace IotPort
 {
     internal class MyMqttClient
     {
@@ -107,7 +107,7 @@ namespace LotPort
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine("Error: config lot client failed.");
+                    Console.WriteLine("Error: config iot client failed.");
                     return false;
                 }
 
@@ -228,7 +228,7 @@ namespace LotPort
                 Topic tpE;
                 if(!Enum.TryParse(tp[1], out tpE))
                 {
-                    Console.WriteLine("Error: unknown LotPort.Topic.type from server.");
+                    Console.WriteLine("Error: unknown IotPort.Topic.type from server.");
                     return;
                 }
 

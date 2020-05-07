@@ -27,19 +27,29 @@
   },
   "?SensorDev": "关于其他传感器的配置信息",
   "SensorDev": {
-    "Sensor": {
-      "Enable": false,
-      "PortName": "COM4",
-      "BaudRate": 9600
-    },
-    "Bridge": {
+    "?Sensor": "所有传感器的端口配置，最多为 6 个",
+    "Sensor": [
+      {
+        "?Sensor1": "传感器 1",
+        "Enable": false,
+        "PortName": "COM4",
+        "BaudRate": 9600
+      },
+      {
+        "?Sensor2": "传感器 2",
+        "Enable": false,
+        "PortName": "COM5",
+        "BaudRate": 9600
+      }
+    ],
+    "StandardDev": {
       "Enable": false,
       "PortName": "COM5",
       "BaudRate": 9600
     }
   },
-  "?LotPort": "关于用户接口的配置信息",
-  "LotPort": {
+  "?IotPort": "关于用户接口的配置信息",
+  "IotPort": {
     "MqttCloud": {
       "Enable": true,
       "ServerUrl": "172.26.12.68",
@@ -55,6 +65,10 @@
       "ApiKey": "123123123",
       "ProductId": "270595",
       "DeviceId": "542169339"
+    },
+    "Socket": {
+      "Enable": true,
+      "Port": 6003
     }
   }
 }

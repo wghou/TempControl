@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 
-namespace LotServer
+namespace IotServer
 {
     public partial class MqttServerForm : Form
     {

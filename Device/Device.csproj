@@ -48,7 +48,7 @@
       <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
     </Reference>
     <Reference Include="Stateless, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93038f0927583c9a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stateless.5.1.1\lib\net45\Stateless.dll</HintPath>
+      <HintPath>..\packages\Stateless.5.1.2\lib\net45\Stateless.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -92,7 +92,9 @@
     <Compile Include="DeviceStateM.ErrorMonitor.cs" />
     <Compile Include="DeviceStateM.Event.cs" />
     <Compile Include="DeviceStateM.Interface.cs" />
-    <Compile Include="DeviceStateM.LotPorts.cs" />
+    <Compile Include="DeviceStateM.IotPorts.cs" />
+    <Compile Include="DeviceStateM.Sensor.cs" />
+    <Compile Include="DeviceStateM.Socket.cs" />
     <Compile Include="DeviceStateM.Stateless.cs" />
     <Compile Include="DeviceStateM.StateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -100,15 +102,21 @@
     <Compile Include="SensorDevice.Event.cs" />
     <Compile Include="SensorDevice.cs" />
     <Compile Include="SensorDevice.Interface.cs" />
+    <Compile Include="SensorDevice.Protocol.cs" />
     <Compile Include="SensorDevice.Stateless.cs" />
     <Compile Include="SensorDevice.StateMethod.cs" />
+    <Compile Include="StandardDevice.cs" />
     <Compile Include="TempDevice.cs" />
     <Compile Include="TempProtocol.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UserPort\LotPort.csproj">
+    <ProjectReference Include="..\Others\Others.csproj">
+      <Project>{a4c7e14a-26f5-4e8f-bada-459ec1b28fef}</Project>
+      <Name>Others</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UserPort\IotPort.csproj">
       <Project>{7cb47cc8-bb87-4d8e-9eb0-5fde4d17746d}</Project>
-      <Name>LotPort</Name>
+      <Name>IotPort</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{665e85e4-8da9-4e1d-b628-767814c15df3}</Project>
@@ -130,4 +138,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties config_1json__JSONSchema="http://json.schemastore.org/tsconfig" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

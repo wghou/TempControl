@@ -260,9 +260,9 @@ namespace Device
         public TempDevice tpDeviceS = new TempDevice() { tpDeviceName = "辅槽控温设备" };
 
         /// <summary>
-        /// 传感器设备
+        /// 标准数据采集器
         /// </summary>
-        public SensorDevice srDevice = new SensorDevice() { srDevicName = "传感器设备" };
+        public StandardDevice sdDevice = new StandardDevice();
 
         /// <summary>
         /// 系统开始运行的时间

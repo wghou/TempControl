@@ -16,7 +16,7 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
 using NLog;
 
-namespace LotServer
+namespace IotServer
 {
     public partial class MqttServerForm
     {

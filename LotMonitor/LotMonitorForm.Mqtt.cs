@@ -13,21 +13,21 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using LotPort;
+using IotPort;
 
-namespace LotMonitor
+namespace IotMonitor
 {
-    public partial class LotMonitorForm
+    public partial class IotMonitorForm
     {
-        private LotPorts _lotClient = new LotPorts();
+        private IotPorts _iotClient = new IotPorts();
 
         /// <summary>
         /// 是否与 mqtt server 连接成功
         /// </summary>
-        public bool isMqttConnected { get { return _lotClient.isConnected(); } }
+        public bool isMqttConnected { get { return _iotClient.isConnected(); } }
 
 
-        private bool setupLotClient()
+        private bool setupIotClient()
         {
             // json config file
             string confFile = @"./cfgCloud.json";
@@ -38,14 +38,14 @@ namespace LotMonitor
                 JObject obj = (JObject)JToken.ReadFrom(reader);
 
                 // 设置接口
-                if (obj.ContainsKey("LotPort"))
+                if (obj.ContainsKey("IotPort"))
                 {
-                    JObject child = (JObject)obj["LotPort"];
+                    JObject child = (JObject)obj["IotPort"];
 
                     Topic[] tpSub = new Topic[] {
                         Topic.ParamT, Topic.Relay, Topic.Error, Topic.AutoState, Topic.Error, Topic.SampleState };
-                    _lotClient.configUserPorts(child, tpSub);
-                    _lotClient.LotPortRvMsgDisplayEvent += LotClient_MessageReceievedEvent;
+                    _iotClient.configUserPorts(child, tpSub);
+                    _iotClient.IotPortRvMsgDisplayEvent += IotClient_MessageReceievedEvent;
                 }  
             }
             catch(Exception ex)
@@ -61,7 +61,7 @@ namespace LotMonitor
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="message"></param>
-        private void LotClient_MessageReceievedEvent(Topic topic, JObject message)
+        private void IotClient_MessageReceievedEvent(Topic topic, JObject message)
         {
             switch (topic)
             {
