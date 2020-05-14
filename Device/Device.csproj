@@ -92,6 +92,7 @@
     <Compile Include="DeviceStateM.Event.cs" />
     <Compile Include="DeviceStateM.Interface.cs" />
     <Compile Include="DeviceStateM.IotPorts.cs" />
+    <Compile Include="DeviceStateM.IotPorts.Type.cs" />
     <Compile Include="DeviceStateM.Stateless.cs" />
     <Compile Include="DeviceStateM.StateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

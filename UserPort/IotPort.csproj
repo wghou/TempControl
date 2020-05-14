@@ -90,7 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IotPorts.JsonData.cs" />
+    <Compile Include="IotPorts.Event.cs" />
     <Compile Include="MyMqttClient.cs" />
     <Compile Include="IotPorts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
