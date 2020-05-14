@@ -146,6 +146,13 @@ namespace ComTest
                         sPortSr.WriteBufferSize = 64;
                     }
                 }
+
+                if(obj.ContainsKey("Socket"))
+                {
+                    JObject child = (JObject)obj["Socket"];
+
+                    InitSocket(child);
+                }
             }
             catch(Exception ex)
             {

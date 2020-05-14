@@ -3,38 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IotPort;
 
-namespace IotPort
+namespace Device
 {
     /// <summary>
-    /// 数据的类型/主题
+    /// 用于区别消息中的数据是用于显示，还是设置
     /// </summary>
-    public enum Topic : int
-    {
-        /// <summary> 控温表数据 </summary>
-        ParamT = 0,
-        /// <summary> 继电器数据 </summary>
-        Relay = 1,
-        /// <summary> 错误信息 </summary>
-        Error,
-        /// <summary> 自动控温步骤 </summary>
-        AutoState,
-        /// <summary> 自动采样状态 </summary>
-        SampleState,
-        /// <summary> 传感器相关的数据 </summary>
-        Sensor
-    }
-
-    /// <summary>
-    /// 用于区别数据是用于显示，还是设置
-    /// </summary>
-    public enum DorS : int
+    public enum IotDorS : int
     {
         /// <summary>  数据用于显示 </summary>
         Display = 0,
         /// <summary>  数据用于设置 </summary>
         Set = 1
     }
+
+    /// <summary>
+    /// 用于 Iot/MQTT 通信的数据格式 - 基类 - json convertor
+    /// </summary>
+    public abstract class IotMessageBase
+    {
+        /// <summary> 消息的主题 </summary>
+        public IotTopic Topic { set; get; }
+
+        /// <summary> 用于显示 or 设置 </summary>
+        public IotDorS DorS { set; get; }
+
+        public IotMessageBase(IotTopic tp) { Topic = tp; }
+    }
+
+
 
     /// <summary>
     /// 控温表数据
@@ -103,12 +101,9 @@ namespace IotPort
     /// <summary>
     /// 用于传输温控表数据的 Json 字符串类
     /// </summary>
-    public class JsonParamTs
+    public class IotParamTMessage : IotMessageBase
     {
-        /// <summary>
-        /// 该数据用于显示 or 设置
-        /// </summary>
-        public DorS d_s { set; get; }
+        public IotParamTMessage() : base(IotTopic.ParamT) { }
 
         /// <summary>
         /// 主槽控温表数据
@@ -247,12 +242,9 @@ namespace IotPort
     // <summary>
     /// 用于传输继电器数据的 Json 字符串类
     /// </summary>
-    public class JsonRelay88
+    public class IotRelay88Message : IotMessageBase
     {
-        /// <summary>
-        /// 该数据用于显示 or 设置
-        /// </summary>
-        public DorS d_s { set; get; }
+        public IotRelay88Message() : base(IotTopic.Relay) { }
 
         /// <summary>
         /// 主继电器板卡
@@ -265,108 +257,25 @@ namespace IotPort
         public Relay8 relayS { set; get; }
     }
 
-
-    /// <summary>
-    /// 设备状态 / forked from Device.DeviceStateM.Stateless
-    /// </summary>
-    public enum DeviceState : int
-    {
-        /// <summary> 开始 </summary>
-        Start,
-        /// <summary> 升温 </summary>
-        TempUp,
-        /// <summary> 降温 </summary>
-        TempDown,
-        /// <summary> 控温 </summary>
-        Control,
-        /// <summary> 稳定 </summary>
-        Stable,
-        /// <summary> 测量 </summary>
-        Measure,
-        /// <summary> 停止 </summary>
-        ShutdownPC,
-        /// <summary> 空闲 </summary>
-        Idle
-    }
-
     /// <summary>
     /// 用于传输控温状态数据的 Json 字符串类
     /// </summary>
-    public class JsonAutoState
+    public class IotDeviceStateMessage : IotMessageBase
     {
-        /// <summary>
-        /// 该数据用于显示 or 设置
-        /// </summary>
-        public DorS d_s { set; get; }
+        public IotDeviceStateMessage() : base(IotTopic.DeviceState) { }
 
         /// <summary>
         /// 当前自动控温状态
         /// </summary>
-        public DeviceState state { set; get; }
+        public Device.State state { set; get; }
     }
 
     /// <summary>
-    /// 系统错误代码 / forked form Device.DeviceStateM.ErrorMonitor
+    /// 用于传输错误状态数据的 Json 字符串类
     /// </summary>
-    public enum ErrorCode : int
+    public class IotErrorMessage : IotMessageBase
     {
-        /// <summary>
-        /// 温度不降
-        /// </summary>
-        TempNotDown = 0,
-        /// <summary>
-        /// 温度持续下降
-        /// </summary>
-        TempNotUp,
-        /// <summary>
-        /// 温度波动过大
-        /// </summary>
-        TempFlucLarge,
-        /// <summary>
-        /// 温度持续上升
-        /// </summary>
-        TempBasis,
-        /// <summary>
-        /// 控温槽中的温度超出界限
-        /// </summary>
-        TempOutRange,
-        /// <summary>
-        /// 读电桥温度错误
-        /// </summary>
-        SensorError,
-        /// <summary>
-        /// 继电器设备错误
-        /// </summary>
-        RelayError,
-        /// <summary>
-        /// 温控设备错误
-        /// </summary>
-        TemptError,
-        /// <summary>
-        /// 温控设备参数写入错误
-        /// </summary>
-        TempParamSetError,
-        /// <summary>
-        /// 测温电桥错误
-        /// </summary>
-        BridgeError,
-        /// <summary>
-        /// 其他错误
-        /// </summary>
-        CodeError,
-        /// <summary>
-        /// 清除所有错误状态
-        /// </summary>
-        ClearErrorStatus
-    }
-
-
-    public class JsonError
-    {
-        /// <summary>
-        /// 该数据用于显示 or 设置
-        /// </summary>
-        public DorS d_s { set; get; }
+        public IotErrorMessage() : base(IotTopic.Error) { }
 
         /// <summary>
         /// 当前的错误状态
@@ -376,117 +285,40 @@ namespace IotPort
 
 
     /// <summary>
-    /// 自动采样的状态 / forked from Device.DeviceStateM.AutoSample.cs
+    /// 用于传输自动采样状态数据的 Json 字符串类
     /// </summary>
-    public enum StateSample : int
+    public class IotSampleStateMessage : IotMessageBase
     {
-        /// <summary>
-        /// 常态，所有按键都关闭
-        /// </summary>
-        Normal = 0,
-        /// <summary>
-        /// 自动取样 - 准备中 - 第一阶段：开电磁阀 1，5分钟后关闭电磁阀 1
-        /// </summary>
-        Prepare_1,
-        /// <summary>
-        /// 自动取样准备中 - 第二阶段：开电磁阀 4-3-2
-        /// </summary>
-        Prepare_2,
-        /// <summary>
-        /// 自动取样 - 取样中：关 3-4，开 1-2，一分钟（可调）后关闭，并回到常态
-        /// </summary>
-        OnSample,
-        /// <summary>
-        /// 强制停止
-        /// </summary>
-        Stop
-    }
-
-
-    /// <summary>
-    /// 自动采样状态
-    /// </summary>
-    public class JsonSampleState
-    {
-        /// <summary>
-        /// 该数据用于显示 or 设置
-        /// </summary>
-        public DorS d_s { set; get; }
+        public IotSampleStateMessage() : base(IotTopic.SampleState) { }
 
         /// <summary>
         /// 当前自动采样状态
         /// </summary>
-        public StateSample state { set; get; }
+        public AutoSample.StateSample state { set; get; }
     }
 
 
     /// <summary>
-    /// 传感器的类型 - forked from xxx
+    /// 用于传输传感器数据的 Json 字符串类
     /// </summary>
-    public enum SensorType : int
+    public class IotSensorStateMessage : IotMessageBase
     {
-        Type0,
-        Type1
-    }
-
-
-    /// <summary>
-    /// 传感器当前的状态
-    /// </summary>
-    public enum StateSensor : int
-    {
-        /// <summary> 空闲 </summary>
-        Idle = 0,
-        /// <summary> 识别传感器 </summary>
-        Identify,
-        /// <summary> 读取数据 </summary>
-        Read,
-        /// <summary> 测量数据 </summary>
-        Measure,
-        /// <summary> 完成测量 </summary>
-        Finish,
-        /// <summary> 停止 </summary>
-        Stop
-    }
-
-
-    /// <summary>
-    /// 传感器状态 - json
-    /// </summary>
-    public class SensorData
-    {
-        /// <summary>
-        /// 传感器的类型
-        /// </summary>
-        public SensorType type { get; set; }
-        /// <summary>
-        /// 传感器的名称
-        /// </summary>
-        public string name { get; set; }
-        /// <summary>
-        /// 传感器当前的状态
-        /// </summary>
-        public StateSensor state { get; set; }
-        /// <summary>
-        /// 传感器测到的数据
-        /// </summary>
-        public float data { get; set; }
-    }
-
-
-    /// <summary>
-    /// 传感器状态及数据
-    /// </summary>
-    public class JsonSensor
-    {
-        /// <summary>
-        /// 该数据用于显示 or 设置
-        /// </summary>
-        public DorS d_s { set; get; }
+        public IotSensorStateMessage() : base(IotTopic.SensorState) { }
 
         /// <summary>
         /// 所有传感器的数据及状态
         /// </summary>
-        public List<SensorData> srDatas { set; get; }
+        public List<SensorDevice.SensorInfo> SensorInfo { get; set; }
+    }
+
+    /// <summary>
+    /// 用于传输传感器数据的 Json 字符串类
+    /// </summary>
+    public class IotSensorValueMessage : IotMessageBase
+    {
+        public IotSensorValueMessage() : base(IotTopic.SensorState) { }
+
+        // todo:
+        // add the sensor value
     }
 }

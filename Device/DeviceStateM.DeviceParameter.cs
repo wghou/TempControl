@@ -13,7 +13,7 @@ namespace Device
     /// <summary>
     /// 当前工作状态 - 类
     /// </summary>
-    public class TemptPointStruct
+    public class TemptPointStruct : IComparable
     {
         /// <summary>
         /// 当前温度点在 temperaturePointList 的位置
@@ -43,6 +43,23 @@ namespace Device
         /// 进入该状态计时
         /// </summary>
         public UInt32 stateCounts = 0;
+
+        /// <summary>
+        /// 比较函数
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int CompareTo(Object obj)
+        {
+            if (obj == null) return 1;
+            TemptPointStruct otherState = obj as TemptPointStruct;
+            if (stateTemp > otherState.stateTemp) { return 1; }
+            else
+            {
+                if (stateTemp == otherState.stateTemp) { return 0; }
+                else { return -1; }
+            }
+        }
     }
 
 

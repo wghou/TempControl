@@ -14,6 +14,7 @@ using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using IotPort;
+using Device;
 
 namespace IotMonitor
 {
@@ -42,10 +43,10 @@ namespace IotMonitor
                 {
                     JObject child = (JObject)obj["IotPort"];
 
-                    Topic[] tpSub = new Topic[] {
-                        Topic.ParamT, Topic.Relay, Topic.Error, Topic.AutoState, Topic.Error, Topic.SampleState };
-                    _iotClient.configUserPorts(child, tpSub);
-                    _iotClient.IotPortRvMsgDisplayEvent += IotClient_MessageReceievedEvent;
+                    IotTopic[] tpSub = new IotTopic[] {
+                        IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState };
+                    _iotClient.configIotPorts(child, tpSub);
+                    _iotClient.IotPortReceiveMessageEvent += IotClient_MessageReceievedEvent;
                 }  
             }
             catch(Exception ex)
@@ -61,13 +62,13 @@ namespace IotMonitor
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="message"></param>
-        private void IotClient_MessageReceievedEvent(Topic topic, JObject message)
+        private void IotClient_MessageReceievedEvent(IotTopic topic, JObject message)
         {
             switch (topic)
             {
-                case Topic.ParamT:
+                case IotTopic.ParamT:
 
-                    JsonParamTs jP = message.ToObject<JsonParamTs>();
+                    IotParamTMessage jP = message.ToObject<IotParamTMessage>();
 
                     this.BeginInvoke(new EventHandler(delegate
                     {
@@ -83,9 +84,9 @@ namespace IotMonitor
                     }));
                     break;
 
-                case Topic.Relay:
+                case IotTopic.Relay:
 
-                    JsonRelay88 jR = message.ToObject<JsonRelay88>();
+                    IotRelay88Message jR = message.ToObject<IotRelay88Message>();
 
                     this.BeginInvoke(new EventHandler(delegate
                     {
@@ -103,8 +104,8 @@ namespace IotMonitor
                     }));
                     break;
                     
-                case Topic.Error:
-                    JsonError err = message.ToObject<JsonError>();
+                case IotTopic.Error:
+                    IotErrorMessage err = message.ToObject<IotErrorMessage>();
 
                     foreach (ErrorCode itm in Enum.GetValues(typeof(ErrorCode)))
                     {
@@ -117,24 +118,24 @@ namespace IotMonitor
 
                     break;
 
-                case Topic.AutoState:
-                    JsonAutoState st = message.ToObject<JsonAutoState>();
+                case IotTopic.DeviceState:
+                    IotDeviceStateMessage st = message.ToObject<IotDeviceStateMessage>();
                     this.BeginInvoke(new EventHandler(delegate
                     {
                         label_state.Text = "当前状态：" + st.state.ToString();
                     }));
                     break;
 
-                case Topic.SampleState:
-                    JsonSampleState sm = message.ToObject<JsonSampleState>();
+                case IotTopic.SampleState:
+                    IotSampleStateMessage sm = message.ToObject<IotSampleStateMessage>();
                     this.BeginInvoke(new EventHandler(delegate
                     {
                         label_sample.Text = "采样状态：" + sm.state.ToString();
                     }));
                     break;
 
-                case Topic.Sensor:
-                    JsonSensor sr = message.ToObject<JsonSensor>();
+                case IotTopic.SensorState:
+                    IotSensorStateMessage sr = message.ToObject<IotSensorStateMessage>();
                     this.BeginInvoke(new EventHandler(delegate
                     {
                         // 将传感器信息显示

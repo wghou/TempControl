@@ -39,6 +39,8 @@
             this.comboBox_SrStatus = new System.Windows.Forms.ComboBox();
             this.checkBox_SrErrLast = new System.Windows.Forms.CheckBox();
             this.groupBox_Ry = new System.Windows.Forms.GroupBox();
+            this.hslStatusManagement_ryS = new HslControls.HslStatusManagement();
+            this.hslStatusManagement_ryM = new HslControls.HslStatusManagement();
             this.pictureBox_Ry = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox_RyStatus = new System.Windows.Forms.ComboBox();
@@ -97,8 +99,11 @@
             this.label_CurTempS = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
-            this.hslStatusManagement_ryM = new HslControls.HslStatusManagement();
-            this.hslStatusManagement_ryS = new HslControls.HslStatusManagement();
+            this.checkBox_AutoStart = new System.Windows.Forms.CheckBox();
+            this.checkBox_Suspend = new System.Windows.Forms.CheckBox();
+            this.checkBox_Stop = new System.Windows.Forms.CheckBox();
+            this.checkBox_SensorInfo = new System.Windows.Forms.CheckBox();
+            this.richTextBox_log = new System.Windows.Forms.RichTextBox();
             this.groupBox_Sr.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Sr)).BeginInit();
             this.groupBox_Ry.SuspendLayout();
@@ -238,6 +243,26 @@
             this.groupBox_Ry.TabIndex = 1;
             this.groupBox_Ry.TabStop = false;
             this.groupBox_Ry.Text = "继电器设备";
+            // 
+            // hslStatusManagement_ryS
+            // 
+            this.hslStatusManagement_ryS.ColCount = 16;
+            this.hslStatusManagement_ryS.Location = new System.Drawing.Point(10, 151);
+            this.hslStatusManagement_ryS.Name = "hslStatusManagement_ryS";
+            this.hslStatusManagement_ryS.RowCount = 1;
+            this.hslStatusManagement_ryS.Size = new System.Drawing.Size(343, 30);
+            this.hslStatusManagement_ryS.SpacingOffect = 8F;
+            this.hslStatusManagement_ryS.TabIndex = 6;
+            // 
+            // hslStatusManagement_ryM
+            // 
+            this.hslStatusManagement_ryM.ColCount = 16;
+            this.hslStatusManagement_ryM.Location = new System.Drawing.Point(10, 115);
+            this.hslStatusManagement_ryM.Name = "hslStatusManagement_ryM";
+            this.hslStatusManagement_ryM.RowCount = 1;
+            this.hslStatusManagement_ryM.Size = new System.Drawing.Size(343, 30);
+            this.hslStatusManagement_ryM.SpacingOffect = 8F;
+            this.hslStatusManagement_ryM.TabIndex = 6;
             // 
             // pictureBox_Ry
             // 
@@ -886,31 +911,76 @@
             this.label39.TabIndex = 26;
             this.label39.Text = "CurTemp:";
             // 
-            // hslStatusManagement_ryM
+            // checkBox_AutoStart
             // 
-            this.hslStatusManagement_ryM.ColCount = 16;
-            this.hslStatusManagement_ryM.Location = new System.Drawing.Point(10, 115);
-            this.hslStatusManagement_ryM.Name = "hslStatusManagement_ryM";
-            this.hslStatusManagement_ryM.RowCount = 1;
-            this.hslStatusManagement_ryM.Size = new System.Drawing.Size(343, 30);
-            this.hslStatusManagement_ryM.SpacingOffect = 8F;
-            this.hslStatusManagement_ryM.TabIndex = 6;
+            this.checkBox_AutoStart.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_AutoStart.AutoCheck = false;
+            this.checkBox_AutoStart.Location = new System.Drawing.Point(803, 383);
+            this.checkBox_AutoStart.Name = "checkBox_AutoStart";
+            this.checkBox_AutoStart.Size = new System.Drawing.Size(82, 34);
+            this.checkBox_AutoStart.TabIndex = 4;
+            this.checkBox_AutoStart.Text = "AutoStart";
+            this.checkBox_AutoStart.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_AutoStart.UseVisualStyleBackColor = true;
+            this.checkBox_AutoStart.Click += new System.EventHandler(this.checkBox_Socket_Click);
             // 
-            // hslStatusManagement_ryS
+            // checkBox_Suspend
             // 
-            this.hslStatusManagement_ryS.ColCount = 16;
-            this.hslStatusManagement_ryS.Location = new System.Drawing.Point(10, 151);
-            this.hslStatusManagement_ryS.Name = "hslStatusManagement_ryS";
-            this.hslStatusManagement_ryS.RowCount = 1;
-            this.hslStatusManagement_ryS.Size = new System.Drawing.Size(343, 30);
-            this.hslStatusManagement_ryS.SpacingOffect = 8F;
-            this.hslStatusManagement_ryS.TabIndex = 6;
+            this.checkBox_Suspend.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_Suspend.AutoCheck = false;
+            this.checkBox_Suspend.Location = new System.Drawing.Point(891, 383);
+            this.checkBox_Suspend.Name = "checkBox_Suspend";
+            this.checkBox_Suspend.Size = new System.Drawing.Size(86, 34);
+            this.checkBox_Suspend.TabIndex = 4;
+            this.checkBox_Suspend.Text = "Suspend";
+            this.checkBox_Suspend.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Suspend.UseVisualStyleBackColor = true;
+            this.checkBox_Suspend.Click += new System.EventHandler(this.checkBox_Socket_Click);
+            // 
+            // checkBox_Stop
+            // 
+            this.checkBox_Stop.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_Stop.AutoCheck = false;
+            this.checkBox_Stop.Location = new System.Drawing.Point(803, 431);
+            this.checkBox_Stop.Name = "checkBox_Stop";
+            this.checkBox_Stop.Size = new System.Drawing.Size(82, 34);
+            this.checkBox_Stop.TabIndex = 4;
+            this.checkBox_Stop.Text = "Stop";
+            this.checkBox_Stop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_Stop.UseVisualStyleBackColor = true;
+            this.checkBox_Stop.Click += new System.EventHandler(this.checkBox_Socket_Click);
+            // 
+            // checkBox_SensorInfo
+            // 
+            this.checkBox_SensorInfo.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_SensorInfo.AutoCheck = false;
+            this.checkBox_SensorInfo.Location = new System.Drawing.Point(891, 431);
+            this.checkBox_SensorInfo.Name = "checkBox_SensorInfo";
+            this.checkBox_SensorInfo.Size = new System.Drawing.Size(86, 34);
+            this.checkBox_SensorInfo.TabIndex = 4;
+            this.checkBox_SensorInfo.Text = "SensorInfo";
+            this.checkBox_SensorInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_SensorInfo.UseVisualStyleBackColor = true;
+            this.checkBox_SensorInfo.Click += new System.EventHandler(this.checkBox_Socket_Click);
+            // 
+            // richTextBox_log
+            // 
+            this.richTextBox_log.Location = new System.Drawing.Point(803, 14);
+            this.richTextBox_log.Name = "richTextBox_log";
+            this.richTextBox_log.Size = new System.Drawing.Size(174, 359);
+            this.richTextBox_log.TabIndex = 49;
+            this.richTextBox_log.Text = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(825, 502);
+            this.ClientSize = new System.Drawing.Size(989, 502);
+            this.Controls.Add(this.richTextBox_log);
+            this.Controls.Add(this.checkBox_SensorInfo);
+            this.Controls.Add(this.checkBox_Stop);
+            this.Controls.Add(this.checkBox_Suspend);
+            this.Controls.Add(this.checkBox_AutoStart);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox_Ry);
@@ -1009,6 +1079,11 @@
         private System.Windows.Forms.Label label_Sr;
         private HslControls.HslStatusManagement hslStatusManagement_ryM;
         private HslControls.HslStatusManagement hslStatusManagement_ryS;
+        private System.Windows.Forms.CheckBox checkBox_AutoStart;
+        private System.Windows.Forms.CheckBox checkBox_Suspend;
+        private System.Windows.Forms.CheckBox checkBox_Stop;
+        private System.Windows.Forms.CheckBox checkBox_SensorInfo;
+        private System.Windows.Forms.RichTextBox richTextBox_log;
     }
 }
 

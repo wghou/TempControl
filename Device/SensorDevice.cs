@@ -17,7 +17,7 @@ namespace Device
         /// <summary>
         /// 设备硬件信息
         /// </summary>
-        public class DeviceInfo
+        public class SensorInfo
         {
             /// <summary> 设备型号名称 </summary>
             public string typeName { get; internal set; }
@@ -43,7 +43,8 @@ namespace Device
             SBE37SM,
             SBE37SMP,
             SBE37SMPODO,
-            Undefined
+            Undefined,
+            Standard
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace Device
         /// <summary>
         /// 设备信息
         /// </summary>
-        public DeviceInfo deviceInfo = new DeviceInfo();
+        public SensorInfo sensorInfo { get; set; } = new SensorInfo();
 
         /// <summary>
         /// 写入数据 sql
@@ -88,12 +89,7 @@ namespace Device
                 NewLine = "\r\n"
             };
 
-            deviceInfo.sensorIdx = sensorCount++;
-
-            if(sensorCount > maxSensorNum)
-            {
-                nlogger.Error("the number of SensorDevice exceed the maxSensorNum: " + sensorCount.ToString());
-            }
+            sensorInfo.sensorIdx = ++sensorCount;
         }
 
         
@@ -106,6 +102,12 @@ namespace Device
         {
             // 当 Enable == false 时，返回 true
             srDevicePortName = portName;
+
+            if(sensorInfo.sensorIdx > maxSensorNum)
+            {
+                nlogger.Error("the sensorInfo.sensorIdx exceed the maxSensorNum: " + sensorCount.ToString());
+                return false;
+            }
 
             try
             {

@@ -73,6 +73,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -471,6 +472,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -666,14 +668,24 @@
             this.label7.TabIndex = 25;
             this.label7.Text = "M4-M7";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Location = new System.Drawing.Point(4, 26);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(879, 647);
+            this.tabPage3.TabIndex = 1;
+            this.tabPage3.Text = "控制界面";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
             // tabPage2
             // 
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(879, 647);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "控制界面";
+            this.tabPage2.TabIndex = 2;
+            this.tabPage2.Text = "传感器状态";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // IotMonitorForm
@@ -726,7 +738,7 @@
         private System.Windows.Forms.PictureBox pictureBox_iot;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label label_tm5;
         private System.Windows.Forms.Label label_tm1;
         private System.Windows.Forms.Label label_tm4;
@@ -741,6 +753,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label_sample;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TabPage tabPage2;
     }
 }
 

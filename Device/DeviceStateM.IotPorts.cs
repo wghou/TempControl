@@ -18,12 +18,12 @@ namespace Device
 
         bool InitIotPort(JObject child)
         {
-            IotPort.Topic[] tpSub = new IotPort.Topic[] { IotPort.Topic.ParamT, IotPort.Topic.Relay, Topic.Error, Topic.SampleState };
-            bool confOK = _userPorts.configUserPorts(child, tpSub);
+            IotPort.IotTopic[] tpSub = new IotPort.IotTopic[] { IotPort.IotTopic.ParamT, IotPort.IotTopic.Relay, IotTopic.Error, IotTopic.SampleState };
+            bool confOK = _userPorts.configIotPorts(child, tpSub);
             if (!confOK) nlogger.Error("配置 UserPort 失败");
             else nlogger.Debug("配置 UserPort 失败");
 
-            _userPorts.IotPortRvMsgSetEvent += _userPorts_UserPortMsgRvSetEvent;
+            _userPorts.IotPortReceiveMessageEvent += _userPorts_UserPortMsgRvSetEvent;
             TimerTickEndEvent += DeviceStateM_TimerTickEndEvent;
             StateChangedEvent += DeviceStateM_StateChangedEvent;
             RelayDeviceMStatusUpdatedEvent += DeviceStateM_RelayDeviceStatusUpdatedEvent;
@@ -41,39 +41,39 @@ namespace Device
         // 当自动采样状态发生改变时，发布
         private void DeviceStateM_SampleStateChangedEvent(AutoSample.StateSample st)
         {
-            iotPublishMessage(Topic.SampleState);
+            iotPublishMessage(IotTopic.SampleState);
         }
 
         // 当设备关闭时，发布继电器、自动控温状态
         private void DeviceStateM_DeviceClosedEvent()
         {
-            iotPublishMessage(Topic.Relay);
-            iotPublishMessage(Topic.AutoState);
-            iotPublishMessage(Topic.SampleState);
+            iotPublishMessage(IotTopic.Relay);
+            iotPublishMessage(IotTopic.DeviceState);
+            iotPublishMessage(IotTopic.SampleState);
         }
 
         // 当错误状态改变时，发布错误信息
         private void DeviceStateM_ErrorStatusChangedEvent(Dictionary<ErrorCode, uint> errDict)
         {
-            iotPublishMessage(Topic.Error);
+            iotPublishMessage(IotTopic.Error);
         }
 
         // 当继电器状态改变时，发布
         private void DeviceStateM_RelayDeviceStatusUpdatedEvent(RelayDevice.Err_r err, bool[] ryStatus)
         {
-            iotPublishMessage(Topic.Relay);
+            iotPublishMessage(IotTopic.Relay);
         }
 
         // 当自动控温状态改变时，发布
         private void DeviceStateM_StateChangedEvent(State st)
         {
-            iotPublishMessage(Topic.AutoState);
+            iotPublishMessage(IotTopic.DeviceState);
         }
 
         // 定时器事件，定时发布温度等数据
         private void DeviceStateM_TimerTickEndEvent()
         {
-            iotPublishMessage(Topic.ParamT);
+            iotPublishMessage(IotTopic.ParamT);
         }
 
         // 查看 iot 连接是否正确
@@ -88,17 +88,17 @@ namespace Device
         /// <param name="Ptype"></param>
         /// <param name="topic"></param>
         /// <param name="message"></param>
-        private void _userPorts_UserPortMsgRvSetEvent(Topic topic, JObject message)
+        private void _userPorts_UserPortMsgRvSetEvent(IotTopic topic, JObject message)
         {
             nlogger.Info("the message topic is " + topic.ToString() + ", and the message is: " + message);
 
             switch (topic)
             {
-                case Topic.ParamT:
+                case IotTopic.ParamT:
                     nlogger.Info("Receive message from mqtt with topic Topic.ParamT");
                     break;
 
-                case Topic.Relay:
+                case IotTopic.Relay:
                     nlogger.Info("Receive message from mqtt with topic Topic.Relay");
                     break;
 
@@ -108,16 +108,16 @@ namespace Device
             }
         }
 
-        public bool iotPublishMessage(Topic tp)
+        public bool iotPublishMessage(IotTopic tp)
         {
             switch (tp)
             {
-                case Topic.ParamT:
-                    JsonParamTs jPt = new JsonParamTs();
-                    jPt.d_s = DorS.Display;
+                case IotTopic.ParamT:
+                    IotParamTMessage jPt = new IotParamTMessage();
+                    jPt.DorS = IotDorS.Display;
                     jPt.paramM = new ParamT();
                     jPt.paramS = new ParamT();
-
+                    jPt.Topic = IotTopic.ParamT;
                     float[] pM = new float[10];
                     tpDeviceM.tpParam.CopyTo(pM, 0);
                     jPt.paramM.setValue(pM);
@@ -137,79 +137,65 @@ namespace Device
                     tpDeviceS.GetFlucDurCountOrLess(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, out fluc);
                     jPt.paramS.Fluc = fluc;
 
-                    string jpString = JsonConvert.SerializeObject(jPt);
-
-                    _userPorts.PublishMessage(Topic.ParamT, jpString);
+                    _userPorts.PublishMessage(IotTopic.ParamT, JObject.FromObject(jPt));
                     break;
 
-                case Topic.Relay:
-                    JsonRelay88 jR = new JsonRelay88();
-                    jR.d_s = DorS.Display;
+                case IotTopic.Relay:
+                    IotRelay88Message jR = new IotRelay88Message();
+                    jR.DorS = IotDorS.Display;
                     jR.relayM = new Relay8();
                     jR.relayS = new Relay8();
-
+                    jR.Topic = IotTopic.Relay;
                     jR.relayM.setValue(ryDeviceM.ryStatus);
                     jR.relayS.setValue(ryDeviceS.ryStatus);
 
-                    string jrString = JsonConvert.SerializeObject(jR);
-
-                    _userPorts.PublishMessage(Topic.Relay, jrString);
+                    _userPorts.PublishMessage(IotTopic.Relay, JObject.FromObject(jR));
                     break;
 
-                case Topic.AutoState:
-                    JsonAutoState jSt = new JsonAutoState();
-                    jSt.d_s = DorS.Display;
-                    jSt.state = new DeviceState();
+                case IotTopic.DeviceState:
+                    IotDeviceStateMessage jSt = new IotDeviceStateMessage();
+                    jSt.DorS = IotDorS.Display;
+                    jSt.Topic = IotTopic.DeviceState;
+                    jSt.state = _machine.State;
 
-                    jSt.state = (DeviceState)_machine.State;
-
-                    string jstString = JsonConvert.SerializeObject(jSt);
-
-                    _userPorts.PublishMessage(Topic.AutoState, jstString);
+                    _userPorts.PublishMessage(IotTopic.DeviceState, JObject.FromObject(jSt));
                     break;
 
-                case Topic.Error:
-                    JsonError jEr = new JsonError();
-                    jEr.d_s = DorS.Display;
+                case IotTopic.Error:
+                    IotErrorMessage jEr = new IotErrorMessage();
+                    jEr.DorS = IotDorS.Display;
+                    jEr.Topic = IotTopic.Error;
+                    jEr.errCnt = _deviceCurrentError;
 
-                    jEr.errCnt = new Dictionary<IotPort.ErrorCode, uint>();
+                    _userPorts.PublishMessage(IotTopic.Error, JObject.FromObject(jEr));
+                    break;
 
-                    foreach (Device.ErrorCode item in Enum.GetValues(typeof(Device.ErrorCode)))
+                case IotTopic.SampleState:
+                    IotSampleStateMessage jSample = new IotSampleStateMessage();
+                    jSample.DorS = IotDorS.Display;
+                    jSample.Topic = IotTopic.SampleState;
+                    jSample.state = _sampleMachine.State;
+
+                    _userPorts.PublishMessage(IotTopic.SampleState, JObject.FromObject(jSample));
+                    break;
+
+                case IotTopic.SensorState:
+                    IotSensorStateMessage jSensor = new IotSensorStateMessage();
+                    jSensor.DorS = IotDorS.Display;
+                    jSensor.Topic = IotTopic.SensorState;
+                    jSensor.SensorInfo = new List<SensorDevice.SensorInfo>();
+
+                    foreach(var itm in srDevices)
                     {
-                        jEr.errCnt[(IotPort.ErrorCode)item] = _deviceCurrentError[item];
+                        if(itm.sensorInfo.sensorType != SensorDevice.SensorType.Undefined) jSensor.SensorInfo.Add(itm.sensorInfo);
                     }
 
-                    string jerString = JsonConvert.SerializeObject(jEr);
-
-                    _userPorts.PublishMessage(Topic.Error, jerString);
+                    _userPorts.PublishMessage(IotTopic.SensorState, JObject.FromObject(jSensor));
                     break;
 
-                case Topic.SampleState:
-                    JsonAutoState jSample = new JsonAutoState();
-                    jSample.d_s = DorS.Display;
-                    jSample.state = new DeviceState();
-
-                    jSample.state = (DeviceState)_sampleMachine.State;
-
-                    string jspString = JsonConvert.SerializeObject(jSample);
-
-                    _userPorts.PublishMessage(Topic.SampleState, jspString);
-                    break;
-
-                case Topic.Sensor:
-                    JsonSensor jSensor = new JsonSensor();
-                    jSensor.d_s = DorS.Display;
-                    jSensor.srDatas = new List<SensorData>();
-                    SensorData data0 = new SensorData();
-                    data0.name = "null";
-                    data0.type = IotPort.SensorType.Type0;
-                    data0.state = IotPort.StateSensor.Idle;
-                    data0.data = 0.0f;
-                    jSensor.srDatas.Add(data0);
-
-                    string jsrString = JsonConvert.SerializeObject(jSensor);
-
-                    _userPorts.PublishMessage(Topic.Sensor, jsrString);
+                case IotTopic.SensorValue:
+                    // todo: add the sensor value
+                    
                     break;
 
                 default:

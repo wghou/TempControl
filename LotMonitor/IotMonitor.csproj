@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HslControls, Version=2.3.1.0, Culture=neutral, PublicKeyToken=a3ad7c5c937ec0c0, processorArchitecture=MSIL">
-      <HintPath>..\packages\HslControls.2.3.1\lib\net45\HslControls.dll</HintPath>
+    <Reference Include="HslControls, Version=2.3.2.0, Culture=neutral, PublicKeyToken=a3ad7c5c937ec0c0, processorArchitecture=MSIL">
+      <HintPath>..\packages\HslControls.2.3.2\lib\net45\HslControls.dll</HintPath>
     </Reference>
     <Reference Include="MQTTnet, Version=3.0.9.0, Culture=neutral, PublicKeyToken=b69712f52770c0a7, processorArchitecture=MSIL">
       <HintPath>..\packages\MQTTnet.3.0.9\lib\net461\MQTTnet.dll</HintPath>
@@ -127,6 +127,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Device\Device.csproj">
+      <Project>{d46d54bd-1443-48a3-a182-80b8f6954d3e}</Project>
+      <Name>Device</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserPort\IotPort.csproj">
       <Project>{7cb47cc8-bb87-4d8e-9eb0-5fde4d17746d}</Project>
       <Name>IotPort</Name>

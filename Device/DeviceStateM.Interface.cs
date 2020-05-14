@@ -104,15 +104,24 @@ namespace Device
                 {
                     JObject child = (JObject)obj["SensorDev"];
 
-                    initSensorDevices(child);
+                    // todo: unhandled exception
+                    //initSensorDevices(child);
                 }
 
-                // 设置接口
+                // 设置iot接口
                 if (obj.ContainsKey("IotPort"))
                 {
                     JObject child = (JObject)obj["IotPort"];
 
                     confOK = InitIotPort(child);
+                }
+
+                // 设置 socket 接口
+                if (obj.ContainsKey("Socket"))
+                {
+                    JObject child = (JObject)obj["Socket"];
+
+                    confOK = InitSocketServer(child);
                 }
             }
             catch(Exception ex)

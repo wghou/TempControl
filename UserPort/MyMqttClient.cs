@@ -50,7 +50,7 @@ namespace IotPort
 
 
         //
-        public delegate void MessageReceievedEventHandler(Topic topic, string message);
+        public delegate void MessageReceievedEventHandler(IotTopic topic, string message);
         /// <summary>
         /// 事件 - 接收到消息
         /// </summary>
@@ -81,10 +81,10 @@ namespace IotPort
 
 
         /// <summary>
-        /// 初始化
+        /// MQTT 初始化
         /// </summary>
         /// <returns></returns>
-        public bool Initialize(JObject mqttConfig, params Topic[] topics)
+        public bool Initialize(JObject mqttConfig, params IotTopic[] topics)
         {
             // 清空原有主题
             topicsSubs.Clear();
@@ -92,7 +92,7 @@ namespace IotPort
             // 添加主题
             foreach(var itm in topics)
             {
-                topicsSubs.Add(topicDeviceId + "/" + Enum.GetName(typeof(Topic), itm));
+                topicsSubs.Add(topicDeviceId + "/" + Enum.GetName(typeof(IotTopic), itm));
             }
 
             if (mqttClient == null)
@@ -147,7 +147,7 @@ namespace IotPort
         /// 发布主题
         /// </summary>
         /// <param name="Message"></param>
-        public void Publish(Topic topic, string Message, bool isWait = false)
+        public void Publish(IotTopic topic, string Message, bool isWait = false)
         {
             if (!Enabled) return;
 
@@ -163,7 +163,7 @@ namespace IotPort
                     return;
                 }
 
-                string tp = topicDeviceId + "/" + Enum.GetName(typeof(Topic), topic);
+                string tp = topicDeviceId + "/" + Enum.GetName(typeof(IotTopic), topic);
 
                 Console.WriteLine("Publish >>Message: " + Message);
                 MqttApplicationMessageBuilder mamb = new MqttApplicationMessageBuilder()
@@ -225,7 +225,7 @@ namespace IotPort
                     return;
                 }
 
-                Topic tpE;
+                IotTopic tpE;
                 if(!Enum.TryParse(tp[1], out tpE))
                 {
                     Console.WriteLine("Error: unknown IotPort.Topic.type from server.");

@@ -32,7 +32,7 @@ namespace Device
         public event SensorErrorEventHandler SensorErrorEvent;
 
         //
-        public delegate void SensorIdentifiedEventHandler(DeviceInfo info);
+        public delegate void SensorIdentifiedEventHandler(SensorInfo info);
         /// <summary>
         /// 识别出传感器设备
         /// </summary>

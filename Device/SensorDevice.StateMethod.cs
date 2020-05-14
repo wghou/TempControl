@@ -119,7 +119,7 @@ namespace Device
                 _sensorMachine.Fire(TriggerSensor.StartRead);
 
                 // 事件触发 - 识别到设备
-                SensorIdentifiedEvent?.Invoke(deviceInfo);
+                SensorIdentifiedEvent?.Invoke(sensorInfo);
             }
         }
 

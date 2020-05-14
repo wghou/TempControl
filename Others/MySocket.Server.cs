@@ -23,35 +23,8 @@ namespace Others
         public bool Enabled { get; set; } = false;
 
 
-        /// <summary>
-        /// 上位机给出的指令
-        /// </summary>
-        public enum SocketCmd : int
-        {
-            /// <summary> 开始自动控温 </summary>
-            AutoStart = 0,
-            /// <summary> 暂停 </summary>
-            Suspend,
-            /// <summary> 停止 </summary>
-            Stop,
-            /// <summary> 测量完成 </summary>
-            Finished,
-            /// <summary> 传感器状态 </summary>
-            SensorInfo,
-            /// <summary> 未知 </summary>
-            Unknown
-        }
-
-
-        public abstract class SocketMessageBase {
-            /// <summary> Socket Message 的类型 </summary>
-            SocketCmd cmdType { get; } = SocketCmd.Unknown;
-
-            public SocketMessageBase(SocketCmd tp) { cmdType = tp; }
-        }
-
         //
-        public delegate void MessageReceievedEventHandler(SocketCmd cmd, JObject msg);
+        public delegate void MessageReceievedEventHandler(JObject message);
         /// <summary>
         /// 事件 - 接收到 post 消息
         /// </summary>
@@ -64,11 +37,16 @@ namespace Others
         }
 
 
+        /// <summary>
+        /// 初始化 socket server
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public bool Init(JObject config)
         {
             try
             {
-                if(!_appServer.Setup((int)config["port"]))
+                if (!_appServer.Setup((int)config["Port"]))
                 {
                     nlogger.Error("Failed to setup!");
                     Enabled = false;
@@ -80,9 +58,9 @@ namespace Others
                     nlogger.Error("Failed to start.");
                     Enabled = false;
                     return false;
-                }   
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: config lot client failed.");
 
@@ -107,7 +85,24 @@ namespace Others
             get { return true; }
         }
 
+        /// <summary>
+        /// 通过 socket 发送数据
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public bool pushMessage(JObject message)
+        {
+            // 遍历 session
+            foreach (var itm in _appServer.GetAllSessions())
+            {
+                itm.Send(message.ToString());
+            }
 
+            return true;
+        }
+
+
+        /// new session connected.
         private void _appServer_NewSessionConnected(AppSession session)
         {
             nlogger.Debug("service get connection from clinet successful.");
@@ -115,10 +110,10 @@ namespace Others
 
             nlogger.Debug("server.session.count: " + count);
 
-            session.Send("Welcome to SuperSocket Telnet Server.");
+            //session.Send("Welcome to SuperSocket Telnet Server.");
         }
 
-
+        /// session closed
         private void _appServer_SessionClosed(AppSession session, CloseReason value)
         {
             nlogger.Debug("Server lost one connection from the client.");
@@ -136,46 +131,20 @@ namespace Others
         {
             if (!Enabled) return;
 
-            if (requestInfo.Body.Length != 0)
+            // StringRequestInfo 的格式
+            // todo: 在使用 json convertor 的时候，如果解析错误怎么办？会发生异常吗？
+            if (requestInfo.Key.Length != 0)
             {
                 // 解析并触发事件
-
-                JObject jMsg = (JObject)JsonConvert.DeserializeObject(requestInfo.Body);
-
-                if(jMsg.ContainsKey("cmdType"))
-                {
-                    try {
-                        SocketCmd cmd = (SocketCmd)Enum.ToObject(typeof(SocketCmd), (int)jMsg["cmdType"]);
-
-                        MessageReceievedEvent?.Invoke(cmd, jMsg);
-                    }
-                    catch(Exception ex)
-                    {
-                        nlogger.Error("received bad cmdType from MySocketSever.");
-                    } 
-                }
-                else
-                {
-                    nlogger.Error("received bad cmdType from MySocketSever.");
-                }
+                // todo: exception 解析方法错误
+                JObject jMsg = (JObject)JsonConvert.DeserializeObject(requestInfo.Key);
+                MessageReceievedEvent?.Invoke(jMsg);
             }
-        }
-
-        /// <summary>
-        /// 通过 socket 发送数据
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        public bool pushMessage<T>(T msg) where T: SocketMessageBase
-        {
-            string msgString = JsonConvert.SerializeObject(msg);
-            // 遍历 session
-            foreach (var itm in _appServer.GetAllSessions())
+            else
             {
-                itm.Send(msgString);
+                nlogger.Error("received bad message from MySocketSever: requestInfo.Body.Length == 0");
             }
-
-            return true;
         }
+
     }
 }

@@ -78,14 +78,15 @@ namespace Device
         /// 传感器设备识别事件
         /// </summary>
         /// <param name="info"></param>
-        private void Itm_SensorIdentifiedEvent(SensorDevice.DeviceInfo info)
+        private void Itm_SensorIdentifiedEvent(SensorDevice.SensorInfo info)
         {
             // todo: 将识别到的传感器信息，发送出去
-            List<SensorDevice.DeviceInfo> states = new List<SensorDevice.DeviceInfo>();
-            SocketSensorMessage srMsg = new SocketSensorMessage(MySocketServer.SocketCmd.SensorInfo);
-            states.Add(info);
-            srMsg.sensorStates = states;
-            _socketServer.pushMessage(srMsg);
+            //List<SensorDevice.DeviceInfo> states = new List<SensorDevice.DeviceInfo>();
+            //SocketSensorMessage srMsg = new SocketSensorMessage(MySocketServer.SocketCmd.SensorInfo);
+            //states.Add(info);
+            //srMsg.sensorStates = states;
+            //_socketServer.pushMessage(srMsg);
+
             // 同样是触发“识别到传感器事件”
             SensorIdentifiedEvent?.Invoke(info);
         }

@@ -17,9 +17,40 @@ using NLog;
 
 namespace IotPort
 {
+    /// <summary>
+    /// 消息的类型/主题
+    /// </summary>
+    public enum IotTopic : int
+    {
+        /// <summary> 控温表数据 </summary>
+        ParamT = 0,
+        /// <summary> 继电器数据 </summary>
+        Relay = 1,
+        /// <summary> 错误信息 </summary>
+        Error,
+        /// <summary> 自动控温步骤 </summary>
+        DeviceState,
+        /// <summary> 自动采样状态 </summary>
+        SampleState,
+        /// <summary> 传感器的状态数据 </summary>
+        SensorState,
+        /// <summary> 传感器的测量值 </summary>
+        SensorValue
+    }
+
+
+    /// <summary>
+    /// 用于 MQTT 通信的类
+    /// </summary>
     public partial class IotPorts
     {
-        public bool configUserPorts(JObject cfg, params Topic[] topicsSub)
+        /// <summary>
+        /// 初始化 IotPort
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <param name="topicsSub"></param>
+        /// <returns></returns>
+        public bool configIotPorts(JObject cfg, params IotTopic[] topicsSub)
         {
             bool confOK = true;
 
@@ -60,16 +91,6 @@ namespace IotPort
             return _mqttCloud.isConnected;
         }
 
-        //
-        public delegate void UserPortMessageReceievedEventHandler(Topic topic, JObject message);
-        /// <summary>
-        /// 事件 - 接收到需要显示的消息
-        /// </summary>
-        public event UserPortMessageReceievedEventHandler IotPortRvMsgDisplayEvent;
-        /// <summary>
-        /// 事件 - 接收到需要执行的消息
-        /// </summary>
-        public event UserPortMessageReceievedEventHandler IotPortRvMsgSetEvent;
 
         /// <summary>
         /// 向特定接口发布消息
@@ -79,46 +100,22 @@ namespace IotPort
         /// <param name="isWait"></param>
         /// <param name="ports"></param>
         /// <returns></returns>
-        public bool PublishMessage(Topic topic, string message, bool isWait = false)
+        public bool PublishMessage(IotTopic topic, JObject message, bool isWait = false)
         {
-            _mqttCloud.Publish(topic, message, isWait);
+            _mqttCloud.Publish(topic, message.ToString(), isWait);
             return true;
         }
 
-        // receive message from the mqtt cloud
-        private void _mqttCloud_MessageReceievedEvent(Topic topic, string message)
+
+        /// receive message from the mqtt cloud
+        private void _mqttCloud_MessageReceievedEvent(IotTopic topic, string message)
         {
             // 初步解析 message，并根据 d_s 标志位判断是显示类型的消息，还是设置类型的消息
             // 分别调用各自的事件函数
-            JObject jo = (JObject)JsonConvert.DeserializeObject(message);
+            JObject jMsg = (JObject)JsonConvert.DeserializeObject(message);
 
-            if (!jo.ContainsKey("d_s"))
-            {
-                nlogger.Error("bad message from mqtt. no d_s identifier.");
-                return;
-            }
+            IotPortReceiveMessageEvent?.Invoke(topic, jMsg);
 
-            DorS d_s;
-            if(!Enum.TryParse(jo["d_s"].ToString(), out d_s))
-            {
-                nlogger.Error("bad message from mqtt. no d_s identifier.");
-                return;
-            }
-
-            switch(d_s)
-            {
-                case DorS.Display:
-                    IotPortRvMsgDisplayEvent?.Invoke(topic, jo);
-                    break;
-
-                case DorS.Set:
-                    IotPortRvMsgSetEvent?.Invoke(topic, jo);
-                    break;
-
-                default:
-                    break;
-            }
-            
             nlogger.Debug("收到来自 mqttCloud 的数据: SubTopic - " + topic.ToString() + "  message - " + message);
         }
     }

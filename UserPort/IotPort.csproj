@@ -7,8 +7,8 @@
     <ProjectGuid>{7CB47CC8-BB87-4D8E-9EB0-5FDE4D17746D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LotPort</RootNamespace>
-    <AssemblyName>LotPort</AssemblyName>
+    <RootNamespace>IotPort</RootNamespace>
+    <AssemblyName>IotPort</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -90,7 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IotPorts.JsonData.cs" />
+    <Compile Include="IotPorts.Event.cs" />
     <Compile Include="MyMqttClient.cs" />
     <Compile Include="IotPorts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

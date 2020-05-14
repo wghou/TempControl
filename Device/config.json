@@ -65,10 +65,10 @@
       "ApiKey": "123123123",
       "ProductId": "270595",
       "DeviceId": "542169339"
-    },
-    "Socket": {
-      "Enable": true,
-      "Port": 6003
     }
+  },
+  "Socket": {
+    "Enable": true,
+    "Port": 6003
   }
 }

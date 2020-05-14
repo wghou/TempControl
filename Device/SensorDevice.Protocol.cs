@@ -53,21 +53,21 @@ namespace Device
                 // SBE37SI-RS232 v6.0.5 SERIAL NO. 30050 09 Jul 2018 14:46:5
                 string[] status = dtRaw.Split(' ');
 
-                deviceInfo.typeName = status[0];
-                deviceInfo.version = status[1];
-                deviceInfo.serialNo = status[4];
+                sensorInfo.typeName = status[0];
+                sensorInfo.version = status[1];
+                sensorInfo.serialNo = status[4];
 
                 // 解析设备类型
-                switch (deviceInfo.typeName)
+                switch (sensorInfo.typeName)
                 {
                     case "SBE37SI-RS232":
-                        deviceInfo.sensorType = SensorType.SBE37SI;
+                        sensorInfo.sensorType = SensorType.SBE37SI;
                         break;
 
                     default:
-                        deviceInfo.sensorType = SensorType.Undefined;
+                        sensorInfo.sensorType = SensorType.Undefined;
                         // 设备类型读取错误
-                        nlogger.Error("unknow sensor device type: " + deviceInfo.typeName);
+                        nlogger.Error("unknow sensor device type: " + sensorInfo.typeName);
                         break;
                 }
             }
