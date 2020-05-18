@@ -27,24 +27,24 @@
   },
   "?SensorDev": "关于其他传感器的配置信息",
   "SensorDev": {
-    "?Sensor": "所有传感器的端口配置，最多为 6 个",
-    "Sensor": [
+    "?Sensors": "所有传感器的端口配置，最多为 6 个",
+    "Sensors": [
       {
         "?Sensor1": "传感器 1",
         "Enable": false,
-        "PortName": "COM4",
+        "PortName": "COM113",
         "BaudRate": 9600
       },
       {
         "?Sensor2": "传感器 2",
         "Enable": false,
-        "PortName": "COM5",
+        "PortName": "COM15",
         "BaudRate": 9600
       }
     ],
     "StandardDev": {
       "Enable": false,
-      "PortName": "COM5",
+      "PortName": "COM17",
       "BaudRate": 9600
     }
   },
@@ -52,7 +52,7 @@
   "IotPort": {
     "MqttCloud": {
       "Enable": true,
-      "ServerUrl": "172.26.12.68",
+      "ServerUrl": "172.29.95.102",
       "Port": 5001,
       "ApiKey": "public",
       "ProductId": "admin",

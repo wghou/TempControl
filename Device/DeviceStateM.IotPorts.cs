@@ -31,11 +31,15 @@ namespace Device
             ErrorStatusChangedEvent += DeviceStateM_ErrorStatusChangedEvent;
             DeviceClosedEvent += DeviceStateM_DeviceClosedEvent;
             SampleStateChangedEvent += DeviceStateM_SampleStateChangedEvent;
-
-            // 初始时，刷新一下状态
-            DeviceStateM_DeviceClosedEvent();
+            SensorIdentifiedEvent += DeviceStateM_SensorIdentifiedEvent;
 
             return confOK;
+        }
+
+        // 检测到传感器设备，发布
+        private void DeviceStateM_SensorIdentifiedEvent(List<SensorDevice.SensorInfo> infos)
+        {
+            iotPublishMessage(IotTopic.SensorState);
         }
 
         // 当自动采样状态发生改变时，发布
@@ -50,6 +54,7 @@ namespace Device
             iotPublishMessage(IotTopic.Relay);
             iotPublishMessage(IotTopic.DeviceState);
             iotPublishMessage(IotTopic.SampleState);
+            iotPublishMessage(IotTopic.SensorState);
         }
 
         // 当错误状态改变时，发布错误信息
@@ -79,7 +84,7 @@ namespace Device
         // 查看 iot 连接是否正确
         public bool isUserPortConnected
         {
-            get { return true; }
+            get { return _userPorts.isConnected(); }
         }
 
         /// <summary>
@@ -183,11 +188,11 @@ namespace Device
                     IotSensorStateMessage jSensor = new IotSensorStateMessage();
                     jSensor.DorS = IotDorS.Display;
                     jSensor.Topic = IotTopic.SensorState;
-                    jSensor.SensorInfo = new List<SensorDevice.SensorInfo>();
+                    jSensor.SensorInfos = new List<SensorDevice.SensorInfo>();
 
                     foreach(var itm in srDevices)
                     {
-                        if(itm.sensorInfo.sensorType != SensorDevice.SensorType.Undefined) jSensor.SensorInfo.Add(itm.sensorInfo);
+                        jSensor.SensorInfos.Add(itm.sensorInfo);
                     }
 
                     _userPorts.PublishMessage(IotTopic.SensorState, JObject.FromObject(jSensor));

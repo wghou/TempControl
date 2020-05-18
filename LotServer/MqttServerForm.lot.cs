@@ -152,7 +152,7 @@ namespace IotServer
         private void MqttApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs message)
         {
             nlogger.Info("server receive message from cientID: " + message.ClientId);
-            writeLog("server receive message from cientID: " + message.ClientId);
+            writeLog("server receive message from cientID: " + message.ClientId + " with topic: " + message.ApplicationMessage.Topic);
             // process the message
         }
 

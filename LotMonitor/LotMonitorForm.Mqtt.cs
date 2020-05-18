@@ -44,7 +44,7 @@ namespace IotMonitor
                     JObject child = (JObject)obj["IotPort"];
 
                     IotTopic[] tpSub = new IotTopic[] {
-                        IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState };
+                        IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState, IotTopic.SensorState, IotTopic.SensorValue };
                     _iotClient.configIotPorts(child, tpSub);
                     _iotClient.IotPortReceiveMessageEvent += IotClient_MessageReceievedEvent;
                 }  
@@ -135,12 +135,29 @@ namespace IotMonitor
                     break;
 
                 case IotTopic.SensorState:
-                    IotSensorStateMessage sr = message.ToObject<IotSensorStateMessage>();
+                    IotSensorStateMessage srSt = message.ToObject<IotSensorStateMessage>();
+                    this.BeginInvoke(new EventHandler(delegate
+                    {
+                        // 将传感器信息显示
+                        foreach(var itm in srSt.SensorInfos)
+                        {
+                            if (itm.sensorIdx < 0 || itm.sensorIdx > 6) continue;
+
+                            this.textBoxes_srType[itm.sensorIdx].Text = itm.sensorType.ToString();
+                            this.textBoxes_srSerial[itm.sensorIdx].Text = itm.serialNo;
+                            this.textBoxes_srVersion[itm.sensorIdx].Text = itm.version;
+                        }
+                    }));
+                    break;
+
+                case IotTopic.SensorValue:
+                    IotSensorValueMessage srVal = message.ToObject<IotSensorValueMessage>();
                     this.BeginInvoke(new EventHandler(delegate
                     {
                         // 将传感器信息显示
                     }));
                     break;
+
 
                 default:
                     Console.WriteLine("Unknown message receieved.");

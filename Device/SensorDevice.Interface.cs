@@ -3,11 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO.Ports;
 
 namespace Device
 {
     public partial class SensorDevice
     {
+        /// <summary>
+        /// 设定串口号 / 初始化
+        /// </summary>
+        /// <param name="portName"></param>
+        /// <returns></returns>
+        public bool SetPortName(string portName)
+        {
+            // 当 Enable == false 时，返回 true
+            srDevicePortName = portName;
+
+            if (sensorInfo.sensorIdx >= maxSensorNum)
+            {
+                nlogger.Error("the sensorInfo.sensorIdx exceed the maxSensorNum: " + sensorCount.ToString());
+                return false;
+            }
+
+            try
+            {
+                // 先主动关闭串口
+                try { sPort.Close(); } catch { }
+
+                sPort.PortName = portName;
+
+                string[] portNames = SerialPort.GetPortNames();
+                if (!portNames.Contains(portName.ToUpper()))
+                {
+                    nlogger.Error("端口 " + portName + " 不存在");
+                    return !Enable;
+                }
+                // 串口打开 / 关闭测试
+                if (!sPort.IsOpen)
+                    sPort.Open();
+                //Thread.Sleep(intervalOfWR);
+                //if (sPort.IsOpen)
+                //    sPort.Close();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                nlogger.Error("传感器设备新建串口时发生异常：" + ex.Message);
+                return !Enable;
+            }
+        }
+
+
         /// <summary>
         /// 检查传感器设备的错误状态
         /// </summary>
@@ -18,9 +65,9 @@ namespace Device
 
 
         /// <summary>
-        /// 开始识别传感器设备
+        /// 识别传感器设备
         /// </summary>
-        public bool startIdentify()
+        public bool IdentifySensor()
         {
             // 当前已经处在传感器识别状态
             if (_sensorState == StateSensor.Identify) return true;
@@ -28,7 +75,10 @@ namespace Device
             // 仅能在 idle 状态下进入传感器识别状态
             if (_sensorState != StateSensor.Idle) return false;
 
-            _sensorMachine.Fire(TriggerSensor.StartTask);
+            _sensorMachine.Fire(TriggerSensor.StartIdentify);
+
+            // 进行一次传感器状态判断
+            _sensorMachine.Fire(_sensorTickTrigger, 10);
 
             return true;
         }

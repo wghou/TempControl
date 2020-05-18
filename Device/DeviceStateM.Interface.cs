@@ -48,15 +48,6 @@ namespace Device
                         tpDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
                         if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                         else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
-
-                        //sPortTm.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM0";
-                        //sPortTm.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
-                        //sPortTm.DataBits = 8;
-                        //sPortTm.StopBits = StopBits.One;
-                        //sPortTm.Parity = Parity.None;
-                        //sPortTm.ReadBufferSize = 64;
-                        //sPortTm.WriteBufferSize = 64;
-                        //SportTm_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
                     }
 
                     // 设置辅控温表
@@ -104,8 +95,7 @@ namespace Device
                 {
                     JObject child = (JObject)obj["SensorDev"];
 
-                    // todo: unhandled exception
-                    //initSensorDevices(child);
+                    confOK &= initSensorDevices(child);
                 }
 
                 // 设置iot接口
@@ -113,7 +103,7 @@ namespace Device
                 {
                     JObject child = (JObject)obj["IotPort"];
 
-                    confOK = InitIotPort(child);
+                    confOK &= InitIotPort(child);
                 }
 
                 // 设置 socket 接口
@@ -121,7 +111,7 @@ namespace Device
                 {
                     JObject child = (JObject)obj["Socket"];
 
-                    confOK = InitSocketServer(child);
+                    confOK &= InitSocketServer(child);
                 }
             }
             catch(Exception ex)
@@ -148,6 +138,13 @@ namespace Device
             RelayDeviceMStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceM.ryStatus);
 
             RelayDeviceSStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceS.ryStatus);
+
+            List<SensorDevice.SensorInfo> infos = new List<SensorDevice.SensorInfo>();
+            foreach (var itm in srDevices)
+            {
+                infos.Add(itm.sensorInfo);
+            }
+            SensorIdentifiedEvent?.Invoke(infos);
         }
 
 

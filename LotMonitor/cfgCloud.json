@@ -3,7 +3,7 @@
   "IotPort": {
     "MqttCloud": {
       "Enable": true,
-      "ServerUrl": "172.26.12.68",
+      "ServerUrl": "172.29.95.102",
       "Port": 5001,
       "ApiKey": "public",
       "ProductId": "admin",

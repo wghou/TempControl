@@ -958,7 +958,7 @@
             this.checkBox_SensorInfo.Name = "checkBox_SensorInfo";
             this.checkBox_SensorInfo.Size = new System.Drawing.Size(86, 34);
             this.checkBox_SensorInfo.TabIndex = 4;
-            this.checkBox_SensorInfo.Text = "SensorInfo";
+            this.checkBox_SensorInfo.Text = "SensorInfos";
             this.checkBox_SensorInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_SensorInfo.UseVisualStyleBackColor = true;
             this.checkBox_SensorInfo.Click += new System.EventHandler(this.checkBox_Socket_Click);

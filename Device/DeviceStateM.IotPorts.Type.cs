@@ -308,7 +308,7 @@ namespace Device
         /// <summary>
         /// 所有传感器的数据及状态
         /// </summary>
-        public List<SensorDevice.SensorInfo> SensorInfo { get; set; }
+        public List<SensorDevice.SensorInfo> SensorInfos { get; set; }
     }
 
     /// <summary>

@@ -71,7 +71,7 @@ namespace Device
         public event DeviceClosedEventHandler DeviceClosedEvent;
 
         //
-        public delegate void SensorIdentifiedEventHandler(SensorDevice.SensorInfo info);
+        public delegate void SensorIdentifiedEventHandler(List<SensorDevice.SensorInfo> infos);
         /// <summary>
         /// 识别出传感器设备
         /// </summary>

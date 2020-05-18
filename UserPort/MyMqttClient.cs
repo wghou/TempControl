@@ -76,7 +76,11 @@ namespace IotPort
         /// </summary>
         public bool isConnected { get {
                 if (mqttClient == null) return false;
-                else return mqttClient.IsConnected;
+                else if (!mqttClient.IsConnected)
+                {
+                    try { mqttClient.ConnectAsync(options); } catch { }
+                }
+                return mqttClient.IsConnected;
             } }
 
 
@@ -251,12 +255,12 @@ namespace IotPort
         {
             try
             {
-                List<TopicFilter> listTopic = new List<TopicFilter>();
+                List<MqttTopicFilter> listTopic = new List<MqttTopicFilter>();
                 if (listTopic.Count() <= 0)
                 {
                     foreach (string topic in topicsSubs)
                     {
-                        var topicFilterBulder = new TopicFilterBuilder().WithTopic(topic).Build();
+                        var topicFilterBulder = new MqttTopicFilterBuilder().WithTopic(topic).Build();
                         listTopic.Add(topicFilterBulder);
                         Console.WriteLine("Connected >>Subscribe " + topic);
                     }

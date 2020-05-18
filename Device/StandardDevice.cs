@@ -30,6 +30,11 @@ namespace Device
         public List<Tuple<float, float>> data = new List<Tuple<float, float>>();
         private int dataMaxLen = 1000;
 
+        /// <summary>
+        /// 设备信息
+        /// </summary>
+        public SensorDevice.SensorInfo sensorInfo { get; set; } = new SensorDevice.SensorInfo() { sensorType = SensorDevice.SensorType.Standard };
+
         public StandardDevice()
         {
             sPort = new SerialPort()

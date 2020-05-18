@@ -54,6 +54,8 @@
             this.checkBox_ryM4 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM0 = new System.Windows.Forms.CheckBox();
             this.groupBox_ry1 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.hslStatusManagement_sensor = new HslControls.HslStatusManagement();
             this.pictureBox_ryS3 = new System.Windows.Forms.PictureBox();
             this.checkBox_ryS3 = new System.Windows.Forms.CheckBox();
             this.pictureBox_ryS2 = new System.Windows.Forms.PictureBox();
@@ -185,7 +187,7 @@
             // checkBox_ryS1
             // 
             this.checkBox_ryS1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryS1.Location = new System.Drawing.Point(363, 113);
+            this.checkBox_ryS1.Location = new System.Drawing.Point(363, 103);
             this.checkBox_ryS1.Name = "checkBox_ryS1";
             this.checkBox_ryS1.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryS1.TabIndex = 9;
@@ -225,7 +227,7 @@
             this.checkBox_exit.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_exit.AutoCheck = false;
             this.checkBox_exit.ForeColor = System.Drawing.Color.Red;
-            this.checkBox_exit.Location = new System.Drawing.Point(361, 386);
+            this.checkBox_exit.Location = new System.Drawing.Point(361, 352);
             this.checkBox_exit.Name = "checkBox_exit";
             this.checkBox_exit.Size = new System.Drawing.Size(130, 50);
             this.checkBox_exit.TabIndex = 18;
@@ -238,7 +240,7 @@
             // 
             this.checkBox_auto.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_auto.AutoCheck = false;
-            this.checkBox_auto.Location = new System.Drawing.Point(8, 386);
+            this.checkBox_auto.Location = new System.Drawing.Point(8, 352);
             this.checkBox_auto.Name = "checkBox_auto";
             this.checkBox_auto.Size = new System.Drawing.Size(130, 50);
             this.checkBox_auto.TabIndex = 17;
@@ -271,7 +273,7 @@
             // checkBox_ryM7
             // 
             this.checkBox_ryM7.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM7.Location = new System.Drawing.Point(188, 295);
+            this.checkBox_ryM7.Location = new System.Drawing.Point(188, 269);
             this.checkBox_ryM7.Name = "checkBox_ryM7";
             this.checkBox_ryM7.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryM7.TabIndex = 28;
@@ -283,7 +285,7 @@
             // checkBox_ryM3
             // 
             this.checkBox_ryM3.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM3.Location = new System.Drawing.Point(6, 295);
+            this.checkBox_ryM3.Location = new System.Drawing.Point(6, 269);
             this.checkBox_ryM3.Name = "checkBox_ryM3";
             this.checkBox_ryM3.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryM3.TabIndex = 27;
@@ -295,7 +297,7 @@
             // checkBox_ryM6
             // 
             this.checkBox_ryM6.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM6.Location = new System.Drawing.Point(188, 204);
+            this.checkBox_ryM6.Location = new System.Drawing.Point(188, 186);
             this.checkBox_ryM6.Name = "checkBox_ryM6";
             this.checkBox_ryM6.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryM6.TabIndex = 26;
@@ -307,7 +309,7 @@
             // checkBox_ryM2
             // 
             this.checkBox_ryM2.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM2.Location = new System.Drawing.Point(6, 204);
+            this.checkBox_ryM2.Location = new System.Drawing.Point(8, 186);
             this.checkBox_ryM2.Name = "checkBox_ryM2";
             this.checkBox_ryM2.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryM2.TabIndex = 25;
@@ -319,7 +321,7 @@
             // checkBox_ryM5
             // 
             this.checkBox_ryM5.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM5.Location = new System.Drawing.Point(188, 113);
+            this.checkBox_ryM5.Location = new System.Drawing.Point(188, 103);
             this.checkBox_ryM5.Name = "checkBox_ryM5";
             this.checkBox_ryM5.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryM5.TabIndex = 24;
@@ -331,7 +333,7 @@
             // checkBox_ryM1
             // 
             this.checkBox_ryM1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryM1.Location = new System.Drawing.Point(6, 113);
+            this.checkBox_ryM1.Location = new System.Drawing.Point(6, 103);
             this.checkBox_ryM1.Name = "checkBox_ryM1";
             this.checkBox_ryM1.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryM1.TabIndex = 23;
@@ -367,6 +369,8 @@
             // groupBox_ry1
             // 
             this.groupBox_ry1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox_ry1.Controls.Add(this.label9);
+            this.groupBox_ry1.Controls.Add(this.hslStatusManagement_sensor);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryS3);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryS3);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryS2);
@@ -401,9 +405,27 @@
             this.groupBox_ry1.TabStop = false;
             this.groupBox_ry1.Text = "继电器模块 1";
             // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(82, 423);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(100, 23);
+            this.label9.TabIndex = 42;
+            this.label9.Text = "传感器状态";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // hslStatusManagement_sensor
+            // 
+            this.hslStatusManagement_sensor.ColCount = 6;
+            this.hslStatusManagement_sensor.Location = new System.Drawing.Point(188, 427);
+            this.hslStatusManagement_sensor.Name = "hslStatusManagement_sensor";
+            this.hslStatusManagement_sensor.RowCount = 1;
+            this.hslStatusManagement_sensor.Size = new System.Drawing.Size(303, 15);
+            this.hslStatusManagement_sensor.TabIndex = 41;
+            // 
             // pictureBox_ryS3
             // 
-            this.pictureBox_ryS3.Location = new System.Drawing.Point(363, 297);
+            this.pictureBox_ryS3.Location = new System.Drawing.Point(363, 271);
             this.pictureBox_ryS3.Name = "pictureBox_ryS3";
             this.pictureBox_ryS3.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryS3.TabIndex = 40;
@@ -412,7 +434,7 @@
             // checkBox_ryS3
             // 
             this.checkBox_ryS3.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryS3.Location = new System.Drawing.Point(361, 295);
+            this.checkBox_ryS3.Location = new System.Drawing.Point(361, 269);
             this.checkBox_ryS3.Name = "checkBox_ryS3";
             this.checkBox_ryS3.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryS3.TabIndex = 38;
@@ -423,7 +445,7 @@
             // 
             // pictureBox_ryS2
             // 
-            this.pictureBox_ryS2.Location = new System.Drawing.Point(363, 205);
+            this.pictureBox_ryS2.Location = new System.Drawing.Point(363, 188);
             this.pictureBox_ryS2.Name = "pictureBox_ryS2";
             this.pictureBox_ryS2.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryS2.TabIndex = 39;
@@ -432,7 +454,7 @@
             // checkBox_ryS2
             // 
             this.checkBox_ryS2.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_ryS2.Location = new System.Drawing.Point(361, 203);
+            this.checkBox_ryS2.Location = new System.Drawing.Point(361, 186);
             this.checkBox_ryS2.Name = "checkBox_ryS2";
             this.checkBox_ryS2.Size = new System.Drawing.Size(130, 50);
             this.checkBox_ryS2.TabIndex = 37;
@@ -445,7 +467,7 @@
             // 
             this.checkBox_data.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_data.AutoCheck = false;
-            this.checkBox_data.Location = new System.Drawing.Point(188, 386);
+            this.checkBox_data.Location = new System.Drawing.Point(188, 352);
             this.checkBox_data.Name = "checkBox_data";
             this.checkBox_data.Size = new System.Drawing.Size(130, 50);
             this.checkBox_data.TabIndex = 35;
@@ -456,7 +478,7 @@
             // 
             // pictureBox_ryS1
             // 
-            this.pictureBox_ryS1.Location = new System.Drawing.Point(365, 115);
+            this.pictureBox_ryS1.Location = new System.Drawing.Point(363, 105);
             this.pictureBox_ryS1.Name = "pictureBox_ryS1";
             this.pictureBox_ryS1.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryS1.TabIndex = 32;
@@ -464,7 +486,7 @@
             // 
             // pictureBox_ryM7
             // 
-            this.pictureBox_ryM7.Location = new System.Drawing.Point(190, 297);
+            this.pictureBox_ryM7.Location = new System.Drawing.Point(190, 271);
             this.pictureBox_ryM7.Name = "pictureBox_ryM7";
             this.pictureBox_ryM7.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryM7.TabIndex = 36;
@@ -480,7 +502,7 @@
             // 
             // pictureBox_ryM6
             // 
-            this.pictureBox_ryM6.Location = new System.Drawing.Point(190, 206);
+            this.pictureBox_ryM6.Location = new System.Drawing.Point(190, 188);
             this.pictureBox_ryM6.Name = "pictureBox_ryM6";
             this.pictureBox_ryM6.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryM6.TabIndex = 35;
@@ -488,7 +510,7 @@
             // 
             // pictureBox_ryM5
             // 
-            this.pictureBox_ryM5.Location = new System.Drawing.Point(190, 115);
+            this.pictureBox_ryM5.Location = new System.Drawing.Point(190, 105);
             this.pictureBox_ryM5.Name = "pictureBox_ryM5";
             this.pictureBox_ryM5.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryM5.TabIndex = 34;
@@ -504,7 +526,7 @@
             // 
             // pictureBox_ryM3
             // 
-            this.pictureBox_ryM3.Location = new System.Drawing.Point(8, 297);
+            this.pictureBox_ryM3.Location = new System.Drawing.Point(8, 271);
             this.pictureBox_ryM3.Name = "pictureBox_ryM3";
             this.pictureBox_ryM3.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryM3.TabIndex = 32;
@@ -512,7 +534,7 @@
             // 
             // pictureBox_ryM2
             // 
-            this.pictureBox_ryM2.Location = new System.Drawing.Point(8, 206);
+            this.pictureBox_ryM2.Location = new System.Drawing.Point(10, 188);
             this.pictureBox_ryM2.Name = "pictureBox_ryM2";
             this.pictureBox_ryM2.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryM2.TabIndex = 31;
@@ -520,7 +542,7 @@
             // 
             // pictureBox_ryM1
             // 
-            this.pictureBox_ryM1.Location = new System.Drawing.Point(8, 115);
+            this.pictureBox_ryM1.Location = new System.Drawing.Point(8, 105);
             this.pictureBox_ryM1.Name = "pictureBox_ryM1";
             this.pictureBox_ryM1.Size = new System.Drawing.Size(30, 10);
             this.pictureBox_ryM1.TabIndex = 30;
@@ -873,5 +895,7 @@
         private System.Windows.Forms.CheckBox checkBox_ryS2;
         private System.Windows.Forms.PictureBox pictureBox_iot;
         private System.Windows.Forms.Label label8;
+        private HslControls.HslStatusManagement hslStatusManagement_sensor;
+        private System.Windows.Forms.Label label9;
     }
 }

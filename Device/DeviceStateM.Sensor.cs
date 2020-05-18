@@ -24,14 +24,16 @@ namespace Device
         /// <returns></returns>
         private bool initSensorDevices(JObject child)
         {
+            // todo: unhandled exception
+
             bool confOK = true;
 
             srDevices.Clear();
 
             // 设置传感器
-            if (child.ContainsKey("Sensor"))
+            if (child.ContainsKey("Sensors"))
             {
-                JObject child2 = (JObject)child["Sensor"];
+                JArray child2 = (JArray)child["Sensors"];
 
                 int numSensor = Math.Min(child2.Count, SensorDevice.maxSensorNum);
 
@@ -39,8 +41,8 @@ namespace Device
                 {
                     JObject ob = (JObject)child2[i];
                     SensorDevice sr = new SensorDevice();
-                    confOK &= sr.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
-                    sr.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
+                    confOK &= sr.SetPortName(ob.ContainsKey("PortName") ? ob["PortName"].ToString() : "COM0");
+                    sr.Enable = ob.ContainsKey("Enable") ? (bool)ob["Enable"] : true;
                     if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + sr.srDevicePortName);
                     else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + sr.srDevicePortName);
 
@@ -51,14 +53,15 @@ namespace Device
             // 开始识别传感器
             foreach (var itm in srDevices)
             {
+                // todo: 识别传感器
+                itm.IdentifySensor();
                 itm.SensorIdentifiedEvent += Itm_SensorIdentifiedEvent;
-                itm.startIdentify();
             }
 
             // 配置标准数据采集器
             if (child.ContainsKey("StandardDev"))
             {
-                JObject child2 = (JObject)child["Sensor"];
+                JObject child2 = (JObject)child["StandardDev"];
 
                 if (child2.ContainsKey("PortName"))
                 {
@@ -77,18 +80,17 @@ namespace Device
         /// <summary>
         /// 传感器设备识别事件
         /// </summary>
-        /// <param name="info"></param>
+        /// <param name="info"> 新检测到的传感器设备的信息 </param>
         private void Itm_SensorIdentifiedEvent(SensorDevice.SensorInfo info)
         {
-            // todo: 将识别到的传感器信息，发送出去
-            //List<SensorDevice.DeviceInfo> states = new List<SensorDevice.DeviceInfo>();
-            //SocketSensorMessage srMsg = new SocketSensorMessage(MySocketServer.SocketCmd.SensorInfo);
-            //states.Add(info);
-            //srMsg.sensorStates = states;
-            //_socketServer.pushMessage(srMsg);
+            List<SensorDevice.SensorInfo> infos = new List<SensorDevice.SensorInfo>();
+            foreach(var itm in srDevices)
+            {
+                infos.Add(itm.sensorInfo);
+            }
 
-            // 同样是触发“识别到传感器事件”
-            SensorIdentifiedEvent?.Invoke(info);
+            // 触发 DeviceStateM.SensorIdentifiedEvent 事件
+            SensorIdentifiedEvent?.Invoke(infos);
         }
     }
 }

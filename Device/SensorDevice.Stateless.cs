@@ -30,8 +30,8 @@ namespace Device
 
     public enum TriggerSensor : int
     {
-        /// <summary> 开始一次任务 </summary>
-        StartTask,
+        /// <summary> 开始识别传感器 </summary>
+        StartIdentify,
         /// <summary> 时刻 </summary>
         TimerTick,
         /// <summary> 开始读取数据 </summary>
@@ -70,6 +70,9 @@ namespace Device
         float currentTemptPoint = 0.0f;
 
 
+        /// <summary>
+        /// 配置传感器相关的状态机
+        /// </summary>
         public void ConfigSensorStateless()
         {
             // new object
@@ -89,7 +92,7 @@ namespace Device
                 .OnEntry(t => sensorIdleEntry())
                 .OnExit(t => sensorIdleExit())
                 .InternalTransition(_sensorTickTrigger, (tic, t) => sensorIdleTick(tic))
-                .Permit(TriggerSensor.StartTask, StateSensor.Identify)
+                .Permit(TriggerSensor.StartIdentify, StateSensor.Identify)
                 .Permit(TriggerSensor.ForceStop, StateSensor.Stop);
 
 
