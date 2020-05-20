@@ -24,6 +24,10 @@ namespace IotPort
         /// <summary>
         /// 用于连接移动 OneNet 云平台的 mqtt 客户端 / 也可以在本地搭建 mqtt server
         /// </summary>
-        private MyMqttClient _mqttCloud = new MyMqttClient(); 
+        private MyMqttClient _mqttCloud = new MyMqttClient();
+        /// <summary>
+        /// 启用？
+        /// </summary>
+        public bool Enable { set; get; } = false;
     }
 }

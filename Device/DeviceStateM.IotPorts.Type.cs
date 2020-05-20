@@ -364,9 +364,9 @@ namespace Device
             switch (typeName)
             {
                 case SensorType.Standard:
-                    return new StandardDeviceData();
+                    return new SensorSTDData();
                 case SensorType.SBE37SI:
-                    return new SensorDeviceData();
+                    return new SensorSBE37Data();
                 default: return new UndefinedSensorData();
             }
         }

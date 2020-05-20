@@ -10,6 +10,21 @@ using Newtonsoft.Json.Linq;
 
 namespace Others
 {
+    /// <summary>
+    /// 仅仅是为了在泛函 InsertValue<T>(T data) 中添加限定
+    /// </summary>
+    public abstract class mysqlData
+    {
+        /// <summary>
+        /// 检查数据格式等是否正确
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool CheckData() { return true; }
+    }
+
+    /// <summary>
+    /// 数据库写入类
+    /// </summary>
     public class MySqlWriter
     {
         private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
@@ -132,266 +147,45 @@ namespace Others
         }
 
         /// <summary>
-        /// 仅仅是为了在泛函 InsertValue<T>(T data) 中添加限定
+        /// 向数据库插入记录
         /// </summary>
-        public abstract class mysqlData{
-            /// <summary>
-            /// 检查数据格式等是否正确
-            /// </summary>
-            /// <returns></returns>
-            public abstract bool CheckData();
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public bool InsertValue<T>(List<T> datas) where T : mysqlData, new()
+        {
+            // 初始化 sql db
+            if (_sqlDB == null)
+            {
+                if (Init() == false) return false;
+            }
+
+            // todo: 如果有重复，怎么办？
+            try
+            {
+                _sqlDB.Insertable(datas).ExecuteCommand();
+
+                nlogger.Info("Insert value to the data base successfully.");
+            }
+            catch (Exception ex)
+            {
+                nlogger.Error("Insert value to the data base failed.");
+                return false;
+            }
+            return true;
         }
 
 
         /// <summary>
-        /// s_testorder 表中的记录 record for mysql
+        /// 按主键查询
         /// </summary>
-        [SugarTable("s_testorder")]
-        public class TestOrderSqlrd : mysqlData
+        /// <typeparam name="T">查询类型-对应表</typeparam>
+        /// <param name="pkValues">主键的值</param>
+        /// <returns> 查询结果-List<T> </returns>
+        public List<T> QueryValue<T>(string pkValues) where T: mysqlData
         {
-            /// <summary> </summary>
-            public string vTestID { get; set; }
-
-            /// <summary> </summary>
-            public string vStartTime {
-                get { return startTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { startTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary> </summary>
-            public string vEndTime
-            {
-                get { return endTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { endTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary> </summary>
-            public string vStatus { get; set; }
-
-            /// <summary> </summary>
-            public string vPlace { get; set; }
-
-            /// <summary> </summary>
-            public float vTemperature { get; set; }
-
-            /// <summary> </summary>
-            public float vHumidity { get; set; }
-
-            /// <summary> </summary>
-            public string vCharger { get; set; }
-
-            /// <summary> </summary>
-            public string vAddTime
-            {
-                get { return addTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { addTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary> </summary>
-            public string vUpdateTime
-            {
-                get { return updateTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { updateTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary>
-            /// 检查数据格式等是否正确
-            /// </summary>
-            /// <returns></returns>
-            public override bool CheckData() { return true; }
-
-            /// <summary> </summary>
-            public DateTime startTime = DateTime.Now;
-            /// <summary> </summary>
-            public DateTime endTime = DateTime.Now;
-            /// <summary> </summary>
-            public DateTime addTime = DateTime.Now;
-            /// <summary> </summary>
-            public DateTime updateTime = DateTime.Now;
-        }
-
-
-        /// <summary>
-        /// s_instrument 表 for mysql
-        /// </summary>
-        [SugarTable("s_instrument")]
-        public class InstrumentSqlrd : mysqlData
-        {
-            /// <summary> </summary>
-            public string vInstrumentID { set; get; }
-
-            /// <summary> </summary>
-            public string vTestID { set; get; }
-
-            /// <summary> </summary>
-            public string vCustomer { set; get; }
-
-            /// <summary> </summary>
-            public string vDesignation { set; get; }
-
-            /// <summary> </summary>
-            public string vSpecification { set; get; }
-
-            /// <summary> </summary>
-            public string vSN { set; get; }
-
-            /// <summary> </summary>
-            public string vManufacture { set; get; }
-
-            /// <summary> </summary>
-            public string vTestItem { set; get; }
-
-            /// <summary> </summary>
-            public string vTestType { set; get; }
-
-            /// <summary>
-            /// 检查数据格式等是否正确
-            /// </summary>
-            /// <returns></returns>
-            public override bool CheckData() { return true; }
-        }
-
-
-        /// <summary>
-        /// s_sensor 表 for mysql
-        /// </summary>
-        [SugarTable("s_sensor")]
-        public class SensorSqlrd : mysqlData
-        {
-            /// <summary> </summary>
-            public string vSensorID { set; get; }
-
-            /// <summary> </summary>
-            public string vInstrumentID { set; get; }
-
-            /// <summary> </summary>
-            public string vSensorName { set; get; }
-
-            /// <summary> </summary>
-            public string vSensorSN { set; get; }
-
-            /// <summary> </summary>
-            public string vSensorType { set; get; }
-
-            /// <summary> </summary>
-            public string vTestItem { set; get; }
-
-            /// <summary>
-            /// 检查数据格式等是否正确
-            /// </summary>
-            /// <returns></returns>
-            public override bool CheckData() { return true; }
-        }
-
-
-        /// <summary>
-        /// s_instrument 表 for mysql
-        /// </summary>
-        [SugarTable("s_instrumentdata")]
-        public class InstrumentDataSqlrd : mysqlData
-        {
-            /// <summary> </summary>
-            public string vTestID { set; get; }
-
-            /// <summary> </summary>
-            public string vInstrumentID { set; get; }
-
-            /// <summary> </summary>
-            public string vItemType { set; get; }
-
-            /// <summary> </summary>
-            public double vTemperature { set; get; }
-
-            /// <summary> </summary>
-            public int vTitularValue { set; get; }
-
-            /// <summary> </summary>
-            public double vRealValue { set; get; }
-
-            /// <summary> </summary>
-            public double vRawValue { set; get; }
-
-            /// <summary> </summary>
-            public string vData { set; get; }
-
-            /// <summary> </summary>
-            public string vAddTime
-            {
-                get { return addTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { addTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary> </summary>
-            public string vUpdateTime
-            {
-                get { return updateTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { updateTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary>
-            /// 检查数据格式等是否正确
-            /// </summary>
-            /// <returns></returns>
-            public override bool CheckData() { return true; }
-
-            /// <summary> </summary>
-            public DateTime addTime = DateTime.Now;
-            /// <summary> </summary>
-            public DateTime updateTime = DateTime.Now;
-        }
-
-
-        /// <summary>
-        /// s_standarddata 表 for mysql
-        /// </summary>
-        [SugarTable("s_standarddata")]
-        public class StandardDataSqlrd : mysqlData
-        {
-            /// <summary> </summary>
-            public string vTestID { set; get; }
-
-            /// <summary> </summary>
-            public int vTitularValue { set; get; }
-
-            /// <summary> </summary>
-            public double vStandardT { set; get; }
-
-            /// <summary> </summary>
-            public double vStandardC { set; get; }
-
-            // <summary> </summary>
-            public string vMeasureTime
-            {
-                get { return measureTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { measureTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary> </summary>
-            public string vAddTime
-            {
-                get { return addTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { addTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary> </summary>
-            public string vUpdateTime
-            {
-                get { return updateTime.ToString("yyyy-MM-dd HH:mm:ss"); }
-                set { updateTime = Convert.ToDateTime(value); }
-            }
-
-            /// <summary>
-            /// 检查数据格式等是否正确
-            /// </summary>
-            /// <returns></returns>
-            public override bool CheckData() { return true; }
-
-            /// <summary> </summary>
-            public DateTime measureTime = DateTime.Now;
-            /// <summary> </summary>
-            public DateTime addTime = DateTime.Now;
-            /// <summary> </summary>
-            public DateTime updateTime = DateTime.Now;
+            List<T> getByPrimaryKey = _sqlDB.Queryable<T>().In(pkValues).ToList();
+            return getByPrimaryKey;
         }
     }
 }

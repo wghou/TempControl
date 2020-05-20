@@ -101,10 +101,10 @@ namespace ConsoleApp1
             jSensorVal.Topic = IotTopic.SensorValue;
             jSensorVal.SensorData = new List<SensorDataBase>();
 
-            StandardDeviceData dt1 = new StandardDeviceData();
+            SensorSTDData dt1 = new SensorSTDData();
             jSensorVal.SensorData.Add(dt1);
 
-            SensorDeviceData dt2 = new SensorDeviceData();
+            SensorSTDData dt2 = new SensorSTDData();
             jSensorVal.SensorData.Add(dt2);
 
             JObject message = JObject.FromObject(jSensorVal);

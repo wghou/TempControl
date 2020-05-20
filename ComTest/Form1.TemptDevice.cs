@@ -3,14 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.IO.Ports;
 using System.Diagnostics;
-using System.Drawing;
 
 namespace ComTest
 {
     public partial class Form1
     {
+        // 端口
+        /// <summary>
+        /// 主控温槽 - 通信端口
+        /// </summary>
+        private SerialPort sPortTm = new SerialPort();
+        private bool SportTm_enable = false;
+
+        /// <summary>
+        /// 辅槽控温 - 通信端口
+        /// </summary>
+        private SerialPort sPortTs = new SerialPort();
+        private bool SportTs_enable = false;
+
+
         ////////////////////////////
         // 参数 - 用于生成相关类型的数据曲线
         ////////////////////////////
@@ -150,147 +164,6 @@ namespace ComTest
         /// </summary>
         TempParam tsParam = new TempParam();
 
-
-        ///////////////////////////////
-        // 传感器设备
-        ///
-        /// <summary>
-        /// 传感器设备错误状态
-        /// </summary>
-        enum SrStatus : int
-        {
-            /// <summary>
-            /// 正常工作状态
-            /// </summary>
-            OK = 0,
-            /// <summary>
-            /// 连接断开
-            /// </summary>
-            DisConnected = 1,
-            /// <summary>
-            /// 数据错误
-            /// </summary>
-            DataErr = 2,
-        }
-        /// <summary>
-        /// 传感器温度值
-        /// </summary>
-        float srValue = 12.00f;
-        /// <summary>
-        /// 锁 - 用于锁定传感器状态参数
-        /// </summary>
-        object srLocker = new object();
-        /// <summary>
-        /// 传感器 - 错误状态
-        /// </summary>
-        SrStatus srErrStatus = SrStatus.OK;
-        /// <summary>
-        /// 传感器 - 在产生一次错误状态后，是否保持错误状态 - 默认不保持
-        /// </summary>
-        bool srErrLast = false;
-        /// <summary>
-        /// 传感器设备代码错误
-        /// </summary>
-        bool srCodeErr = false;
-
-
-        ////////////////////////////////////
-        // 端口数据传输函数
-        ////////////////////////////////////
-        ///
-        /// <summary>
-        /// 传感器 - 信息收发
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SPortSr_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            string dataRev = string.Empty;
-
-            try
-            {
-                dataRev = sPortSr.ReadTo(":");
-                sPortSr.DiscardInBuffer();
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine("SPortSr_DataReceived Exception when ReadData : " + ex.Message);
-
-                // 出现代码错误
-                srCodeErr = true;
-            }
-            
-
-            lock(ryLocker)
-            {
-                // 调试信息
-                Debug.WriteLine("传感器设备读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
-
-                try
-                {
-                    switch (srErrStatus)
-                    {
-                        case SrStatus.OK:
-                            // 正常工作状态
-                            if (dataRev.Contains("R"))
-                            {
-                                // 上位机读取数据
-                                float temp = srValue;
-                                dataRev += temp.ToString("0.000");
-                                dataRev += ":";
-                                sPortSr.WriteLine(dataRev);
-                            }
-                            else
-                            {
-                                // 未知指令
-                                // 指令不存在
-                                sPortSr.WriteLine("@35EB:");
-                            }
-                            //Debug.WriteLine("传感器设备返回了数据：" + dataRev.ToString());
-                            break;
-                        case SrStatus.DisConnected:
-                            // 连接断开状态 - 不返回任何数据
-                            break;
-                        case SrStatus.DataErr:
-                            // 错误状态
-                            sPortSr.WriteLine("@35EB:");
-                            //Debug.WriteLine("传感器错误数据： @035EB.");
-                            break;
-                        default:
-                            // 默认，正常工作状态
-                            if (dataRev.Contains("R"))
-                            {
-                                // 上位机读取数据
-                                float temp = 12.0f;
-                                dataRev += temp.ToString("0.000");
-                                dataRev += ":";
-                                sPortSr.WriteLine(dataRev);
-                            }
-                            else
-                            {
-                                // 未知指令
-                                // 指令不存在
-                                sPortSr.WriteLine("@35EB:");
-                            }
-                            //Debug.WriteLine("传感器设备返回了数据：" + dataRev.ToString());
-                            break;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine("SPortSr_DataReceived exception when writeData : " + ex.Message);
-
-                    // 出现代码错误
-                    srCodeErr = true;
-                }
-
-                // 如果错误不持续，则清空错误标记为
-                if (!srErrLast && srErrStatus != SrStatus.OK)
-                    this.BeginInvoke(new EventHandler(delegate { srErrStatus = SrStatus.OK; this.comboBox_SrStatus.SelectedIndex = 0; }));
-            }
-        }
-
-
         /// <summary>
         /// 辅槽控温 - 信息收发
         /// </summary>
@@ -306,21 +179,21 @@ namespace ComTest
                 sPortTs.DiscardInBuffer();
                 //Debug.WriteLine("辅槽设备读取到了数据：" + dataRev.ToString());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // 端口接收数据时发生错误
                 Debug.WriteLine("SPortTs_DataReceived Exception when readData : " + ex.Message);
                 tsCodeErr = true;
             }
-            
-            lock(tsLocker)
+
+            lock (tsLocker)
             {
                 // 调试信息输出
                 //Debug.WriteLine("辅槽设备读取到了数据：" + dataRev + " 设备状态：" + tsErrStatus.ToString());
 
                 try
                 {
-                    switch(tsErrStatus)
+                    switch (tsErrStatus)
                     {
                         case TempStatus.OK:
                             processDataTs(dataRev);
@@ -361,11 +234,11 @@ namespace ComTest
 
                 // 从上位机数据中提取正确数据 - 如 温度设定点等
                 // wghou
-                if(dataRev[4] == 'A')
+                if (dataRev[4] == 'A')
                 {
                     // 温度设定值
                     float val = 18.0f;
-                    if(!float.TryParse(dataRev.Substring(5),out val))
+                    if (!float.TryParse(dataRev.Substring(5), out val))
                     {
                         // 发生了错误
                         sPortTs.WriteLine("@35EB:");
@@ -385,16 +258,16 @@ namespace ComTest
             else if (dataRev.Contains("R"))
             {
                 // 上位机读取数据
-                if(dataRev[4] == 'H')
+                if (dataRev[4] == 'H')
                 {
                     // 读取温度显示值
                     // 计算出当前的温度显示值
 
                     // 如果未稳定，则使温度发生一个变化
-                    if(!tsParam.Steady) tsParam.CurTemp += (tsParam.ChangeRate + tsParam.ChangeRatePlus) * Math.Sign(tsParam.SetTemp - tsParam.CurTemp);
+                    if (!tsParam.Steady) tsParam.CurTemp += (tsParam.ChangeRate + tsParam.ChangeRatePlus) * Math.Sign(tsParam.SetTemp - tsParam.CurTemp);
 
                     // 如果改变后的温度值接近温度设定点，则设当前温度点为温度设定值
-                    if(Math.Abs(tsParam.CurTemp - tsParam.SetTemp) <= Math.Abs((tsParam.ChangeRate + tsParam.ChangeRatePlus)/2))
+                    if (Math.Abs(tsParam.CurTemp - tsParam.SetTemp) <= Math.Abs((tsParam.ChangeRate + tsParam.ChangeRatePlus) / 2))
                     {
                         tsParam.CurTemp = tsParam.SetTemp;
                         tsParam.Steady = true;
@@ -425,7 +298,7 @@ namespace ComTest
                     dataRev += ":";
                     sPortTs.WriteLine(dataRev);
                 }
-                
+
             }
             else
             {
@@ -580,80 +453,6 @@ namespace ComTest
                 // 指令不存在
                 sPortTm.WriteLine("@35EB:");
             }
-        }
-
-
-        /// <summary>
-        /// 电桥温度
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SPortBg_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            string dataRev = string.Empty;
-            string dataSend = string.Empty;
-
-            try
-            {
-                dataRev = sPortBg.ReadLine();
-                sPortBg.DiscardInBuffer();
-                //Debug.WriteLine("主槽设备读取到了数据：" + dataRev.ToString());
-            }
-            catch (Exception ex)
-            {
-                // 端口接收数据时发生错误
-                Debug.WriteLine("SPortBg_DataReceived Exception when readData : " + ex.Message);
-            }
-
-            System.Threading.Thread.Sleep(200);
-            Debug.WriteLine("电桥接收到数据：" + dataRev);
-
-            if(dataRev.Contains("IDN"))
-            {
-                dataSend = "1594";
-            }
-            else if(dataRev.Contains("INIT:CONT 1"))
-            {
-                bridgeStatus = "ON";
-                dataSend = string.Empty;
-            }
-            else if(dataRev.Contains("INIT:CONT 0"))
-            {
-                bridgeStatus = "OFF";
-                dataSend = string.Empty;
-            }
-            else if(dataRev.Contains("FETCH? 1"))
-            {
-                dataSend = "35.666,C,1";
-            }
-            else if (dataRev.Contains("INIT:CONT?"))
-            {
-                dataSend = bridgeStatus;
-                //dataSend = "OFF";
-            }
-            else
-            {
-                dataSend = string.Empty;
-            }
-
-            if(dataSend.Length !=0)
-            {
-                try
-                {
-                    sPortBg.WriteLine(dataSend);
-                    Debug.WriteLine("电桥返回数据：" + dataSend);
-                }
-                catch(Exception ex)
-                {
-
-                }
-            }
-            else
-            {
-                Debug.WriteLine("电桥返回空数据");
-            }
-            
-            return;
         }
     }
 }

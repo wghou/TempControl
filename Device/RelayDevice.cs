@@ -95,7 +95,7 @@ namespace Device
                 ReadTimeout = 200,
                 WriteTimeout = 200,
                 BaudRate = 9600,
-                NewLine = "\r\n"
+                //NewLine = "\r\n"
             };
             master = ModbusSerialMaster.CreateRtu(sPort);
             master.Transport.Retries = 1;

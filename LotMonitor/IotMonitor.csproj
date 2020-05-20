@@ -147,6 +147,10 @@
       <Project>{d46d54bd-1443-48a3-a182-80b8f6954d3e}</Project>
       <Name>Device</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Others\Others.csproj">
+      <Project>{A4C7E14A-26F5-4E8F-BADA-459EC1B28FEF}</Project>
+      <Name>Others</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SensorDevice\SensorDevice.csproj">
       <Project>{e6abfdb5-6796-4dc8-a7fd-3ca11241e016}</Project>
       <Name>SensorDevice</Name>

@@ -11,9 +11,15 @@ namespace SensorDevice
     /// <summary>
     /// 
     /// </summary>
-    public sealed partial class SensorSBE37 : SensorDeviceStateM<SensorInfo, SensorDeviceData>
+    public sealed partial class SensorSBE37 : SensorDeviceStateM<SensorInfo, SensorSBE37Data>
     {
         // todo: 设置传感器的具体型号，参数等
+
+        /// <summary>
+        /// 传感器的信息
+        /// 不是必须有的，也可以分散存储在 SensorInfo 中
+        /// </summary>
+        public SensorSqlrd SensorInfoSql { set; get; } = new SensorSqlrd();
 
         public SensorSBE37()
         {

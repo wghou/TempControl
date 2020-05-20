@@ -13,11 +13,22 @@ using Newtonsoft.Json.Linq;
 namespace SensorDevice
 {
     /// <summary>
+    /// 测试温度点的集合
+    /// </summary>
+    public class TestOrderBase
+    {
+        /// <summary>
+        /// 测试温度点的集合
+        /// </summary>
+        public static List<float> TemptPoints { set; get; } = new List<float>();
+    }
+
+    /// <summary>
     /// 传感器基类
     /// </summary>
     /// <typeparam name="TInfo">传感器状态类</typeparam>
     /// <typeparam name="TData">传感器数据类</typeparam>
-    public abstract class SensorDeviceBase
+    public abstract class SensorDeviceBase : TestOrderBase
     {
         /// <summary>
         /// 日志记录
@@ -28,6 +39,12 @@ namespace SensorDevice
         /// 写入数据 sql
         /// </summary>
         protected static readonly MySqlWriter sqlWriter = new MySqlWriter();
+
+
+        /// <summary>
+        /// 所有测试点的集合
+        /// </summary>
+        public static List<TestOrderSqlrd> testOrders { set; get; } = new List<TestOrderSqlrd>();
 
 
         /// <summary>
@@ -50,14 +67,14 @@ namespace SensorDevice
         /// 错误状态
         /// </summary>
         public Err_sr ErrorStatus { set; get; } = Err_sr.NoError;
+        /// <summary>
+        /// 启用
+        /// </summary>
+        public bool Enable { set; get; } = false;
 
 
         /// <summary>串口</summary>
         protected SerialPort sPort;
-        /// <summary>
-        /// 启用/？
-        /// </summary>
-        public bool Enable { set; get; } = true;
         /// <summary>串口读-写时间间隔</summary>
         protected const int intervalOfWR = 20;
 
@@ -72,10 +89,10 @@ namespace SensorDevice
         {
             sPort = new SerialPort()
             {
-                ReadTimeout = 200,
+                ReadTimeout = 500,
                 WriteTimeout = 200,
                 BaudRate = 9600,
-                NewLine = "\r\n"
+                //NewLine = "\r\n"
             };
         }
 
@@ -150,21 +167,19 @@ namespace SensorDevice
                 if (!portNames.Contains(portName.ToUpper()))
                 {
                     nlogger.Error("端口 " + portName + " 不存在");
-                    return !Enable;
+                    return false;
                 }
                 // 串口打开 / 关闭测试
                 if (!sPort.IsOpen)
                     sPort.Open();
-                //Thread.Sleep(intervalOfWR);
-                //if (sPort.IsOpen)
-                //    sPort.Close();
+
                 return true;
 
             }
             catch (Exception ex)
             {
                 nlogger.Error("传感器设备新建串口时发生异常：" + ex.Message);
-                return !Enable;
+                return false;
             }
         }
     }

@@ -45,10 +45,11 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["TempM"];
 
-                        confOK &= tpDeviceM.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        bool rlt = tpDeviceM.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
                         tpDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
-                        if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
+                        if (!rlt) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                         else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+                        confOK &= rlt;
                     }
 
                     // 设置辅控温表
@@ -56,10 +57,11 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["TempS"];
 
-                        confOK &= tpDeviceS.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        bool rlt = tpDeviceS.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
                         tpDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
-                        if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
+                        if (!rlt) nlogger.Error("配置辅槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                         else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
+                        confOK &= rlt;
                     }
                 }
 
@@ -73,10 +75,11 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["RelayM"];
 
-                        confOK &= ryDeviceM.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        bool rlt = ryDeviceM.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
                         ryDeviceM.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
-                        if (!confOK) nlogger.Error("配置主继电器失败! 端口号: " + ryDeviceM.ryDevicePortName);
+                        if (!rlt) nlogger.Error("配置主继电器失败! 端口号: " + ryDeviceM.ryDevicePortName);
                         else nlogger.Debug("配置主继电器成功! 端口号: " + ryDeviceM.ryDevicePortName);
+                        confOK &= rlt;
                     }
 
                     // 设置继电器2
@@ -84,10 +87,11 @@ namespace Device
                     {
                         JObject child2 = (JObject)child["RelayS"];
 
-                        confOK &= ryDeviceS.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
+                        bool rlt = ryDeviceS.SetPortName(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
                         ryDeviceS.Enable = child2.ContainsKey("Enable") ? (bool)child2["Enable"] : true;
-                        if (!confOK) nlogger.Error("配置辅继电器失败! 端口号: " + ryDeviceS.ryDevicePortName);
+                        if (!rlt) nlogger.Error("配置辅继电器失败! 端口号: " + ryDeviceS.ryDevicePortName);
                         else nlogger.Debug("配置辅继电器成功! 端口号: " + ryDeviceS.ryDevicePortName);
+                        confOK &= rlt;
                     }
                 }
 
@@ -96,7 +100,10 @@ namespace Device
                 {
                     JObject child = (JObject)obj["SensorDev"];
 
-                    confOK &= initSensorDevices(child);
+                    bool rlt = initSensorDevices(child);
+                    if (!rlt) nlogger.Error("配置传感器失败!");
+                    else nlogger.Debug("配置传感器成功!");
+                    confOK &= rlt;
                 }
 
                 // 设置iot接口
@@ -104,7 +111,10 @@ namespace Device
                 {
                     JObject child = (JObject)obj["IotPort"];
 
-                    confOK &= InitIotPort(child);
+                    bool rlt = InitIotPort(child);
+                    if (!rlt) nlogger.Error("配置 Iot 接口失败!");
+                    else nlogger.Debug("配置 Iot 接口成功!");
+                    confOK &= rlt;
                 }
 
                 // 设置 socket 接口
@@ -112,7 +122,10 @@ namespace Device
                 {
                     JObject child = (JObject)obj["Socket"];
 
-                    confOK &= InitSocketServer(child);
+                    bool rlt = InitSocketServer(child);
+                    if (!rlt) nlogger.Error("配置 Socket 接口失败!");
+                    else nlogger.Debug("配置 Socket 接口成功!");
+                    confOK &= rlt;
                 }
             }
             catch(Exception ex)

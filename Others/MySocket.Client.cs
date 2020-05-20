@@ -60,6 +60,7 @@ namespace Others
             catch (Exception ex)
             {
                 nlogger.Error("error with the socket client: " + ex.Message);
+                return false;
             }
 
             return true;

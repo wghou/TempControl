@@ -91,13 +91,16 @@
     <Compile Include="Form1.RelayDevice.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.SerialPort.cs">
+    <Compile Include="Form1.SensorDevice.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Socket.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.StandardDevice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.TemptDevice.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />

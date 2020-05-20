@@ -27,26 +27,27 @@
   },
   "?SensorDev": "关于其他传感器的配置信息",
   "SensorDev": {
-    "?Sensors": "所有传感器的端口配置，最多为 6 个",
-    "Sensors": [
+    "?SensorSTD": "标准传感器",
+    "SensorSTD": {
+      "Enable": true,
+      "PortName": "COM9",
+      "BaudRate": 9600
+    },
+    "?SensorSBE37": "所有传感器的端口配置，最多为 6 个",
+    "SensorSBE37": [
       {
-        "?Sensor1": "传感器 1",
+        "?SensorSBE37_1": "传感器 1",
         "Enable": false,
-        "PortName": "COM113",
+        "PortName": "COM11",
         "BaudRate": 9600
       },
       {
-        "?Sensor2": "传感器 2",
+        "?SensorSBE37_2": "传感器 2",
         "Enable": false,
-        "PortName": "COM15",
+        "PortName": "COM13",
         "BaudRate": 9600
       }
-    ],
-    "StandardDev": {
-      "Enable": false,
-      "PortName": "COM17",
-      "BaudRate": 9600
-    }
+    ]
   },
   "?IotPort": "关于用户接口的配置信息",
   "IotPort": {

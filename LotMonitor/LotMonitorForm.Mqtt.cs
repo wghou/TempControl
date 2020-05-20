@@ -165,7 +165,7 @@ namespace IotMonitor
                             switch(itm.sensorType)
                             {
                                 case SensorType.Standard:
-                                    StandardDeviceData dt = (StandardDeviceData)itm;
+                                    SensorSTDData dt = (SensorSTDData)itm;
 
                                     break;
 

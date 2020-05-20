@@ -38,14 +38,11 @@ namespace SensorDevice
         /// 执行 Store 步骤
         /// </summary>
         protected override void internalStoreStep() {
-            // todo: 存储数据
-            foreach(var itm in sensorData)
-            {
-                StandardDataSqlrd dt = new StandardDataSqlrd();
+            // 设备未启用
+            if (Enable == false) return;
 
-                sqlWriter.InsertValue(dt);
-            }
-
+            // 将数据存入数据库
+            sqlWriter.InsertValue(sensorData);
             // 进入空闲状态
             _sensorMachine.Fire(TriggerSensor.Stop);
         }
@@ -57,6 +54,9 @@ namespace SensorDevice
         /// <param name="e"></param>
         private void SPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            // 设备未启用
+            if (Enable == false) return;
+
             // 只有在 Measure 状态，才会存储数据
             if (_sensorState != StateSensor.Measure) return;
 
@@ -65,23 +65,28 @@ namespace SensorDevice
             {
                 string data = sPort.ReadLine();
 
-                StandardDeviceData dt = new StandardDeviceData();
+                SensorSTDData dt = new SensorSTDData();
 
                 string[] valStrs = data.Split('-');
 
-                dt.dateTime = DateTime.ParseExact(valStrs[0],"yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
-                dt.freqC = float.Parse(valStrs[1]);
-                dt.conduct = float.Parse(valStrs[2]);
-                dt.freqT = float.Parse(valStrs[3]);
-                dt.tempt = float.Parse(valStrs[4]);
-                dt.salt = float.Parse(valStrs[5]);
+                //dt.dateTime = DateTime.ParseExact(valStrs[0],"yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                //dt.freqC = float.Parse(valStrs[1]);
+                //dt.conduct = float.Parse(valStrs[2]);
+                //dt.freqT = float.Parse(valStrs[3]);
+                //dt.tempt = float.Parse(valStrs[4]);
+                //dt.salt = float.Parse(valStrs[5]);
 
                 // 记录当前数据
                 appendData(dt);
+
+                // 触发数据接收事件
+                base.OnDataReceived(dt);
             }
             catch (Exception ex)
             {
                 nlogger.Error("标准数据采集器设备接受数据发生异常：" + ex.Message);
+                // 触发错误产生事件
+                base.OnErrorOccur(Err_sr.Error);
             }
         }
     }

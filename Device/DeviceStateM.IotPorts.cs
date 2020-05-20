@@ -21,8 +21,6 @@ namespace Device
         {
             IotPort.IotTopic[] tpSub = new IotPort.IotTopic[] { IotPort.IotTopic.ParamT, IotPort.IotTopic.Relay, IotTopic.Error, IotTopic.SampleState };
             bool confOK = _userPorts.configIotPorts(child, tpSub);
-            if (!confOK) nlogger.Error("配置 UserPort 失败");
-            else nlogger.Debug("配置 UserPort 失败");
 
             _userPorts.IotPortReceiveMessageEvent += _userPorts_UserPortMsgRvSetEvent;
             TimerTickEndEvent += DeviceStateM_TimerTickEndEvent;

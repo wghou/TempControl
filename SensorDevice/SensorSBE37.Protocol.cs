@@ -26,6 +26,8 @@ namespace SensorDevice
 
                 return cmdString[currentCmdIdx];
             }
+
+            public void ResetCmd() { currentCmdIdx = -1; }
         }
 
         /// <summary>
@@ -43,12 +45,15 @@ namespace SensorDevice
         protected override void internalEnterMeasureStep() {
             // 清空数据缓存
             sensorData.Clear();
-            cmds = new CmdChain();
+            cmds.ResetCmd();
         }
         /// <summary>
         /// 执行 Measure 步骤
         /// </summary>
         protected override void internalMeasureStep() {
+            // 设备未启用
+            if (Enable == false) return;
+
             // todo: 发送指令等
             sendCMD(cmds.FetchNextCmd());
         }
@@ -60,14 +65,11 @@ namespace SensorDevice
         /// 执行 Store 步骤
         /// </summary>
         protected override void internalStoreStep() {
-            // todo: 存储数据
-            foreach (var itm in sensorData)
-            {
-                StandardDataSqlrd dt = new StandardDataSqlrd();
+            // 设备未启用
+            if (Enable == false) return;
 
-                sqlWriter.InsertValue(dt);
-            }
-
+            // 将数据写入数据库
+            sqlWriter.InsertValue(sensorData);
             // 进入空闲状态
             _sensorMachine.Fire(TriggerSensor.Stop);
         }
@@ -79,6 +81,9 @@ namespace SensorDevice
         /// <param name="e"></param>
         private void SPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            // 设备未启用
+            if (Enable == false) return;
+
             // 只有在 Measure 状态，才会存储数据
             if (_sensorState != StateSensor.Measure) return;
 
@@ -88,14 +93,19 @@ namespace SensorDevice
                 string data = sPort.ReadLine();
                 sPort.DiscardInBuffer();
 
-                SensorDeviceData dt = new SensorDeviceData();
+                SensorSBE37Data dt = new SensorSBE37Data();
 
 
                 appendData(dt);
+
+                // 触发数据接收事件
+                base.OnDataReceived(dt);
             }
             catch (Exception ex)
             {
                 nlogger.Error("标准数据采集器设备接受数据发生异常：" + ex.Message);
+                // 触发错误产生事件
+                base.OnErrorOccur(Err_sr.Error);
             }
         }
 

@@ -39,7 +39,7 @@ namespace SensorDevice
     /// </summary>
     /// <typeparam name="TInfo"></typeparam>
     /// <typeparam name="TData"></typeparam>
-    public abstract class SensorDeviceStateM<TInfo, TData> : SensorDeviceBase
+    public abstract partial class SensorDeviceStateM<TInfo, TData> : SensorDeviceBase
         where TInfo : SensorInfoBase
         where TData : SensorDataBase
     {
@@ -99,8 +99,7 @@ namespace SensorDevice
 
         public SensorDeviceStateM()
         {
-            ConfigSensorStateless();
-        }
+            ConfigSensorStateless();        }
 
         /// <summary>
         /// 执行读取信息步骤
@@ -259,6 +258,9 @@ namespace SensorDevice
 
             // 状态清零
             sensorStateCounts = 0;
+
+            // 触发事件 - 状态转变
+            StateChangedEvent?.Invoke(dest);
         }
 
 

@@ -64,6 +64,14 @@ namespace Device
     public partial class DeviceStateM
     {
         private MySocketServer _socketServer = new MySocketServer();
+        /// <summary>
+        /// 写入数据 sql
+        /// </summary>
+        protected readonly MySqlWriter sqlWriter = new MySqlWriter();
+        /// <summary>
+        /// 测试的 testID
+        /// </summary>
+        private string testIdSql = null;
 
         /// <summary>
         /// 初始化网络端口
@@ -114,25 +122,18 @@ namespace Device
 
                 // 读取传感器信息
                 case SocketCmd.SensorInfo:
-                    List<SensorInfo> states = new List<SensorInfo>();
-                    SocketSensorMessage srMsg = new SocketSensorMessage(SocketCmd.SensorInfo);
-                    foreach (var itm in srDevices)
-                    {
-                        switch (itm.sensorType)
-                        {
-                            case SensorType.SBE37SI:
-                                states.Add((itm as SensorSBE37).Info);
-                                break;
-                            case SensorType.Standard:
+                    // 接收到 testID
+                    testIdSql = "";
+                    // 根据 TestID，从远程数据库查找温度点信息 TestOrderSqlrd，配置 SensorDeviceBase.testOrders
+                    SensorDeviceBase.testOrders = sqlWriter.QueryValue<TestOrderSqlrd>(testIdSql);
 
-                                break;
-                            case SensorType.Undefined:
+                    // 根据 TestID，从远程数据库查找标准器信息 InstrumentSqlrd，配置 SensorSD
+                    List<InstrumentSqlrd> instSql = sqlWriter.QueryValue<InstrumentSqlrd>(testIdSql);
 
-                                break;
-                        }
-                    }
-                    srMsg.sensorStates = states;
-                    _socketServer.pushMessage(JObject.FromObject(srMsg));
+
+                    // 根据 TestID，从远程数据库查找传感器信息 SensorSqlrd，配置 SensorSBE37
+                    List<SensorSqlrd> srSql = sqlWriter.QueryValue<SensorSqlrd>(testIdSql);
+
                     break;
 
                 default:
@@ -141,16 +142,8 @@ namespace Device
             }
 
             // 返回收到的指令
-            switch (msg.cmdType)
-            {
-                case SocketCmd.AutoStart:
-                case SocketCmd.Suspend:
-                case SocketCmd.Stop:
-                    SocketCmdMessage msgSend = new SocketCmdMessage(msg.cmdType);
-                    msgSend.deviceState = _state;
-                    _socketServer.pushMessage(JObject.FromObject(msgSend));
-                    break;
-            }
+            SocketCmdMessage msgSend = new SocketCmdMessage(msg.cmdType) { deviceState = _state };
+            _socketServer.pushMessage(JObject.FromObject(msgSend));
         }
 
         private void loadTempPointList()

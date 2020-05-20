@@ -19,6 +19,7 @@ namespace ComTest
         private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
 
         private MySocketClient _socketClient = new MySocketClient();
+        private bool _socketClient_enable = false;
 
         Dictionary<CheckBox, SocketCmd> dictCheckBoxsSocket = new Dictionary<CheckBox, SocketCmd>();
 
@@ -30,7 +31,7 @@ namespace ComTest
         /// <returns></returns>
         internal bool InitSocket(JObject cfg)
         {
-            _socketClient.Init(cfg);
+            bool confOK = _socketClient.Init(cfg);
 
             _socketClient.MessageReceievedEvent += _socketClient_MessageReceievedEvent;
 
@@ -38,7 +39,7 @@ namespace ComTest
             dictCheckBoxsSocket[checkBox_Suspend] = SocketCmd.Suspend;
             dictCheckBoxsSocket[checkBox_Stop] = SocketCmd.Stop;
             dictCheckBoxsSocket[checkBox_SensorInfo] = SocketCmd.SensorInfo;
-            return true;
+            return confOK;
         }
 
         /// <summary>
@@ -58,6 +59,8 @@ namespace ComTest
         /// <param name="e"></param>
         private void checkBox_Socket_Click(object sender, EventArgs e)
         {
+            if (_socketClient_enable == false) return;
+
             if (!dictCheckBoxsSocket.ContainsKey((sender as CheckBox))) return;
 
             SocketCmd cmd = dictCheckBoxsSocket[(sender as CheckBox)];

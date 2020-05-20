@@ -19,19 +19,19 @@
     "BaudRate": 9600,
     "Enable": true
   },
-  "Sensor": {
-    "PortName": "COM4",
+  "SensorSTD": {
+    "PortName": "COM10",
     "BaudRate": 9600,
-    "Enable": false
+    "Enable": true
   },
-  "Bridge": {
-    "PortName": "COM5",
+  "SensorSBE37": {
+    "PortName": "COM12",
     "BaudRate": 9600,
     "Enable": false
   },
   "Socket": {
     "Enable": true,
-    "?IP": "172.29.94.180",
+    "IP": "172.29.94.180",
     "Port": 6003
   }
 }

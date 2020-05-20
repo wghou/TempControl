@@ -61,9 +61,10 @@ namespace IotPort
                 {
                     JObject child = (JObject)cfg["MqttCloud"];
 
-                    if (child.ContainsKey("Enable") ? (bool)child["Enable"] : true)
+                    Enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (Enable)
                     {
-                        confOK &= _mqttCloud.Initialize(child, topicsSub);
+                        confOK = _mqttCloud.Initialize(child, topicsSub);
                         _mqttCloud.MessageReceievedEvent += _mqttCloud_MessageReceievedEvent;
 
                         if (!confOK) nlogger.Error("配置 MqttCloud 失败");
@@ -88,6 +89,8 @@ namespace IotPort
         /// <returns></returns>
         public bool isConnected()
         {
+            if (!Enable) return false;
+
             return _mqttCloud.isConnected;
         }
 
@@ -102,6 +105,8 @@ namespace IotPort
         /// <returns></returns>
         public bool PublishMessage(IotTopic topic, JObject message, bool isWait = false)
         {
+            if (!Enable) return true;
+
             _mqttCloud.Publish(topic, message.ToString(), isWait);
             return true;
         }

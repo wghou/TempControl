@@ -38,7 +38,7 @@ namespace ComTest
         /// <param name="e"></param>
         private void SdTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            sPortBg.WriteLine("12.000000-12.000000-12.000000-12.000000-12.000000-" + continuityCnt.ToString() + "\r\n");
+            sPortSTD.WriteLine("12.000000-12.000000-12.000000-12.000000-12.000000-" + continuityCnt.ToString() + "\r\n");
             
             // 连续标志位累进
             continuityCnt += 24;

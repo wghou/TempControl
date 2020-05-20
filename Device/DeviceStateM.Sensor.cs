@@ -32,9 +32,9 @@ namespace Device
             srDevices.Clear();
 
             // 设置传感器
-            if (child.ContainsKey("Sensors"))
+            if (child.ContainsKey("SensorSBE37"))
             {
-                JArray child2 = (JArray)child["Sensors"];
+                JArray child2 = (JArray)child["SensorSBE37"];
 
                 int numSensor = Math.Min(child2.Count, SensorDeviceBase.MaxSensorNum);
 
@@ -43,6 +43,7 @@ namespace Device
                     JObject ob = (JObject)child2[i];
                     SensorSBE37 sr = new SensorSBE37();
                     confOK &= sr.Init(ob);
+                    sr.ErrorOccurEvent += SensorDevice_ErrorOccurEvent;
 
                     srDevices.Add(sr);
                 }
@@ -50,13 +51,14 @@ namespace Device
 
 
             // 配置标准数据采集器
-            if (child.ContainsKey("StandardDev"))
+            if (child.ContainsKey("SensorSTD"))
             {
-                JObject child2 = (JObject)child["StandardDev"];
+                JObject child2 = (JObject)child["SensorSTD"];
 
                 if (child2.ContainsKey("PortName"))
                 {
                     confOK &= sdDevice.Init(child2);
+                    sdDevice.ErrorOccurEvent += SensorDevice_ErrorOccurEvent;
                 }
                 else
                 {
@@ -68,11 +70,11 @@ namespace Device
             return confOK;
         }
 
-
         /// <summary>
-        /// 标准传感器设备发生错误 - 事件
+        /// 传感器发生错误事件处理函数
         /// </summary>
-        private void SdDevice_StandardDeviceErrorEvent()
+        /// <param name="err"></param>
+        private void SensorDevice_ErrorOccurEvent(Err_sr err)
         {
             // todo: 设置错误标识码
             SetErrorStatus(ErrorCode.BridgeError);

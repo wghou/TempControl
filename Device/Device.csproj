@@ -47,6 +47,9 @@
     <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
     </Reference>
+    <Reference Include="SqlSugar, Version=5.0.0.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\sqlSugar.5.0.0.14\lib\SqlSugar.dll</HintPath>
+    </Reference>
     <Reference Include="Stateless, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93038f0927583c9a, processorArchitecture=MSIL">
       <HintPath>..\packages\Stateless.5.1.2\lib\net45\Stateless.dll</HintPath>
     </Reference>
@@ -96,6 +99,7 @@
     <Compile Include="DeviceStateM.IotPorts.Type.cs" />
     <Compile Include="DeviceStateM.Sensor.cs" />
     <Compile Include="DeviceStateM.Socket.cs" />
+    <Compile Include="DeviceStateM.Sql.cs" />
     <Compile Include="DeviceStateM.Stateless.cs" />
     <Compile Include="DeviceStateM.StateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
