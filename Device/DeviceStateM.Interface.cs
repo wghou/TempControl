@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SensorDevice;
 
 namespace Device
 {
@@ -139,10 +140,21 @@ namespace Device
 
             RelayDeviceSStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceS.ryStatus);
 
-            List<SensorDevice.SensorInfo> infos = new List<SensorDevice.SensorInfo>();
+            List<SensorInfo> infos = new List<SensorInfo>();
             foreach (var itm in srDevices)
             {
-                infos.Add(itm.sensorInfo);
+                switch (itm.sensorType)
+                {
+                    case SensorType.SBE37SI:
+                        infos.Add((itm as SensorSBE37).Info);
+                        break;
+                    case SensorType.Standard:
+
+                        break;
+                    case SensorType.Undefined:
+
+                        break;
+                }
             }
             SensorIdentifiedEvent?.Invoke(infos);
         }

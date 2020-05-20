@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Others;
+using SensorDevice;
 
 namespace Device
 {
@@ -14,7 +15,7 @@ namespace Device
         /// <summary>
         /// 传感器设备 - 多个
         /// </summary>
-        private List<SensorDevice> srDevices = new List<SensorDevice>();
+        private List<SensorDeviceBase> srDevices = new List<SensorDeviceBase>();
 
 
         /// <summary>
@@ -35,28 +36,18 @@ namespace Device
             {
                 JArray child2 = (JArray)child["Sensors"];
 
-                int numSensor = Math.Min(child2.Count, SensorDevice.maxSensorNum);
+                int numSensor = Math.Min(child2.Count, SensorDeviceBase.MaxSensorNum);
 
                 for (int i = 0; i < numSensor; i++)
                 {
                     JObject ob = (JObject)child2[i];
-                    SensorDevice sr = new SensorDevice();
-                    confOK &= sr.SetPortName(ob.ContainsKey("PortName") ? ob["PortName"].ToString() : "COM0");
-                    sr.Enable = ob.ContainsKey("Enable") ? (bool)ob["Enable"] : true;
-                    if (!confOK) nlogger.Error("配置辅槽控温设备失败! 端口号: " + sr.srDevicePortName);
-                    else nlogger.Debug("配置辅槽控温设备成功! 端口号: " + sr.srDevicePortName);
+                    SensorSBE37 sr = new SensorSBE37();
+                    confOK &= sr.Init(ob);
 
                     srDevices.Add(sr);
                 }
             }
 
-            // 开始识别传感器
-            foreach (var itm in srDevices)
-            {
-                // todo: 识别传感器
-                itm.IdentifySensor();
-                itm.SensorIdentifiedEvent += Itm_SensorIdentifiedEvent;
-            }
 
             // 配置标准数据采集器
             if (child.ContainsKey("StandardDev"))
@@ -65,7 +56,7 @@ namespace Device
 
                 if (child2.ContainsKey("PortName"))
                 {
-                    confOK = sdDevice.SetPortName((string)child2["PortName"]);
+                    confOK &= sdDevice.Init(child2);
                 }
                 else
                 {
@@ -77,20 +68,14 @@ namespace Device
             return confOK;
         }
 
-        /// <summary>
-        /// 传感器设备识别事件
-        /// </summary>
-        /// <param name="info"> 新检测到的传感器设备的信息 </param>
-        private void Itm_SensorIdentifiedEvent(SensorDevice.SensorInfo info)
-        {
-            List<SensorDevice.SensorInfo> infos = new List<SensorDevice.SensorInfo>();
-            foreach(var itm in srDevices)
-            {
-                infos.Add(itm.sensorInfo);
-            }
 
-            // 触发 DeviceStateM.SensorIdentifiedEvent 事件
-            SensorIdentifiedEvent?.Invoke(infos);
+        /// <summary>
+        /// 标准传感器设备发生错误 - 事件
+        /// </summary>
+        private void SdDevice_StandardDeviceErrorEvent()
+        {
+            // todo: 设置错误标识码
+            SetErrorStatus(ErrorCode.BridgeError);
         }
     }
 }

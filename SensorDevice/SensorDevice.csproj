@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D46D54BD-1443-48A3-A182-80B8F6954D3E}</ProjectGuid>
+    <ProjectGuid>{E6ABFDB5-6796-4DC8-A7FD-3CA11241E016}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Device</RootNamespace>
-    <AssemblyName>Device</AssemblyName>
+    <RootNamespace>SensorDevice</RootNamespace>
+    <AssemblyName>SensorDevice</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -23,7 +23,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,20 +31,16 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MQTTnet, Version=3.0.11.0, Culture=neutral, PublicKeyToken=b69712f52770c0a7, processorArchitecture=MSIL">
-      <HintPath>..\packages\MQTTnet.3.0.11\lib\net461\MQTTnet.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
+    <Reference Include="SqlSugar, Version=5.0.0.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\sqlSugar.5.0.0.14\lib\SqlSugar.dll</HintPath>
     </Reference>
     <Reference Include="Stateless, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93038f0927583c9a, processorArchitecture=MSIL">
       <HintPath>..\packages\Stateless.5.1.2\lib\net45\Stateless.dll</HintPath>
@@ -86,47 +81,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeviceStateM.AutoSample.cs" />
-    <Compile Include="DeviceStateM.cs" />
-    <Compile Include="DeviceStateM.DeviceParameter.cs" />
-    <Compile Include="DeviceStateM.ErrorMonitor.cs" />
-    <Compile Include="DeviceStateM.Event.cs" />
-    <Compile Include="DeviceStateM.Interface.cs" />
-    <Compile Include="DeviceStateM.IotPorts.cs" />
-    <Compile Include="DeviceStateM.IotPorts.Type.cs" />
-    <Compile Include="DeviceStateM.Sensor.cs" />
-    <Compile Include="DeviceStateM.Socket.cs" />
-    <Compile Include="DeviceStateM.Stateless.cs" />
-    <Compile Include="DeviceStateM.StateMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RelayDevice.cs" />
-    <Compile Include="TempDevice.cs" />
-    <Compile Include="TempProtocol.cs" />
+    <Compile Include="SensorDevice.Base.cs" />
+    <Compile Include="SensorDevice.StateM.cs" />
+    <Compile Include="SensorSBE37.Protocol.cs" />
+    <Compile Include="SensorDevice.Type.cs" />
+    <Compile Include="SensorSBE37.cs" />
+    <Compile Include="SensorSTD.cs" />
+    <Compile Include="SensorSTD.Protocol.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Others\Others.csproj">
       <Project>{a4c7e14a-26f5-4e8f-bada-459ec1b28fef}</Project>
       <Name>Others</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SensorDevice\SensorDevice.csproj">
-      <Project>{e6abfdb5-6796-4dc8-a7fd-3ca11241e016}</Project>
-      <Name>SensorDevice</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UserPort\IotPort.csproj">
-      <Project>{7cb47cc8-bb87-4d8e-9eb0-5fde4d17746d}</Project>
-      <Name>IotPort</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{665e85e4-8da9-4e1d-b628-767814c15df3}</Project>
-      <Name>Utils</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
@@ -136,9 +108,4 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties config_1json__JSONSchema="http://json.schemastore.org/tsconfig" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

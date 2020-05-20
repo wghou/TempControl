@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -48,11 +51,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Device\Device.csproj">
+      <Project>{d46d54bd-1443-48a3-a182-80b8f6954d3e}</Project>
+      <Name>Device</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Others\Others.csproj">
       <Project>{a4c7e14a-26f5-4e8f-bada-459ec1b28fef}</Project>
       <Name>Others</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SensorDevice\SensorDevice.csproj">
+      <Project>{e6abfdb5-6796-4dc8-a7fd-3ca11241e016}</Project>
+      <Name>SensorDevice</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UserPort\IotPort.csproj">
+      <Project>{7CB47CC8-BB87-4D8E-9EB0-5FDE4D17746D}</Project>
+      <Name>IotPort</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -19,26 +19,6 @@ namespace TempControl
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEndEvent += _device_TimerTickEvent;
             _device.SampleStateChangedEvent += _device_SampleStateChangedEvent;
-            _device.SensorIdentifiedEvent += _device_SensorIdentifiedEvent;
-        }
-
-        private void _device_SensorIdentifiedEvent(List<Device.SensorDevice.SensorInfo> infos)
-        {
-
-            this.BeginInvoke(new EventHandler(delegate
-            {
-                foreach(var itm in infos)
-                {
-                    if (itm.sensorType == Device.SensorDevice.SensorType.Standard) continue;
-
-                    int idx = itm.sensorIdx;
-                    if(idx > -1 && idx < 6)
-                    {
-                        this.hslStatusManagement_sensor.SetColorByLocation(0, itm.sensorIdx, 
-                            itm.sensorType == Device.SensorDevice.SensorType.Undefined? System.Drawing.Color.Red:System.Drawing.Color.Green);
-                    }
-                }
-            }));
         }
 
         public delegate void mainFormTimeTickEvent();

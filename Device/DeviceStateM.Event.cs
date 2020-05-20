@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SensorDevice;
 
 namespace Device
 {
@@ -71,7 +72,7 @@ namespace Device
         public event DeviceClosedEventHandler DeviceClosedEvent;
 
         //
-        public delegate void SensorIdentifiedEventHandler(List<SensorDevice.SensorInfo> infos);
+        public delegate void SensorIdentifiedEventHandler(List<SensorInfo> infos);
         /// <summary>
         /// 识别出传感器设备
         /// </summary>

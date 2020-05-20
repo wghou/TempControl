@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Others;
 using System.IO;
+using SensorDevice;
 
 namespace Device
 {
@@ -56,7 +57,7 @@ namespace Device
         public SocketSensorMessage(SocketCmd cmd) : base(cmd) { }
 
         /// <summary> 传感器设备的状态 </summary>
-        public List<SensorDevice.SensorInfo> sensorStates { get; set; }
+        public List<SensorInfo> sensorStates { get; set; }
     }
 
 
@@ -113,11 +114,22 @@ namespace Device
 
                 // 读取传感器信息
                 case SocketCmd.SensorInfo:
-                    List<SensorDevice.SensorInfo> states = new List<SensorDevice.SensorInfo>();
+                    List<SensorInfo> states = new List<SensorInfo>();
                     SocketSensorMessage srMsg = new SocketSensorMessage(SocketCmd.SensorInfo);
                     foreach (var itm in srDevices)
                     {
-                        states.Add(itm.sensorInfo);
+                        switch (itm.sensorType)
+                        {
+                            case SensorType.SBE37SI:
+                                states.Add((itm as SensorSBE37).Info);
+                                break;
+                            case SensorType.Standard:
+
+                                break;
+                            case SensorType.Undefined:
+
+                                break;
+                        }
                     }
                     srMsg.sensorStates = states;
                     _socketServer.pushMessage(JObject.FromObject(srMsg));

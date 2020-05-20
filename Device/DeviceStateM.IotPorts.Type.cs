@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IotPort;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SensorDevice;
 
 namespace Device
 {
@@ -308,7 +311,7 @@ namespace Device
         /// <summary>
         /// 所有传感器的数据及状态
         /// </summary>
-        public List<SensorDevice.SensorInfo> SensorInfos { get; set; }
+        public List<SensorInfo> SensorInfos { get; set; }
     }
 
     /// <summary>
@@ -320,5 +323,52 @@ namespace Device
 
         // todo:
         // add the sensor value
+        public List<SensorDataBase> SensorData { set; get; }
+    }
+
+
+    /// <summary>
+    /// 用于SensorDataBase 派生类的解析
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class JsonCreationConverter<T> : JsonConverter
+    {
+        protected abstract T Create(Type objectType, JObject jsonObject);
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(T).IsAssignableFrom(objectType);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var jsonObject = JObject.Load(reader);
+            var target = Create(objectType, jsonObject);
+            serializer.Populate(jsonObject.CreateReader(), target);
+            return target;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// 用于 SensorDataBase 派生类的解析
+    /// </summary>
+    public class JsonSensorDataConverter : JsonCreationConverter<SensorDataBase>
+    {
+        protected override SensorDataBase Create(Type objectType, JObject jsonObject)
+        {
+            var typeName = jsonObject["sensorType"].ToObject<SensorType>();
+            switch (typeName)
+            {
+                case SensorType.Standard:
+                    return new StandardDeviceData();
+                case SensorType.SBE37SI:
+                    return new SensorDeviceData();
+                default: return new UndefinedSensorData();
+            }
+        }
     }
 }

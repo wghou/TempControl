@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using IotPort;
 using Device;
+using SensorDevice;
 
 namespace IotMonitor
 {
@@ -151,10 +152,31 @@ namespace IotMonitor
                     break;
 
                 case IotTopic.SensorValue:
-                    IotSensorValueMessage srVal = message.ToObject<IotSensorValueMessage>();
+                    // todo: 优化
+                    IotSensorValueMessage srVal = new IotSensorValueMessage();
+                    srVal = JsonConvert.DeserializeObject<IotSensorValueMessage>(message.ToString(), new JsonSensorDataConverter());
+
                     this.BeginInvoke(new EventHandler(delegate
                     {
                         // 将传感器信息显示
+                        foreach(var itm in srVal.SensorData)
+                        {
+                            // todo: 解析
+                            switch(itm.sensorType)
+                            {
+                                case SensorType.Standard:
+                                    StandardDeviceData dt = (StandardDeviceData)itm;
+
+                                    break;
+
+                                case SensorType.SBE37SI:
+                                    
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
                     }));
                     break;
 

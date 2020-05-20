@@ -73,13 +73,19 @@ namespace Others
         /// <returns></returns>
         public bool pushMessage(JObject message)
         {
-            if (!_appClient.IsConnected)
-            {
-                _appClient.Connect(new IPEndPoint(IPAddress.Parse(ip), port));
-            }
+            try {
+                if (!_appClient.IsConnected)
+                {
+                    _appClient.Connect(new IPEndPoint(IPAddress.Parse(ip), port));
+                }
 
-            byte[] data = Encoding.Default.GetBytes(message.ToString());
-            _appClient.Send(data, 0, data.Length);
+                byte[] data = Encoding.Default.GetBytes(message.ToString());
+                _appClient.Send(data, 0, data.Length);
+            }
+            catch (Exception ex) {
+				nlogger.Error("error with the socket client: " + ex.Message);
+                return false;
+            }
 
             return true;
         }

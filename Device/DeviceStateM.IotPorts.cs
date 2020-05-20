@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using IotPort;
+using SensorDevice;
 
 namespace Device
 {
@@ -37,7 +38,7 @@ namespace Device
         }
 
         // 检测到传感器设备，发布
-        private void DeviceStateM_SensorIdentifiedEvent(List<SensorDevice.SensorInfo> infos)
+        private void DeviceStateM_SensorIdentifiedEvent(List<SensorInfo> infos)
         {
             iotPublishMessage(IotTopic.SensorState);
         }
@@ -185,22 +186,45 @@ namespace Device
                     break;
 
                 case IotTopic.SensorState:
-                    IotSensorStateMessage jSensor = new IotSensorStateMessage();
-                    jSensor.DorS = IotDorS.Display;
-                    jSensor.Topic = IotTopic.SensorState;
-                    jSensor.SensorInfos = new List<SensorDevice.SensorInfo>();
+                    IotSensorStateMessage jSensorSt = new IotSensorStateMessage();
+                    jSensorSt.DorS = IotDorS.Display;
+                    jSensorSt.Topic = IotTopic.SensorState;
+                    jSensorSt.SensorInfos = new List<SensorInfo>();
 
                     foreach(var itm in srDevices)
                     {
-                        jSensor.SensorInfos.Add(itm.sensorInfo);
+                        switch (itm.sensorType)
+                        {
+                            case SensorType.SBE37SI:
+                                jSensorSt.SensorInfos.Add((itm as SensorSBE37).Info);
+                                break;
+                            case SensorType.Standard:
+
+                                break;
+                            case SensorType.Undefined:
+
+                                break;
+                        }
                     }
 
-                    _userPorts.PublishMessage(IotTopic.SensorState, JObject.FromObject(jSensor));
+                    _userPorts.PublishMessage(IotTopic.SensorState, JObject.FromObject(jSensorSt));
                     break;
 
                 case IotTopic.SensorValue:
                     // todo: add the sensor value
-                    
+                    IotSensorValueMessage jSensorVal = new IotSensorValueMessage();
+                    jSensorVal.DorS = IotDorS.Display;
+                    jSensorVal.Topic = IotTopic.SensorValue;
+                    jSensorVal.SensorData = new List<SensorDataBase>();
+
+                    // todo: dataAll.empty 如果为空
+                    //jSensorVal.SensorData.Add(sdDevice.GetCurrentValue());
+                    //foreach(var itm in srDevices)
+                    //{
+                    //    jSensorVal.SensorData.Add(itm.get.Last());
+                    //}
+
+                    _userPorts.PublishMessage(IotTopic.SensorValue, JObject.FromObject(jSensorVal));
                     break;
 
                 default:
