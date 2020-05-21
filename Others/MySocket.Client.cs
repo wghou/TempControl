@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SuperSocket.ClientEngine;
-using SuperSocket.SocketBase.Protocol;
 using NLog;
 using System.Net;
 
@@ -17,6 +16,7 @@ namespace Others
         private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
 
         private AsyncTcpSession _appClient = new AsyncTcpSession();
+        
 
         private string ip = "127.0.0.1";
         private int port = 6003;

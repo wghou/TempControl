@@ -37,7 +37,7 @@ namespace Device
     {
         /// <summary> Socket Message 的类型 </summary>
         public SocketCmd cmdType { get; set; } = SocketCmd.Unknown;
-
+        
         public SocketMessageBase(SocketCmd tp) { cmdType = tp; }
     }
 
@@ -48,6 +48,8 @@ namespace Device
     {
         public SocketCmdMessage(SocketCmd cmd) : base(cmd) { }
 
+        /// <summary> 该条指令是否正确执行 </summary>
+        public bool ExecuteSucceed { set; get; } = false;
         /// <summary> 控温设备当前的状态 </summary>
         public State deviceState { get; set; }
     }
@@ -98,6 +100,10 @@ namespace Device
         {
             // 解析收到的指令
             SocketCmdMessage msg = message.ToObject<SocketCmdMessage>();
+            // 返回收到的指令
+            SocketCmdMessage msgSend = new SocketCmdMessage(msg.cmdType) { deviceState = _state };
+
+            // todo: 如何处理错误情况
 
             switch (msg.cmdType)
             {
@@ -105,31 +111,46 @@ namespace Device
                 case SocketCmd.AutoStart:
                     if(_state == State.Idle)
                     {
+                        // todo: 这里如何载入温度点
                         loadTempPointList();
+
                         StartAutoControl();
+                        msgSend.ExecuteSucceed = true;
                     }
                     break;
 
                 // 暂停控温流程
                 case SocketCmd.Suspend:
                     SuspendAutoControl();
+                    msgSend.ExecuteSucceed = true;
                     break;
                 
                 // 停止控温流程
                 case SocketCmd.Stop:
                     ShutdownComputer();
+                    msgSend.ExecuteSucceed = true;
                     break;
 
                 // 读取传感器信息
                 case SocketCmd.SensorInfo:
                     // 接收到 testID
+                    msgSend.ExecuteSucceed = true;
                     testIdSql = "";
                     // 根据 TestID，从远程数据库查找温度点信息 TestOrderSqlrd，配置 SensorDeviceBase.testOrders
                     SensorDeviceBase.testOrders = sqlWriter.QueryValue<TestOrderSqlrd>(testIdSql);
+                    // 温度点列表不能为空
+                    if (SensorDeviceBase.testOrders.Count == 0)
+                    {
+                        msgSend.ExecuteSucceed = false;
+                    }
 
                     // 根据 TestID，从远程数据库查找标准器信息 InstrumentSqlrd，配置 SensorSD
                     List<InstrumentSqlrd> instSql = sqlWriter.QueryValue<InstrumentSqlrd>(testIdSql);
-
+                    // 必须只能查询到一个 Instrument 信息
+                    if (instSql.Count != 1)
+                    {
+                        msgSend.ExecuteSucceed = false;
+                    }
 
                     // 根据 TestID，从远程数据库查找传感器信息 SensorSqlrd，配置 SensorSBE37
                     List<SensorSqlrd> srSql = sqlWriter.QueryValue<SensorSqlrd>(testIdSql);
@@ -141,8 +162,7 @@ namespace Device
                     break;
             }
 
-            // 返回收到的指令
-            SocketCmdMessage msgSend = new SocketCmdMessage(msg.cmdType) { deviceState = _state };
+            // 返回指令
             _socketServer.pushMessage(JObject.FromObject(msgSend));
         }
 

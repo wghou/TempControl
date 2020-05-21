@@ -25,6 +25,7 @@ namespace SensorDevice
         protected override void internalEnterMeasureStep() {
             // 清空数据缓存
             sensorData.Clear();
+            storeCache.Clear();
         }
         /// <summary>
         /// 执行 Measure 步骤
@@ -42,7 +43,7 @@ namespace SensorDevice
             if (Enable == false) return;
 
             // 将数据存入数据库
-            sqlWriter.InsertValue(sensorData);
+            sqlWriter.InsertValue(storeCache);
             // 进入空闲状态
             _sensorMachine.Fire(TriggerSensor.Stop);
         }
@@ -56,9 +57,6 @@ namespace SensorDevice
         {
             // 设备未启用
             if (Enable == false) return;
-
-            // 只有在 Measure 状态，才会存储数据
-            if (_sensorState != StateSensor.Measure) return;
 
             // todo: 解析数据
             try
@@ -76,8 +74,12 @@ namespace SensorDevice
                 //dt.tempt = float.Parse(valStrs[4]);
                 //dt.salt = float.Parse(valStrs[5]);
 
+                // 只有在 Measure 状态，才会存储数据
+                if (_sensorState == StateSensor.Measure) {
+                    appendStoreCache(dt);
+                }
                 // 记录当前数据
-                appendData(dt);
+                appendSensorData(dt);
 
                 // 触发数据接收事件
                 base.OnDataReceived(dt);

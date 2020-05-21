@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 using NLog;
+using SuperSocket.Facility.Protocol;
 
 namespace Others
 {
@@ -15,7 +16,7 @@ namespace Others
     {
         private static readonly Logger nlogger = LogManager.GetCurrentClassLogger();
 
-        private AppServer _appServer = new AppServer();
+        private MyAppServer _appServer = new MyAppServer();
 
         /// <summary>
         /// 是否启用 mqtt
@@ -103,7 +104,7 @@ namespace Others
 
 
         /// new session connected.
-        private void _appServer_NewSessionConnected(AppSession session)
+        private void _appServer_NewSessionConnected(MySession session)
         {
             nlogger.Debug("service get connection from clinet successful.");
             var count = _appServer.GetAllSessions().Count();
@@ -114,7 +115,7 @@ namespace Others
         }
 
         /// session closed
-        private void _appServer_SessionClosed(AppSession session, CloseReason value)
+        private void _appServer_SessionClosed(MySession session, CloseReason value)
         {
             nlogger.Debug("Server lost one connection from the client.");
             var count = _appServer.GetAllSessions().Count();
@@ -127,17 +128,17 @@ namespace Others
         /// </summary>
         /// <param name="session"></param>
         /// <param name="requestInfo"></param>
-        private void _appServer_NewRequestReceived(AppSession session, StringRequestInfo requestInfo)
+        private void _appServer_NewRequestReceived(MySession session, MyRequestInfo requestInfo)
         {
             if (!Enabled) return;
 
             // StringRequestInfo 的格式
             // todo: 在使用 json convertor 的时候，如果解析错误怎么办？会发生异常吗？
-            if (requestInfo.Key.Length != 0)
+            if (requestInfo.JsonString.Length != 0)
             {
                 // 解析并触发事件
                 // todo: exception 解析方法错误
-                JObject jMsg = (JObject)JsonConvert.DeserializeObject(requestInfo.Key);
+                JObject jMsg = (JObject)JsonConvert.DeserializeObject(requestInfo.JsonString);
                 MessageReceievedEvent?.Invoke(jMsg);
             }
             else

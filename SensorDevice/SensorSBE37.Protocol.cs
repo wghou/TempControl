@@ -84,8 +84,7 @@ namespace SensorDevice
             // 设备未启用
             if (Enable == false) return;
 
-            // 只有在 Measure 状态，才会存储数据
-            if (_sensorState != StateSensor.Measure) return;
+            
 
             // todo: 解析数据
             try
@@ -95,8 +94,13 @@ namespace SensorDevice
 
                 SensorSBE37Data dt = new SensorSBE37Data();
 
-
-                appendData(dt);
+                // 只有在 Measure 状态，才会存储数据
+                if (_sensorState == StateSensor.Measure)
+                {
+                    appendStoreCache(dt);
+                }
+                // 记录当前数据
+                appendSensorData(dt);
 
                 // 触发数据接收事件
                 base.OnDataReceived(dt);

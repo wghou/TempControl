@@ -27,11 +27,11 @@
   "SensorSBE37": {
     "PortName": "COM12",
     "BaudRate": 9600,
-    "Enable": false
+    "Enable": true
   },
   "Socket": {
     "Enable": true,
-    "IP": "172.29.94.180",
+    "IP": "172.29.94.221",
     "Port": 6003
   }
 }

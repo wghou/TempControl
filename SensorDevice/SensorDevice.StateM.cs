@@ -66,6 +66,10 @@ namespace SensorDevice
         /// 传感器数据缓存
         /// </summary>
         protected List<TData> sensorData = new List<TData>();
+        /// <summary>
+        /// 用于存储的缓存数据
+        /// </summary>
+        protected List<TData> storeCache = new List<TData>();
         private int dataMaxLen = 1000;
 
 
@@ -143,21 +147,13 @@ namespace SensorDevice
             return true;
         }
         /// <summary>
-        /// 获取当前设备的值
+        /// 返回当前传感器的值
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public virtual bool GetCurrentValue(out TData val)
+        public List<TData> GetSensorData() 
         {
-            if (sensorData.Count == 0)
-            {
-                val = null;
-                return false;
-            }
-            else
-            {
-                val = sensorData.Last();
-                return true;
-            }
+            return sensorData;
         }
 
 
@@ -368,16 +364,29 @@ namespace SensorDevice
         }
 
         /// <summary>
-        /// 向 data 值列表中添加数据
+        /// 向 SensorData 值列表中添加数据
         /// </summary>
         /// <param name="val"> 温度，电导率 </param>
-        protected void appendData(TData val)
+        protected void appendSensorData(TData val)
         {
             if (sensorData.Count == dataMaxLen)
             {
                 sensorData.RemoveAt(0);
             }
             sensorData.Add(val);
+        }
+
+        /// <summary>
+        /// 向 storeCache 值列表中添加数据
+        /// </summary>
+        /// <param name="val"> 温度，电导率 </param>
+        protected void appendStoreCache(TData val)
+        {
+            if (storeCache.Count == dataMaxLen)
+            {
+                storeCache.RemoveAt(0);
+            }
+            storeCache.Add(val);
         }
     }
 }
