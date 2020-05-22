@@ -67,10 +67,10 @@ namespace SensorDevice
 
                 string[] valStrs = data.Split('-');
 
-                //dt.dateTime = DateTime.ParseExact(valStrs[0],"yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
-                //dt.freqC = float.Parse(valStrs[1]);
-                //dt.conduct = float.Parse(valStrs[2]);
-                //dt.freqT = float.Parse(valStrs[3]);
+                dt.measureTime = DateTime.ParseExact(valStrs[0],"yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                dt.vTitularValue = 123123;
+                dt.vStandardC = double.Parse(valStrs[4]);
+                dt.vStandardT = double.Parse(valStrs[5]);
                 //dt.tempt = float.Parse(valStrs[4]);
                 //dt.salt = float.Parse(valStrs[5]);
 

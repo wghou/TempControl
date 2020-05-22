@@ -13,7 +13,7 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using IotPort;
+using IotCS.Client;
 using Device;
 using SensorDevice;
 
@@ -166,7 +166,9 @@ namespace IotMonitor
                             {
                                 case SensorType.Standard:
                                     SensorSTDData dt = (SensorSTDData)itm;
-
+                                    this.textBox_vTitularValue.Text = dt.vTitularValue.ToString();
+                                    this.textBox_vStandardC.Text = dt.vStandardC.ToString();
+                                    this.textBox_vStandardT.Text = dt.vStandardT.ToString();
                                     break;
 
                                 case SensorType.SBE37SI:

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
 
-namespace IotPort
+namespace IotCS.Client
 {
     /// <summary>
     /// 消息的类型/主题
@@ -45,7 +45,7 @@ namespace IotPort
     public partial class IotPorts
     {
         /// <summary>
-        /// 初始化 IotPort
+        /// 初始化 IotCSClient
         /// </summary>
         /// <param name="cfg"></param>
         /// <param name="topicsSub"></param>

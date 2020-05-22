@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using SensorDevice;
 
 namespace TempControl
 {
@@ -19,6 +20,7 @@ namespace TempControl
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEndEvent += _device_TimerTickEvent;
             _device.SampleStateChangedEvent += _device_SampleStateChangedEvent;
+            _device.SensorSDReceiveDataEvent += _device_SensorSDReceiveDataEvent;
         }
 
         public delegate void mainFormTimeTickEvent();
@@ -26,6 +28,17 @@ namespace TempControl
         /// 主界面定时器事件
         /// </summary>
         public event mainFormTimeTickEvent mainFormTimeTickEventHandler;
+
+        // 标准传感器接收到数据 - 事件处理函数
+        private void _device_SensorSDReceiveDataEvent(SensorSTDData data)
+        {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                this.label_vTitularValue.Text = data.vTitularValue.ToString();
+                this.label_vStandardC.Text = data.vStandardC.ToString();
+                this.label_vStandardT.Text = data.vStandardT.ToString();
+            }));
+        }
 
         // 定时器更新事件
         private void _device_TimerTickEvent()

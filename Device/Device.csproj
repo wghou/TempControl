@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="MQTTnet, Version=3.0.11.0, Culture=neutral, PublicKeyToken=b69712f52770c0a7, processorArchitecture=MSIL">
       <HintPath>..\packages\MQTTnet.3.0.11\lib\net461\MQTTnet.dll</HintPath>
@@ -55,6 +56,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Security, Version=4.0.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -80,6 +82,7 @@
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -97,6 +100,7 @@
     <Compile Include="DeviceStateM.Interface.cs" />
     <Compile Include="DeviceStateM.IotPorts.cs" />
     <Compile Include="DeviceStateM.IotPorts.Type.cs" />
+    <Compile Include="DeviceStateM.IotService.cs" />
     <Compile Include="DeviceStateM.Sensor.cs" />
     <Compile Include="DeviceStateM.Socket.cs" />
     <Compile Include="DeviceStateM.Sql.cs" />
@@ -108,6 +112,14 @@
     <Compile Include="TempProtocol.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IotCS\IotClient\IotClient.csproj">
+      <Project>{d93e4702-a64c-4499-afaa-32980d78d28b}</Project>
+      <Name>IotClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IotCS\IotService\IotService.csproj">
+      <Project>{1a561098-2047-4de2-b4fa-f70a548af8b0}</Project>
+      <Name>IotService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Others\Others.csproj">
       <Project>{a4c7e14a-26f5-4e8f-bada-459ec1b28fef}</Project>
       <Name>Others</Name>
@@ -115,10 +127,6 @@
     <ProjectReference Include="..\SensorDevice\SensorDevice.csproj">
       <Project>{e6abfdb5-6796-4dc8-a7fd-3ca11241e016}</Project>
       <Name>SensorDevice</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UserPort\IotPort.csproj">
-      <Project>{7cb47cc8-bb87-4d8e-9eb0-5fde4d17746d}</Project>
-      <Name>IotPort</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{665e85e4-8da9-4e1d-b628-767814c15df3}</Project>

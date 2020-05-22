@@ -179,6 +179,9 @@ namespace Device
         {
             nlogger.Debug("StartTick: " + tic.ToString() + " ms");
 
+            // 停止自动采样
+            SampleForceStop();
+
             // 如果 temperaturePointList 为空
             if (temperaturePointList.Count == 0)
             {

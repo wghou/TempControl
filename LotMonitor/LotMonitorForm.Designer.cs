@@ -75,6 +75,19 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.textBox_vStandardC = new System.Windows.Forms.TextBox();
+            this.label50 = new System.Windows.Forms.Label();
+            this.textBox_vStandardT = new System.Windows.Forms.TextBox();
+            this.label51 = new System.Windows.Forms.Label();
+            this.textBox_vTitularValue = new System.Windows.Forms.TextBox();
+            this.label52 = new System.Windows.Forms.Label();
+            this.textBox_serial_std = new System.Windows.Forms.TextBox();
+            this.label53 = new System.Windows.Forms.Label();
+            this.textBox_version_std = new System.Windows.Forms.TextBox();
+            this.label54 = new System.Windows.Forms.Label();
+            this.textBox_type_std = new System.Windows.Forms.TextBox();
+            this.label55 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.textBox25 = new System.Windows.Forms.TextBox();
             this.label43 = new System.Windows.Forms.Label();
@@ -154,30 +167,17 @@
             this.textBox_type0 = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.textBox_val3_std = new System.Windows.Forms.TextBox();
-            this.label50 = new System.Windows.Forms.Label();
-            this.textBox_val2_std = new System.Windows.Forms.TextBox();
-            this.label51 = new System.Windows.Forms.Label();
-            this.textBox_val1_std = new System.Windows.Forms.TextBox();
-            this.label52 = new System.Windows.Forms.Label();
-            this.textBox_serial_std = new System.Windows.Forms.TextBox();
-            this.label53 = new System.Windows.Forms.Label();
-            this.textBox_version_std = new System.Windows.Forms.TextBox();
-            this.label54 = new System.Windows.Forms.Label();
-            this.textBox_type_std = new System.Windows.Forms.TextBox();
-            this.label55 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // hslGaugeChart_temptM
@@ -795,6 +795,124 @@
             this.tabPage2.TabIndex = 2;
             this.tabPage2.Text = "传感器状态";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.AutoSize = true;
+            this.groupBox7.Controls.Add(this.textBox_vStandardC);
+            this.groupBox7.Controls.Add(this.label50);
+            this.groupBox7.Controls.Add(this.textBox_vStandardT);
+            this.groupBox7.Controls.Add(this.label51);
+            this.groupBox7.Controls.Add(this.textBox_vTitularValue);
+            this.groupBox7.Controls.Add(this.label52);
+            this.groupBox7.Controls.Add(this.textBox_serial_std);
+            this.groupBox7.Controls.Add(this.label53);
+            this.groupBox7.Controls.Add(this.textBox_version_std);
+            this.groupBox7.Controls.Add(this.label54);
+            this.groupBox7.Controls.Add(this.textBox_type_std);
+            this.groupBox7.Controls.Add(this.label55);
+            this.groupBox7.Location = new System.Drawing.Point(651, 42);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(193, 234);
+            this.groupBox7.TabIndex = 0;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "标准器";
+            // 
+            // textBox_vStandardC
+            // 
+            this.textBox_vStandardC.Location = new System.Drawing.Point(69, 183);
+            this.textBox_vStandardC.Name = "textBox_vStandardC";
+            this.textBox_vStandardC.Size = new System.Drawing.Size(108, 26);
+            this.textBox_vStandardC.TabIndex = 1;
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(7, 186);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(80, 16);
+            this.label50.TabIndex = 0;
+            this.label50.Text = "StandardT";
+            // 
+            // textBox_vStandardT
+            // 
+            this.textBox_vStandardT.Location = new System.Drawing.Point(69, 151);
+            this.textBox_vStandardT.Name = "textBox_vStandardT";
+            this.textBox_vStandardT.Size = new System.Drawing.Size(108, 26);
+            this.textBox_vStandardT.TabIndex = 1;
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(7, 154);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(80, 16);
+            this.label51.TabIndex = 0;
+            this.label51.Text = "StandardT";
+            // 
+            // textBox_vTitularValue
+            // 
+            this.textBox_vTitularValue.Location = new System.Drawing.Point(69, 119);
+            this.textBox_vTitularValue.Name = "textBox_vTitularValue";
+            this.textBox_vTitularValue.Size = new System.Drawing.Size(108, 26);
+            this.textBox_vTitularValue.TabIndex = 1;
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Location = new System.Drawing.Point(7, 122);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(104, 16);
+            this.label52.TabIndex = 0;
+            this.label52.Text = "TitularValue";
+            // 
+            // textBox_serial_std
+            // 
+            this.textBox_serial_std.Location = new System.Drawing.Point(69, 87);
+            this.textBox_serial_std.Name = "textBox_serial_std";
+            this.textBox_serial_std.Size = new System.Drawing.Size(108, 26);
+            this.textBox_serial_std.TabIndex = 1;
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(7, 90);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(72, 16);
+            this.label53.TabIndex = 0;
+            this.label53.Text = "序列号：";
+            // 
+            // textBox_version_std
+            // 
+            this.textBox_version_std.Location = new System.Drawing.Point(69, 55);
+            this.textBox_version_std.Name = "textBox_version_std";
+            this.textBox_version_std.Size = new System.Drawing.Size(108, 26);
+            this.textBox_version_std.TabIndex = 1;
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(7, 58);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(56, 16);
+            this.label54.TabIndex = 0;
+            this.label54.Text = "版本：";
+            // 
+            // textBox_type_std
+            // 
+            this.textBox_type_std.Location = new System.Drawing.Point(69, 23);
+            this.textBox_type_std.Name = "textBox_type_std";
+            this.textBox_type_std.Size = new System.Drawing.Size(108, 26);
+            this.textBox_type_std.TabIndex = 1;
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(7, 26);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(56, 16);
+            this.label55.TabIndex = 0;
+            this.label55.Text = "型号：";
             // 
             // groupBox6
             // 
@@ -1514,124 +1632,6 @@
             this.tabPage3.Text = "控制界面";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // groupBox7
-            // 
-            this.groupBox7.AutoSize = true;
-            this.groupBox7.Controls.Add(this.textBox_val3_std);
-            this.groupBox7.Controls.Add(this.label50);
-            this.groupBox7.Controls.Add(this.textBox_val2_std);
-            this.groupBox7.Controls.Add(this.label51);
-            this.groupBox7.Controls.Add(this.textBox_val1_std);
-            this.groupBox7.Controls.Add(this.label52);
-            this.groupBox7.Controls.Add(this.textBox_serial_std);
-            this.groupBox7.Controls.Add(this.label53);
-            this.groupBox7.Controls.Add(this.textBox_version_std);
-            this.groupBox7.Controls.Add(this.label54);
-            this.groupBox7.Controls.Add(this.textBox_type_std);
-            this.groupBox7.Controls.Add(this.label55);
-            this.groupBox7.Location = new System.Drawing.Point(651, 42);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(193, 234);
-            this.groupBox7.TabIndex = 0;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "标准器";
-            // 
-            // textBox_val3_std
-            // 
-            this.textBox_val3_std.Location = new System.Drawing.Point(69, 183);
-            this.textBox_val3_std.Name = "textBox_val3_std";
-            this.textBox_val3_std.Size = new System.Drawing.Size(108, 26);
-            this.textBox_val3_std.TabIndex = 1;
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(7, 186);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(56, 16);
-            this.label50.TabIndex = 0;
-            this.label50.Text = "C 值：";
-            // 
-            // textBox_val2_std
-            // 
-            this.textBox_val2_std.Location = new System.Drawing.Point(69, 151);
-            this.textBox_val2_std.Name = "textBox_val2_std";
-            this.textBox_val2_std.Size = new System.Drawing.Size(108, 26);
-            this.textBox_val2_std.TabIndex = 1;
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(7, 154);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(56, 16);
-            this.label51.TabIndex = 0;
-            this.label51.Text = "B 值：";
-            // 
-            // textBox_val1_std
-            // 
-            this.textBox_val1_std.Location = new System.Drawing.Point(69, 119);
-            this.textBox_val1_std.Name = "textBox_val1_std";
-            this.textBox_val1_std.Size = new System.Drawing.Size(108, 26);
-            this.textBox_val1_std.TabIndex = 1;
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(7, 122);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(56, 16);
-            this.label52.TabIndex = 0;
-            this.label52.Text = "A 值：";
-            // 
-            // textBox_serial_std
-            // 
-            this.textBox_serial_std.Location = new System.Drawing.Point(69, 87);
-            this.textBox_serial_std.Name = "textBox_serial_std";
-            this.textBox_serial_std.Size = new System.Drawing.Size(108, 26);
-            this.textBox_serial_std.TabIndex = 1;
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(7, 90);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(72, 16);
-            this.label53.TabIndex = 0;
-            this.label53.Text = "序列号：";
-            // 
-            // textBox_version_std
-            // 
-            this.textBox_version_std.Location = new System.Drawing.Point(69, 55);
-            this.textBox_version_std.Name = "textBox_version_std";
-            this.textBox_version_std.Size = new System.Drawing.Size(108, 26);
-            this.textBox_version_std.TabIndex = 1;
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(7, 58);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(56, 16);
-            this.label54.TabIndex = 0;
-            this.label54.Text = "版本：";
-            // 
-            // textBox_type_std
-            // 
-            this.textBox_type_std.Location = new System.Drawing.Point(69, 23);
-            this.textBox_type_std.Name = "textBox_type_std";
-            this.textBox_type_std.Size = new System.Drawing.Size(108, 26);
-            this.textBox_type_std.TabIndex = 1;
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(7, 26);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(56, 16);
-            this.label55.TabIndex = 0;
-            this.label55.Text = "型号：";
-            // 
             // IotMonitorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1647,6 +1647,8 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -1659,8 +1661,6 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1794,11 +1794,11 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label49;
         private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.TextBox textBox_val3_std;
+        private System.Windows.Forms.TextBox textBox_vStandardC;
         private System.Windows.Forms.Label label50;
-        private System.Windows.Forms.TextBox textBox_val2_std;
+        private System.Windows.Forms.TextBox textBox_vStandardT;
         private System.Windows.Forms.Label label51;
-        private System.Windows.Forms.TextBox textBox_val1_std;
+        private System.Windows.Forms.TextBox textBox_vTitularValue;
         private System.Windows.Forms.Label label52;
         private System.Windows.Forms.TextBox textBox_serial_std;
         private System.Windows.Forms.Label label53;

@@ -55,10 +55,16 @@
     <ManifestKeyFile>TempControl_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HslControls, Version=2.3.2.0, Culture=neutral, PublicKeyToken=a3ad7c5c937ec0c0, processorArchitecture=MSIL">
@@ -192,6 +198,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.manifest" />
     <None Include="Config\log4net.config" />
     <None Include="Config\log4net.unix.config" />
     <None Include="NLog.config">
@@ -210,7 +217,6 @@
     </Compile>
     <None Include="supersocket.cmd" />
     <None Include="supersocket.sh" />
-    <None Include="TempControl_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -219,6 +225,14 @@
     <ProjectReference Include="..\Device\Device.csproj">
       <Project>{d46d54bd-1443-48a3-a182-80b8f6954d3e}</Project>
       <Name>Device</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IotCS\IotService\IotService.csproj">
+      <Project>{1a561098-2047-4de2-b4fa-f70a548af8b0}</Project>
+      <Name>IotService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SensorDevice\SensorDevice.csproj">
+      <Project>{e6abfdb5-6796-4dc8-a7fd-3ca11241e016}</Project>
+      <Name>SensorDevice</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{665e85e4-8da9-4e1d-b628-767814c15df3}</Project>

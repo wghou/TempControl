@@ -145,6 +145,8 @@ namespace SensorDevice
                 return false;
             }
 
+            Enable = true;
+
             return confOK;
         }
 

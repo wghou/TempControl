@@ -72,10 +72,10 @@ namespace Device
         public event DeviceClosedEventHandler DeviceClosedEvent;
 
         //
-        public delegate void SensorIdentifiedEventHandler(List<SensorInfo> infos);
+        public delegate void SensorSDReceiveDataEventHandler(SensorSTDData data);
         /// <summary>
-        /// 识别出传感器设备
+        /// 标准器设备接收到消息事件
         /// </summary>
-        public event SensorIdentifiedEventHandler SensorIdentifiedEvent;
+        public event SensorSDReceiveDataEventHandler SensorSDReceiveDataEvent;
     }
 }

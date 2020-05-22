@@ -59,6 +59,7 @@ namespace Device
                 {
                     confOK &= sdDevice.Init(child2);
                     sdDevice.ErrorOccurEvent += SensorDevice_ErrorOccurEvent;
+                    sdDevice.DataReceivedEvent += SdDevice_DataReceivedEvent;
                 }
                 else
                 {
@@ -68,6 +69,23 @@ namespace Device
             }
 
             return confOK;
+        }
+
+
+        /// <summary>
+        /// 标准传感器设备接收到数据 - 事件处理函数
+        /// </summary>
+        /// <param name="data"></param>
+        private void SdDevice_DataReceivedEvent(SensorSTDData data)
+        {
+            SensorSDReceiveDataEvent?.Invoke(data);
+
+            IotSensorValueMessage srVal = new IotSensorValueMessage();
+            srVal.SensorData = new List<SensorDataBase>();
+            srVal.Topic = IotCS.Client.IotTopic.SensorValue;
+            srVal.DorS = IotDorS.Display;
+            srVal.SensorData.Add(data);
+            _userPorts.PublishMessage(IotCS.Client.IotTopic.SensorValue, JObject.FromObject(srVal));
         }
 
         /// <summary>

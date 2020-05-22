@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using IotPort;
+using IotCS.Client;
 using SensorDevice;
 
 namespace Device
@@ -19,7 +19,7 @@ namespace Device
 
         bool InitIotPort(JObject child)
         {
-            IotPort.IotTopic[] tpSub = new IotPort.IotTopic[] { IotPort.IotTopic.ParamT, IotPort.IotTopic.Relay, IotTopic.Error, IotTopic.SampleState };
+            IotTopic[] tpSub = new IotTopic[] { IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.SampleState };
             bool confOK = _userPorts.configIotPorts(child, tpSub);
 
             _userPorts.IotPortReceiveMessageEvent += _userPorts_UserPortMsgRvSetEvent;
@@ -30,7 +30,6 @@ namespace Device
             ErrorStatusChangedEvent += DeviceStateM_ErrorStatusChangedEvent;
             DeviceClosedEvent += DeviceStateM_DeviceClosedEvent;
             SampleStateChangedEvent += DeviceStateM_SampleStateChangedEvent;
-            SensorIdentifiedEvent += DeviceStateM_SensorIdentifiedEvent;
 
             return confOK;
         }
@@ -81,8 +80,11 @@ namespace Device
         }
 
         // 查看 iot 连接是否正确
+        // 如果发现断开，则尝试重启服
         public bool isUserPortConnected
         {
+            // todo: 如果服务器停止工作，则如何？
+
             get { return _userPorts.isConnected(); }
         }
 

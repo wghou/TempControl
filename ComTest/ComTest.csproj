@@ -97,9 +97,6 @@
     <Compile Include="Form1.Socket.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.StandardDevice.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Form1.TemptDevice.cs">
       <SubType>Form</SubType>
     </Compile>

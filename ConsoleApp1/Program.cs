@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SensorDevice;
 using Device;
-using IotPort;
+using IotCS.Client;
 
 namespace ConsoleApp1
 {

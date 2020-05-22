@@ -34,7 +34,6 @@
             this.label_tempM = new System.Windows.Forms.Label();
             this.label_tempSetM = new System.Windows.Forms.Label();
             this.label_powerM = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.label_controlState = new System.Windows.Forms.Label();
             this.label_fluc = new System.Windows.Forms.Label();
             this.checkBox_ryS0 = new System.Windows.Forms.CheckBox();
@@ -54,8 +53,6 @@
             this.checkBox_ryM4 = new System.Windows.Forms.CheckBox();
             this.checkBox_ryM0 = new System.Windows.Forms.CheckBox();
             this.groupBox_ry1 = new System.Windows.Forms.GroupBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.hslStatusManagement_sensor = new HslControls.HslStatusManagement();
             this.pictureBox_ryS3 = new System.Windows.Forms.PictureBox();
             this.checkBox_ryS3 = new System.Windows.Forms.CheckBox();
             this.pictureBox_ryS2 = new System.Windows.Forms.PictureBox();
@@ -90,6 +87,13 @@
             this.pictureBox_logo = new System.Windows.Forms.PictureBox();
             this.pictureBox_iot = new System.Windows.Forms.PictureBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label_vTitularValue = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label_vStandardT = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label_vStandardC = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS3)).BeginInit();
@@ -109,6 +113,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label_tempM
@@ -144,19 +149,11 @@
             this.label_powerM.Text = "00%";
             this.label_powerM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label3
-            // 
-            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label3.Location = new System.Drawing.Point(464, 12);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(491, 108);
-            this.label3.TabIndex = 3;
-            // 
             // label_controlState
             // 
             this.label_controlState.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_controlState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_controlState.Location = new System.Drawing.Point(468, 22);
+            this.label_controlState.Location = new System.Drawing.Point(6, 27);
             this.label_controlState.Name = "label_controlState";
             this.label_controlState.Size = new System.Drawing.Size(464, 23);
             this.label_controlState.TabIndex = 5;
@@ -166,7 +163,7 @@
             // 
             this.label_fluc.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_fluc.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_fluc.Location = new System.Drawing.Point(468, 61);
+            this.label_fluc.Location = new System.Drawing.Point(6, 63);
             this.label_fluc.Name = "label_fluc";
             this.label_fluc.Size = new System.Drawing.Size(464, 23);
             this.label_fluc.TabIndex = 6;
@@ -369,8 +366,6 @@
             // groupBox_ry1
             // 
             this.groupBox_ry1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.groupBox_ry1.Controls.Add(this.label9);
-            this.groupBox_ry1.Controls.Add(this.hslStatusManagement_sensor);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryS3);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryS3);
             this.groupBox_ry1.Controls.Add(this.pictureBox_ryS2);
@@ -398,30 +393,12 @@
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM3);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM2);
             this.groupBox_ry1.Controls.Add(this.checkBox_ryM6);
-            this.groupBox_ry1.Location = new System.Drawing.Point(464, 145);
+            this.groupBox_ry1.Location = new System.Drawing.Point(464, 130);
             this.groupBox_ry1.Name = "groupBox_ry1";
-            this.groupBox_ry1.Size = new System.Drawing.Size(508, 455);
+            this.groupBox_ry1.Size = new System.Drawing.Size(508, 413);
             this.groupBox_ry1.TabIndex = 31;
             this.groupBox_ry1.TabStop = false;
             this.groupBox_ry1.Text = "继电器模块 1";
-            // 
-            // label9
-            // 
-            this.label9.Location = new System.Drawing.Point(82, 423);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(100, 23);
-            this.label9.TabIndex = 42;
-            this.label9.Text = "传感器状态";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // hslStatusManagement_sensor
-            // 
-            this.hslStatusManagement_sensor.ColCount = 6;
-            this.hslStatusManagement_sensor.Location = new System.Drawing.Point(188, 427);
-            this.hslStatusManagement_sensor.Name = "hslStatusManagement_sensor";
-            this.hslStatusManagement_sensor.RowCount = 1;
-            this.hslStatusManagement_sensor.Size = new System.Drawing.Size(303, 15);
-            this.hslStatusManagement_sensor.TabIndex = 41;
             // 
             // pictureBox_ryS3
             // 
@@ -790,19 +767,95 @@
             this.label8.TabIndex = 39;
             this.label8.Text = "Iot:";
             // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label9.Location = new System.Drawing.Point(468, 551);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(138, 19);
+            this.label9.TabIndex = 34;
+            this.label9.Text = "TitularValue";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.AutoSize = true;
+            this.groupBox1.Controls.Add(this.label_controlState);
+            this.groupBox1.Controls.Add(this.label_fluc);
+            this.groupBox1.Location = new System.Drawing.Point(464, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(508, 103);
+            this.groupBox1.TabIndex = 40;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "系统状态";
+            // 
+            // label_vTitularValue
+            // 
+            this.label_vTitularValue.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_vTitularValue.Location = new System.Drawing.Point(468, 579);
+            this.label_vTitularValue.Name = "label_vTitularValue";
+            this.label_vTitularValue.Size = new System.Drawing.Size(138, 19);
+            this.label_vTitularValue.TabIndex = 34;
+            this.label_vTitularValue.Text = "0.00";
+            this.label_vTitularValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label10
+            // 
+            this.label10.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label10.Location = new System.Drawing.Point(648, 547);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(138, 19);
+            this.label10.TabIndex = 34;
+            this.label10.Text = "StandardT";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_vStandardT
+            // 
+            this.label_vStandardT.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_vStandardT.Location = new System.Drawing.Point(648, 575);
+            this.label_vStandardT.Name = "label_vStandardT";
+            this.label_vStandardT.Size = new System.Drawing.Size(138, 19);
+            this.label_vStandardT.TabIndex = 34;
+            this.label_vStandardT.Text = "0.00";
+            this.label_vStandardT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label12
+            // 
+            this.label12.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label12.Location = new System.Drawing.Point(821, 543);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(138, 19);
+            this.label12.TabIndex = 34;
+            this.label12.Text = "StandardC";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_vStandardC
+            // 
+            this.label_vStandardC.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_vStandardC.Location = new System.Drawing.Point(821, 571);
+            this.label_vStandardC.Name = "label_vStandardC";
+            this.label_vStandardC.Size = new System.Drawing.Size(138, 19);
+            this.label_vStandardC.TabIndex = 34;
+            this.label_vStandardC.Text = "0.00";
+            this.label_vStandardC.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(984, 612);
+            this.Controls.Add(this.label_vStandardC);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label_vStandardT);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label_vTitularValue);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.pictureBox_iot);
             this.Controls.Add(this.groupBox_tempS);
             this.Controls.Add(this.groupBox_tempM);
             this.Controls.Add(this.groupBox_ry1);
             this.Controls.Add(this.checkBox_debug);
-            this.Controls.Add(this.label_fluc);
-            this.Controls.Add(this.label_controlState);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.pictureBox_logo);
             this.MaximizeBox = false;
             this.Name = "FormMain";
@@ -830,6 +883,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).EndInit();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -841,7 +895,6 @@
         private System.Windows.Forms.Label label_tempM;
         private System.Windows.Forms.Label label_tempSetM;
         private System.Windows.Forms.Label label_powerM;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label_controlState;
         private System.Windows.Forms.Label label_fluc;
         private System.Windows.Forms.CheckBox checkBox_ryS0;
@@ -895,7 +948,12 @@
         private System.Windows.Forms.CheckBox checkBox_ryS2;
         private System.Windows.Forms.PictureBox pictureBox_iot;
         private System.Windows.Forms.Label label8;
-        private HslControls.HslStatusManagement hslStatusManagement_sensor;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label_vTitularValue;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label_vStandardT;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label_vStandardC;
     }
 }

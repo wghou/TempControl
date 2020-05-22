@@ -106,6 +106,9 @@ namespace Device
                     confOK &= rlt;
                 }
 
+                // 启动 IotService
+                confOK &= InitIotService();
+
                 // 设置iot接口
                 if (obj.ContainsKey("IotPort"))
                 {
@@ -169,7 +172,6 @@ namespace Device
                         break;
                 }
             }
-            SensorIdentifiedEvent?.Invoke(infos);
         }
 
 

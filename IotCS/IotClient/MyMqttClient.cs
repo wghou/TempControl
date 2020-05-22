@@ -14,7 +14,7 @@ using MQTTnet.Client.Connecting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace IotPort
+namespace IotCS.Client
 {
     internal class MyMqttClient
     {
@@ -232,7 +232,7 @@ namespace IotPort
                 IotTopic tpE;
                 if(!Enum.TryParse(tp[1], out tpE))
                 {
-                    Console.WriteLine("Error: unknown IotPort.Topic.type from server.");
+                    Console.WriteLine("Error: unknown IotCSClient.Topic.type from server.");
                     return;
                 }
 

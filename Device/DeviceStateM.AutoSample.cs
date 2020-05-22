@@ -262,6 +262,9 @@ namespace Device
         /// </summary>
         public void SampleForceStop()
         {
+            // 关闭继电器
+            sampleNormalEntry();
+
             if (_sampleMachine.IsInState(AutoSample.StateSample.Normal)) return;
 
             _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
