@@ -1,7 +1,10 @@
-﻿using System;
+﻿using NLog;
+using NLog.Targets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration.Install;
+using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
@@ -22,15 +25,36 @@ namespace Device
                 if (!this.IsServiceExisted(serviceName)) this.InstallService(serviceFilePath);
 
                 // 启动服务
-                if (this.IsServiceExisted(serviceName)) this.ServiceStart(serviceName);
+                if (this.IsServiceExisted(serviceName))
+                {
+                    this.ServiceStart(serviceName);
+
+                    // 返回服务的运行状态
+                    System.Threading.Thread.Sleep(500);
+                    return IsServiceRunning(serviceName);
+                }
+                else
+                {
+                    nlogger.Error("There is no such service named \"IotService\".");
+                    return false;
+                }
             }
             catch(Exception ex)
             {
                 nlogger.Error("exception occur when install IotService." + ex.Message);
                 return false;
             }
+        }
 
-            return true;
+        // 检查服务是否正在运行
+        private bool IsServiceRunning(string serviceName)
+        {
+            if (!this.IsServiceExisted(serviceName)) return false;
+
+            using (ServiceController control = new ServiceController(serviceName))
+            {
+                return control.Status == ServiceControllerStatus.Running;
+            }
         }
 
         //判断服务是否存在

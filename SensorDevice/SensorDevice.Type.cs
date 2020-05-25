@@ -34,14 +34,21 @@ namespace SensorDevice
     /// <summary>
     /// 传感器数据的基类
     /// </summary>
-    public abstract class SensorDataBase : mysqlData
+    public abstract class SensorDataBase : mysqlData, IComparable
     {
         /// <summary> 设备类型 </summary>
-        public SensorType sensorType { get; protected set; } = SensorType.Undefined;
+        public SensorType sensorType = SensorType.Undefined;
         /// <summary>
         /// 当前传感器设备的编号，范围 0 ～ maxSensorNum - 1（值为5）
         /// </summary>
-        public int sensorIdx { get; set; } = -1;
+        public int sensorIdx = -1;
+
+        /// <summary>
+        /// 比较函数
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public virtual int CompareTo(object obj) { return 0; }
     }
 
     /// <summary>
@@ -300,5 +307,18 @@ namespace SensorDevice
         public DateTime addTime = DateTime.Now;
         /// <summary> </summary>
         public DateTime updateTime = DateTime.Now;
+
+        /// <summary>
+        /// 比较函数
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override int CompareTo(object obj) {
+            if (obj == null) return 1;
+            SensorSTDData other = obj as SensorSTDData;
+            if(vStandardT > other.vStandardT) { return 1; }
+            else if(vStandardT == other.vStandardT) { return 0; }
+            else { return -1; }
+        }
     }
 }

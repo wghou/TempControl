@@ -42,8 +42,12 @@ namespace SensorDevice
             // 设备未启用
             if (Enable == false) return;
 
-            // 将数据存入数据库
-            sqlWriter.InsertValue(storeCache);
+            // 将数据写入数据库
+            if (sqlWriter.InsertValue(sensorData) == false)
+            {
+                // 写入数据库失败
+                OnErrorOccur(Err_sr.Error);
+            }
             // 进入空闲状态
             _sensorMachine.Fire(TriggerSensor.Stop);
         }
@@ -67,12 +71,13 @@ namespace SensorDevice
 
                 string[] valStrs = data.Split('-');
 
-                dt.measureTime = DateTime.ParseExact(valStrs[0],"yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                dt.vTestID = "wghou";
                 dt.vTitularValue = 123123;
                 dt.vStandardC = double.Parse(valStrs[4]);
                 dt.vStandardT = double.Parse(valStrs[5]);
-                //dt.tempt = float.Parse(valStrs[4]);
-                //dt.salt = float.Parse(valStrs[5]);
+                dt.measureTime = DateTime.ParseExact(valStrs[0], "yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                dt.addTime = dt.measureTime;
+                dt.updateTime = dt.measureTime;
 
                 // 只有在 Measure 状态，才会存储数据
                 if (_sensorState == StateSensor.Measure) {

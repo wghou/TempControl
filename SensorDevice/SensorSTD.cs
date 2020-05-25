@@ -29,5 +29,30 @@ namespace SensorDevice
 
             sPort.DataReceived += SPort_DataReceived;
         }
+
+        /// <summary>
+        /// 检测标准温度传感器的波动度
+        /// </summary>
+        /// <param name="cnt"></param>
+        /// <param name="crt"></param>
+        /// <returns></returns>
+        public bool CheckFluc(int cnt, double crt)
+        {
+            double fluc = 0;
+            if (sensorData.Count == 0 || sensorData.Count < cnt)
+            {
+                // If there is not temperature data in list, output extreme fluctuation
+   
+                return false;
+            }
+            else
+            {
+                fluc = sensorData.GetRange(sensorData.Count - cnt, cnt).Max().vStandardT -
+                    sensorData.GetRange(sensorData.Count - cnt, cnt).Min().vStandardT;
+                
+                if(fluc < crt) { return true; }
+                else { return false; }
+            }
+        }
     }
 }

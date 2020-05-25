@@ -478,7 +478,7 @@ namespace Device
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
                 // 电桥自检正常。。。
-                bool steady = tpDeviceM.checkFlucCount(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                bool steady = sdDevice.CheckFluc(_runningParameters.bridgeSteadyTimeSec, _runningParameters.flucValue);
                 if (steady)
                 {
 #if false
@@ -578,6 +578,7 @@ namespace Device
             {
                 rlt &= itm.StartMeasure();
             }
+            rlt &= sdDevice.StartMeasure();
 
             if (rlt == false)
             {
@@ -620,6 +621,7 @@ namespace Device
             {
                 rlt &= itm.StartStore();
             }
+            rlt &= sdDevice.StartStore();
 
             if (rlt == false)
             {

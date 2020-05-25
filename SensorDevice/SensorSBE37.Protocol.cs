@@ -69,7 +69,11 @@ namespace SensorDevice
             if (Enable == false) return;
 
             // 将数据写入数据库
-            sqlWriter.InsertValue(sensorData);
+            if (sqlWriter.InsertValue(sensorData) == false)
+            {
+                // 写入数据库失败
+                OnErrorOccur(Err_sr.Error);
+            }
             // 进入空闲状态
             _sensorMachine.Fire(TriggerSensor.Stop);
         }
@@ -84,8 +88,6 @@ namespace SensorDevice
             // 设备未启用
             if (Enable == false) return;
 
-            
-
             // todo: 解析数据
             try
             {
@@ -93,6 +95,16 @@ namespace SensorDevice
                 sPort.DiscardInBuffer();
 
                 SensorSBE37Data dt = new SensorSBE37Data();
+                dt.vTestID = "ss";
+                dt.vInstrumentID = "ss";
+                dt.vItemType = "sss";
+                dt.vTemperature = 10;
+                dt.vTitularValue = 10;
+                dt.vRealValue = 10;
+                dt.vRawValue = 10;
+                dt.vData = "ss";
+                dt.addTime = DateTime.Now;
+                dt.updateTime = DateTime.Now;
 
                 // 只有在 Measure 状态，才会存储数据
                 if (_sensorState == StateSensor.Measure)

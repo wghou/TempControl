@@ -106,8 +106,15 @@ namespace Device
                     confOK &= rlt;
                 }
 
-                // 启动 IotService
-                confOK &= InitIotService();
+                // 配置 IotService
+                {
+                    // 启动 IotService
+                    bool rlt = InitIotService();
+                    if (rlt == true) nlogger.Debug("配置 IotService 成功！");
+                    else nlogger.Error("配置 IotService 失败！");
+                    confOK &= rlt;
+                }
+                
 
                 // 设置iot接口
                 if (obj.ContainsKey("IotPort"))

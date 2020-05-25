@@ -68,16 +68,14 @@ namespace Others
                 {
                     JObject child = (JObject)obj["config"];
                     if (child.ContainsKey("server")) _sqlConfig.server = (string)child["server"];
-                    if (child.ContainsKey("user")) _sqlConfig.server = (string)child["user"];
-                    if (child.ContainsKey("pwd")) _sqlConfig.server = (string)child["pwd"];
-                    if (child.ContainsKey("database")) _sqlConfig.server = (string)child["database"];
+                    if (child.ContainsKey("user")) _sqlConfig.user = (string)child["user"];
+                    if (child.ContainsKey("pwd")) _sqlConfig.pwd = (string)child["pwd"];
+                    if (child.ContainsKey("database")) _sqlConfig.database = (string)child["database"];
                 }
 
                 if (obj.ContainsKey("RecordDefaultValue"))
                 {
                     JObject child = (JObject)obj["RecordDefaultValue"];
-
-
                 }
             }
             catch(Exception ex) {

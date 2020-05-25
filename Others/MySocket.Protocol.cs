@@ -31,7 +31,9 @@ namespace Others
         public override MyRequestInfo Filter(byte[] readBuffer, int offset, int length, bool toBeCopied, out int rest)
         {
             rest = 0;
-            return new MyRequestInfo() { JsonString = System.Text.Encoding.UTF8.GetString(readBuffer,offset,length)};
+            MyRequestInfo info = new MyRequestInfo();
+            info.JsonString = System.Text.Encoding.UTF8.GetString(readBuffer, offset, length);
+            return info;
         }
     }
 

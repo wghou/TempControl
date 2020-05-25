@@ -41,7 +41,6 @@
             // 
             this.serviceInstaller1.Description = "my Iot Service";
             this.serviceInstaller1.ServiceName = "IotService";
-            this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 

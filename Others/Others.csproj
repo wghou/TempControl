@@ -167,4 +167,9 @@
     <None Include="supersocket.sh" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties mysqlConfig_1json__JSONSchema="http://json.schemastore.org/azure-iot-edge-deployment-template-2.0" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

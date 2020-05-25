@@ -46,7 +46,6 @@ namespace IotCS.Service
         protected override void OnStart(string[] args)
         {
             // todo: 引入记录服务的 nlogger file
-
             nlogger.Info("IotService OnStart..");
             try
             {

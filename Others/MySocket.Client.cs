@@ -102,8 +102,9 @@ namespace Others
         /// client received message
         private void _appClient_DataReceived(object sender, DataEventArgs e)
         {
-            string message = Encoding.Default.GetString(e.Data);
-            Console.WriteLine(message);
+            // bug: 已修复
+            //string message = Encoding.Default.GetString(e.Data);
+            string message = Encoding.Default.GetString(e.Data, e.Offset, e.Length);
 
             // todo: 解析消息
             // 解析并触发事件
