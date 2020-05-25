@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using IotCS.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SensorDevice;
+using InstDevice;
 
 namespace Device
 {
@@ -302,33 +302,33 @@ namespace Device
 
 
     /// <summary>
-    /// 用于传输传感器数据的 Json 字符串类
+    /// 用于传输仪器数据的 Json 字符串类
     /// </summary>
-    public class IotSensorStateMessage : IotMessageBase
+    public class IotInstStateMessage : IotMessageBase
     {
-        public IotSensorStateMessage() : base(IotTopic.SensorState) { }
+        public IotInstStateMessage() : base(IotTopic.InstState) { }
 
         /// <summary>
-        /// 所有传感器的数据及状态
+        /// 所有仪器的数据及状态
         /// </summary>
-        public List<SensorInfo> SensorInfos { get; set; }
+        public List<InstInfoBase> InstInfos { get; set; }
     }
 
     /// <summary>
-    /// 用于传输传感器数据的 Json 字符串类
+    /// 用于传输仪器数据的 Json 字符串类
     /// </summary>
-    public class IotSensorValueMessage : IotMessageBase
+    public class IotInstValueMessage : IotMessageBase
     {
-        public IotSensorValueMessage() : base(IotTopic.SensorState) { }
+        public IotInstValueMessage() : base(IotTopic.InstState) { }
 
         // todo:
-        // add the sensor value
-        public List<SensorDataBase> SensorData { set; get; }
+        // add the Instrumen value
+        public List<InstDataBase> InstData { set; get; }
     }
 
 
     /// <summary>
-    /// 用于SensorDataBase 派生类的解析
+    /// 用于 InstDataBase 派生类的解析
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class JsonCreationConverter<T> : JsonConverter
@@ -356,18 +356,18 @@ namespace Device
     /// <summary>
     /// 用于 SensorDataBase 派生类的解析
     /// </summary>
-    public class JsonSensorDataConverter : JsonCreationConverter<SensorDataBase>
+    public class JsonInstDataConverter : JsonCreationConverter<InstDataBase>
     {
-        protected override SensorDataBase Create(Type objectType, JObject jsonObject)
+        protected override InstDataBase Create(Type objectType, JObject jsonObject)
         {
-            var typeName = jsonObject["sensorType"].ToObject<SensorType>();
+            var typeName = jsonObject["sensorType"].ToObject<TypeInst>();
             switch (typeName)
             {
-                case SensorType.Standard:
-                    return new SensorSTDData();
-                case SensorType.SBE37SI:
-                    return new SensorSBE37Data();
-                default: return new UndefinedSensorData();
+                case TypeInst.Standard:
+                    return new InstSTDData();
+                case TypeInst.SBE37SI:
+                    return new InstSBE37Data();
+                default: return new InstUDFData();
             }
         }
     }

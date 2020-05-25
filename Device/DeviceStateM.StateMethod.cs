@@ -572,9 +572,9 @@ namespace Device
         {
             nlogger.Debug("Measure_Sensor Entry.");
 
-            // 开始传感器测量温度
+            // 开始仪器测量温度
             bool rlt = true;
-            foreach (var itm in srDevices)
+            foreach (var itm in _instDevices)
             {
                 rlt &= itm.StartMeasure();
             }
@@ -615,9 +615,9 @@ namespace Device
                 return;
             }
 
-            // 开始存储传感器值
+            // 开始存储仪器值
             bool rlt = true;
-            foreach (var itm in srDevices)
+            foreach (var itm in _instDevices)
             {
                 rlt &= itm.StartStore();
             }

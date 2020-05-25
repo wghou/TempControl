@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SensorDevice;
+using InstDevice;
 
 namespace Device
 {
@@ -95,14 +95,14 @@ namespace Device
                     }
                 }
 
-                // 设置传感器
-                if (obj.ContainsKey("SensorDev"))
+                // 设置仪器
+                if (obj.ContainsKey("InstDev"))
                 {
-                    JObject child = (JObject)obj["SensorDev"];
+                    JObject child = (JObject)obj["InstDev"];
 
-                    bool rlt = initSensorDevices(child);
-                    if (!rlt) nlogger.Error("配置传感器失败!");
-                    else nlogger.Debug("配置传感器成功!");
+                    bool rlt = initInstDevices(child);
+                    if (!rlt) nlogger.Error("配置仪器失败!");
+                    else nlogger.Debug("配置仪器成功!");
                     confOK &= rlt;
                 }
 
@@ -162,23 +162,6 @@ namespace Device
             RelayDeviceMStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceM.ryStatus);
 
             RelayDeviceSStatusUpdatedEvent?.Invoke(RelayDevice.Err_r.NoError, ryDeviceS.ryStatus);
-
-            List<SensorInfo> infos = new List<SensorInfo>();
-            foreach (var itm in srDevices)
-            {
-                switch (itm.sensorType)
-                {
-                    case SensorType.SBE37SI:
-                        infos.Add((itm as SensorSBE37).Info);
-                        break;
-                    case SensorType.Standard:
-
-                        break;
-                    case SensorType.Undefined:
-
-                        break;
-                }
-            }
         }
 
 

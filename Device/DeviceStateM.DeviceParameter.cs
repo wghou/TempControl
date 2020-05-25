@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Timers;
 using NLog;
-using SensorDevice;
+using InstDevice;
 
 namespace Device
 {
@@ -280,7 +280,7 @@ namespace Device
         /// <summary>
         /// 标准数据采集器
         /// </summary>
-        public SensorSTD sdDevice = new SensorSTD();
+        public InstSTD sdDevice = new InstSTD();
 
         /// <summary>
         /// 系统开始运行的时间

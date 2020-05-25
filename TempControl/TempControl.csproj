@@ -271,13 +271,13 @@
       <Project>{d46d54bd-1443-48a3-a182-80b8f6954d3e}</Project>
       <Name>Device</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InstDevice\InstDevice.csproj">
+      <Project>{3ecb116b-4205-43d3-b34d-94b7ddfc7864}</Project>
+      <Name>InstDevice</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IotCS\IotService\IotService.csproj">
       <Project>{1a561098-2047-4de2-b4fa-f70a548af8b0}</Project>
       <Name>IotService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SensorDevice\SensorDevice.csproj">
-      <Project>{e6abfdb5-6796-4dc8-a7fd-3ca11241e016}</Project>
-      <Name>SensorDevice</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{665e85e4-8da9-4e1d-b628-767814c15df3}</Project>

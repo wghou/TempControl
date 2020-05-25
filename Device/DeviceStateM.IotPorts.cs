@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using IotCS.Client;
-using SensorDevice;
+using InstDevice;
 
 namespace Device
 {
@@ -34,12 +34,6 @@ namespace Device
             return confOK;
         }
 
-        // 检测到传感器设备，发布
-        private void DeviceStateM_SensorIdentifiedEvent(List<SensorInfo> infos)
-        {
-            iotPublishMessage(IotTopic.SensorState);
-        }
-
         // 当自动采样状态发生改变时，发布
         private void DeviceStateM_SampleStateChangedEvent(AutoSample.StateSample st)
         {
@@ -52,7 +46,7 @@ namespace Device
             iotPublishMessage(IotTopic.Relay);
             iotPublishMessage(IotTopic.DeviceState);
             iotPublishMessage(IotTopic.SampleState);
-            iotPublishMessage(IotTopic.SensorState);
+            iotPublishMessage(IotTopic.InstState);
         }
 
         // 当错误状态改变时，发布错误信息
@@ -185,43 +179,18 @@ namespace Device
                     _userPorts.PublishMessage(IotTopic.SampleState, JObject.FromObject(jSample));
                     break;
 
-                case IotTopic.SensorState:
-                    IotSensorStateMessage jSensorSt = new IotSensorStateMessage();
-                    jSensorSt.DorS = IotDorS.Display;
-                    jSensorSt.Topic = IotTopic.SensorState;
-                    jSensorSt.SensorInfos = new List<SensorInfo>();
-
-                    foreach(var itm in srDevices)
-                    {
-                        switch (itm.sensorType)
-                        {
-                            case SensorType.SBE37SI:
-                                jSensorSt.SensorInfos.Add((itm as SensorSBE37).Info);
-                                break;
-                            case SensorType.Standard:
-
-                                break;
-                            case SensorType.Undefined:
-
-                                break;
-                        }
-                    }
-
-                    _userPorts.PublishMessage(IotTopic.SensorState, JObject.FromObject(jSensorSt));
-                    break;
-
                 case IotTopic.SensorValue:
                     // todo: add the sensor value
-                    IotSensorValueMessage jSensorVal = new IotSensorValueMessage();
+                    IotInstValueMessage jSensorVal = new IotInstValueMessage();
                     jSensorVal.DorS = IotDorS.Display;
                     jSensorVal.Topic = IotTopic.SensorValue;
-                    jSensorVal.SensorData = new List<SensorDataBase>();
+                    jSensorVal.InstData = new List<InstDataBase>();
 
                     // todo: dataAll.empty 如果为空
-                    //jSensorVal.SensorData.Add(sdDevice.GetCurrentValue());
+                    //jSensorVal.InstData.Add(sdDevice.GetCurrentValue());
                     //foreach(var itm in srDevices)
                     //{
-                    //    jSensorVal.SensorData.Add(itm.get.Last());
+                    //    jSensorVal.InstData.Add(itm.get.Last());
                     //}
 
                     _userPorts.PublishMessage(IotTopic.SensorValue, JObject.FromObject(jSensorVal));

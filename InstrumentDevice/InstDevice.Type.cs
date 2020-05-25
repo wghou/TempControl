@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Others;
 using SqlSugar;
 
-namespace SensorDevice
+namespace InstDevice
 {
     /// <summary>
-    /// 传感器设备的类型
+    /// 仪器设备的类型
     /// </summary>
-    public enum SensorType : int
+    public enum TypeInst : int
     {
         SBE37SI = 0,
         SBE37SIP,
@@ -23,7 +23,21 @@ namespace SensorDevice
     }
 
     /// <summary>
-    /// 传感器的错误状态
+    /// 仪器标志位
+    /// </summary>
+    [Flags]
+    public enum TypeSensor : int
+    {
+        None = 0,
+        /// <summary> 温度 </summary>
+        Tempt = 1,
+        /// <summary> 电导率 </summary>
+        Conduct = 2
+    }
+
+
+    /// <summary>
+    /// 仪器的错误状态
     /// </summary>
     public enum Err_sr : int
     {
@@ -32,16 +46,16 @@ namespace SensorDevice
     }
 
     /// <summary>
-    /// 传感器数据的基类
+    /// 仪器数据的基类
     /// </summary>
-    public abstract class SensorDataBase : mysqlData, IComparable
+    public abstract class InstDataBase : mysqlData, IComparable
     {
         /// <summary> 设备类型 </summary>
-        public SensorType sensorType = SensorType.Undefined;
+        public TypeInst InstType = TypeInst.Undefined;
         /// <summary>
-        /// 当前传感器设备的编号，范围 0 ～ maxSensorNum - 1（值为5）
+        /// 当前仪器设备的编号，范围 0 ～ maxInstNum - 1（值为5）
         /// </summary>
-        public int sensorIdx = -1;
+        public int InstIdx = -1;
 
         /// <summary>
         /// 比较函数
@@ -54,19 +68,19 @@ namespace SensorDevice
     /// <summary>
     /// 设备硬件信息的基类
     /// </summary>
-    public abstract class SensorInfoBase {
+    public abstract class InstInfoBase {
         /// <summary> 设备类型 </summary>
-        public SensorType sensorType { get; set; } = SensorType.Undefined;
+        public TypeInst InstType { get; set; } = TypeInst.Undefined;
         /// <summary>
-        /// 当前传感器设备的编号，范围 0 ～ maxSensorNum - 1（值为5）
+        /// 当前仪器设备的编号，范围 0 ～ maxSensorNum - 1（值为5）
         /// </summary>
-        public int sensorIdx { get; set; } = -1;
+        public int InstIdx { get; set; } = -1;
     }
 
     /// <summary>
     /// 设备硬件信息
     /// </summary>
-    public class SensorInfo : SensorInfoBase
+    public class InstInfo : InstInfoBase
     {
         /// <summary> 设备型号名称 </summary>
         public string typeName { get; set; }
@@ -143,7 +157,7 @@ namespace SensorDevice
     /// s_instrument 表 for mysql
     /// </summary>
     [SugarTable("s_instrument")]
-    public class InstrumentSqlrd : mysqlData
+    public class InstSqlrd : mysqlData
     {
         /// <summary> </summary>
         public string vInstrumentID { set; get; }
@@ -202,8 +216,8 @@ namespace SensorDevice
     /// <summary>
     /// 未知的数据类型
     /// </summary>
-    public class UndefinedSensorData : SensorDataBase {
-        public UndefinedSensorData() { sensorType = SensorType.Undefined; }
+    public class InstUDFData : InstDataBase {
+        public InstUDFData() { InstType = TypeInst.Undefined; }
     }
 
 
@@ -211,9 +225,9 @@ namespace SensorDevice
     /// s_instrument 表 for mysql
     /// </summary>
     [SugarTable("s_instrumentdata")]
-    public class SensorSBE37Data : SensorDataBase
+    public class InstSBE37Data : InstDataBase
     {
-        public SensorSBE37Data() { sensorType = SensorType.SBE37SI; }
+        public InstSBE37Data() { InstType = TypeInst.SBE37SI; }
 
         /// <summary> </summary>
         public string vTestID { set; get; }
@@ -264,9 +278,9 @@ namespace SensorDevice
     /// s_standarddata 表 for mysql
     /// </summary>
     [SugarTable("s_standarddata")]
-    public class SensorSTDData : SensorDataBase
+    public class InstSTDData : InstDataBase
     {
-        public SensorSTDData() { sensorType = SensorType.Standard; }
+        public InstSTDData() { InstType = TypeInst.Standard; }
 
         /// <summary> </summary>
         public string vTestID { set; get; }
@@ -315,7 +329,7 @@ namespace SensorDevice
         /// <returns></returns>
         public override int CompareTo(object obj) {
             if (obj == null) return 1;
-            SensorSTDData other = obj as SensorSTDData;
+            InstSTDData other = obj as InstSTDData;
             if(vStandardT > other.vStandardT) { return 1; }
             else if(vStandardT == other.vStandardT) { return 0; }
             else { return -1; }

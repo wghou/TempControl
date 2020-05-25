@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Others;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SensorDevice;
+using InstDevice;
 using Device;
 using IotCS.Client;
 
@@ -37,8 +37,8 @@ namespace ConsoleApp1
             bool rlt = true;
 
             // 1
-            List<SensorSBE37Data> lst1 = new List<SensorSBE37Data>();
-            SensorSBE37Data tst = new SensorSBE37Data();
+            List<InstSBE37Data> lst1 = new List<InstSBE37Data>();
+            InstSBE37Data tst = new InstSBE37Data();
             tst.vTestID = "ss";
             tst.vInstrumentID = "ss";
             tst.vItemType = "sss";
@@ -52,15 +52,15 @@ namespace ConsoleApp1
 
 
             lst1.Add(tst);
-            rlt &= writer.InsertValue<SensorSBE37Data>(tst);
-            rlt &= writer.InsertValue<SensorSBE37Data>(lst1);
+            rlt &= writer.InsertValue<InstSBE37Data>(tst);
+            rlt &= writer.InsertValue<InstSBE37Data>(lst1);
 
             // 2
-            List<SensorSTDData> lst2 = new List<SensorSTDData>();
-            SensorSTDData ist = new SensorSTDData();
+            List<InstSTDData> lst2 = new List<InstSTDData>();
+            InstSTDData ist = new InstSTDData();
             ist.vStandardC = 10;
             lst2.Add(ist);
-            rlt &= writer.InsertValue<SensorSTDData>(lst2);
+            rlt &= writer.InsertValue<InstSTDData>(lst2);
 
 
 #endif

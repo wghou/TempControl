@@ -7,12 +7,12 @@ using Stateless;
 using System.Timers;
 using NLog;
 
-namespace SensorDevice
+namespace InstDevice
 {
     /// <summary>
-    /// 传感器当前的状态
+    /// 仪器当前的状态
     /// </summary>
-    public enum StateSensor : int
+    public enum StateInst : int
     {
         /// <summary> 空闲 </summary>
         Idle = 0,
@@ -22,7 +22,7 @@ namespace SensorDevice
         Store
     }
 
-    public enum TriggerSensor : int
+    public enum TriggerInst : int
     {
         /// <summary> 时刻 </summary>
         TimerTick,
@@ -35,65 +35,65 @@ namespace SensorDevice
     }
 
     /// <summary>
-    /// 传感器基类-加入了状态机
+    /// 仪器基类-加入了状态机
     /// </summary>
     /// <typeparam name="TInfo"></typeparam>
     /// <typeparam name="TData"></typeparam>
-    public abstract partial class SensorDeviceStateM<TInfo, TData> : SensorDeviceBase
-        where TInfo : SensorInfoBase
-        where TData : SensorDataBase
+    public abstract partial class InstDeviceStateM<TInfo, TData> : InstDeviceBase
+        where TInfo : InstInfoBase
+        where TData : InstDataBase
     {
         /// <summary>
         /// 设备信息
         /// </summary>
         public TInfo Info { get; set; }
         /// <summary>
-        /// 传感器设备的类型
+        /// 仪器设备的类型
         /// </summary>
-        public override SensorType sensorType {
-            set { Info.sensorType = value; }  get { return Info.sensorType; } }
+        public override TypeInst InstType {
+            set { Info.InstType = value; }  get { return Info.InstType; } }
         /// <summary>
-        /// 传感器设备的编号
+        /// 仪器设备的编号
         /// </summary>
-        public override int sensorIdx {
-            set { Info.sensorIdx = value; } get { return Info.sensorIdx; } }
+        public override int InstIdx {
+            set { Info.InstIdx = value; } get { return Info.InstIdx; } }
 
         /// <summary>
         /// 设备线程锁，同一时间只允许单一线程访问设备资源（串口 / 数据）
         /// </summary>
         protected object sdLocker = new object();
         /// <summary>
-        /// 传感器数据缓存
+        /// 仪器数据缓存
         /// </summary>
-        protected List<TData> sensorData = new List<TData>();
+        protected List<TData> _instData = new List<TData>();
         /// <summary>
         /// 用于存储的缓存数据
         /// </summary>
-        protected List<TData> storeCache = new List<TData>();
+        protected List<TData> _storeCache = new List<TData>();
         private int dataMaxLen = 1000;
 
 
         /// <summary>
         /// 状态机类
         /// </summary>
-        protected StateMachine<StateSensor, TriggerSensor> _sensorMachine;
+        protected StateMachine<StateInst, TriggerInst> _instMachine;
         /// <summary>
         /// 当前处于的状态
         /// </summary>
-        public StateSensor _sensorState { set; get; } = StateSensor.Idle;
+        public StateInst _instState { set; get; } = StateInst.Idle;
         /// <summary>
         /// 时刻Trigger - 带参数 ms
         /// </summary>
-        protected StateMachine<StateSensor, TriggerSensor>.TriggerWithParameters<int> _sensorTickTrigger;
+        protected StateMachine<StateInst, TriggerInst>.TriggerWithParameters<int> _instTickTrigger;
 
         /// <summary>
         /// 定时器
         /// </summary>
-        protected Timer _tickTimerSensor;
+        protected Timer _tickTimerInst;
         /// <summary>
         /// 自动取样 - 状态计数器
         /// </summary>
-        protected uint sensorStateCounts = 0;
+        protected uint _instStateCounts = 0;
 
         /// <summary>
         /// 当前需要测量的温度点
@@ -101,9 +101,9 @@ namespace SensorDevice
         protected float currentTemptPoint = 0.0f;
 
 
-        public SensorDeviceStateM()
+        public InstDeviceStateM()
         {
-            ConfigSensorStateless();        }
+            ConfigInstStateless();        }
 
         /// <summary>
         /// 执行读取信息步骤
@@ -111,13 +111,13 @@ namespace SensorDevice
         /// <returns></returns>
         public override bool StartMeasure()
         {
-            if(_sensorState != StateSensor.Idle)
+            if(_instState != StateInst.Idle)
             {
                 return false;
             }
 
             // 开始测量
-            _sensorMachine.Fire(TriggerSensor.StartMeasure);
+            _instMachine.Fire(TriggerInst.StartMeasure);
             return true;
         }
         /// <summary>
@@ -126,15 +126,15 @@ namespace SensorDevice
         /// <returns></returns>
         public override bool StartStore()
         {
-            if (_sensorState != StateSensor.Measure)
+            if (_instState != StateInst.Measure)
             {
                 return false;
             }
 
             // 停止测量，并进入存储数据
-            _sensorMachine.Fire(TriggerSensor.StartStore);
+            _instMachine.Fire(TriggerInst.StartStore);
             // 执行一次步骤
-            _sensorMachine.Fire(_sensorTickTrigger, 10);
+            _instMachine.Fire(_instTickTrigger, 10);
             return true;
         }
         /// <summary>
@@ -143,17 +143,17 @@ namespace SensorDevice
         /// <returns></returns>
         public override bool StopMeasure()
         {
-            _sensorMachine.Fire(TriggerSensor.Stop);
+            _instMachine.Fire(TriggerInst.Stop);
             return true;
         }
         /// <summary>
-        /// 返回当前传感器的值
+        /// 返回当前仪器的值
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public List<TData> GetSensorData() 
+        public List<TData> GetInstData() 
         {
-            return sensorData;
+            return _instData;
         }
 
 
@@ -180,63 +180,63 @@ namespace SensorDevice
 
 
         /// <summary>
-        /// 配置传感器相关的状态机
+        /// 配置仪器相关的状态机
         /// </summary>
-        protected void ConfigSensorStateless()
+        protected void ConfigInstStateless()
         {
             // new object
-            _sensorMachine = new StateMachine<StateSensor, TriggerSensor>(() => _sensorState, s => _sensorState = s);
-            _sensorTickTrigger = _sensorMachine.SetTriggerParameters<int>(TriggerSensor.TimerTick);
+            _instMachine = new StateMachine<StateInst, TriggerInst>(() => _instState, s => _instState = s);
+            _instTickTrigger = _instMachine.SetTriggerParameters<int>(TriggerInst.TimerTick);
 
             // on transition action
-            _sensorMachine.OnTransitioned(sensorOnTransitionedAction);
+            _instMachine.OnTransitioned(instOnTransitionedAction);
 
             // on unhandled trigger
-            _sensorMachine.OnUnhandledTrigger(sensorOnUnhandledTrigger);
+            _instMachine.OnUnhandledTrigger(instOnUnhandledTrigger);
 
-            // StateSensor.Idle
-            // -> StateSensor.Measure
-            _sensorMachine.Configure(StateSensor.Idle)
-                .OnEntry(t => sensorIdleEntry())
-                .OnExit(t => sensorIdleExit())
-                .InternalTransition(_sensorTickTrigger, (tic, t) => sensorIdleTick(tic))
-                .Permit(TriggerSensor.StartMeasure, StateSensor.Measure)
-                .Ignore(TriggerSensor.StartStore)
-                .Ignore(TriggerSensor.Stop);
-
-
-            // StateSensor.Measure
-            // -> StateSensor.StoreData
-            // -> StateSensor.Idle
-            _sensorMachine.Configure(StateSensor.Measure)
-                .OnEntry(t => sensorMeasureEntry())
-                .OnExit(t => sensorMeasureExit())
-                .InternalTransition(_sensorTickTrigger, (tic, t) => sensorMeasureTick(tic))
-                .Permit(TriggerSensor.StartStore, StateSensor.Store)
-                .Permit(TriggerSensor.Stop, StateSensor.Idle);
+            // StateInst.Idle
+            // -> StateInst.Measure
+            _instMachine.Configure(StateInst.Idle)
+                .OnEntry(t => instIdleEntry())
+                .OnExit(t => instIdleExit())
+                .InternalTransition(_instTickTrigger, (tic, t) => instIdleTick(tic))
+                .Permit(TriggerInst.StartMeasure, StateInst.Measure)
+                .Ignore(TriggerInst.StartStore)
+                .Ignore(TriggerInst.Stop);
 
 
-            // StateSensor.Store
-            // -> StateSensor.Idle
-            _sensorMachine.Configure(StateSensor.Store)
-                .OnEntry(t => sensorStoreEntry())
-                .OnExit(t => sensorStoreExit())
-                .InternalTransition(_sensorTickTrigger, (tic, t) => sensorStoreTick(tic))
-                .Permit(TriggerSensor.Stop, StateSensor.Idle)
-                .Ignore(TriggerSensor.StartMeasure);
+            // StateInst.Measure
+            // -> StateInst.StoreData
+            // -> StateInst.Idle
+            _instMachine.Configure(StateInst.Measure)
+                .OnEntry(t => instMeasureEntry())
+                .OnExit(t => instMeasureExit())
+                .InternalTransition(_instTickTrigger, (tic, t) => instMeasureTick(tic))
+                .Permit(TriggerInst.StartStore, StateInst.Store)
+                .Permit(TriggerInst.Stop, StateInst.Idle);
+
+
+            // StateInst.Store
+            // -> StateInst.Idle
+            _instMachine.Configure(StateInst.Store)
+                .OnEntry(t => instStoreEntry())
+                .OnExit(t => instStoreExit())
+                .InternalTransition(_instTickTrigger, (tic, t) => instStoreTick(tic))
+                .Permit(TriggerInst.Stop, StateInst.Idle)
+                .Ignore(TriggerInst.StartMeasure);
         }
 
         /// <summary>
-        /// 传感器单步执行
+        /// 仪器单步执行
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected void _tickTimerSample_Elapsed(object sender, ElapsedEventArgs e)
         {
             // 计数
-            sensorStateCounts++;
+            _instStateCounts++;
 
-            _sensorMachine.Fire(_sensorTickTrigger, 10);
+            _instMachine.Fire(_instTickTrigger, 10);
         }
 
 
@@ -244,16 +244,16 @@ namespace SensorDevice
         /// 状态转变事件函数
         /// </summary>
         /// <param name="act"></param>
-        protected void sensorOnTransitionedAction(StateMachine<StateSensor, TriggerSensor>.Transition act)
+        protected void instOnTransitionedAction(StateMachine<StateInst, TriggerInst>.Transition act)
         {
-            nlogger.Debug("On StateSensor Transitioned.");
+            nlogger.Debug("On StateInst Transitioned.");
 
-            TriggerSensor trigger = act.Trigger;
-            StateSensor source = act.Source;
-            StateSensor dest = act.Destination;
+            TriggerInst trigger = act.Trigger;
+            StateInst source = act.Source;
+            StateInst dest = act.Destination;
 
             // 状态清零
-            sensorStateCounts = 0;
+            _instStateCounts = 0;
 
             // 触发事件 - 状态转变
             StateChangedEvent?.Invoke(dest);
@@ -265,128 +265,128 @@ namespace SensorDevice
         /// </summary>
         /// <param name="st"></param>
         /// <param name="tg"></param>
-        protected void sensorOnUnhandledTrigger(StateSensor st, TriggerSensor tg)
+        protected void instOnUnhandledTrigger(StateInst st, TriggerInst tg)
         {
-            nlogger.Error("sensor Unhandled trigger: state.");
+            nlogger.Error("Inst Unhandled trigger: state.");
         }
 
 
         /// <summary>
-        /// sensor Idle Entry
+        /// Inst Idle Entry
         /// </summary>
-        protected void sensorIdleEntry()
+        protected void instIdleEntry()
         {
-            nlogger.Debug("Sensor Idle Entry.");
+            nlogger.Debug("Inst Idle Entry.");
         }
 
         /// <summary>
-        /// sensor Idle Tick
+        /// Inst Idle Tick
         /// </summary>
         /// <param name="tic"></param>
-        protected void sensorIdleTick(int tic)
+        protected void instIdleTick(int tic)
         {
-            nlogger.Debug("Sensor Idle Tick: " + tic.ToString() + " ms");
+            nlogger.Debug("Inst Idle Tick: " + tic.ToString() + " ms");
 
             // 执行 idle 步骤
             internalIdleStep();
         }
 
         /// <summary>
-        /// sensor Idle Exit
+        /// Inst Idle Exit
         /// </summary>
-        protected void sensorIdleExit()
+        protected void instIdleExit()
         {
-            nlogger.Debug("Sensor Idle Exit.");
+            nlogger.Debug("Inst Idle Exit.");
         }
 
 
         /// <summary>
-        /// sensor Measure Entry
+        /// Inst Measure Entry
         /// </summary>
-        protected void sensorMeasureEntry()
+        protected void instMeasureEntry()
         {
-            nlogger.Debug("Sensor Measure Entry.");
+            nlogger.Debug("Inst Measure Entry.");
 
             // 进入 store 步骤
             internalEnterMeasureStep();
         }
 
         /// <summary>
-        /// sensor Measure Tick
+        /// Inst Measure Tick
         /// </summary>
         /// <param name="tic"></param>
-        protected void sensorMeasureTick(int tic)
+        protected void instMeasureTick(int tic)
         {
-            nlogger.Debug("Sensor Measure Tick: " + tic.ToString() + " ms");
+            nlogger.Debug("Inst Measure Tick: " + tic.ToString() + " ms");
 
             // 执行 Measure 步骤
             internalMeasureStep();
         }
 
         /// <summary>
-        /// sensor Measure Exit
+        /// instrInstument Measure Exit
         /// </summary>
-        protected void sensorMeasureExit()
+        protected void instMeasureExit()
         {
-            nlogger.Debug("Sensor Measure Exit.");
+            nlogger.Debug("Inst Measure Exit.");
         }
 
 
         /// <summary>
-        /// sensor Store Entry
+        /// Inst Store Entry
         /// </summary>
-        protected void sensorStoreEntry()
+        protected void instStoreEntry()
         {
-            nlogger.Debug("Sensor Store Entry.");
+            nlogger.Debug("Inst Store Entry.");
 
             // 进入 store 步骤
             internalEnterStoreStep();
         }
 
         /// <summary>
-        /// sensor Store Tick
+        /// Inst Store Tick
         /// </summary>
         /// <param name="tic"></param>
-        protected void sensorStoreTick(int tic)
+        protected void instStoreTick(int tic)
         {
-            nlogger.Debug("Sensor Store Tick: " + tic.ToString() + " ms");
+            nlogger.Debug("Inst Store Tick: " + tic.ToString() + " ms");
 
             // 执行 store 步骤
             internalStoreStep();
         }
 
         /// <summary>
-        /// sensor Store Exit
+        /// Inst Store Exit
         /// </summary>
-        protected void sensorStoreExit()
+        protected void instStoreExit()
         {
-            nlogger.Debug("Sensor Store Exit.");
+            nlogger.Debug("Inst Store Exit.");
         }
 
         /// <summary>
-        /// 向 SensorData 值列表中添加数据
+        /// 向 _instData 值列表中添加数据
         /// </summary>
         /// <param name="val"> 温度，电导率 </param>
-        protected void appendSensorData(TData val)
+        protected void appendInstData(TData val)
         {
-            if (sensorData.Count == dataMaxLen)
+            if (_instData.Count == dataMaxLen)
             {
-                sensorData.RemoveAt(0);
+                _instData.RemoveAt(0);
             }
-            sensorData.Add(val);
+            _instData.Add(val);
         }
 
         /// <summary>
-        /// 向 storeCache 值列表中添加数据
+        /// 向 _storeCache 值列表中添加数据
         /// </summary>
         /// <param name="val"> 温度，电导率 </param>
         protected void appendStoreCache(TData val)
         {
-            if (storeCache.Count == dataMaxLen)
+            if (_storeCache.Count == dataMaxLen)
             {
-                storeCache.RemoveAt(0);
+                _storeCache.RemoveAt(0);
             }
-            storeCache.Add(val);
+            _storeCache.Add(val);
         }
     }
 }

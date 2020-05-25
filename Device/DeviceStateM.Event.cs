@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SensorDevice;
+using InstDevice;
 
 namespace Device
 {
@@ -72,10 +72,10 @@ namespace Device
         public event DeviceClosedEventHandler DeviceClosedEvent;
 
         //
-        public delegate void SensorSDReceiveDataEventHandler(SensorSTDData data);
+        public delegate void SensorSDReceiveDataEventHandler(InstSTDData data);
         /// <summary>
         /// 标准器设备接收到消息事件
         /// </summary>
-        public event SensorSDReceiveDataEventHandler SensorSDReceiveDataEvent;
+        public event SensorSDReceiveDataEventHandler InstSDReceiveDataEvent;
     }
 }

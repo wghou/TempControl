@@ -793,7 +793,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(879, 647);
             this.tabPage2.TabIndex = 2;
-            this.tabPage2.Text = "传感器状态";
+            this.tabPage2.Text = "仪器状态";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // groupBox7
@@ -934,7 +934,7 @@
             this.groupBox6.Size = new System.Drawing.Size(193, 234);
             this.groupBox6.TabIndex = 0;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "传感器 5";
+            this.groupBox6.Text = "仪器 5";
             // 
             // textBox25
             // 
@@ -1052,7 +1052,7 @@
             this.groupBox5.Size = new System.Drawing.Size(193, 234);
             this.groupBox5.TabIndex = 0;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "传感器 4";
+            this.groupBox5.Text = "仪器 4";
             // 
             // textBox19
             // 
@@ -1170,7 +1170,7 @@
             this.groupBox4.Size = new System.Drawing.Size(193, 234);
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "传感器 3";
+            this.groupBox4.Text = "仪器 3";
             // 
             // textBox13
             // 
@@ -1288,7 +1288,7 @@
             this.groupBox3.Size = new System.Drawing.Size(193, 234);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "传感器 2";
+            this.groupBox3.Text = "仪器 2";
             // 
             // textBox7
             // 
@@ -1406,7 +1406,7 @@
             this.groupBox2.Size = new System.Drawing.Size(193, 234);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "传感器 1";
+            this.groupBox2.Text = "仪器 1";
             // 
             // textBox1
             // 
@@ -1524,7 +1524,7 @@
             this.groupBox1.Size = new System.Drawing.Size(193, 234);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "传感器 0";
+            this.groupBox1.Text = "仪器 0";
             // 
             // textBox_valueC0
             // 

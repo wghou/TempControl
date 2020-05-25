@@ -32,9 +32,9 @@ namespace IotCS.Client
         DeviceState,
         /// <summary> 自动采样状态 </summary>
         SampleState,
-        /// <summary> 传感器的状态数据 </summary>
-        SensorState,
-        /// <summary> 传感器的测量值 </summary>
+        /// <summary> 仪器的状态数据 </summary>
+        InstState,
+        /// <summary> 仪器的测量值 </summary>
         SensorValue
     }
 

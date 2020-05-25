@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Others;
 using System.IO;
-using SensorDevice;
+using InstDevice;
 
 namespace Device
 {
@@ -18,48 +18,50 @@ namespace Device
     {
         /// <summary> 开始自动控温 </summary>
         AutoStart = 0,
-        /// <summary> 暂停 </summary>
-        Suspend,
         /// <summary> 停止 </summary>
         Stop,
         /// <summary> 测量完成 </summary>
         Finished,
-        /// <summary> 传感器状态 </summary>
-        SensorInfo,
+        /// <summary> 测试 Idx </summary>
+        TestId,
+        /// <summary> 设备状态 </summary>
+        DeviceState,
         /// <summary> 未知 </summary>
         Unknown
     }
 
     /// <summary>
-    /// 用于 Socket 通信的数据格式 - 基类 - json convertor
+    /// 用于 Socket 通信的数据格式 - 命令
     /// </summary>
-    public abstract class SocketMessageBase
+    public class SocketCmdMessage
     {
         /// <summary> Socket Message 的类型 </summary>
         public SocketCmd cmdType { get; set; } = SocketCmd.Unknown;
-        
-        public SocketMessageBase(SocketCmd tp) { cmdType = tp; }
+        /// <summary> 该条指令是否正确执行 </summary>
+        public bool ExecuteSucceed { set; get; } = false;
+
+        public SocketCmdMessage(SocketCmd tp) { cmdType = tp; } 
     }
 
     /// <summary>
-    /// socket 指令返回数据
+    /// 用于 Socket 通信的数据格式 - TestIdx
     /// </summary>
-    public class SocketCmdMessage : SocketMessageBase
+    public class SocketTestIdxMessage : SocketCmdMessage
     {
-        public SocketCmdMessage(SocketCmd cmd) : base(cmd) { }
+        public SocketTestIdxMessage() : base(SocketCmd.TestId) { }
 
-        /// <summary> 该条指令是否正确执行 </summary>
-        public bool ExecuteSucceed { set; get; } = false;
-        /// <summary> 控温设备当前的状态 </summary>
-        public State deviceState { get; set; }
+        /// <summary> 测试编号 </summary>
+        public string TestIdx { get; set; }
     }
 
-    public class SocketSensorMessage : SocketMessageBase
+    /// <summary>
+    /// 用于 Socket 通信的数据格式 - 设备状态
+    /// </summary>
+    public class SocketStateMessage : SocketCmdMessage
     {
-        public SocketSensorMessage(SocketCmd cmd) : base(cmd) { }
+        public SocketStateMessage() : base(SocketCmd.DeviceState) { }
 
-        /// <summary> 传感器设备的状态 </summary>
-        public List<SensorInfo> sensorStates { get; set; }
+        // 设备状态
     }
 
 
@@ -100,8 +102,6 @@ namespace Device
         {
             // 解析收到的指令
             SocketCmdMessage msg = message.ToObject<SocketCmdMessage>();
-            // 返回收到的指令
-            SocketCmdMessage msgSend = new SocketCmdMessage(msg.cmdType) { deviceState = _state };
 
             // todo: 如何处理错误情况
 
@@ -109,52 +109,41 @@ namespace Device
             {
                 // 开始控温流程
                 case SocketCmd.AutoStart:
-                    if(_state == State.Idle)
+                    // 返回收到的指令
+                    if (_state == State.Idle)
                     {
                         // todo: 这里如何载入温度点
                         loadTempPointList();
 
                         StartAutoControl();
-                        msgSend.ExecuteSucceed = true;
+                        msg.ExecuteSucceed = true;
                     }
-                    break;
-
-                // 暂停控温流程
-                case SocketCmd.Suspend:
-                    SuspendAutoControl();
-                    msgSend.ExecuteSucceed = true;
+                    _socketServer.pushMessage(JObject.FromObject(msg));
                     break;
                 
                 // 停止控温流程
                 case SocketCmd.Stop:
-                    ShutdownComputer();
-                    msgSend.ExecuteSucceed = true;
+                    // 返回收到的指令
+                    SuspendAutoControl();
+                    msg.ExecuteSucceed = true;
+                    _socketServer.pushMessage(JObject.FromObject(msg));
                     break;
 
-                // 读取传感器信息
-                case SocketCmd.SensorInfo:
+                // 读取仪器信息
+                case SocketCmd.TestId:
                     // 接收到 testID
-                    msgSend.ExecuteSucceed = true;
-                    testIdSql = "";
-                    // 根据 TestID，从远程数据库查找温度点信息 TestOrderSqlrd，配置 SensorDeviceBase.testOrders
-                    SensorDeviceBase.testOrders = sqlWriter.QueryValue<TestOrderSqlrd>(testIdSql);
-                    // 温度点列表不能为空
-                    if (SensorDeviceBase.testOrders.Count == 0)
-                    {
-                        msgSend.ExecuteSucceed = false;
-                    }
+                    SocketTestIdxMessage msgSend1 = message.ToObject<SocketTestIdxMessage>();
+                    bool rlt = getInstInfoFromSql(msgSend1.TestIdx);
+                    msgSend1.ExecuteSucceed = rlt;
+                    _socketServer.pushMessage(JObject.FromObject(msgSend1));
+                    break;
 
-                    // 根据 TestID，从远程数据库查找标准器信息 InstrumentSqlrd，配置 SensorSD
-                    List<InstrumentSqlrd> instSql = sqlWriter.QueryValue<InstrumentSqlrd>(testIdSql);
-                    // 必须只能查询到一个 Instrument 信息
-                    if (instSql.Count != 1)
-                    {
-                        msgSend.ExecuteSucceed = false;
-                    }
-
-                    // 根据 TestID，从远程数据库查找传感器信息 SensorSqlrd，配置 SensorSBE37
-                    List<SensorSqlrd> srSql = sqlWriter.QueryValue<SensorSqlrd>(testIdSql);
-
+                case SocketCmd.DeviceState:
+                    // 返回收到的指令
+                    SocketStateMessage msgSend2 = message.ToObject<SocketStateMessage>();
+                    SuspendAutoControl();
+                    msgSend2.ExecuteSucceed = true;
+                    _socketServer.pushMessage(JObject.FromObject(msgSend2));
                     break;
 
                 default:
@@ -163,7 +152,7 @@ namespace Device
             }
 
             // 返回指令
-            _socketServer.pushMessage(JObject.FromObject(msgSend));
+            
         }
 
         private void loadTempPointList()

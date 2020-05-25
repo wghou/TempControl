@@ -25,7 +25,7 @@ namespace Device
         Stable,
         /// <summary> 测量_采样 </summary>
         Measure_Sample,
-        /// <summary> 测量_读取传感器 </summary>
+        /// <summary> 测量_读取仪器 </summary>
         Measure_Sensor,
         /// <summary> 停止 </summary>
         ShutdownPC,
@@ -50,7 +50,7 @@ namespace Device
         AchieveSteady,
         /// <summary> 开始测量_采样 </summary>
         StartMeasure_Sample,
-        /// <summary> 开始测量_读取传感器 </summary>
+        /// <summary> 开始测量_读取仪器 </summary>
         StartMeasure_Sensor,
         /// <summary> 暂停自动控温 </summary>
         SuspendAutoControl,

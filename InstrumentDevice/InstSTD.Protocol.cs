@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using static Others.MySqlWriter;
 
-namespace SensorDevice
+namespace InstDevice
 {
-    public partial class SensorSTD
+    public partial class InstSTD
     {
         /// <summary>
         /// 数据连续传输计数器
@@ -24,8 +24,8 @@ namespace SensorDevice
         /// </summary>
         protected override void internalEnterMeasureStep() {
             // 清空数据缓存
-            sensorData.Clear();
-            storeCache.Clear();
+            _instData.Clear();
+            _storeCache.Clear();
         }
         /// <summary>
         /// 执行 Measure 步骤
@@ -43,13 +43,13 @@ namespace SensorDevice
             if (Enable == false) return;
 
             // 将数据写入数据库
-            if (sqlWriter.InsertValue(sensorData) == false)
+            if (sqlWriter.InsertValue(_instData) == false)
             {
                 // 写入数据库失败
                 OnErrorOccur(Err_sr.Error);
             }
             // 进入空闲状态
-            _sensorMachine.Fire(TriggerSensor.Stop);
+            _instMachine.Fire(TriggerInst.Stop);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace SensorDevice
             {
                 string data = sPort.ReadLine();
 
-                SensorSTDData dt = new SensorSTDData();
+                InstSTDData dt = new InstSTDData();
 
                 string[] valStrs = data.Split('-');
 
@@ -80,11 +80,11 @@ namespace SensorDevice
                 dt.updateTime = dt.measureTime;
 
                 // 只有在 Measure 状态，才会存储数据
-                if (_sensorState == StateSensor.Measure) {
+                if (_instState == StateInst.Measure) {
                     appendStoreCache(dt);
                 }
                 // 记录当前数据
-                appendSensorData(dt);
+                appendInstData(dt);
 
                 // 触发数据接收事件
                 base.OnDataReceived(dt);

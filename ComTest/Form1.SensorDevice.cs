@@ -13,23 +13,23 @@ namespace ComTest
     public partial class Form1
     {
         /// <summary>
-        /// 标准传感器 - 通信端口
+        /// 标准仪器 - 通信端口
         /// </summary>
         private SerialPort sPortSTD = new SerialPort();
         private bool SportSTD_enable = false;
         private Timer _stdTimer = new Timer();
 
         /// <summary>
-        /// SBE37传感器 - 通信端口
+        /// SBE37仪器 - 通信端口
         /// </summary>
         private SerialPort sPortSBE37 = new SerialPort();
         private bool SportSBE37_enable = false;
 
         ///////////////////////////////
-        // 传感器设备
+        // 仪器设备
         ///
         /// <summary>
-        /// 传感器设备错误状态
+        /// 仪器设备错误状态
         /// </summary>
         enum SrStatus : int
         {
@@ -47,23 +47,23 @@ namespace ComTest
             DataErr = 2,
         }
         /// <summary>
-        /// 传感器温度值
+        /// 仪器温度值
         /// </summary>
         float srValue = 12.00f;
         /// <summary>
-        /// 锁 - 用于锁定传感器状态参数
+        /// 锁 - 用于锁定仪器状态参数
         /// </summary>
         object srLocker = new object();
         /// <summary>
-        /// 传感器 - 错误状态
+        /// 仪器 - 错误状态
         /// </summary>
         SrStatus srErrStatus = SrStatus.OK;
         /// <summary>
-        /// 传感器 - 在产生一次错误状态后，是否保持错误状态 - 默认不保持
+        /// 仪器 - 在产生一次错误状态后，是否保持错误状态 - 默认不保持
         /// </summary>
         bool srErrLast = false;
         /// <summary>
-        /// 传感器设备代码错误
+        /// 仪器设备代码错误
         /// </summary>
         bool srCodeErr = false;
 
@@ -73,7 +73,7 @@ namespace ComTest
         ////////////////////////////////////
         
         /// <summary>
-        /// 标准传感器发送数据
+        /// 标准仪器发送数据
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -96,7 +96,7 @@ namespace ComTest
             }
         }
         /// <summary>
-        /// SBE37传感器 - 信息收发
+        /// SBE37仪器 - 信息收发
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -121,7 +121,7 @@ namespace ComTest
             lock(ryLocker)
             {
                 // 调试信息
-                Debug.WriteLine("传感器设备读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
+                Debug.WriteLine("仪器设备读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
 
                 try
                 {
@@ -143,7 +143,7 @@ namespace ComTest
                                 // 指令不存在
                                 sPortSBE37.WriteLine("@35EB:");
                             }
-                            //Debug.WriteLine("传感器设备返回了数据：" + dataRev.ToString());
+                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
                             break;
                         case SrStatus.DisConnected:
                             // 连接断开状态 - 不返回任何数据
@@ -151,7 +151,7 @@ namespace ComTest
                         case SrStatus.DataErr:
                             // 错误状态
                             sPortSBE37.WriteLine("@35EB:");
-                            //Debug.WriteLine("传感器错误数据： @035EB.");
+                            //Debug.WriteLine("仪器错误数据： @035EB.");
                             break;
                         default:
                             // 默认，正常工作状态
@@ -169,7 +169,7 @@ namespace ComTest
                                 // 指令不存在
                                 sPortSBE37.WriteLine("@35EB:");
                             }
-                            //Debug.WriteLine("传感器设备返回了数据：" + dataRev.ToString());
+                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
                             break;
                     }
                 }

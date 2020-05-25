@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SensorDevice
+namespace InstDevice
 {
-    public abstract partial class SensorDeviceStateM<TInfo, TData> : SensorDeviceBase
-        where TInfo : SensorInfoBase
-        where TData : SensorDataBase
+    public abstract partial class InstDeviceStateM<TInfo, TData> : InstDeviceBase
+        where TInfo : InstInfoBase
+        where TData : InstDataBase
     {
         public delegate void ErrorOccurEventHandler(Err_sr err);
         /// <summary>
@@ -26,7 +26,7 @@ namespace SensorDevice
 
         public delegate void DataReceivedEventHandler(TData data);
         /// <summary>
-        /// 传感器接收到数据 - 事件
+        /// 仪器接收到数据 - 事件
         /// </summary>
         public event DataReceivedEventHandler DataReceivedEvent;
         /// <summary>
@@ -38,9 +38,9 @@ namespace SensorDevice
             DataReceivedEvent?.Invoke(data);
         }
 
-        public delegate void StateChangedEventHandler(StateSensor st);
+        public delegate void StateChangedEventHandler(StateInst st);
         /// <summary>
-        /// 传感器接收到数据 - 事件
+        /// 仪器接收到数据 - 事件
         /// </summary>
         public event StateChangedEventHandler StateChangedEvent;
     }

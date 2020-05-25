@@ -8,12 +8,12 @@ using System.IO.Ports;
 using NLog;
 using static Others.MySqlWriter;
 
-namespace SensorDevice
+namespace InstDevice
 {
-    public partial class SensorSBE37
+    public partial class InstSBE37
     {
         /// <summary>
-        /// 传感器命令
+        /// 仪器命令
         /// </summary>
         private class CmdChain
         {
@@ -44,7 +44,7 @@ namespace SensorDevice
         /// </summary>
         protected override void internalEnterMeasureStep() {
             // 清空数据缓存
-            sensorData.Clear();
+            _instData.Clear();
             cmds.ResetCmd();
         }
         /// <summary>
@@ -69,13 +69,13 @@ namespace SensorDevice
             if (Enable == false) return;
 
             // 将数据写入数据库
-            if (sqlWriter.InsertValue(sensorData) == false)
+            if (sqlWriter.InsertValue(_instData) == false)
             {
                 // 写入数据库失败
                 OnErrorOccur(Err_sr.Error);
             }
             // 进入空闲状态
-            _sensorMachine.Fire(TriggerSensor.Stop);
+            _instMachine.Fire(TriggerInst.Stop);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace SensorDevice
                 string data = sPort.ReadLine();
                 sPort.DiscardInBuffer();
 
-                SensorSBE37Data dt = new SensorSBE37Data();
+                InstSBE37Data dt = new InstSBE37Data();
                 dt.vTestID = "ss";
                 dt.vInstrumentID = "ss";
                 dt.vItemType = "sss";
@@ -107,12 +107,12 @@ namespace SensorDevice
                 dt.updateTime = DateTime.Now;
 
                 // 只有在 Measure 状态，才会存储数据
-                if (_sensorState == StateSensor.Measure)
+                if (_instState == StateInst.Measure)
                 {
                     appendStoreCache(dt);
                 }
                 // 记录当前数据
-                appendSensorData(dt);
+                appendInstData(dt);
 
                 // 触发数据接收事件
                 base.OnDataReceived(dt);
@@ -144,7 +144,7 @@ namespace SensorDevice
             }
             catch(Exception ex)
             {
-                nlogger.Error("传感器设备读取参数失败！");
+                nlogger.Error("仪器设备读取参数失败！");
                 // 关闭串口
                 try { sPort.Open(); } catch{ }
 

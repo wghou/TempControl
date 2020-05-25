@@ -108,7 +108,7 @@ namespace ComTest
                     }
                 }
 
-                // 传感器 - 通信端口
+                // 仪器 - 通信端口
                 if (obj.ContainsKey("SensorSBE37"))
                 {
                     JObject child = (JObject)obj["SensorSBE37"];
@@ -181,7 +181,7 @@ namespace ComTest
 
 
         /// <summary>
-        /// 传感器设备 - 错误状态设置
+        /// 仪器设备 - 错误状态设置
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -212,7 +212,7 @@ namespace ComTest
         }
 
         /// <summary>
-        /// 传感器设备 - 错误状态持续
+        /// 仪器设备 - 错误状态持续
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

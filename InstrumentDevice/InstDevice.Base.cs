@@ -10,7 +10,7 @@ using Others;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SensorDevice
+namespace InstDevice
 {
     /// <summary>
     /// 测试温度点的集合
@@ -24,11 +24,11 @@ namespace SensorDevice
     }
 
     /// <summary>
-    /// 传感器基类
+    /// 仪器基类
     /// </summary>
-    /// <typeparam name="TInfo">传感器状态类</typeparam>
-    /// <typeparam name="TData">传感器数据类</typeparam>
-    public abstract class SensorDeviceBase : TestOrderBase
+    /// <typeparam name="TInfo">仪器状态类</typeparam>
+    /// <typeparam name="TData">仪器数据类</typeparam>
+    public abstract class InstDeviceBase : TestOrderBase
     {
         /// <summary>
         /// 日志记录
@@ -44,25 +44,25 @@ namespace SensorDevice
         /// <summary>
         /// 所有测试点的集合
         /// </summary>
-        public static List<TestOrderSqlrd> testOrders { set; get; } = new List<TestOrderSqlrd>();
+        //public static List<TestOrderSqlrd> testOrders { set; get; } = new List<TestOrderSqlrd>();
 
 
         /// <summary>
-        /// 已有的传感器设备的总数
+        /// 已有的仪器设备的总数
         /// </summary>
-        protected static int SensorCount { get; set; } = 0;
+        protected static int InstCount { get; set; } = 0;
         /// <summary>
-        /// 可支持的最大传感器设备数
+        /// 可支持的最大仪器设备数
         /// </summary>
-        public static int MaxSensorNum { get; } = 16;
+        public static int MaxInstNum { get; } = 16;
         /// <summary>
-        /// 传感器设备的类型
+        /// 仪器设备的类型
         /// </summary>
-        public abstract SensorType sensorType { set; get; }
+        public abstract TypeInst InstType { set; get; }
         /// <summary>
-        /// 传感器设备的编号
+        /// 仪器设备的编号
         /// </summary>
-        public abstract int sensorIdx { set; get; }
+        public abstract int InstIdx { set; get; }
         /// <summary>
         /// 错误状态
         /// </summary>
@@ -71,6 +71,10 @@ namespace SensorDevice
         /// 启用
         /// </summary>
         public bool Enable { set; get; } = false;
+        /// <summary>
+        /// 包含仪器标志位
+        /// </summary>
+        public TypeSensor SensorFlag { set; get; } = TypeSensor.None;
 
 
         /// <summary>串口</summary>
@@ -85,7 +89,7 @@ namespace SensorDevice
         protected object srLocker = new object();
 
 
-        public SensorDeviceBase()
+        public InstDeviceBase()
         {
             sPort = new SerialPort()
             {
@@ -115,16 +119,16 @@ namespace SensorDevice
 
 
         /// <summary>
-        /// 初始化传感器设备
+        /// 初始化仪器设备
         /// </summary>
         /// <param name="cfg"></param>
         /// <returns></returns>
         public virtual bool Init(JObject cfg)
         {
             bool confOK = true;
-            if (this.sensorIdx >= MaxSensorNum)
+            if (this.InstIdx >= MaxInstNum)
             {
-                nlogger.Error("the sensorInfo.sensorIdx exceed the maxSensorNum: " + SensorCount.ToString());
+                nlogger.Error("the instumentInfo.InstIdx exceed the maxInstrumentNum: " + InstCount.ToString());
                 return false;
             }
 
@@ -144,8 +148,6 @@ namespace SensorDevice
                 nlogger.Error("exception occur when SetPortName: " + ex.Message);
                 return false;
             }
-
-            Enable = true;
 
             return confOK;
         }
@@ -180,7 +182,7 @@ namespace SensorDevice
             }
             catch (Exception ex)
             {
-                nlogger.Error("传感器设备新建串口时发生异常：" + ex.Message);
+                nlogger.Error("仪器设备新建串口时发生异常：" + ex.Message);
                 return false;
             }
         }

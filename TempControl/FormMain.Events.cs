@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using SensorDevice;
+using InstDevice;
 
 namespace TempControl
 {
@@ -20,7 +20,7 @@ namespace TempControl
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEndEvent += _device_TimerTickEvent;
             _device.SampleStateChangedEvent += _device_SampleStateChangedEvent;
-            _device.SensorSDReceiveDataEvent += _device_SensorSDReceiveDataEvent;
+            _device.InstSDReceiveDataEvent += _device_SensorSDReceiveDataEvent;
         }
 
         public delegate void mainFormTimeTickEvent();
@@ -29,8 +29,8 @@ namespace TempControl
         /// </summary>
         public event mainFormTimeTickEvent mainFormTimeTickEventHandler;
 
-        // 标准传感器接收到数据 - 事件处理函数
-        private void _device_SensorSDReceiveDataEvent(SensorSTDData data)
+        // 标准仪器接收到数据 - 事件处理函数
+        private void _device_SensorSDReceiveDataEvent(InstSTDData data)
         {
             this.BeginInvoke(new EventHandler(delegate
             {

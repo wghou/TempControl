@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using IotCS.Client;
 using Device;
-using SensorDevice;
+using InstDevice;
 
 namespace IotMonitor
 {
@@ -45,7 +45,7 @@ namespace IotMonitor
                     JObject child = (JObject)obj["IotPort"];
 
                     IotTopic[] tpSub = new IotTopic[] {
-                        IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState, IotTopic.SensorState, IotTopic.SensorValue };
+                        IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState, IotTopic.InstState, IotTopic.SensorValue };
                     _iotClient.configIotPorts(child, tpSub);
                     _iotClient.IotPortReceiveMessageEvent += IotClient_MessageReceievedEvent;
                 }  
@@ -135,43 +135,41 @@ namespace IotMonitor
                     }));
                     break;
 
-                case IotTopic.SensorState:
-                    IotSensorStateMessage srSt = message.ToObject<IotSensorStateMessage>();
+                case IotTopic.InstState:
+                    IotInstStateMessage srSt = message.ToObject<IotInstStateMessage>();
                     this.BeginInvoke(new EventHandler(delegate
                     {
-                        // 将传感器信息显示
-                        foreach(var itm in srSt.SensorInfos)
+                        // 将仪器信息显示
+                        foreach(var itm in srSt.InstInfos)
                         {
-                            if (itm.sensorIdx < 0 || itm.sensorIdx > 6) continue;
+                            if (itm.InstIdx < 0 || itm.InstIdx > 6) continue;
 
-                            this.textBoxes_srType[itm.sensorIdx].Text = itm.sensorType.ToString();
-                            this.textBoxes_srSerial[itm.sensorIdx].Text = itm.serialNo;
-                            this.textBoxes_srVersion[itm.sensorIdx].Text = itm.version;
+                            
                         }
                     }));
                     break;
 
                 case IotTopic.SensorValue:
                     // todo: 优化
-                    IotSensorValueMessage srVal = new IotSensorValueMessage();
-                    srVal = JsonConvert.DeserializeObject<IotSensorValueMessage>(message.ToString(), new JsonSensorDataConverter());
+                    IotInstValueMessage srVal = new IotInstValueMessage();
+                    srVal = JsonConvert.DeserializeObject<IotInstValueMessage>(message.ToString(), new JsonInstDataConverter());
 
                     this.BeginInvoke(new EventHandler(delegate
                     {
-                        // 将传感器信息显示
-                        foreach(var itm in srVal.SensorData)
+                        // 将仪器信息显示
+                        foreach(var itm in srVal.InstData)
                         {
                             // todo: 解析
-                            switch(itm.sensorType)
+                            switch(itm.InstType)
                             {
-                                case SensorType.Standard:
-                                    SensorSTDData dt = (SensorSTDData)itm;
+                                case TypeInst.Standard:
+                                    InstSTDData dt = (InstSTDData)itm;
                                     this.textBox_vTitularValue.Text = dt.vTitularValue.ToString();
                                     this.textBox_vStandardC.Text = dt.vStandardC.ToString();
                                     this.textBox_vStandardT.Text = dt.vStandardT.ToString();
                                     break;
 
-                                case SensorType.SBE37SI:
+                                case TypeInst.SBE37SI:
                                     
                                     break;
 

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("SensorSBE37")]
+[assembly: AssemblyTitle("InstDevice")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SensorSBE37")]
+[assembly: AssemblyProduct("InstDevice")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("e6abfdb5-6796-4dc8-a7fd-3ca11241e016")]
+[assembly: Guid("3ecb116b-4205-43d3-b34d-94b7ddfc7864")]
 
 // 程序集的版本信息由下列四个值组成: 
 //

@@ -106,7 +106,7 @@ namespace TempControl
 
                     case Device.ErrorCode.SensorError:
                         if (item.Value != 0)
-                            errMsg += "\r\n传感器设备读取数值失败!   " + item.Value.ToString() + " 次";
+                            errMsg += "\r\n仪器设备读取数值失败!   " + item.Value.ToString() + " 次";
                         break;
 
                     case Device.ErrorCode.CodeError:

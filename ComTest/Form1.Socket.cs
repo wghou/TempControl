@@ -36,9 +36,9 @@ namespace ComTest
             _socketClient.MessageReceievedEvent += _socketClient_MessageReceievedEvent;
 
             dictCheckBoxsSocket[checkBox_AutoStart] = SocketCmd.AutoStart;
-            dictCheckBoxsSocket[checkBox_Suspend] = SocketCmd.Suspend;
+            dictCheckBoxsSocket[checkBox_TestIdx] = SocketCmd.TestId;
             dictCheckBoxsSocket[checkBox_Stop] = SocketCmd.Stop;
-            dictCheckBoxsSocket[checkBox_SensorInfo] = SocketCmd.SensorInfo;
+            dictCheckBoxsSocket[checkBox_DeviceState] = SocketCmd.DeviceState;
             return confOK;
         }
 
