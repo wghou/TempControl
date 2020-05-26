@@ -142,7 +142,7 @@ namespace IotMonitor
                         // 将仪器信息显示
                         foreach(var itm in srSt.InstInfos)
                         {
-                            if (itm.InstIdx < 0 || itm.InstIdx > 6) continue;
+                            if (itm.InstIdx_NotUsed < 0 || itm.InstIdx_NotUsed > 6) continue;
 
                             
                         }

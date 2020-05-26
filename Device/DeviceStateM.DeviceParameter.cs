@@ -277,10 +277,6 @@ namespace Device
         /// </summary>
         public TempDevice tpDeviceS = new TempDevice() { tpDeviceName = "辅槽控温设备" };
 
-        /// <summary>
-        /// 标准数据采集器
-        /// </summary>
-        public InstSTD sdDevice = new InstSTD();
 
         /// <summary>
         /// 系统开始运行的时间

@@ -15,63 +15,56 @@ namespace Device
         /// <summary>
         /// 仪器设备 - 多个
         /// </summary>
-        private List<InstDeviceBase> _instDevices = new List<InstDeviceBase>();
-
+        public List<InstDeviceBase> _instDevices = new List<InstDeviceBase>();
+        /// <summary>
+        /// 标准数据采集器
+        /// </summary>
+        public InstSTD sdDeviceRef;
+        /// <summary>
+        /// 仪器设备的端口
+        /// </summary>
+        public JArray _instPorts = new JArray();
 
         /// <summary>
         /// 初始化仪器设备
         /// </summary>
         /// <param name="child"></param>
         /// <returns></returns>
-        private bool initInstDevices(JObject child)
+        private bool initInstDevices(JArray child)
         {
-            // todo: unhandled exception
-
-            bool confOK = true;
-
-            _instDevices.Clear();
-
-            // 配置标准数据采集器
-            if (child.ContainsKey("InstSTD"))
+            try
             {
-                JObject child2 = (JObject)child["InstSTD"];
+                // 设置仪器总数量
+                int numInst = Math.Min(child.Count, InstDeviceBase.MaxInstNum);
+                _instDevices.Clear();
 
-                confOK &= sdDevice.Init(child2);
-                sdDevice.ErrorOccurEvent += InstDevice_ErrorOccurEvent;
-                sdDevice.DataReceivedEvent += SdDevice_DataReceivedEvent;
-
-                // 添加一个 InstInfo
-                InstDeviceBase.InstInfos.Add(new InstInfoBase());
-                sdDevice.Link2InstInfo(InstDeviceBase.InstInfos.Count - 1);
-
-                // 使能设备
-                if(confOK == true) { sdDevice.Enable = true; }
-            }
-            else
-            {
-                confOK = false;
-                nlogger.Error("there is no \"InstSTD\" in config.json.");
-            }
-
-            // 设置仪器
-            if (child.ContainsKey("InstSBE"))
-            {
-                JArray child2 = (JArray)child["InstSBE"];
-
-                int numInst = Math.Min(child2.Count, InstDeviceBase.MaxInstNum);
-
-                for (int i = 0; i < numInst; i++)
+                if (numInst < 1)
                 {
-                    JObject ob = (JObject)child2[i];
-                    InstSBE ist = new InstSBE();
-                    confOK &= ist.Init(ob);
-                    ist.ErrorOccurEvent += InstDevice_ErrorOccurEvent;
-
-                    _instDevices.Add(ist);
+                    nlogger.Warn("There is not enough number of ports for Instrument: " + numInst.ToString());
+                    return false;
                 }
+
+                // 添加标准仪器接口
+                InstInfoBase info = new InstInfoBase() {
+                                        InstType = TypeInst.Standard,
+                                        SensorFlag = TypeSensor.Conduct | TypeSensor.Tempt };
+                sdDeviceRef = new InstSTD(info);
+                
+                sdDeviceRef.ErrorOccurEvent += InstDevice_ErrorOccurEvent;
+                sdDeviceRef.DataReceivedEvent += SdDevice_DataReceivedEvent;
+                _instDevices.Add(sdDeviceRef);
+
+
+                // todo: 记录端口号、波特率等
+                _instPorts = child;
+            }
+            catch(Exception ex)
+            {
+                nlogger.Warn("Expection in : DeviceStateM.initInstDevices(): " + ex.Message);
+                return false;
             }
 
-            return confOK;
+            return true;
         }
 
 
@@ -90,22 +83,37 @@ namespace Device
             //    msgSend.ExecuteSucceed = false;
             //}
 
-            // 根据 TestID，从远程数据库查找标准器信息 InstSqlrd，配置 SensorSD
-            List<InstSqlrd> instSql = sqlWriter.QueryValue<InstSqlrd>(testId);
-            if(instSql.Count == 0) { return false; }
-
-            foreach(var itm in instSql)
+            try
             {
-                // 根据 TestID 以及 InstrumentID，从远程数据库查找仪器信息 SensorSqlrd，配置 SensorSBE37
-                List<SensorSqlrd> srSql = sqlWriter.QueryValue<SensorSqlrd>(testId);
-                foreach(var sr in srSql)
-                {
-                    sr.FreshFromSql2Info();
-                    itm.sensors.Add(sr);
-                }
+                // 根据 TestID，从远程数据库查找标准器信息 InstSqlrd，配置 SensorSD
+                List<InstSqlrd> instSql = sqlWriter.QueryValue<InstSqlrd>()
+                                            .Where(q => q.vTestID.Equals(testId))
+                                            .ToList();
 
-                itm.FreshFromSql2Info();
-                InstDeviceBase.InstInfos.Add(itm);
+                if (instSql.Count == 0) { return false; }
+
+                foreach (var itm in instSql)
+                {
+                    // 根据 TestID 以及 InstrumentID，从远程数据库查找仪器信息 SensorSqlrd，配置 SensorSBE37
+                    List<SensorSqlrd> srSql = sqlWriter.QueryValue<SensorSqlrd>()
+                                                        .Where(q => q.vInstrumentID.Equals(itm.vInstrumentID))
+                                                        .ToList();
+                    foreach (var sr in srSql)
+                    {
+                        itm.sensors.Add(sr);
+                    }
+
+                    // 添加各类不同型号仪器对应的接口
+                    // todo: 根据 sql 反回的 InstrumentType，新建不同的仪器类型
+                    InstSBE ist = new InstSBE(itm);
+                    ist.ErrorOccurEvent += InstDevice_ErrorOccurEvent;
+                    _instDevices.Add(ist);
+                }
+            }
+            catch(Exception ex)
+            {
+                nlogger.Error("Exception: " + ex.Message);
+                return false;
             }
 
             return true;

@@ -15,27 +15,26 @@ namespace InstDevice
     /// </summary>
     public sealed partial class InstSTD : InstDeviceStateM<InstSTDData, InstInfoBase>
     {
-        public InstSTD()
+        public InstSTD(InstInfoBase info) : base(info)
         {
             
         }
 
         /// <summary>
-        /// 设置 cmdChain
+        /// 根据 this.Info.InstType ，生成 cmdChain
         /// </summary>
         /// <returns></returns>
-        protected override bool setCmdChain()
+        protected override bool SetCmdChain()
         {
-            switch (Info.InstType)
+            if(Info.InstType == TypeInst.Standard)
             {
-                case TypeInst.SBE37SI:
-                    cmdChain = new CmdChainSTD();
-                    break;
-
-                default:
-                    break;
+                cmdChain = new CmdChainSTD();
+                return true;
             }
-            return true;
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -46,6 +45,8 @@ namespace InstDevice
         /// <returns></returns>
         public bool CheckFluc(int cnt, double crt)
         {
+            if (!Enable) return false;
+
             double fluc = 0;
             if (_instData.Count == 0 || _instData.Count < cnt)
             {

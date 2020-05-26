@@ -8,7 +8,7 @@ namespace InstDevice
 {
     public abstract partial class InstDeviceStateM<TData, TInfo> : InstDeviceBase
         where TData : InstDataBase, new()
-        where TInfo : InstInfoBase
+        where TInfo : InstInfoBase, new()
     {
         public delegate void DataReceivedEventHandler(TData data);
         /// <summary>
@@ -21,6 +21,8 @@ namespace InstDevice
         /// <param name="data"></param>
         protected virtual void OnDataReceived(TData data)
         {
+            if (!Enable) return;
+
             DataReceivedEvent?.Invoke(data);
         }
 

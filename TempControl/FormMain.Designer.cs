@@ -94,6 +94,7 @@
             this.label_vStandardT = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label_vStandardC = new System.Windows.Forms.Label();
+            this.checkBox_inst = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS3)).BeginInit();
@@ -839,6 +840,19 @@
             this.label_vStandardC.Text = "0.00";
             this.label_vStandardC.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // checkBox_inst
+            // 
+            this.checkBox_inst.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_inst.AutoCheck = false;
+            this.checkBox_inst.Location = new System.Drawing.Point(312, 567);
+            this.checkBox_inst.Name = "checkBox_inst";
+            this.checkBox_inst.Size = new System.Drawing.Size(100, 40);
+            this.checkBox_inst.TabIndex = 16;
+            this.checkBox_inst.Text = "配置仪器";
+            this.checkBox_inst.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_inst.UseVisualStyleBackColor = true;
+            this.checkBox_inst.Click += new System.EventHandler(this.checkBox_inst_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -852,6 +866,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.pictureBox_iot);
+            this.Controls.Add(this.checkBox_inst);
             this.Controls.Add(this.groupBox_tempS);
             this.Controls.Add(this.groupBox_tempM);
             this.Controls.Add(this.groupBox_ry1);
@@ -955,5 +970,6 @@
         private System.Windows.Forms.Label label_vStandardT;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label_vStandardC;
+        private System.Windows.Forms.CheckBox checkBox_inst;
     }
 }

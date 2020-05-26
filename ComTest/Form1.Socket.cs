@@ -64,9 +64,31 @@ namespace ComTest
             if (!dictCheckBoxsSocket.ContainsKey((sender as CheckBox))) return;
 
             SocketCmd cmd = dictCheckBoxsSocket[(sender as CheckBox)];
-            SocketCmdMessage msg = new SocketCmdMessage(cmd);
 
-            _socketClient.pushMessage(JObject.FromObject(msg));
+            switch (cmd)
+            {
+                case SocketCmd.AutoStart:
+                case SocketCmd.Stop:
+                case SocketCmd.Finished:
+                    SocketCmdMessage msg1 = new SocketCmdMessage(cmd);
+                    _socketClient.pushMessage(JObject.FromObject(msg1));
+                    break;
+
+                case SocketCmd.TestId:
+                    SocketTestIdxMessage msg2 = new SocketTestIdxMessage();
+                    msg2.TestIdx = "20200401-220155";
+                    _socketClient.pushMessage(JObject.FromObject(msg2));
+                    break;
+
+                case SocketCmd.DeviceState:
+                    SocketStateMessage msg3 = new SocketStateMessage();
+                    _socketClient.pushMessage(JObject.FromObject(msg3));
+                    break;
+
+                default:
+                    break;
+            }
+            
         }
 
 

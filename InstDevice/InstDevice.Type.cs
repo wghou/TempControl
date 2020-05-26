@@ -95,8 +95,9 @@ namespace InstDevice
         public TypeInst InstType = TypeInst.Undefined;
         /// <summary>
         /// 当前仪器设备的编号，范围 0 ～ maxSensorNum - 1（值为5）
+        /// 暂时不用！！
         /// </summary>
-        public int InstIdx = -1;
+        public int InstIdx_NotUsed = -1;
         /// <summary>
         /// 包含仪器标志位
         /// </summary>
@@ -106,7 +107,7 @@ namespace InstDevice
         /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
         /// </summary>
         /// <returns></returns>
-        public bool FreshFromSql2Info() { return true; }
+        public virtual bool FreshFromSql2Info() { return true; }
     }
 
     /// <summary>
@@ -120,14 +121,15 @@ namespace InstDevice
         public TypeSensor SensorType = TypeSensor.None;
         /// <summary>
         /// 传感器所在仪器的编号
+        /// 暂时不用！！
         /// </summary>
-        public int InstIdx = -1;
+        public int InstIdx_NotUsed = -1;
 
         /// <summary>
         /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
         /// </summary>
         /// <returns></returns>
-        public bool FreshFromSql2Info() { return true; }
+        public virtual bool FreshFromSql2Info() { return true; }
     }
 
     /// <summary>
@@ -259,16 +261,17 @@ namespace InstDevice
         /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
         /// </summary>
         /// <returns></returns>
-        public new bool FreshFromSql2Info()
+        public override bool FreshFromSql2Info()
         {
             // 更新设备类型
-            if(vInstrumentID == "")
+            // todo: 如何辨识设备类型
+            if(vSpecification.Contains("SMP"))
             {
-                InstType = TypeInst.SBE37SI;
+                InstType = TypeInst.SBE37SMP;
             }
-            else if(vInstrumentID == "")
+            else if(vSpecification.Contains("SM"))
             {
-                InstType = TypeInst.SBE37SIP;
+                InstType = TypeInst.SBE37SM;
             }
             else
             {
@@ -278,7 +281,8 @@ namespace InstDevice
             // 更新传感器类型
             foreach(var itm in sensors)
             {
-                SensorFlag &= itm.SensorType;
+                itm.FreshFromSql2Info();
+                SensorFlag |= itm.SensorType;
             }
 
             return true;
@@ -314,13 +318,13 @@ namespace InstDevice
         /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
         /// </summary>
         /// <returns></returns>
-        public new bool FreshFromSql2Info()
+        public override bool FreshFromSql2Info()
         {
-            if(vSensorType == "")
+            if(vSensorType == "C")
             {
                 SensorType = TypeSensor.Conduct;
             }
-            else if(vSensorType == "")
+            else if(vSensorType == "T")
             {
                 SensorType = TypeSensor.Tempt;
             }

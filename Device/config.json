@@ -25,32 +25,29 @@
       "BaudRate": 9600
     }
   },
-  "?InstDev": "关于其他仪器的配置信息",
-  "InstDev": {
-    "?InstSTD": "标准仪器",
-    "InstSTD": {
+  "?InstDev": "仪器设备接口的配置信息",
+  "InstDev": [
+    {
+      "?InstDev_1": "仪器接口 1",
       "PortName": "COM9",
       "BaudRate": 9600
     },
-    "?InstSBE37": "所有仪器的端口配置，最多为 6 个",
-    "InstSBE37": [
-      {
-        "?InstSBE37_1": "仪器 1",
-        "PortName": "COM11",
-        "BaudRate": 9600
-      },
-      {
-        "?SensorSBE37_2": "仪器 2",
-        "PortName": "COM13",
-        "BaudRate": 9600
-      }
-    ]
-  },
+    {
+      "?InstDev_2": "仪器接口 2",
+      "PortName": "COM11",
+      "BaudRate": 9600
+    },
+    {
+      "?InstDev_3": "仪器接口 3",
+      "PortName": "COM13",
+      "BaudRate": 9600
+    }
+  ],
   "?IotPort": "关于用户接口的配置信息",
   "IotPort": {
     "MqttCloud": {
       "Enable": true,
-      "ServerUrl": "172.29.95.189",
+      "ServerUrl": "172.29.94.92",
       "Port": 5001,
       "ApiKey": "public",
       "ProductId": "admin",

@@ -180,10 +180,15 @@ namespace Others
         /// <typeparam name="T">查询类型-对应表</typeparam>
         /// <param name="pkValues">主键的值</param>
         /// <returns> 查询结果-List<T> </returns>
-        public List<T> QueryValue<T>(string pkValues) where T: mysqlData
+        public ISugarQueryable<T> QueryValue<T>() where T: mysqlData
         {
-            List<T> getByPrimaryKey = _sqlDB.Queryable<T>().In(pkValues).ToList();
-            return getByPrimaryKey;
+            // 初始化 sql db
+            if (_sqlDB == null)
+            {
+                if (Init() == false) return null;
+            }
+
+            return _sqlDB.Queryable<T>();
         }
     }
 }

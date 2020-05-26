@@ -40,45 +40,12 @@ namespace InstDevice
         /// </summary>
         protected static readonly MySqlWriter sqlWriter = new MySqlWriter();
 
-
         // todo: 可以把温度点列表，从数据库读取到这里面
         /// <summary>
         /// 所有测试点的集合
         /// </summary>
         public static List<TestOrderSqlrd> testOrders { set; get; } = new List<TestOrderSqlrd>();
 
-
-        /// <summary>
-        /// 所有设备信息的集合
-        /// </summary>
-        public static List<InstInfoBase> InstInfos { set; get; } = new List<InstInfoBase>();
-        /// <summary>
-        /// 当前仪器设备的 Info 在 _instInfos 中的位置
-        /// </summary>
-        protected int _infoIdx = -1;
-        /// <summary>
-        /// 建立 InstInfos 与 InstDevice 的对应关系
-        /// </summary>
-        /// <param name="infoIdx"></param>
-        /// <returns></returns>
-        public virtual bool Link2InstInfo(int infoIdx) {
-            if(infoIdx >= InstInfos.Count) { return false; }
-            _infoIdx = infoIdx;
-            InstInfos[_infoIdx].InstIdx = this.InstIdx;
-            if(setCmdChain() == true)
-            {
-                Enable = true;
-            }
-            return true;
-        }
-        /// <summary>
-        /// 设置 cmdChain
-        /// </summary>
-        /// <returns></returns>
-        protected virtual bool setCmdChain()
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// 已有的仪器设备的总数
@@ -97,7 +64,8 @@ namespace InstDevice
         /// </summary>
         public Err_sr ErrorStatus { set; get; } = Err_sr.NoError;
         /// <summary>
-        /// 启用
+        /// 启用/未启用
+        /// 当 Enable == false 时，即可通过 InitWithInfo() 配置设备
         /// </summary>
         public bool Enable { set; get; } = false;
         
@@ -119,6 +87,8 @@ namespace InstDevice
         /// <param name="err"></param>
         protected virtual void OnErrorOccur(Err_sr err)
         {
+            if (!Enable) return;
+
             ErrorOccurEvent?.Invoke(err);
         }
 
@@ -155,64 +125,26 @@ namespace InstDevice
         /// </summary>
         /// <returns></returns>
         public virtual bool StopMeasure() { return false; }
-        /// <summary>
-        /// 处理串口接收到的数据
-        /// </summary>
-        /// <param name="data"></param>
-        public virtual void internalProceedReceivedData(string data) {
-            // todo: 抛出异常
-            throw new NotImplementedException();
-        }
-
+        
 
         /// <summary>
-        /// 初始化仪器设备
+        /// 初始化仪器设备，通过 Info 信息及 cfg 包含的端口信息
         /// </summary>
         /// <param name="cfg"></param>
         /// <returns></returns>
-        public virtual bool Init(JObject cfg)
+        public virtual bool InitWithInfo(JObject cfg)
         {
-            bool confOK = true;
-            if (this.InstIdx >= MaxInstNum)
-            {
-                nlogger.Error("the InstInfo.InstIdx exceed the maxInstNum: " + InstCount.ToString());
-                return false;
-            }
-
-            try
-            {
-                // 设置波特率
-                if(cfg.ContainsKey("BaudRate"))
-                {
-                    sPort.BaudRate = (int)cfg["BaudRate"];
-                }
-
-                // 设置端口号
-                if (cfg.ContainsKey("PortName"))
-                {
-                    confOK &= SetPortName(cfg["PortName"].ToString());
-                }
-                else
-                {
-                    confOK = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                nlogger.Error("exception occur when SetPortName: " + ex.Message);
-                return false;
-            }
-
-            return confOK;
+            throw new NotImplementedException();
         }
 
 
         /// <summary>
         /// 设定串口号 / 初始化
         /// </summary>
-        /// <param name="portName"></param>
+        /// <param name="portName"> 端口号 </param>
+        /// <param name="baudRate"> 波特率 </param>
         /// <returns></returns>
-        private bool SetPortName(string portName)
+        protected bool SetPortName(string portName, int baudRate)
         {
             try
             {
@@ -220,6 +152,7 @@ namespace InstDevice
                 try { sPort.Close(); } catch { }
 
                 sPort.PortName = portName;
+                sPort.BaudRate = baudRate;
 
                 string[] portNames = SerialPort.GetPortNames();
                 if (!portNames.Contains(portName.ToUpper()))
@@ -239,6 +172,17 @@ namespace InstDevice
                 nlogger.Error("仪器设备新建串口时发生异常：" + ex.Message);
                 return false;
             }
+        }
+
+
+        /// <summary>
+        /// 处理串口接收到的数据
+        /// </summary>
+        /// <param name="data"></param>
+        protected virtual void internalProceedReceivedData(string data)
+        {
+            // todo: 抛出异常
+            throw new NotImplementedException();
         }
 
         /// <summary>

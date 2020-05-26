@@ -98,7 +98,7 @@ namespace Device
                 // 设置仪器
                 if (obj.ContainsKey("InstDev"))
                 {
-                    JObject child = (JObject)obj["InstDev"];
+                    JArray child = (JArray)obj["InstDev"];
 
                     bool rlt = initInstDevices(child);
                     if (!rlt) nlogger.Error("配置仪器失败!");

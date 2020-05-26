@@ -188,7 +188,7 @@
             this.label2.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.Location = new System.Drawing.Point(7, 115);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(105, 14);
+            this.label2.Size = new System.Drawing.Size(91, 14);
             this.label2.TabIndex = 4;
             this.label2.Text = "仪器温度值：";
             // 
@@ -924,15 +924,15 @@
             this.checkBox_AutoStart.UseVisualStyleBackColor = true;
             this.checkBox_AutoStart.Click += new System.EventHandler(this.checkBox_Socket_Click);
             // 
-            // checkBox_Suspend
+            // checkBox_TestIdx
             // 
             this.checkBox_TestIdx.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_TestIdx.AutoCheck = false;
-            this.checkBox_TestIdx.Location = new System.Drawing.Point(891, 383);
-            this.checkBox_TestIdx.Name = "checkBox_Suspend";
-            this.checkBox_TestIdx.Size = new System.Drawing.Size(86, 34);
+            this.checkBox_TestIdx.Location = new System.Drawing.Point(888, 383);
+            this.checkBox_TestIdx.Name = "checkBox_TestIdx";
+            this.checkBox_TestIdx.Size = new System.Drawing.Size(95, 34);
             this.checkBox_TestIdx.TabIndex = 4;
-            this.checkBox_TestIdx.Text = "Suspend";
+            this.checkBox_TestIdx.Text = "TestID";
             this.checkBox_TestIdx.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_TestIdx.UseVisualStyleBackColor = true;
             this.checkBox_TestIdx.Click += new System.EventHandler(this.checkBox_Socket_Click);
@@ -950,15 +950,15 @@
             this.checkBox_Stop.UseVisualStyleBackColor = true;
             this.checkBox_Stop.Click += new System.EventHandler(this.checkBox_Socket_Click);
             // 
-            // checkBox_SensorInfo
+            // checkBox_DeviceState
             // 
             this.checkBox_DeviceState.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_DeviceState.AutoCheck = false;
-            this.checkBox_DeviceState.Location = new System.Drawing.Point(891, 431);
-            this.checkBox_DeviceState.Name = "checkBox_SensorInfo";
-            this.checkBox_DeviceState.Size = new System.Drawing.Size(86, 34);
+            this.checkBox_DeviceState.Location = new System.Drawing.Point(888, 431);
+            this.checkBox_DeviceState.Name = "checkBox_DeviceState";
+            this.checkBox_DeviceState.Size = new System.Drawing.Size(95, 34);
             this.checkBox_DeviceState.TabIndex = 4;
-            this.checkBox_DeviceState.Text = "SensorInfos";
+            this.checkBox_DeviceState.Text = "DeviceState";
             this.checkBox_DeviceState.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.checkBox_DeviceState.UseVisualStyleBackColor = true;
             this.checkBox_DeviceState.Click += new System.EventHandler(this.checkBox_Socket_Click);

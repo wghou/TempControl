@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Stateless;
 using System.Timers;
 using NLog;
+using Newtonsoft;
+using Newtonsoft.Json.Linq;
 
 namespace InstDevice
 {
@@ -39,12 +41,8 @@ namespace InstDevice
     /// </summary>
     public abstract partial class InstDeviceStateM<TData, TInfo> : InstDeviceBase
         where TData : InstDataBase, new()
-        where TInfo : InstInfoBase
+        where TInfo : InstInfoBase, new()
     {
-        /// <summary>
-        /// 设备线程锁，同一时间只允许单一线程访问设备资源（串口 / 数据）
-        /// </summary>
-        protected object sdLocker = new object();
         /// <summary>
         /// 仪器数据缓存
         /// </summary>
@@ -57,23 +55,15 @@ namespace InstDevice
         /// <summary>
         /// 设备线程锁，同一时间只允许单一线程访问设备资源（串口 / 数据）
         /// </summary>
-        protected object srLocker = new object();
+        protected object _instLocker = new object();
         /// <summary>
         /// 数据通信指令及解析类
         /// </summary>
         protected ICmdChain<TData> cmdChain;
-
         /// <summary>
         /// 设备的信息 Info
         /// </summary>
-        public TInfo Info
-        {
-            get
-            {
-                if (_infoIdx < 0 || _infoIdx >= InstInfos.Count) return null;
-                else { return InstInfos[_infoIdx] as TInfo; }
-            }
-        }
+        public TInfo Info { get; set; }
 
 
         /// <summary>
@@ -103,10 +93,78 @@ namespace InstDevice
         /// </summary>
         protected float currentTemptPoint = 0.0f;
 
-
-        public InstDeviceStateM()
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="ifo"> 设备信息 Info </param>
+        public InstDeviceStateM(TInfo ifo)
         {
-            ConfigInstStateless();        }
+            Info = ifo;
+            Info.FreshFromSql2Info();
+        }
+
+        /// <summary>
+        /// 初始化仪器设备，通过 Info 信息及 cfg 包含的端口信息
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <returns></returns>
+        public override bool InitWithInfo(JObject cfg)
+        {
+            bool confOK = true;
+            if (this.InstIdx >= MaxInstNum)
+            {
+                nlogger.Error("the InstIdx exceed the maxInstNum: " + InstCount.ToString());
+                return false;
+            }
+
+            if(Info.InstType == TypeInst.Undefined) {
+                nlogger.Error("the Info.InstType undefined.");
+                return false;
+            }
+
+            try
+            {
+                // 设置波特率
+                int baudRate = cfg.ContainsKey("BaudRate") ? (int)cfg["BaudRate"] : 9600;
+                
+                // 设置端口号
+                if (cfg.ContainsKey("PortName"))
+                {
+                    confOK &= SetPortName(cfg["PortName"].ToString(), baudRate);
+                }
+                else
+                {
+                    confOK = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                nlogger.Error("exception occur when SetPortName: " + ex.Message);
+                return false;
+            }
+
+            // 配置端口失败
+            if(confOK == false)
+            {
+                nlogger.Error("failed to config the serial port.");
+                return false;
+            }
+
+            // 生成 cmdChain
+            confOK = SetCmdChain();
+
+            // 使能
+            if(confOK == true) { Enable = true; }
+            return confOK;
+        }
+
+
+        /// <summary>
+        /// 根据 this.Info.InstType ，生成 cmdChain
+        /// </summary>
+        /// <returns></returns>
+        protected abstract bool SetCmdChain();
+
 
         /// <summary>
         /// 执行读取信息步骤
@@ -114,7 +172,9 @@ namespace InstDevice
         /// <returns></returns>
         public override bool StartMeasure()
         {
-            if(_instState != StateInst.Idle)
+            if (!Enable) return  false;
+
+            if (_instState != StateInst.Idle)
             {
                 return false;
             }
@@ -129,6 +189,8 @@ namespace InstDevice
         /// <returns></returns>
         public override bool StartStore()
         {
+            if (!Enable) return false;
+
             if (_instState != StateInst.Measure)
             {
                 return false;
@@ -146,6 +208,8 @@ namespace InstDevice
         /// <returns></returns>
         public override bool StopMeasure()
         {
+            if (!Enable) return false;
+
             _instMachine.Fire(TriggerInst.Stop);
             return true;
         }
@@ -214,7 +278,7 @@ namespace InstDevice
         /// 处理串口接收到的数据
         /// </summary>
         /// <param name="str"></param>
-        public override void internalProceedReceivedData(string str)
+        protected override void internalProceedReceivedData(string str)
         {
             // 设备未启用
             if (Enable == false) return;

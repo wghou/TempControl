@@ -13,7 +13,7 @@ namespace InstDevice
     /// </summary>
     public sealed partial class InstSBE : InstDeviceStateM<InstSBE37Data, InstSqlrd>
     {
-        public InstSBE()
+        public InstSBE(InstSqlrd info) : base(info)
         {
             // 配置仪器相关状态机
             ConfigInstStateless();
@@ -27,21 +27,42 @@ namespace InstDevice
         }
 
         /// <summary>
-        /// 设置 cmdChain
+        /// 根据 this.Info.InstType ，生成 cmdChain
         /// </summary>
         /// <returns></returns>
-        protected override bool setCmdChain()
+        protected override bool SetCmdChain()
         {
+            bool confOK = true;
+            // todo: 完善 cmdChain
             switch (Info.InstType)
             {
                 case TypeInst.SBE37SI:
+                    confOK = false;
+                    break;
+
+                case TypeInst.SBE37SIP:
+                    confOK = false;
+                    break;
+
+                case TypeInst.SBE37SM:
+                    cmdChain = new CmdChainSM();
+                    break;
+
+                case TypeInst.SBE37SMP:
                     cmdChain = new CmdChainSMP();
                     break;
 
+                case TypeInst.SBE37SMPODO:
+                    confOK = false;
+                    break;
+
                 default:
+                    nlogger.Error("Info.InstType is Undefined when new cmdChain.");
+                    confOK = false;
                     break;
             }
-            return true;
+
+            return confOK;
         }
     }
 }

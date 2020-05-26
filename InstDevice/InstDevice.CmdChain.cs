@@ -85,7 +85,7 @@ namespace InstDevice
     /// <summary>
     /// 仪器命令
     /// </summary>
-    public class CmdChainSMP : CmdChainSBE37
+    public sealed class CmdChainSMP : CmdChainSBE37
     {
         private int currentCmdIdx = -1;
         private readonly int maxCmdIdx = 1;  // 0 / 1
@@ -138,7 +138,7 @@ namespace InstDevice
     /// <summary>
     /// 仪器命令
     /// </summary>
-    public class CmdChainSP : CmdChainSBE37
+    public sealed class CmdChainSM : CmdChainSBE37
     {
         private int currentCmdIdx = -1;
         private readonly int maxCmdIdx = 1;  // 0 / 1
