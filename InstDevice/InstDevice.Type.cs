@@ -45,10 +45,95 @@ namespace InstDevice
         Error
     }
 
+    /// 说明：定义 InfoBase 的用处
+    /// 1、可以作为基类，实现多态
+    /// 2、在存放信息的地方，定义 List<InfoBase> ，可以满足不同类型信息的存放
+    /// 3、可以将 SqlData 中的数据与 Info 中的数据隔绝开来。也就是说，从数据
+    /// 库中读取的数据，放在 SqlData 部分，而一些常用、共有的信息，定义在 Info 中。
+
+    /// <summary>
+    /// Info 类的公共接口
+    /// 在 sql 类中，部分属性是直接从数据库读写的，但有一部分成员函数是手动修改的。
+    /// 因此，便需要根据 sql 数据，将这部分手动数据进行更新
+    /// </summary>
+    interface ISql2InfoBase
+    {
+        /// <summary>
+        /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
+        /// </summary>
+        /// <returns></returns>
+        bool FreshFromSql2Info();
+        /// <summary>
+        /// 根据 Info 数据（一般为成员变量）刷新 Sql 数据（一般为属性）
+        /// </summary>
+        /// <returns></returns>
+        /// bool FreshFromInfo2Sql();
+    }
+
+
+    /// <summary>
+    /// Data 类的公共接口
+    /// 在 sql 类中，部分属性是直接从数据库读写的，但有一部分成员函数是手动修改的。
+    /// 因此，便需要根据 data 数据，将这部分sql 数据进行更新
+    /// </summary>
+    interface IData2SqlBase
+    {
+        /// <summary>
+        /// 根据 Data 数据（一般为成员变量）刷新 Sql 数据（一般为属性）
+        /// </summary>
+        /// <returns></returns>
+        bool FreshFromData2Sql();
+    }
+
+
+    /// <summary>
+    /// 设备硬件信息的基类
+    /// </summary>
+    public class InstInfoBase : mysqlData, ISql2InfoBase
+    {
+        /// <summary> 设备类型 </summary>
+        public TypeInst InstType = TypeInst.Undefined;
+        /// <summary>
+        /// 当前仪器设备的编号，范围 0 ～ maxSensorNum - 1（值为5）
+        /// </summary>
+        public int InstIdx = -1;
+        /// <summary>
+        /// 包含仪器标志位
+        /// </summary>
+        public TypeSensor SensorFlag = TypeSensor.None;
+
+        /// <summary>
+        /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
+        /// </summary>
+        /// <returns></returns>
+        public bool FreshFromSql2Info() { return true; }
+    }
+
+    /// <summary>
+    /// 设备中传感器信息的基类
+    /// </summary>
+    public class SensorInfoBase : mysqlData, ISql2InfoBase
+    {
+        /// <summary>
+        /// 传感器类型
+        /// </summary>
+        public TypeSensor SensorType = TypeSensor.None;
+        /// <summary>
+        /// 传感器所在仪器的编号
+        /// </summary>
+        public int InstIdx = -1;
+
+        /// <summary>
+        /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
+        /// </summary>
+        /// <returns></returns>
+        public bool FreshFromSql2Info() { return true; }
+    }
+
     /// <summary>
     /// 仪器数据的基类
     /// </summary>
-    public abstract class InstDataBase : mysqlData, IComparable
+    public abstract class InstDataBase : mysqlData, IComparable, IData2SqlBase
     {
         /// <summary> 设备类型 </summary>
         public TypeInst InstType = TypeInst.Undefined;
@@ -63,22 +148,11 @@ namespace InstDevice
         /// <param name="obj"></param>
         /// <returns></returns>
         public virtual int CompareTo(object obj) { return 0; }
-    }
-
-    /// <summary>
-    /// 设备硬件信息的基类
-    /// </summary>
-    public class InstInfoBase : mysqlData {
-        /// <summary> 设备类型 </summary>
-        public TypeInst InstType = TypeInst.Undefined;
         /// <summary>
-        /// 当前仪器设备的编号，范围 0 ～ maxSensorNum - 1（值为5）
+        /// 根据 Data 数据（一般为成员变量）刷新 Sql 数据（一般为属性）
         /// </summary>
-        public int InstIdx = -1;
-        /// <summary>
-        /// 包含仪器标志位
-        /// </summary>
-        public TypeSensor SensorFlag = TypeSensor.None;
+        /// <returns></returns>
+        public abstract bool FreshFromData2Sql();
     }
 
     /// <summary>
@@ -176,6 +250,39 @@ namespace InstDevice
 
         /// <summary> </summary>
         public string vTestType { set; get; }
+
+        /// <summary> 仪器上挂载的传感器 </summary>
+        public List<SensorInfoBase> sensors = new List<SensorInfoBase>();
+
+
+        /// <summary>
+        /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
+        /// </summary>
+        /// <returns></returns>
+        public new bool FreshFromSql2Info()
+        {
+            // 更新设备类型
+            if(vInstrumentID == "")
+            {
+                InstType = TypeInst.SBE37SI;
+            }
+            else if(vInstrumentID == "")
+            {
+                InstType = TypeInst.SBE37SIP;
+            }
+            else
+            {
+                InstType = TypeInst.Undefined;
+            }
+
+            // 更新传感器类型
+            foreach(var itm in sensors)
+            {
+                SensorFlag &= itm.SensorType;
+            }
+
+            return true;
+        }
     }
 
 
@@ -183,7 +290,7 @@ namespace InstDevice
     /// s_sensor 表 for mysql
     /// </summary>
     [SugarTable("s_sensor")]
-    public class SensorSqlrd : mysqlData
+    public class SensorSqlrd : SensorInfoBase
     {
         /// <summary> </summary>
         public string vSensorID { set; get; }
@@ -202,6 +309,28 @@ namespace InstDevice
 
         /// <summary> </summary>
         public string vTestItem { set; get; }
+
+        /// <summary>
+        /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
+        /// </summary>
+        /// <returns></returns>
+        public new bool FreshFromSql2Info()
+        {
+            if(vSensorType == "")
+            {
+                SensorType = TypeSensor.Conduct;
+            }
+            else if(vSensorType == "")
+            {
+                SensorType = TypeSensor.Tempt;
+            }
+            else
+            {
+                SensorType = TypeSensor.None;
+            }
+
+            return true;
+        }
     }
 
     /// <summary>
@@ -209,6 +338,15 @@ namespace InstDevice
     /// </summary>
     public class InstUDFData : InstDataBase {
         public InstUDFData() { InstType = TypeInst.Undefined; }
+        
+        /// <summary>
+        /// 根据 Data 数据（一般为成员变量）刷新 Sql 数据（一般为属性）
+        /// </summary>
+        /// <returns></returns>
+        public override bool FreshFromData2Sql()
+        {
+            return true;
+        }
     }
 
 
@@ -262,6 +400,15 @@ namespace InstDevice
         public DateTime addTime = DateTime.Now;
         /// <summary> </summary>
         public DateTime updateTime = DateTime.Now;
+
+        /// <summary>
+        /// 根据 Data 数据（一般为成员变量）刷新 Sql 数据（一般为属性）
+        /// </summary>
+        /// <returns></returns>
+        public override bool FreshFromData2Sql()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
@@ -312,6 +459,15 @@ namespace InstDevice
         public DateTime addTime = DateTime.Now;
         /// <summary> </summary>
         public DateTime updateTime = DateTime.Now;
+
+        /// <summary>
+        /// 根据 Data 数据（一般为成员变量）刷新 Sql 数据（一般为属性）
+        /// </summary>
+        /// <returns></returns>
+        public override bool FreshFromData2Sql()
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// 比较函数

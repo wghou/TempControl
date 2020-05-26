@@ -17,8 +17,25 @@ namespace InstDevice
     {
         public InstSTD()
         {
-            // todo: 根据仪器类型设置 cmdChain
-            cmdChain = new CmdChainSTD();
+            
+        }
+
+        /// <summary>
+        /// 设置 cmdChain
+        /// </summary>
+        /// <returns></returns>
+        protected override bool setCmdChain()
+        {
+            switch (Info.InstType)
+            {
+                case TypeInst.SBE37SI:
+                    cmdChain = new CmdChainSTD();
+                    break;
+
+                default:
+                    break;
+            }
+            return true;
         }
 
         /// <summary>

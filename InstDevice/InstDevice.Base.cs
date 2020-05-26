@@ -65,7 +65,19 @@ namespace InstDevice
             if(infoIdx >= InstInfos.Count) { return false; }
             _infoIdx = infoIdx;
             InstInfos[_infoIdx].InstIdx = this.InstIdx;
+            if(setCmdChain() == true)
+            {
+                Enable = true;
+            }
             return true;
+        }
+        /// <summary>
+        /// 设置 cmdChain
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool setCmdChain()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

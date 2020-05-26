@@ -96,11 +96,16 @@ namespace Device
 
             foreach(var itm in instSql)
             {
-                InstDeviceBase.InstInfos.Add(itm);
-
                 // 根据 TestID 以及 InstrumentID，从远程数据库查找仪器信息 SensorSqlrd，配置 SensorSBE37
                 List<SensorSqlrd> srSql = sqlWriter.QueryValue<SensorSqlrd>(testId);
+                foreach(var sr in srSql)
+                {
+                    sr.FreshFromSql2Info();
+                    itm.sensors.Add(sr);
+                }
 
+                itm.FreshFromSql2Info();
+                InstDeviceBase.InstInfos.Add(itm);
             }
 
             return true;
