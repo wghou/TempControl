@@ -58,7 +58,7 @@ namespace InstDevice
         /// <summary>
         /// 仪器设备的编号
         /// </summary>
-        public int InstIdx { set; get; } = -1;
+        public int InstIdx { get; private set; } = -1;
         /// <summary>
         /// 错误状态
         /// </summary>
@@ -109,6 +109,15 @@ namespace InstDevice
             sPort.DataReceived += SPort_DataReceived; ;
         }
 
+        /// <summary>
+        /// 获取仪器的基本信息
+        /// </summary>
+        /// <returns></returns>
+        public virtual InstInfoBase GetBasicInfo()
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// 开始测量数据
@@ -130,11 +139,20 @@ namespace InstDevice
         /// <summary>
         /// 初始化仪器设备，通过 Info 信息及 cfg 包含的端口信息
         /// </summary>
-        /// <param name="cfg"></param>
         /// <returns></returns>
-        public virtual bool InitWithInfo(JObject cfg)
+        public virtual bool InitWithInfo()
         {
             throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 关闭/停止仪器工作
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool DisableInstDevice()
+        {
+            Enable = false;
+            try { sPort.Close(); } catch { }
+            return true;
         }
 
 

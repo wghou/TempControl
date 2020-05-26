@@ -104,11 +104,20 @@ namespace InstDevice
         }
 
         /// <summary>
+        /// 获取仪器的基本信息
+        /// </summary>
+        /// <returns></returns>
+        public override InstInfoBase GetBasicInfo()
+        {
+            return Info as InstInfoBase;
+        }
+
+        /// <summary>
         /// 初始化仪器设备，通过 Info 信息及 cfg 包含的端口信息
         /// </summary>
         /// <param name="cfg"></param>
         /// <returns></returns>
-        public override bool InitWithInfo(JObject cfg)
+        public override bool InitWithInfo()
         {
             bool confOK = true;
             if (this.InstIdx >= MaxInstNum)
@@ -125,17 +134,7 @@ namespace InstDevice
             try
             {
                 // 设置波特率
-                int baudRate = cfg.ContainsKey("BaudRate") ? (int)cfg["BaudRate"] : 9600;
-                
-                // 设置端口号
-                if (cfg.ContainsKey("PortName"))
-                {
-                    confOK &= SetPortName(cfg["PortName"].ToString(), baudRate);
-                }
-                else
-                {
-                    confOK = false;
-                }
+                confOK &= SetPortName(Info.PortName, Info.BaudRate);
             }
             catch (Exception ex)
             {
@@ -287,7 +286,7 @@ namespace InstDevice
             try
             {
                 TData dt;
-                bool rlt = cmdChain.ResolveData(str, out dt);
+                bool rlt = cmdChain.ResolveData(Info, str, out dt);
                 if(rlt == false)
                 { // 触发错误产生事件
                     base.OnErrorOccur(Err_sr.Error);

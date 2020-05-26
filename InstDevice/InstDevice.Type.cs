@@ -102,6 +102,22 @@ namespace InstDevice
         /// 包含仪器标志位
         /// </summary>
         public TypeSensor SensorFlag = TypeSensor.None;
+        /// <summary>
+        /// 测试 id
+        /// </summary>
+        public string testId;
+        /// <summary>
+        /// 仪器 id
+        /// </summary>
+        public string instrumentId;
+        /// <summary>
+        /// 设备的端口号
+        /// </summary>
+        public string PortName = "COM";
+        /// <summary>
+        /// 设备的端口波特率
+        /// </summary>
+        public int BaudRate = 9600;
 
         /// <summary>
         /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
@@ -284,6 +300,9 @@ namespace InstDevice
                 itm.FreshFromSql2Info();
                 SensorFlag |= itm.SensorType;
             }
+
+            testId = vTestID;
+            instrumentId = vInstrumentID;
 
             return true;
         }

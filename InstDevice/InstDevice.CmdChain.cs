@@ -16,10 +16,11 @@ namespace InstDevice
         /// <summary>
         /// 解析传感器数据
         /// </summary>
+        /// <param name="info"> 仪器的基本信息 </param>
         /// <param name="str"> 输入字符串 </param>
         /// <param name="data"> 解析得到的结果，为空时，表示还未形成结果 </param>
         /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
-        bool ResolveData(string str,out TData data);
+        bool ResolveData(InstInfoBase info, string str,out TData data);
     }
 
     /// <summary>
@@ -34,22 +35,28 @@ namespace InstDevice
         }
         /// <summary> 重置指令 </summary>
         public void ResetCmd() { }
-        
+
+        public bool ResolveData(InstInfoBase info, string str, out InstSTDData data)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// 解析传感器数据
         /// </summary>
         /// <param name="str"> 输入字符串 </param>
         /// <param name="data"> 解析得到的结果，为空时，表示还未形成结果 </param>
         /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
-        bool ICmdChain<InstSTDData>.ResolveData(string str, out InstSTDData data)
+        bool ICmdChain<InstSTDData>.ResolveData(InstInfoBase info, string str, out InstSTDData data)
         {
             data = new InstSTDData();
 
             try
             {
+                // todo: 解析数据
                 string[] valStrs = str.Split('-');
 
-                data.vTestID = "wghou";
+                data.vTestID = info.testId;
                 data.vTitularValue = 123123;
                 data.vStandardC = double.Parse(valStrs[4]);
                 data.vStandardT = double.Parse(valStrs[5]);
@@ -79,7 +86,7 @@ namespace InstDevice
 
         public abstract string FetchNextCmd();
         public abstract void ResetCmd();
-        public abstract bool ResolveData(string str, out InstSBE37Data data);
+        public abstract bool ResolveData(InstInfoBase info, string str, out InstSBE37Data data);
     }
 
     /// <summary>
@@ -106,7 +113,7 @@ namespace InstDevice
         /// <param name="str"> 输入字符串 </param>
         /// <param name="data"> 解析得到的结果，为空时，表示还未形成结果 </param>
         /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
-        public override bool ResolveData(string str, out InstSBE37Data data)
+        public override bool ResolveData(InstInfoBase info, string str, out InstSBE37Data data)
         {
             data = null;
 
@@ -160,7 +167,7 @@ namespace InstDevice
         /// <param name="str"> 输入字符串 </param>
         /// <param name="data"> 解析得到的结果，为空时，表示还未形成结果 </param>
         /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
-        public override bool ResolveData(string str, out InstSBE37Data data)
+        public override bool ResolveData(InstInfoBase info, string str, out InstSBE37Data data)
         {
             data = null;
 

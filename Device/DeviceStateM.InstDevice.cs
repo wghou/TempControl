@@ -92,6 +92,8 @@ namespace Device
 
                 if (instSql.Count == 0) { return false; }
 
+                _instDevices.RemoveRange(1, _instDevices.Count - 1);
+
                 foreach (var itm in instSql)
                 {
                     // 根据 TestID 以及 InstrumentID，从远程数据库查找仪器信息 SensorSqlrd，配置 SensorSBE37
