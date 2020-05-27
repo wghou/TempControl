@@ -34,9 +34,8 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                this.label_vTitularValue.Text = data.vTitularValue.ToString();
-                this.label_vStandardC.Text = data.vStandardC.ToString();
-                this.label_vStandardT.Text = data.vStandardT.ToString();
+                this.label_vStandardC.Text = data.vStandardC.ToString("0.000");
+                this.label_vStandardT.Text = data.vStandardT.ToString("0.000");
             }));
         }
 

@@ -87,9 +87,7 @@
             this.pictureBox_logo = new System.Windows.Forms.PictureBox();
             this.pictureBox_iot = new System.Windows.Forms.PictureBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label_vTitularValue = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label_vStandardT = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -768,16 +766,6 @@
             this.label8.TabIndex = 39;
             this.label8.Text = "Iot:";
             // 
-            // label9
-            // 
-            this.label9.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label9.Location = new System.Drawing.Point(468, 551);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(138, 19);
-            this.label9.TabIndex = 34;
-            this.label9.Text = "TitularValue";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
@@ -789,16 +777,6 @@
             this.groupBox1.TabIndex = 40;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "系统状态";
-            // 
-            // label_vTitularValue
-            // 
-            this.label_vTitularValue.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_vTitularValue.Location = new System.Drawing.Point(468, 579);
-            this.label_vTitularValue.Name = "label_vTitularValue";
-            this.label_vTitularValue.Size = new System.Drawing.Size(138, 19);
-            this.label_vTitularValue.TabIndex = 34;
-            this.label_vTitularValue.Text = "0.00";
-            this.label_vTitularValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label10
             // 
@@ -844,9 +822,9 @@
             // 
             this.checkBox_inst.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_inst.AutoCheck = false;
-            this.checkBox_inst.Location = new System.Drawing.Point(312, 567);
+            this.checkBox_inst.Location = new System.Drawing.Point(472, 549);
             this.checkBox_inst.Name = "checkBox_inst";
-            this.checkBox_inst.Size = new System.Drawing.Size(100, 40);
+            this.checkBox_inst.Size = new System.Drawing.Size(128, 40);
             this.checkBox_inst.TabIndex = 16;
             this.checkBox_inst.Text = "配置仪器";
             this.checkBox_inst.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -861,8 +839,6 @@
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label_vStandardT);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.label_vTitularValue);
-            this.Controls.Add(this.label9);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.pictureBox_iot);
@@ -963,9 +939,7 @@
         private System.Windows.Forms.CheckBox checkBox_ryS2;
         private System.Windows.Forms.PictureBox pictureBox_iot;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label_vTitularValue;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label_vStandardT;
         private System.Windows.Forms.Label label12;

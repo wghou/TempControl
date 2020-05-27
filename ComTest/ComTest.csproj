@@ -91,7 +91,7 @@
     <Compile Include="Form1.RelayDevice.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.SensorDevice.cs">
+    <Compile Include="Form1.InstDevice.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Socket.cs">
