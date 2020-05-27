@@ -20,10 +20,16 @@ namespace ComTest
         private Timer _stdTimer = new Timer();
 
         /// <summary>
-        /// SBE37仪器 - 通信端口
+        /// SBE37SM仪器 - 通信端口
         /// </summary>
-        private SerialPort sPortSBE37 = new SerialPort();
-        private bool SportSBE37_enable = false;
+        private SerialPort sPortSBE37SM = new SerialPort();
+        private bool SportSBE37SM_enable = false;
+
+        /// <summary>
+        /// SBE37SM仪器 - 通信端口
+        /// </summary>
+        private SerialPort sPortSBE37SMP = new SerialPort();
+        private bool SportSBE37SMP_enable = false;
 
         ///////////////////////////////
         // 仪器设备
@@ -95,23 +101,24 @@ namespace ComTest
                 nlogger.Error("Exception in std timer func: " + ex.Message);
             }
         }
+
         /// <summary>
-        /// SBE37仪器 - 信息收发
+        /// SBE37SM 仪器 - 信息收发
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SPortSBE37_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void SPortSBE37SM_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             string dataRev = string.Empty;
 
             try
             {
-                dataRev = sPortSBE37.ReadLine();
-                sPortSBE37.DiscardInBuffer();
+                dataRev = sPortSBE37SM.ReadLine();
+                sPortSBE37SM.DiscardInBuffer();
             }
             catch(Exception ex)
             {
-                Debug.WriteLine("SPortSr_DataReceived Exception when ReadData : " + ex.Message);
+                Debug.WriteLine("SPortSBE37SM_DataReceived Exception when ReadData : " + ex.Message);
 
                 // 出现代码错误
                 srCodeErr = true;
@@ -121,7 +128,7 @@ namespace ComTest
             lock(ryLocker)
             {
                 // 调试信息
-                Debug.WriteLine("仪器设备读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
+                Debug.WriteLine("仪器设备 sPortSBE37SM 读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
 
                 try
                 {
@@ -129,20 +136,21 @@ namespace ComTest
                     {
                         case SrStatus.OK:
                             // 正常工作状态
-                            if (dataRev.Contains("R"))
+                            if(dataRev.Contains("tsr"))
                             {
-                                // 上位机读取数据
-                                float temp = srValue;
-                                dataRev += temp.ToString("0.000");
-                                dataRev += ":";
-                                sPortSBE37.WriteLine(dataRev);
+                                // 返回数据
+                                sPortSBE37SM.WriteLine("602818,  5298.894, 524770, 2252,  25 Mar 2020, 23:15:15");
                             }
-                            else
+                            else if (dataRev.Contains("ts"))
                             {
-                                // 未知指令
-                                // 指令不存在
-                                sPortSBE37.WriteLine("@35EB:");
+                                // 返回数据
+                                sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
                             }
+
+                            System.Threading.Thread.Sleep(5);
+                            // 返回指令执行标志
+                            sPortSBE37SM.WriteLine("<Executed/>");
+
                             //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
                             break;
                         case SrStatus.DisConnected:
@@ -150,32 +158,94 @@ namespace ComTest
                             break;
                         case SrStatus.DataErr:
                             // 错误状态
-                            sPortSBE37.WriteLine("@35EB:");
+                            //sPortSBE37SM.WriteLine("@35EB:");
                             //Debug.WriteLine("仪器错误数据： @035EB.");
                             break;
                         default:
-                            // 默认，正常工作状态
-                            if (dataRev.Contains("R"))
-                            {
-                                // 上位机读取数据
-                                float temp = 12.0f;
-                                dataRev += temp.ToString("0.000");
-                                dataRev += ":";
-                                sPortSBE37.WriteLine(dataRev);
-                            }
-                            else
-                            {
-                                // 未知指令
-                                // 指令不存在
-                                sPortSBE37.WriteLine("@35EB:");
-                            }
                             //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
                             break;
                     }
                 }
                 catch(Exception ex)
                 {
-                    Debug.WriteLine("SPortSr_DataReceived exception when writeData : " + ex.Message);
+                    Debug.WriteLine("SPortSBE37SM_DataReceived exception when writeData : " + ex.Message);
+
+                    // 出现代码错误
+                    srCodeErr = true;
+                }
+
+                // 如果错误不持续，则清空错误标记为
+                if (!srErrLast && srErrStatus != SrStatus.OK)
+                    this.BeginInvoke(new EventHandler(delegate { srErrStatus = SrStatus.OK; this.comboBox_SrStatus.SelectedIndex = 0; }));
+            }
+        }
+
+        /// <summary>
+        /// SBE37SM 仪器 - 信息收发
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SPortSBE37SMP_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            string dataRev = string.Empty;
+
+            try
+            {
+                dataRev = sPortSBE37SMP.ReadLine();
+                sPortSBE37SMP.DiscardInBuffer();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("SPortSBE37SMP_DataReceived Exception when ReadData : " + ex.Message);
+
+                // 出现代码错误
+                srCodeErr = true;
+            }
+
+
+            lock (ryLocker)
+            {
+                // 调试信息
+                Debug.WriteLine("仪器设备 sPortSBE37SMP 读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
+
+                try
+                {
+                    switch (srErrStatus)
+                    {
+                        case SrStatus.OK:
+                            // 正常工作状态
+                            if (dataRev.Contains("tsr"))
+                            {
+                                // 返回数据
+                                sPortSBE37SMP.WriteLine("602818,  5298.894, 524770, 2252,  25 Mar 2020, 23:15:15");
+                            }
+                            else if (dataRev.Contains("ts"))
+                            {
+                                // 返回数据
+                                sPortSBE37SMP.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                            }
+                            System.Threading.Thread.Sleep(5);
+                            // 返回指令执行标志
+                            sPortSBE37SMP.WriteLine("<Executed/>");
+
+                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
+                            break;
+                        case SrStatus.DisConnected:
+                            // 连接断开状态 - 不返回任何数据
+                            break;
+                        case SrStatus.DataErr:
+                            // 错误状态
+                            //sPortSBE37SMP.WriteLine("@35EB:");
+                            //Debug.WriteLine("仪器错误数据： @035EB.");
+                            break;
+                        default:
+                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("SPortSBE37SMP_DataReceived exception when writeData : " + ex.Message);
 
                     // 出现代码错误
                     srCodeErr = true;

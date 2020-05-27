@@ -204,6 +204,34 @@ namespace InstDevice
         }
 
         /// <summary>
+        /// 向设备发送指令
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns> 是否发送成功？true: 发送成功；false: 发送失败 </returns>
+        protected bool sendCMD(string cmd)
+        {
+            // 空指令，不发送
+            if (cmd == string.Empty) { return true; }
+
+            try
+            {
+                // 打开串口
+                if (!sPort.IsOpen) this.sPort.Open();
+                // 写入指令
+                this.sPort.WriteLine(cmd + "\r\n");
+            }
+            catch (Exception ex)
+            {
+                nlogger.Error("仪器设备读取参数失败！");
+                // 关闭串口
+                try { sPort.Open(); } catch { }
+
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 串口接收数据 - 事件处理函数
         /// </summary>
         /// <param name="sender"></param>
@@ -216,7 +244,8 @@ namespace InstDevice
             // todo: 如果数据接收结尾符号不同？
             try
             {
-                string data = sPort.ReadLine();
+                Thread.Sleep(30);
+                string data = sPort.ReadExisting();
                 sPort.DiscardInBuffer();
 
                 internalProceedReceivedData(data);

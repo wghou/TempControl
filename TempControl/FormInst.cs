@@ -24,13 +24,14 @@ namespace TempControl
 
             _device = dev;
 
-            loadInstInfo();
-
             baudList.Add(new BaudRateItem() { Id = 0, baudRate = 4800 });
             baudList.Add(new BaudRateItem() { Id = 1, baudRate = 9600 });
             comboBox_baudRate.DataSource = baudList;
             comboBox_baudRate.ValueMember = "Id";
             comboBox_baudRate.DisplayMember = "Name";
+            comboBox_baudRate.SelectedValue = 1;
+
+            loadInstInfo();
         }
 
         /// <summary>

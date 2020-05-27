@@ -179,21 +179,17 @@ namespace Device
                     _userPorts.PublishMessage(IotTopic.SampleState, JObject.FromObject(jSample));
                     break;
 
-                case IotTopic.SensorValue:
+                case IotTopic.InstValue:
                     // todo: add the sensor value
                     IotInstValueMessage jSensorVal = new IotInstValueMessage();
                     jSensorVal.DorS = IotDorS.Display;
-                    jSensorVal.Topic = IotTopic.SensorValue;
+                    jSensorVal.Topic = IotTopic.InstValue;
                     jSensorVal.InstData = new List<InstDataBase>();
 
                     // todo: dataAll.empty 如果为空
-                    //jSensorVal.InstData.Add(sdDevice.GetCurrentValue());
-                    //foreach(var itm in srDevices)
-                    //{
-                    //    jSensorVal.InstData.Add(itm.get.Last());
-                    //}
+                    jSensorVal.InstData.Add(sdDeviceRef.GetInstData().Last());
 
-                    _userPorts.PublishMessage(IotTopic.SensorValue, JObject.FromObject(jSensorVal));
+                    _userPorts.PublishMessage(IotTopic.InstValue, JObject.FromObject(jSensorVal));
                     break;
 
                 default:

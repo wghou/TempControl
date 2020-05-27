@@ -108,25 +108,43 @@ namespace ComTest
                     }
                 }
 
-                // 仪器 - 通信端口
-                if (obj.ContainsKey("SensorSBE37"))
+                // 仪器 SBE37SM - 通信端口
+                if (obj.ContainsKey("SensorSBE37SM"))
                 {
-                    JObject child = (JObject)obj["SensorSBE37"];
+                    JObject child = (JObject)obj["SensorSBE37SM"];
 
-                    SportSBE37_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
-                    if (SportSBE37_enable)
+                    SportSBE37SM_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (SportSBE37SM_enable)
                     {
-                        sPortSBE37.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM5";
-                        sPortSBE37.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
-                        sPortSBE37.DataBits = 8;
-                        sPortSBE37.StopBits = StopBits.One;
-                        sPortSBE37.Parity = Parity.None;
-                        sPortSBE37.ReadBufferSize = 64;
-                        sPortSBE37.WriteBufferSize = 64;
+                        sPortSBE37SM.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM5";
+                        sPortSBE37SM.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                        sPortSBE37SM.DataBits = 8;
+                        sPortSBE37SM.StopBits = StopBits.One;
+                        sPortSBE37SM.Parity = Parity.None;
+                        sPortSBE37SM.ReadBufferSize = 64;
+                        sPortSBE37SM.WriteBufferSize = 64;
                     }
                 }
 
-                if(obj.ContainsKey("Socket"))
+                // 仪器 SBE37SM - 通信端口
+                if (obj.ContainsKey("SensorSBE37SM"))
+                {
+                    JObject child = (JObject)obj["SensorSBE37SMP"];
+
+                    SportSBE37SMP_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
+                    if (SportSBE37SMP_enable)
+                    {
+                        sPortSBE37SMP.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM5";
+                        sPortSBE37SMP.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 9600;
+                        sPortSBE37SMP.DataBits = 8;
+                        sPortSBE37SMP.StopBits = StopBits.One;
+                        sPortSBE37SMP.Parity = Parity.None;
+                        sPortSBE37SMP.ReadBufferSize = 64;
+                        sPortSBE37SMP.WriteBufferSize = 64;
+                    }
+                }
+
+                if (obj.ContainsKey("Socket"))
                 {
                     JObject child = (JObject)obj["Socket"];
 
@@ -148,7 +166,8 @@ namespace ComTest
             // 添加串口收发信息事件
             if (SportTm_enable) sPortTm.DataReceived += SPortTm_DataReceived;
             if (SportTs_enable) sPortTs.DataReceived += SPortTs_DataReceived;
-            if (SportSBE37_enable) sPortSBE37.DataReceived += SPortSBE37_DataReceived;
+            if (SportSBE37SM_enable) sPortSBE37SM.DataReceived += SPortSBE37SM_DataReceived;
+            if (SportSBE37SMP_enable) sPortSBE37SMP.DataReceived += SPortSBE37SMP_DataReceived;
 
 
             // 打开端口
@@ -156,7 +175,8 @@ namespace ComTest
             {
                 if (SportTm_enable) sPortTm.Open();
                 if (SportTs_enable) sPortTs.Open();
-                if (SportSBE37_enable) sPortSBE37.Open();
+                if (SportSBE37SM_enable) sPortSBE37SM.Open();
+                if (SportSBE37SMP_enable) sPortSBE37SMP.Open();
                 if (SportSTD_enable) sPortSTD.Open();
             }
             catch(Exception ex)
@@ -231,7 +251,8 @@ namespace ComTest
                 // 关闭程序时，关闭串口
                 if (sPortTm.IsOpen) sPortTm.Close();
                 if (sPortTs.IsOpen) sPortTs.Close();
-                if (sPortSBE37.IsOpen) sPortSBE37.Close();
+                if (sPortSBE37SM.IsOpen) sPortSBE37SM.Close();
+                if (sPortSBE37SMP.IsOpen) sPortSBE37SMP.Close();
                 if (sPortSTD.IsOpen) sPortSTD.Close();
 
                 slaveThreadM?.Abort();

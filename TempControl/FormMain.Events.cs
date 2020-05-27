@@ -159,7 +159,11 @@ namespace TempControl
                         break;
                     case Device.State.Measure_Sample:
                         // 系统流程
-                        this.label_controlState.Text = "测量";
+                        this.label_controlState.Text = "测量-采样";
+                        break;
+                    case Device.State.Measure_Sensor:
+                        // 系统流程
+                        this.label_controlState.Text = "测量-取值";
                         break;
                     case Device.State.ShutdownPC:
                         // 系统流程

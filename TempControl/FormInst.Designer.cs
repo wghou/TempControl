@@ -32,18 +32,19 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checkBox_cfgC = new System.Windows.Forms.CheckBox();
+            this.checkBox_rdDev = new System.Windows.Forms.CheckBox();
+            this.checkBox_set2dev = new System.Windows.Forms.CheckBox();
             this.checkBox_cfg = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBox_baudRate = new System.Windows.Forms.ComboBox();
             this.comboBox_port = new System.Windows.Forms.ComboBox();
-            this.checkBox_set2dev = new System.Windows.Forms.CheckBox();
-            this.checkBox_rdDev = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboBox_inst
             // 
+            this.comboBox_inst.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_inst.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.comboBox_inst.FormattingEnabled = true;
             this.comboBox_inst.Location = new System.Drawing.Point(6, 50);
@@ -96,6 +97,34 @@
             this.checkBox_cfgC.UseVisualStyleBackColor = true;
             this.checkBox_cfgC.Click += new System.EventHandler(this.checkBox_cfgC_Click);
             // 
+            // checkBox_rdDev
+            // 
+            this.checkBox_rdDev.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_rdDev.AutoCheck = false;
+            this.checkBox_rdDev.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_rdDev.Location = new System.Drawing.Point(561, 90);
+            this.checkBox_rdDev.Name = "checkBox_rdDev";
+            this.checkBox_rdDev.Size = new System.Drawing.Size(111, 39);
+            this.checkBox_rdDev.TabIndex = 3;
+            this.checkBox_rdDev.Text = "读取信息";
+            this.checkBox_rdDev.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_rdDev.UseVisualStyleBackColor = true;
+            this.checkBox_rdDev.Click += new System.EventHandler(this.checkBox_rdDev_Click);
+            // 
+            // checkBox_set2dev
+            // 
+            this.checkBox_set2dev.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_set2dev.AutoCheck = false;
+            this.checkBox_set2dev.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_set2dev.Location = new System.Drawing.Point(431, 90);
+            this.checkBox_set2dev.Name = "checkBox_set2dev";
+            this.checkBox_set2dev.Size = new System.Drawing.Size(111, 39);
+            this.checkBox_set2dev.TabIndex = 3;
+            this.checkBox_set2dev.Text = "写入设备";
+            this.checkBox_set2dev.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_set2dev.UseVisualStyleBackColor = true;
+            this.checkBox_set2dev.Click += new System.EventHandler(this.checkBox_set2dev_Click);
+            // 
             // checkBox_cfg
             // 
             this.checkBox_cfg.Appearance = System.Windows.Forms.Appearance.Button;
@@ -132,6 +161,7 @@
             // 
             // comboBox_baudRate
             // 
+            this.comboBox_baudRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_baudRate.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.comboBox_baudRate.FormattingEnabled = true;
             this.comboBox_baudRate.Location = new System.Drawing.Point(281, 50);
@@ -141,40 +171,13 @@
             // 
             // comboBox_port
             // 
+            this.comboBox_port.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_port.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.comboBox_port.FormattingEnabled = true;
             this.comboBox_port.Location = new System.Drawing.Point(163, 50);
             this.comboBox_port.Name = "comboBox_port";
             this.comboBox_port.Size = new System.Drawing.Size(98, 22);
             this.comboBox_port.TabIndex = 0;
-            // 
-            // checkBox_set2dev
-            // 
-            this.checkBox_set2dev.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_set2dev.AutoCheck = false;
-            this.checkBox_set2dev.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox_set2dev.Location = new System.Drawing.Point(431, 90);
-            this.checkBox_set2dev.Name = "checkBox_set2dev";
-            this.checkBox_set2dev.Size = new System.Drawing.Size(111, 39);
-            this.checkBox_set2dev.TabIndex = 3;
-            this.checkBox_set2dev.Text = "写入设备";
-            this.checkBox_set2dev.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_set2dev.UseVisualStyleBackColor = true;
-            this.checkBox_set2dev.Click += new System.EventHandler(this.checkBox_set2dev_Click);
-            // 
-            // checkBox_rdDev
-            // 
-            this.checkBox_rdDev.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_rdDev.AutoCheck = false;
-            this.checkBox_rdDev.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox_rdDev.Location = new System.Drawing.Point(561, 90);
-            this.checkBox_rdDev.Name = "checkBox_rdDev";
-            this.checkBox_rdDev.Size = new System.Drawing.Size(111, 39);
-            this.checkBox_rdDev.TabIndex = 3;
-            this.checkBox_rdDev.Text = "读取信息";
-            this.checkBox_rdDev.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_rdDev.UseVisualStyleBackColor = true;
-            this.checkBox_rdDev.Click += new System.EventHandler(this.checkBox_rdDev_Click);
             // 
             // FormInst
             // 

@@ -360,7 +360,7 @@ namespace Device
     {
         protected override InstDataBase Create(Type objectType, JObject jsonObject)
         {
-            var typeName = jsonObject["sensorType"].ToObject<TypeInst>();
+            var typeName = jsonObject["InstType"].ToObject<TypeInst>();
             switch (typeName)
             {
                 case TypeInst.Standard:

@@ -45,6 +45,7 @@ namespace Device
                 }
 
                 // 添加标准仪器接口
+                // todo: 在这个默认的 info 中，没有设置 testId
                 InstInfoBase info = new InstInfoBase() {
                                         InstType = TypeInst.Standard,
                                         SensorFlag = TypeSensor.Conduct | TypeSensor.Tempt };
@@ -92,7 +93,8 @@ namespace Device
 
                 if (instSql.Count == 0) { return false; }
 
-                _instDevices.RemoveRange(1, _instDevices.Count - 1);
+                // 在标准仪器中初始化 testID
+                (_instDevices[0] as InstSTD).Info.testId = testId;
 
                 foreach (var itm in instSql)
                 {
@@ -106,10 +108,16 @@ namespace Device
                     }
 
                     // 添加各类不同型号仪器对应的接口
-                    // todo: 根据 sql 反回的 InstrumentType，新建不同的仪器类型
-                    InstSBE ist = new InstSBE(itm);
-                    ist.ErrorOccurEvent += InstDevice_ErrorOccurEvent;
-                    _instDevices.Add(ist);
+                    // 根据 sql 反回的 InstrumentType，新建不同的仪器类型
+                    // 只有当 _instDevices 中不存在 instrumentId 为 itm.instrumentId 的设备时，才新建
+                    // 这样就有效避免了多次查询造成的 instrument 重复问题
+                    //_instDevices[0].GetBasicInfo().instrumentId = "";
+                    if (_instDevices.Where(q => q.GetBasicInfo().instrumentId.Equals(itm.vInstrumentID)).Count() == 0)
+                    {
+                        InstSBE ist = new InstSBE(itm);
+                        ist.ErrorOccurEvent += InstDevice_ErrorOccurEvent;
+                        _instDevices.Add(ist);
+                    }
                 }
             }
             catch(Exception ex)
@@ -132,10 +140,10 @@ namespace Device
 
             IotInstValueMessage srVal = new IotInstValueMessage();
             srVal.InstData = new List<InstDataBase>();
-            srVal.Topic = IotCS.Client.IotTopic.SensorValue;
+            srVal.Topic = IotCS.Client.IotTopic.InstValue;
             srVal.DorS = IotDorS.Display;
             srVal.InstData.Add(data);
-            _userPorts.PublishMessage(IotCS.Client.IotTopic.SensorValue, JObject.FromObject(srVal));
+            _userPorts.PublishMessage(IotCS.Client.IotTopic.InstValue, JObject.FromObject(srVal));
         }
 
         /// <summary>

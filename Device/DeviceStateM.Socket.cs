@@ -61,7 +61,10 @@ namespace Device
     {
         public SocketStateMessage() : base(SocketCmd.DeviceState) { }
 
-        // 设备状态
+        /// <summary> 设备状态 </summary>
+        public State devSt { set; get; } = State.Idle;
+        /// <summary> 是否发生了错误：true 表示发生了错误 </summary>
+        public bool ErrorSt { set; get; } = false;
     }
 
 
@@ -143,6 +146,8 @@ namespace Device
                     SocketStateMessage msgSend2 = message.ToObject<SocketStateMessage>();
                     SuspendAutoControl();
                     msgSend2.ExecuteSucceed = true;
+                    msgSend2.devSt = _state;
+                    msgSend2.ErrorSt = (CheckErrorStatus() != 0);
                     _socketServer.pushMessage(JObject.FromObject(msgSend2));
                     break;
 
@@ -150,9 +155,19 @@ namespace Device
                     nlogger.Error("unknow socket cmd: " + msg.cmdType.ToString());
                     break;
             }
+        }
 
-            // 返回指令
-            
+        /// <summary>
+        /// 通过 socket 发送 finished 指令
+        /// </summary>
+        /// <returns></returns>
+        private bool socketSendFinished()
+        {
+            // 解析收到的指令
+            SocketCmdMessage msg = new SocketCmdMessage(SocketCmd.Finished);
+            msg.ExecuteSucceed = true;
+            _socketServer.pushMessage(JObject.FromObject(msg));
+            return true;
         }
 
         private void loadTempPointList()

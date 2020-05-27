@@ -17,7 +17,8 @@ namespace InstDevice
     {
         public InstSTD(InstInfoBase info) : base(info)
         {
-            
+            // 配置仪器相关状态机
+            ConfigInstStateless();
         }
 
         /// <summary>

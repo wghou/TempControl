@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace InstDevice
 {
@@ -44,6 +45,8 @@ namespace InstDevice
         /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
         bool ICmdChain<InstSTDData>.ResolveData(InstInfoBase info, string str, out InstSTDData data)
         {
+            Debug.WriteLine("InstSTD receive data: " + str);
+
             data = new InstSTDData();
 
             try
@@ -154,6 +157,8 @@ namespace InstDevice
         /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
         public override bool ResolveData(InstInfoBase info, string str, out InstSBE37Data data)
         {
+            Debug.WriteLine("InstSMP receive data: " + str);
+
             // 设置基本信息
             data = null;
             instData.vTestID = info.testId;
@@ -183,11 +188,11 @@ namespace InstDevice
                             string[] valStrs1 = str.Split(',');
 
                             instData.vTemperature = double.Parse(valStrs1[1]);
-                            instData.vTitularValue = int.Parse(valStrs1[0]);
+                            //instData.vTitularValue = int.Parse(valStrs1[0]);
                             //instData.vRealValue = 0;
                             //instData.vRawValue = 0;
                             // instData.vData = "";
-                            instData.addTime = DateTime.ParseExact(valStrs1[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
+                            //instData.addTime = DateTime.ParseExact(valStrs1[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
                             instData.updateTime = DateTime.Now;
                         }
                         else if(currentSampleFormat == SBE37SampleCmd.Format_1)
@@ -224,11 +229,11 @@ namespace InstDevice
                         string[] valStrs3 = str.Split(',');
 
                         instData.vTemperature = double.Parse(valStrs3[1]);
-                        instData.vTitularValue = int.Parse(valStrs3[0]);
+                        //instData.vTitularValue = int.Parse(valStrs3[0]);
                         //instData.vRealValue = 0;
                         //instData.vRawValue = 0;
                         // instData.vData = "";
-                        instData.addTime = DateTime.ParseExact(valStrs3[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
+                        //instData.addTime = DateTime.ParseExact(valStrs3[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
                         instData.updateTime = DateTime.Now;
 
                         break;
@@ -274,6 +279,8 @@ namespace InstDevice
         /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
         public override bool ResolveData(InstInfoBase info, string str, out InstSBE37Data data)
         {
+            Debug.WriteLine("InstSM receive data: " + str);
+
             // 设置基本信息
             data = null;
             instData.vTestID = info.testId;
@@ -282,17 +289,6 @@ namespace InstDevice
 
             try
             {
-                // 解析数据
-                string[] valStrs = str.Split(',');
-
-                instData.vTemperature = 0;
-                instData.vTitularValue = 0;
-                instData.vRealValue = 0;
-                instData.vRawValue = 0;
-                instData.vData = "";
-                instData.addTime = DateTime.Now;
-                instData.updateTime = DateTime.Now;
-
                 switch (sampleCmd[currentCmdIdx])
                 {
                     case SBE37SampleCmd.Format_0:
@@ -314,11 +310,11 @@ namespace InstDevice
                             string[] valStrs1 = str.Split(',');
 
                             instData.vTemperature = double.Parse(valStrs1[1]);
-                            instData.vTitularValue = int.Parse(valStrs1[0]);
+                            //instData.vTitularValue = int.Parse(valStrs1[0]);
                             //instData.vRealValue = 0;
                             //instData.vRawValue = 0;
                             // instData.vData = "";
-                            instData.addTime = DateTime.ParseExact(valStrs1[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
+                            //instData.addTime = DateTime.ParseExact(valStrs1[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
                             instData.updateTime = DateTime.Now;
                         }
                         else if (currentSampleFormat == SBE37SampleCmd.Format_1)
@@ -355,11 +351,11 @@ namespace InstDevice
                         string[] valStrs3 = str.Split(',');
 
                         instData.vTemperature = double.Parse(valStrs3[1]);
-                        instData.vTitularValue = int.Parse(valStrs3[0]);
+                        //instData.vTitularValue = int.Parse(valStrs3[0]);
                         //instData.vRealValue = 0;
                         //instData.vRawValue = 0;
                         // instData.vData = "";
-                        instData.addTime = DateTime.ParseExact(valStrs3[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
+                        //instData.addTime = DateTime.ParseExact(valStrs3[4], "dd MM yyyy", System.Globalization.CultureInfo.CurrentCulture);
                         instData.updateTime = DateTime.Now;
                         break;
 

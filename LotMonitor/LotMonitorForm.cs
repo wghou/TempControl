@@ -15,10 +15,6 @@ namespace IotMonitor
         HslControls.HslSwitch[] switchRyM = new HslControls.HslSwitch[8];
         HslControls.HslSwitch[] switchRyS = new HslControls.HslSwitch[8];
 
-        TextBox[] textBoxes_srType = new TextBox[6];
-        TextBox[] textBoxes_srVersion = new TextBox[6];
-        TextBox[] textBoxes_srSerial = new TextBox[6];
-
         // 状态灯闪烁
         Bitmap mBmpIot;
         private bool flp = false;
@@ -45,25 +41,6 @@ namespace IotMonitor
             switchRyS[5] = this.hslSwitch_RelayS5;
             switchRyS[6] = this.hslSwitch_RelayS6;
             switchRyS[7] = this.hslSwitch_RelayS7;
-
-            textBoxes_srType[0] = this.textBox_type0;
-            textBoxes_srVersion[0] = this.textBox_version0;
-            textBoxes_srSerial[0] = this.textBox_serial0;
-            textBoxes_srType[1] = this.textBox_type1;
-            textBoxes_srVersion[1] = this.textBox_version1;
-            textBoxes_srSerial[1] = this.textBox_serial1;
-            textBoxes_srType[2] = this.textBox_type2;
-            textBoxes_srVersion[2] = this.textBox_version2;
-            textBoxes_srSerial[2] = this.textBox_serial2;
-            textBoxes_srType[3] = this.textBox_type3;
-            textBoxes_srVersion[3] = this.textBox_version3;
-            textBoxes_srSerial[3] = this.textBox_serial3;
-            textBoxes_srType[4] = this.textBox_type4;
-            textBoxes_srVersion[4] = this.textBox_version4;
-            textBoxes_srSerial[4] = this.textBox_serial4;
-            textBoxes_srType[5] = this.textBox_type5;
-            textBoxes_srVersion[5] = this.textBox_version5;
-            textBoxes_srSerial[5] = this.textBox_serial5;
 
             mBmpIot = new Bitmap(pictureBox_iot.Width, pictureBox_iot.Height);
             timPic.Interval = 500;

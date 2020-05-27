@@ -105,11 +105,11 @@ namespace InstDevice
         /// <summary>
         /// 测试 id
         /// </summary>
-        public string testId;
+        public string testId = "";
         /// <summary>
         /// 仪器 id
         /// </summary>
-        public string instrumentId;
+        public string instrumentId = "";
         /// <summary>
         /// 设备的端口号
         /// </summary>

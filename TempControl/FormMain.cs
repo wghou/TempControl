@@ -46,6 +46,8 @@ namespace TempControl
         {
             InitializeComponent();
 
+            nlogger.Error(".......Start the TempControl software........");
+
             // check box
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryM0;
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryM1;

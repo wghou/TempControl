@@ -24,8 +24,13 @@
     "BaudRate": 9600,
     "Enable": true
   },
-  "SensorSBE37": {
+  "SensorSBE37SM": {
     "PortName": "COM12",
+    "BaudRate": 9600,
+    "Enable": true
+  },
+  "SensorSBE37SMP": {
+    "PortName": "COM14",
     "BaudRate": 9600,
     "Enable": true
   },

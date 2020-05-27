@@ -247,6 +247,7 @@ namespace InstDevice
             if(rlt == false)
             {
                 // 发生了错误
+                nlogger.Error("Error in sendCmd.");
                 OnErrorOccur(Err_sr.Error);
             }
         }
@@ -264,9 +265,10 @@ namespace InstDevice
             if (Enable == false) return;
 
             // 将数据写入数据库
-            if (sqlWriter.InsertValue(_instData) == false)
+            if (sqlWriter.InsertValue(_storeCache) == false)
             {
                 // 写入数据库失败
+                nlogger.Error("Error in InsertValue.");
                 OnErrorOccur(Err_sr.Error);
             }
             // 进入空闲状态
@@ -289,6 +291,7 @@ namespace InstDevice
                 bool rlt = cmdChain.ResolveData(Info, str, out dt);
                 if(rlt == false)
                 { // 触发错误产生事件
+                    nlogger.Error("Error in ResolveData");
                     base.OnErrorOccur(Err_sr.Error);
                     return;
                 }
@@ -496,34 +499,6 @@ namespace InstDevice
         protected void instStoreExit()
         {
             nlogger.Debug("Inst Store Exit.");
-        }
-
-        /// <summary>
-        /// 向设备发送指令
-        /// </summary>
-        /// <param name="cmd"></param>
-        /// <returns> 是否发送成功？true: 发送成功；false: 发送失败 </returns>
-        private bool sendCMD(string cmd)
-        {
-            // 空指令，不发送
-            if(cmd == string.Empty) { return true; }
-
-            try
-            {
-                // 打开串口
-                if (!sPort.IsOpen) this.sPort.Open();
-                // 写入指令
-                this.sPort.WriteLine(cmd);
-            }
-            catch (Exception ex)
-            {
-                nlogger.Error("仪器设备读取参数失败！");
-                // 关闭串口
-                try { sPort.Open(); } catch { }
-
-                return false;
-            }
-            return true;
         }
 
         /// <summary>

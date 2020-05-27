@@ -35,7 +35,7 @@ namespace IotCS.Client
         /// <summary> 仪器的状态数据 </summary>
         InstState,
         /// <summary> 仪器的测量值 </summary>
-        SensorValue
+        InstValue
     }
 
 

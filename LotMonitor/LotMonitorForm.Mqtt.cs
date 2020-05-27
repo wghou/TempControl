@@ -45,7 +45,7 @@ namespace IotMonitor
                     JObject child = (JObject)obj["IotPort"];
 
                     IotTopic[] tpSub = new IotTopic[] {
-                        IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState, IotTopic.InstState, IotTopic.SensorValue };
+                        IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState, IotTopic.InstState, IotTopic.InstValue };
                     _iotClient.configIotPorts(child, tpSub);
                     _iotClient.IotPortReceiveMessageEvent += IotClient_MessageReceievedEvent;
                 }  
@@ -149,7 +149,7 @@ namespace IotMonitor
                     }));
                     break;
 
-                case IotTopic.SensorValue:
+                case IotTopic.InstValue:
                     // todo: 优化
                     IotInstValueMessage srVal = new IotInstValueMessage();
                     srVal = JsonConvert.DeserializeObject<IotInstValueMessage>(message.ToString(), new JsonInstDataConverter());
@@ -164,7 +164,6 @@ namespace IotMonitor
                             {
                                 case TypeInst.Standard:
                                     InstSTDData dt = (InstSTDData)itm;
-                                    this.textBox_vTitularValue.Text = dt.vTitularValue.ToString();
                                     this.textBox_vStandardC.Text = dt.vStandardC.ToString();
                                     this.textBox_vStandardT.Text = dt.vStandardT.ToString();
                                     break;

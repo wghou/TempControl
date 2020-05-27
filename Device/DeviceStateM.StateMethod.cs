@@ -99,7 +99,7 @@ namespace Device
         /// <param name="act"></param>
         private void OnUnhandledTrigger(State st, Trigger tg)
         {
-            nlogger.Error("Unhandled trigger: state.");
+            nlogger.Error("Unhandled trigger: state: " + st.ToString() + " trigger: " + tg.ToString());
 
             SetErrorStatus(ErrorCode.CodeError);
         }
@@ -213,6 +213,10 @@ namespace Device
                     _machine.Fire(Trigger.SuspendAutoControl);
                     return;
                 }
+
+                // wghou
+                // 调试用的
+                // Measure_SensorEntry();
 
                 // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
                 if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
@@ -578,10 +582,10 @@ namespace Device
             {
                 rlt &= itm.StartMeasure();
             }
-            rlt &= sdDeviceRef.StartMeasure();
 
             if (rlt == false)
             {
+                nlogger.Error("Error in Start instDevice Measure: DeviceStateM.Measure_SensorEntry();");
                 SetErrorStatus(ErrorCode.SensorError);
             }
         }
@@ -610,7 +614,7 @@ namespace Device
             }
 #endif
             // 测量满两分钟
-            if(currentTemptPointState.stateCounts < 120 / _runningParameters.readTempIntervalSec)
+            if(currentTemptPointState.stateCounts < 30 / _runningParameters.readTempIntervalSec)
             {
                 return;
             }
@@ -621,12 +625,12 @@ namespace Device
             {
                 rlt &= itm.StartStore();
             }
-            rlt &= sdDeviceRef.StartStore();
 
             if (rlt == false)
             {
                 SetErrorStatus(ErrorCode.SensorError);
                 _machine.Fire(Trigger.SuspendAutoControl);
+                return;
             }
 
 
@@ -662,6 +666,10 @@ namespace Device
                 {
                     _machine.Fire(Trigger.FinishedAll);
                 }
+
+                // 通过 socket 发送 finished 指令
+                socketSendFinished();
+
                 nlogger.Info("所有温度点均已测量完成...");
             }
         }
