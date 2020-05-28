@@ -17,25 +17,10 @@ namespace InstDevice
     {
         public InstSTD(InstInfoBase info) : base(info)
         {
+            Info.InstType = TypeInst.Standard;
+
             // 配置仪器相关状态机
             ConfigInstStateless();
-        }
-
-        /// <summary>
-        /// 根据 this.Info.InstType ，生成 cmdChain
-        /// </summary>
-        /// <returns></returns>
-        protected override bool SetCmdChain()
-        {
-            if(Info.InstType == TypeInst.Standard)
-            {
-                cmdChain = new CmdChainSTD();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         /// <summary>
@@ -73,19 +58,53 @@ namespace InstDevice
             // 设备未启用
             if (Enable == false) return;
 
-            // 
             // todo: 去掉所采集数据中跳变的成分
 
 
-            // 将数据写入数据库
-            if (sqlWriter.InsertValue(_storeCache) == false)
+            // 执行基类中的 internalStoreStep()
+            base.internalStoreStep();
+        }
+
+        /// <summary>
+        /// 由收到的字符串解析为指令。
+        /// 其实就是检查 <Executed/>
+        /// </summary>
+        /// <param name="str"> 串口接收到的字符串 </param>
+        /// <returns> 是否成功解析为指令 </returns>
+        protected override bool ResolveStr2Cmd(string str)
+        {
+            return false;
+        }
+        /// <summary>
+        /// 由收到的字符串解析为数据。
+        /// 根据不同的传感器/配置，进行数据的解析
+        /// </summary>
+        /// <param name="str"> 串口接收到的字符串 </param>
+        /// <param name="dt"> 解析得到的数据，为空表示 暂时未解析成一组数据 </param>
+        /// <returns> 是否成功解析为数据 </returns>
+        protected override bool ResolveStr2Data(string str, out InstSTDData data)
+        {
+            data = new InstSTDData();
+
+            try
             {
-                // 写入数据库失败
-                nlogger.Error("Error in InsertValue.");
-                OnErrorOccur(Err_sr.Error);
+                // 日期（yyyy_MM_dd HH:mm: ss）-电导率频率 - 标准电导率示值 - 温度频率 - 标准温度示值 - 盐度 - 标志数
+                string[] valStrs = str.Split('-');
+
+                data.vTestID = Info.testId;
+                data.vTitularValue = 123123;
+                data.vStandardC = double.Parse(valStrs[4]);
+                data.vStandardT = double.Parse(valStrs[5]);
+                data.measureTime = DateTime.ParseExact(valStrs[0], "yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                data.addTime = data.measureTime;
+                data.updateTime = data.measureTime;
             }
-            // 进入空闲状态
-            _instMachine.Fire(TriggerInst.Stop);
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

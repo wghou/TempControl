@@ -13,22 +13,9 @@ using Newtonsoft.Json.Linq;
 namespace InstDevice
 {
     /// <summary>
-    /// 测试温度点的集合
+    /// 仪器基类 - 主要的功能是（1）装入 List<> 实现多态；（2）提供公共的接口
     /// </summary>
-    public class TestOrderBase
-    {
-        /// <summary>
-        /// 测试温度点的集合
-        /// </summary>
-        public static List<float> TemptPoints { set; get; } = new List<float>();
-    }
-
-    /// <summary>
-    /// 仪器基类
-    /// </summary>
-    /// <typeparam name="TInfo">仪器状态类</typeparam>
-    /// <typeparam name="TData">仪器数据类</typeparam>
-    public class InstDeviceBase : TestOrderBase
+    public class InstDeviceBase
     {
         /// <summary>
         /// 日志记录
@@ -45,6 +32,10 @@ namespace InstDevice
         /// 所有测试点的集合
         /// </summary>
         public static List<TestOrderSqlrd> testOrders { set; get; } = new List<TestOrderSqlrd>();
+        /// <summary>
+        /// 测试温度点的集合
+        /// </summary>
+        public static List<float> TemptPoints { set; get; } = new List<float>();
 
 
         /// <summary>
@@ -62,7 +53,7 @@ namespace InstDevice
         /// <summary>
         /// 错误状态
         /// </summary>
-        public Err_sr ErrorStatus { set; get; } = Err_sr.NoError;
+        protected Err_sr ErrorStatus { set; get; } = Err_sr.NoError;
         /// <summary>
         /// 启用/未启用
         /// 当 Enable == false 时，即可通过 InitWithInfo() 配置设备
@@ -72,8 +63,6 @@ namespace InstDevice
 
         /// <summary>串口</summary>
         protected SerialPort sPort;
-        /// <summary>串口读-写时间间隔</summary>
-        protected const int intervalOfWR = 20;
 
 
         public delegate void ErrorOccurEventHandler(Err_sr err);
@@ -241,13 +230,11 @@ namespace InstDevice
             // 设备未启用
             if (Enable == false) return;
 
-            // todo: 如果数据接收结尾符号不同？
+            // 就是简单的接收一行数据
+            // 如有特殊情况，比如需要连续接收多行数据，再另行考虑
             try
             {
-                Thread.Sleep(30);
-                string data = sPort.ReadExisting();
-                sPort.DiscardInBuffer();
-
+                string data = sPort.ReadLine();
                 internalProceedReceivedData(data);
             }
             catch (Exception ex)

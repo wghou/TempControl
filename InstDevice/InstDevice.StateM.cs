@@ -24,7 +24,10 @@ namespace InstDevice
         Store
     }
 
-    public enum TriggerInst : int
+    /// <summary>
+    /// 仪器状态改变的触发事件
+    /// </summary>
+    internal enum TriggerInst : int
     {
         /// <summary> 时刻 </summary>
         TimerTick,
@@ -37,8 +40,10 @@ namespace InstDevice
     }
 
     /// <summary>
-    /// 仪器基类-加入了状态机
+    /// 仪器基类 - 加入状态机 - 主要是实现了不同状态极其执行函数
     /// </summary>
+    /// <typeparam name="TInfo"> 仪器状态类 </typeparam>
+    /// <typeparam name="TData"> 仪器数据类 </typeparam>
     public abstract partial class InstDeviceStateM<TData, TInfo> : InstDeviceBase
         where TData : InstDataBase, new()
         where TInfo : InstInfoBase, new()
@@ -53,13 +58,13 @@ namespace InstDevice
         protected List<TData> _storeCache = new List<TData>();
         private int dataMaxLen = 1000;
         /// <summary>
+        /// 当前读取到的数据缓存
+        /// </summary>
+        protected TData instData1Cache = new TData();
+        /// <summary>
         /// 设备线程锁，同一时间只允许单一线程访问设备资源（串口 / 数据）
         /// </summary>
         protected object _instLocker = new object();
-        /// <summary>
-        /// 数据通信指令及解析类
-        /// </summary>
-        protected ICmdChain<TData> cmdChain;
         /// <summary>
         /// 设备的信息 Info
         /// </summary>
@@ -69,15 +74,15 @@ namespace InstDevice
         /// <summary>
         /// 状态机类
         /// </summary>
-        protected StateMachine<StateInst, TriggerInst> _instMachine;
+        private StateMachine<StateInst, TriggerInst> _instMachine;
         /// <summary>
         /// 当前处于的状态
         /// </summary>
-        public StateInst _instState { set; get; } = StateInst.Idle;
+        private StateInst _instState { set; get; } = StateInst.Idle;
         /// <summary>
         /// 时刻Trigger - 带参数 ms
         /// </summary>
-        protected StateMachine<StateInst, TriggerInst>.TriggerWithParameters<int> _instTickTrigger;
+        private StateMachine<StateInst, TriggerInst>.TriggerWithParameters<int> _instTickTrigger;
 
         /// <summary>
         /// 定时器
@@ -86,12 +91,12 @@ namespace InstDevice
         /// <summary>
         /// 自动取样 - 状态计数器
         /// </summary>
-        protected uint _instStateCounts = 0;
-
+        private uint _instStateCounts = 0;
         /// <summary>
         /// 当前需要测量的温度点
         /// </summary>
-        protected float currentTemptPoint = 0.0f;
+        private float currentTemptPoint = 0.0f;
+
 
         /// <summary>
         /// 构造函数
@@ -102,7 +107,6 @@ namespace InstDevice
             Info = ifo;
             Info.FreshFromSql2Info();
         }
-
         /// <summary>
         /// 获取仪器的基本信息
         /// </summary>
@@ -111,7 +115,6 @@ namespace InstDevice
         {
             return Info as InstInfoBase;
         }
-
         /// <summary>
         /// 初始化仪器设备，通过 Info 信息及 cfg 包含的端口信息
         /// </summary>
@@ -149,20 +152,21 @@ namespace InstDevice
                 return false;
             }
 
-            // 生成 cmdChain
-            confOK = SetCmdChain();
-
             // 使能
             if(confOK == true) { Enable = true; }
             return confOK;
         }
-
-
         /// <summary>
-        /// 根据 this.Info.InstType ，生成 cmdChain
+        /// 返回当前仪器的值
+        /// todo: 这个函数是放在 InstDeviceBase 里面好呢，
+        /// 还是放在 InstDeviceStateM 里面好呢
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected abstract bool SetCmdChain();
+        public List<TData> GetInstData()
+        {
+            return _instData;
+        }
 
 
         /// <summary>
@@ -213,17 +217,6 @@ namespace InstDevice
             return true;
         }
         /// <summary>
-        /// 返回当前仪器的值
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public List<TData> GetInstData()
-        {
-            return _instData;
-        }
-
-
-        /// <summary>
         /// 执行 Idle 步骤
         /// </summary>
         protected virtual void internalIdleStep() { }
@@ -233,23 +226,12 @@ namespace InstDevice
         protected virtual void internalEnterMeasureStep() {
             // 清空数据缓存
             _storeCache.Clear();
-            cmdChain.ResetCmd();
         }
         /// <summary>
         /// 执行 Measure 步骤
         /// </summary>
         protected virtual void internalMeasureStep() {
-            // 设备未启用
-            if (Enable == false) return;
 
-            // 发送指令等
-            bool rlt = sendCMD(cmdChain.FetchNextCmd());
-            if(rlt == false)
-            {
-                // 发生了错误
-                nlogger.Error("Error in sendCmd.");
-                OnErrorOccur(Err_sr.Error);
-            }
         }
         /// <summary>
         /// 进入 Store 步骤
@@ -271,8 +253,6 @@ namespace InstDevice
                 nlogger.Error("Error in InsertValue.");
                 OnErrorOccur(Err_sr.Error);
             }
-            // 进入空闲状态
-            _instMachine.Fire(TriggerInst.Stop);
         }
 
         /// <summary>
@@ -284,37 +264,52 @@ namespace InstDevice
             // 设备未启用
             if (Enable == false) return;
 
-            // todo: 解析数据
-            try
+            // 解析收到的字符串，看是否是指令，如果是指令（cmd）则返回
+            // 如果不是，则表明是数据，需要进一步解析
+            bool rlt1 = ResolveStr2Cmd(str);
+            if(rlt1 == true)
             {
-                TData dt;
-                bool rlt = cmdChain.ResolveData(Info, str, out dt);
-                if(rlt == false)
-                { // 触发错误产生事件
-                    nlogger.Error("Error in ResolveData");
-                    base.OnErrorOccur(Err_sr.Error);
-                    return;
-                }
-                if (dt == null) return;
-                
-                // 只有在 Measure 状态，才会存储数据
-                if (_instState == StateInst.Measure)
-                {
-                    appendStoreCache(dt);
-                }
-                // 记录当前数据
-                appendInstData(dt);
+                return;
+            }
 
-                // 触发数据接收事件
-                OnDataReceived(dt);
-            }
-            catch (Exception ex)
+            TData dt;
+            bool rlt = ResolveStr2Data(str, out dt);
+            // 由字符串解析为数据，发生错误
+            if (rlt == false)
             {
-                nlogger.Error("标准数据采集器设备接受数据发生异常：" + ex.Message);
-                // 触发错误产生事件
+                nlogger.Error("Error in ResolveData");
                 base.OnErrorOccur(Err_sr.Error);
+                return;
             }
+            // 由字符串解析为数据，暂时未解析成一组数据（有时可能要两组数据）
+            if (dt == null) return;
+
+            // 只有在 Measure 状态，才会存储数据
+            if (_instState == StateInst.Measure)
+            {
+                appendStoreCache(dt);
+            }
+            // 记录当前数据
+            appendInstData(dt);
+
+            // 触发数据接收事件
+            OnDataReceived(dt);
         }
+        /// <summary>
+        /// 由收到的字符串解析为指令。
+        /// 其实就是检查 <Executed/>
+        /// </summary>
+        /// <param name="str"> 串口接收到的字符串 </param>
+        /// <returns> 是否成功解析为指令 </returns>
+        protected abstract bool ResolveStr2Cmd(string str);
+        /// <summary>
+        /// 由收到的字符串解析为数据。
+        /// 根据不同的传感器/配置，进行数据的解析
+        /// </summary>
+        /// <param name="str"> 串口接收到的字符串 </param>
+        /// <param name="dt"> 解析得到的数据，为空表示 暂时未解析成一组数据 </param>
+        /// <returns> 是否成功解析为数据 </returns>
+        protected abstract bool ResolveStr2Data(string str, out TData dt);
 
 
         /// <summary>
@@ -376,13 +371,11 @@ namespace InstDevice
 
             _instMachine.Fire(_instTickTrigger, 10);
         }
-
-
         /// <summary>
         /// 状态转变事件函数
         /// </summary>
         /// <param name="act"></param>
-        protected void instOnTransitionedAction(StateMachine<StateInst, TriggerInst>.Transition act)
+        private void instOnTransitionedAction(StateMachine<StateInst, TriggerInst>.Transition act)
         {
             nlogger.Debug("On StateInst Transitioned.");
 
@@ -396,19 +389,15 @@ namespace InstDevice
             // 触发事件 - 状态转变
             StateChangedEvent?.Invoke(dest);
         }
-
-
         /// <summary>
         /// 未定义事件函数
         /// </summary>
         /// <param name="st"></param>
         /// <param name="tg"></param>
-        protected void instOnUnhandledTrigger(StateInst st, TriggerInst tg)
+        private void instOnUnhandledTrigger(StateInst st, TriggerInst tg)
         {
             nlogger.Error("Inst Unhandled trigger: state.");
         }
-
-
         /// <summary>
         /// Inst Idle Entry
         /// </summary>
@@ -416,7 +405,6 @@ namespace InstDevice
         {
             nlogger.Debug("Inst Idle Entry.");
         }
-
         /// <summary>
         /// Inst Idle Tick
         /// </summary>
@@ -428,7 +416,6 @@ namespace InstDevice
             // 执行 idle 步骤
             internalIdleStep();
         }
-
         /// <summary>
         /// Inst Idle Exit
         /// </summary>
@@ -436,8 +423,6 @@ namespace InstDevice
         {
             nlogger.Debug("Inst Idle Exit.");
         }
-
-
         /// <summary>
         /// Inst Measure Entry
         /// </summary>
@@ -448,7 +433,6 @@ namespace InstDevice
             // 进入 store 步骤
             internalEnterMeasureStep();
         }
-
         /// <summary>
         /// Inst Measure Tick
         /// </summary>
@@ -460,7 +444,6 @@ namespace InstDevice
             // 执行 Measure 步骤
             internalMeasureStep();
         }
-
         /// <summary>
         /// instrInstument Measure Exit
         /// </summary>
@@ -468,8 +451,6 @@ namespace InstDevice
         {
             nlogger.Debug("Inst Measure Exit.");
         }
-
-
         /// <summary>
         /// Inst Store Entry
         /// </summary>
@@ -480,7 +461,6 @@ namespace InstDevice
             // 进入 store 步骤
             internalEnterStoreStep();
         }
-
         /// <summary>
         /// Inst Store Tick
         /// </summary>
@@ -491,8 +471,10 @@ namespace InstDevice
 
             // 执行 store 步骤
             internalStoreStep();
-        }
 
+            // 进入空闲状态
+            _instMachine.Fire(TriggerInst.Stop);
+        }
         /// <summary>
         /// Inst Store Exit
         /// </summary>
@@ -514,7 +496,6 @@ namespace InstDevice
             }
             _instData.Add(val);
         }
-
         /// <summary>
         /// 向 _storeCache 值列表中添加数据
         /// </summary>

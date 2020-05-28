@@ -23,16 +23,123 @@ namespace InstDevice
     }
 
     /// <summary>
-    /// 仪器标志位
+    /// 仪器的采样方式 / 数据读取方式
+    /// </summary>
+    public enum InstSampleMode : int
+    {
+        /// <summary> 自动采样 - 格式 0 </summary>
+        AutoSample_Fmt0 = 0,
+        /// <summary> 自动采样 - 格式 1 </summary>
+        AutoSample_Fmt1,
+        /// <summary> 轮询采样 - 格式 0 </summary>
+        PolledSample_Fmt0,
+        /// <summary> 轮询采样 - 格式 1 </summary>
+        PolledSample_Fmt1,
+        /// <summary> 轮询采样 - 格式 1 + 格式 0 </summary>
+        PolledSample_Fmt10
+    }
+
+    /// <summary>
+    /// 仪器中传感器的标志位 - OutputFormat=0: raw decimal data, for diagnostic use at Sea-Bird
+    /// tttttt, cccc.ccc, pppppp, vvvv, dd mmm yyyy, hh:mm:ss（有的略有差异）
     /// </summary>
     [Flags]
-    public enum TypeSensor : int
+    public enum TypeSensorFmt0 : uint
     {
+        /// <summary> 未定义传感器类型 </summary>
         None = 0,
-        /// <summary> 温度 </summary>
-        Tempt = 1,
-        /// <summary> 电导率 </summary>
-        Conduct = 2
+        /// <summary> tttttt = temperature A/D counts. </summary>
+        tt = 0x00000001,
+        /// <summary> ccccc.ccc = conductivity frequency (Hz). </summary>
+        cc = 0x00000002,
+        /// <summary> pppppp = pressure sensor pressure A/D counts; sent if optional pressure sensor installed. </summary>
+        pp = 0x00000004,
+        /// <summary> vvvv = pressure sensor pressure temperature compensation A/D counts; sent if optional pressure sensor installed. </summary>
+        vv = 0x00000008,
+        /// <summary> oo.ooo = oxygen sensor phase (µsec). </summary>
+        oo = 0x00000010,
+        /// <summary> t.tttttt = oxygen sensor temperature voltage. </summary>
+        ot = 0x00000020,
+        /// <summary> dd mmm yyyy = day, month, year. </summary>
+        dm = 0x00000040,
+        /// <summary> hh:mm:ss = hour, minute, second. </summary>
+        hm = 0x00000080
+    }
+
+    /// <summary>
+    /// 仪器中传感器的标志位 - OutputFormat=1: converted decimal data
+    /// tttt.tttt,ccc.ccccc,ppppp.ppp,ssss.ssss,vvvvv.vvv,ccc.ccccc,dd mmm yyyy, hh:mm:ss
+    /// </summary>
+    [Flags]
+    public enum TypeSensorFmt1 : uint
+    {
+        /// <summary> 未定义传感器类型 </summary>
+        None = 0,
+        /// <summary> tttt.tttt = temperature (°C, ITS-90). </summary>
+        tt = 0x00000001,
+        /// <summary> ccccc.ccc = conductivity (S/m). </summary>
+        cc = 0x00000002,
+        /// <summary> ppppp.ppp = pressure (decibars); sent only if pressure sensor installed. </summary>
+        pp = 0x00000004,
+        /// <summary> dddd.ddd = depth (meters); sent only if OutputDepth=Y. </summary>
+        dd = 0x00000008,
+        /// <summary> oo.ooo = oxygen (sent if OutputOx=Y; units defined by SetOxUnits =). </summary>
+        oo = 0x00000010,
+        /// <summary> ssss.ssss = salinity (psu); sent only if OutputSal=Y. </summary>
+        ss = 0x00000020,
+        /// <summary> vvvv.vvv = sound velocity (meters/second); sent only if OutputSV=Y. </summary>
+        vv = 0x00000040,
+        /// <summary> rrr.rrrr = local density (kg/m3); sent only if OutputDensity=Y. </summary>
+        rr = 0x00000080,
+        /// <summary> ccc.ccccc = Specific Conductivity (S/m) </summary>
+        sc = 0x00000100,
+        /// <summary> x = specific conductivity; sent if OutputSC=Y </summary>
+        xx = 0x00000200,
+        /// <summary> dd mmm yyyy = day, month, year. </summary>
+        dm = 0x00000400,
+        /// <summary> hh:mm:ss = hour, minute, second. </summary>
+        hm = 0x00000800,
+        /// <summary> n = sample number in FLASH memory (sent if TxSampleNum=y, </summary>
+        nn = 0x00001000
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class SBE37SensorType
+    {
+        /// <summary> SBE37SI </summary>
+        public static readonly TypeSensorFmt0 SBE37SI_Fmt0 = TypeSensorFmt0.tt | TypeSensorFmt0.cc;
+        /// <summary> SBE37SI </summary>
+        public static readonly TypeSensorFmt1 SBE37SI_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc;
+
+
+    }
+
+    /// <summary>
+    /// 读取数据的返回格式
+    /// </summary>
+    public enum SBE37OutputFormat : int
+    {
+        Format_0 = 0,
+        Format_1 = 1,
+        Format_2 = 2,
+        Format_3 = 3
+    }
+
+    /// <summary>
+    /// SBE37 采样命令
+    /// </summary>
+    internal enum SBE37Cmd : int
+    {
+        NoneCmd = 0,
+        OutputExecutedFlag = 1,
+        Dc = 2,
+        InitCmds = 3,
+        Start = 4,
+        Stop = 5,
+        Tc = 6,
+        Tcr = 7
     }
 
 
@@ -99,9 +206,13 @@ namespace InstDevice
         /// </summary>
         public int InstIdx_NotUsed = -1;
         /// <summary>
-        /// 包含仪器标志位
+        /// 包含仪器（数据）标志位 - format_0
         /// </summary>
-        public TypeSensor SensorFlag = TypeSensor.None;
+        public TypeSensorFmt0 SensorFlagFmt0 = TypeSensorFmt0.None;
+        /// <summary>
+        /// 包含仪器（数据）标志位 - format_1
+        /// </summary>
+        public TypeSensorFmt1 SensorFlagFmt1 = TypeSensorFmt1.None;
         /// <summary>
         /// 测试 id
         /// </summary>
@@ -134,7 +245,7 @@ namespace InstDevice
         /// <summary>
         /// 传感器类型
         /// </summary>
-        public TypeSensor SensorType = TypeSensor.None;
+        public TypeSensorFmt1 SensorType = TypeSensorFmt1.None;
         /// <summary>
         /// 传感器所在仪器的编号
         /// 暂时不用！！
@@ -298,7 +409,7 @@ namespace InstDevice
             foreach(var itm in sensors)
             {
                 itm.FreshFromSql2Info();
-                SensorFlag |= itm.SensorType;
+                SensorFlagFmt1 |= itm.SensorType;
             }
 
             testId = vTestID;
@@ -341,15 +452,15 @@ namespace InstDevice
         {
             if(vSensorType == "C")
             {
-                SensorType = TypeSensor.Conduct;
+                SensorType = TypeSensorFmt1.cc;
             }
             else if(vSensorType == "T")
             {
-                SensorType = TypeSensor.Tempt;
+                SensorType = TypeSensorFmt1.tt;
             }
             else
             {
-                SensorType = TypeSensor.None;
+                SensorType = TypeSensorFmt1.None;
             }
 
             return true;

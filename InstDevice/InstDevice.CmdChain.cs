@@ -24,55 +24,6 @@ namespace InstDevice
         bool ResolveData(InstInfoBase info, string str,out TData data);
     }
 
-    /// <summary>
-    /// 仪器命令
-    /// </summary>
-    public class CmdChainSTD : ICmdChain<InstSTDData>
-    {
-        /// <summary> 提取下一条指令 </summary>
-        public string FetchNextCmd()
-        {
-            return null;
-        }
-        /// <summary> 重置指令 </summary>
-        public void ResetCmd() { }
-
-        /// <summary>
-        /// 解析传感器数据
-        /// </summary>
-        /// <param name="str"> 输入字符串 </param>
-        /// <param name="data"> 解析得到的结果，为空时，表示还未形成结果 </param>
-        /// <returns> 是否发生错误？ true: 未发生错误；false: 发生错误</returns>
-        bool ICmdChain<InstSTDData>.ResolveData(InstInfoBase info, string str, out InstSTDData data)
-        {
-            Debug.WriteLine("InstSTD receive data: " + str);
-
-            data = new InstSTDData();
-
-            try
-            {
-                // todo: 解析数据
-                // 20200519
-                // 日期（yyyy_MM_dd HH:mm: ss）-电导率频率 - 标准电导率示值 - 温度频率 - 标准温度示值 - 盐度 - 标志数
-                string[] valStrs = str.Split('-');
-
-                data.vTestID = info.testId;
-                data.vTitularValue = 123123;
-                data.vStandardC = double.Parse(valStrs[4]);
-                data.vStandardT = double.Parse(valStrs[5]);
-                data.measureTime = DateTime.ParseExact(valStrs[0], "yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
-                data.addTime = data.measureTime;
-                data.updateTime = data.measureTime;
-            }
-            catch(Exception ex)
-            {
-                return false;
-            }
-
-            return true;
-        }
-    }
-
 
     /// <summary>
     /// 
