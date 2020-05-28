@@ -242,7 +242,7 @@ namespace InstDevice
             // 设备未启用
             if (Enable == false) return;
 
-            // todo: 发送指令等
+            // 发送指令等
             bool rlt = sendCMD(cmdChain.FetchNextCmd());
             if(rlt == false)
             {

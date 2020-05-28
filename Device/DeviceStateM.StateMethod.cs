@@ -586,7 +586,7 @@ namespace Device
             if (rlt == false)
             {
                 nlogger.Error("Error in Start instDevice Measure: DeviceStateM.Measure_SensorEntry();");
-                SetErrorStatus(ErrorCode.SensorError);
+                SetErrorStatus(ErrorCode.InstDevError);
             }
         }
 
@@ -628,7 +628,7 @@ namespace Device
 
             if (rlt == false)
             {
-                SetErrorStatus(ErrorCode.SensorError);
+                SetErrorStatus(ErrorCode.InstDevError);
                 _machine.Fire(Trigger.SuspendAutoControl);
                 return;
             }

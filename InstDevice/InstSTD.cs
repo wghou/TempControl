@@ -64,5 +64,28 @@ namespace InstDevice
                 else { return false; }
             }
         }
+
+        /// <summary>
+        /// 执行 Store 步骤
+        /// </summary>
+        protected override void internalStoreStep()
+        {
+            // 设备未启用
+            if (Enable == false) return;
+
+            // 
+            // todo: 去掉所采集数据中跳变的成分
+
+
+            // 将数据写入数据库
+            if (sqlWriter.InsertValue(_storeCache) == false)
+            {
+                // 写入数据库失败
+                nlogger.Error("Error in InsertValue.");
+                OnErrorOccur(Err_sr.Error);
+            }
+            // 进入空闲状态
+            _instMachine.Fire(TriggerInst.Stop);
+        }
     }
 }

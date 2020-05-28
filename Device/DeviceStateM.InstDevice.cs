@@ -152,8 +152,8 @@ namespace Device
         /// <param name="err"></param>
         private void InstDevice_ErrorOccurEvent(Err_sr err)
         {
-            // todo: 设置错误标识码
-            SetErrorStatus(ErrorCode.BridgeError);
+            // 设置错误标识码
+            SetErrorStatus(ErrorCode.InstDevError);
         }
     }
 }

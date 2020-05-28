@@ -104,7 +104,7 @@ namespace TempControl
                             errMsg += "\r\n温度超出工作范围报警!   " + item.Value.ToString() + " 次";
                         break;
 
-                    case Device.ErrorCode.SensorError:
+                    case Device.ErrorCode.InstDevError:
                         if (item.Value != 0)
                             errMsg += "\r\n仪器设备读取数值失败!   " + item.Value.ToString() + " 次";
                         break;

@@ -35,9 +35,9 @@ namespace Device
         /// </summary>
         TempOutRange,
         /// <summary>
-        /// 读电桥温度错误
+        /// 传感仪器错误
         /// </summary>
-        SensorError,
+        InstDevError,
         /// <summary>
         /// 继电器设备错误
         /// </summary>
