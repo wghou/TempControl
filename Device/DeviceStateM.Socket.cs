@@ -163,6 +163,12 @@ namespace Device
         /// <returns></returns>
         private bool socketSendFinished()
         {
+            // 停止仪器工作
+            foreach(var itm in _instDevices)
+            {
+                itm.DisableInstDevice();
+            }
+
             // 解析收到的指令
             SocketCmdMessage msg = new SocketCmdMessage(SocketCmd.Finished);
             msg.ExecuteSucceed = true;

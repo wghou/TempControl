@@ -94,56 +94,61 @@ namespace InstDevice
 
             // 设置返回标志位
             CmdExecuted = false;
-            sendCMD("OutputExecutedTag=N");
+            bool rlt2 = sendCMD("OutputExecutedTag=N");
             System.Threading.Thread.Sleep(10);
+            if(rlt2 == false)
+            {
+                nlogger.Error("Error in setup instDevice 1.");
+                return false;
+            }
 
             // 写入一些设置信息
-
+            bool rlt3 = true;
             switch (mode)
             {
                 case InstSampleMode.AutoSample_Fmt0:
-                    sendCMD("SAMPLEMODE=2");
+                    rlt3 &= sendCMD("SAMPLEMODE=2");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("SAMPLEINTERVAL=4");
+                    rlt3 &= sendCMD("SAMPLEINTERVAL=4");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTFORMAT=0");
+                    rlt3 &= sendCMD("OUTPUTFORMAT=0");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
+                    rlt3 &= sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
                 // ok
                 case InstSampleMode.AutoSample_Fmt1:
-                    sendCMD("SAMPLEMODE=2");
+                    rlt3 &= sendCMD("SAMPLEMODE=2");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("SAMPLEINTERVAL=4");
+                    rlt3 &= sendCMD("SAMPLEINTERVAL=4");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTFORMAT=1");
+                    rlt3 &= sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
+                    rlt3 &= sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
                 // ok
                 case InstSampleMode.PolledSample_Fmt0:
-                    sendCMD("SAMPLEMODE=1");
+                    rlt3 &= sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
+                    rlt3 &= sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTFORMAT=0");
+                    rlt3 &= sendCMD("OUTPUTFORMAT=0");
                     System.Threading.Thread.Sleep(10);
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
                 // ok
                 case InstSampleMode.PolledSample_Fmt1:
-                    sendCMD("SAMPLEMODE=1");
+                    rlt3 &= sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
+                    rlt3 &= sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTFORMAT=1");
+                    rlt3 &= sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
@@ -151,11 +156,11 @@ namespace InstDevice
 
                 // 暂时还不想用这种方法
                 case InstSampleMode.PolledSample_Fmt10:
-                    sendCMD("SAMPLEMODE=1");
+                    rlt3 &= sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
+                    rlt3 &= sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTFORMAT=1");
+                    rlt3 &= sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
@@ -164,26 +169,52 @@ namespace InstDevice
                     break;
             }
 
+            if(rlt3 == false)
+            {
+                nlogger.Error("Error in setup instDevice 2.");
+                return false;
+            }
+
             sampleMode = mode;
 
             // todo: 这里的 while 感觉不是很好
             // 读取 configuration data
             currentCmd = SBE37Cmd.GetCD;
             CmdExecuted = false;
-            sendCMD("GetCD");
+            bool rlt4 = sendCMD("GetCD");
             while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
-            bool rlt2 = configData.ResolveXml2Value(ConfigDataXml);
-            if (rlt2 == false)
+            rlt4 &= configData.ResolveXml2Value(ConfigDataXml);
+            if (rlt4 == false)
             {
                 nlogger.Error("error when read and resolve configuration data from xml string");
                 return false;
             }
 
+            bool rlt5 = true;
             UseExecutedFlag = useOptFlg;
             if (UseExecutedFlag == true ) {
-                sendCMD("OutputExecutedTag=Y");
+                CmdExecuted = false;
+                rlt5 = sendCMD("OutputExecutedTag=Y");
+                if(rlt5 == false)
+                {
+                    return false;
+                }
+
                 while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
             }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 关闭/停止仪器工作
+        /// </summary>
+        /// <returns></returns>
+        public override bool DisableInstDevice()
+        {
+            sendCMD("QS");
+
+            base.DisableInstDevice();
             return true;
         }
 
@@ -198,8 +229,12 @@ namespace InstDevice
             {
                 currentCmd = SBE37Cmd.Start;
                 CmdExecuted = false;
-
-                sendCMD("Start");
+                bool rlt = sendCMD("Start");
+                if(rlt == false)
+                {
+                    nlogger.Error("error in sendCmd with internalEnterMeasureStep");
+                    OnErrorOccur(Err_sr.Error);
+                }
             }
             else
             {
@@ -213,19 +248,43 @@ namespace InstDevice
         {
             if (sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
             {
+
+            }
+            else
+            {
+                if(UseExecutedFlag == true && CmdExecuted == false)
+                {
+                    nlogger.Error("the CmdExecuted flag is not been flap to true before send cmd again.");
+                    OnErrorOccur(Err_sr.Error);
+                }
+            }
+
+
+            if (sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
+            {
                 
             }
             else if(sampleMode == InstSampleMode.PolledSample_Fmt0)
             {
                 currentCmd = SBE37Cmd.Tsr;
                 CmdExecuted = false;
-                sendCMD("tsr");
+                bool rlt = sendCMD("tsr");
+                if (rlt == false)
+                {
+                    nlogger.Error("error in sendCmd with internalMeasureStep");
+                    OnErrorOccur(Err_sr.Error);
+                }
             }
             else if(sampleMode == InstSampleMode.PolledSample_Fmt1)
             {
                 currentCmd = SBE37Cmd.Ts;
                 CmdExecuted = false;
-                sendCMD("ts");
+                bool rlt = sendCMD("tsr");
+                if (rlt == false)
+                {
+                    nlogger.Error("error in sendCmd with internalMeasureStep");
+                    OnErrorOccur(Err_sr.Error);
+                }
             }
             else if(sampleMode == InstSampleMode.PolledSample_Fmt10)
             {
@@ -233,13 +292,23 @@ namespace InstDevice
                 {
                     currentCmd = SBE37Cmd.Tsr;
                     CmdExecuted = false;
-                    sendCMD("tcr");
+                    bool rlt = sendCMD("tsr");
+                    if (rlt == false)
+                    {
+                        nlogger.Error("error in sendCmd with internalMeasureStep");
+                        OnErrorOccur(Err_sr.Error);
+                    }
                 }
                 else if(currentCmd == SBE37Cmd.Tsr)
                 {
                     currentCmd = SBE37Cmd.Ts;
                     CmdExecuted = false;
-                    sendCMD("tc");
+                    bool rlt = sendCMD("tsr");
+                    if (rlt == false)
+                    {
+                        nlogger.Error("error in sendCmd with internalMeasureStep");
+                        OnErrorOccur(Err_sr.Error);
+                    }
                 }
                 else{
                     OnErrorOccur(Err_sr.Error);
@@ -255,8 +324,12 @@ namespace InstDevice
             {
                 currentCmd = SBE37Cmd.Stop;
                 CmdExecuted = false;
-
-                sendCMD("Stop");
+                bool rlt = sendCMD("stop");
+                if (rlt == false)
+                {
+                    nlogger.Error("error in sendCmd with internalEnterStoreStep");
+                    OnErrorOccur(Err_sr.Error);
+                }
             }
             else
             {
@@ -288,6 +361,7 @@ namespace InstDevice
                 }
                 else
                 {
+                    nlogger.Error("received the executed flag agin.");
                     // 重复接收到 ExecutedFlag
                     OnErrorOccur(Err_sr.Error);
                 }
@@ -331,6 +405,7 @@ namespace InstDevice
                 case SBE37Cmd.Ts:
                     rlt = SBE37ResolveStr2Value(str, out data);
                     // 如果是 轮询01 的方式查询数据
+                    // todo: 不知道这儿这么写合理与否
                     if (sampleMode == InstSampleMode.PolledSample_Fmt10)
                     {
                         data = null;
@@ -344,6 +419,7 @@ namespace InstDevice
                 default:
                     // 这里就产生了错误
                     // 因为现有的指令中，不会有其他的指令会返回数据
+                    nlogger.Error("unknown cmd in InstBE37. ResolveStr2Data");
                     rlt = false;
                     data = null;
                     break;
@@ -356,8 +432,10 @@ namespace InstDevice
                 string str2 = sPort.ReadLine();
                 if (!str2.Contains(OutputFlag))
                 {
+                    nlogger.Error("did not receive executed flag at the end of ts / tsr.");
                     return false;
                 }
+                CmdExecuted = true;
             }
 
             return rlt;
@@ -388,6 +466,7 @@ namespace InstDevice
             }
             catch (Exception ex)
             {
+                nlogger.Error("error in get xml data");
                 CmdExecuted = true;
                 return false;
             }
@@ -426,21 +505,25 @@ namespace InstDevice
                     case SBE37OutputFormat.Format_2:
                         data = null;
                         rlt = false;
+                        nlogger.Error("error of output format: Format_2");
                         break;
 
                     case SBE37OutputFormat.Format_3:
                         data = null;
                         rlt = false;
+                        nlogger.Error("error of output format: Format_3");
                         break;
 
                     default:
                         data = null;
                         rlt = false;
+                        nlogger.Error("error of output format: unknown");
                         break;
                 }
             }
             catch (Exception ex)
             {
+                nlogger.Error("exception in SBE37ResolveStr2Value(..)");
                 return false;
             }
 
@@ -459,7 +542,7 @@ namespace InstDevice
             data = null;
             string[] strSplit = str.Split(',');
 
-            Debug.WriteLine("SBE37ResolveStr2ValueFmt0: " + str);
+            nlogger.Info("SBE37ResolveStr2ValueFmt0: " + str);
 
             instData1Cache.addTime = DateTime.Now;
             data = instData1Cache;
@@ -512,7 +595,7 @@ namespace InstDevice
             }
             catch(Exception ex)
             {
-                Debug.WriteLine("SBE37ResolveStr2ValueFmt0: error");
+                nlogger.Error("exception in SBE37ResolveStr2ValueFmt0: " + ex.Message);
                 return false;
             }
 
@@ -529,7 +612,7 @@ namespace InstDevice
             data = null;
             string[] strSplit = str.Split(',');
 
-            Debug.WriteLine("SBE37ResolveStr2ValueFmt1: " + str);
+            nlogger.Info("SBE37ResolveStr2ValueFmt1: " + str);
             instData1Cache.addTime = DateTime.Now;
             data = instData1Cache;
             return true;
@@ -624,8 +707,7 @@ namespace InstDevice
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("SBE37ResolveStr2ValueFmt0: error");
-
+                nlogger.Error("exception in SBE37ResolveStr2ValueFmt1: " + ex.Message);
                 return false;
             }
 

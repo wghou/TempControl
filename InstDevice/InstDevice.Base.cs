@@ -211,7 +211,7 @@ namespace InstDevice
             }
             catch (Exception ex)
             {
-                nlogger.Error("仪器设备读取参数失败！");
+                nlogger.Error("仪器设备写入指令失败！sendCMD");
                 // 关闭串口
                 try { sPort.Open(); } catch { }
 
