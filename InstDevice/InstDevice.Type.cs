@@ -109,11 +109,78 @@ namespace InstDevice
     public static class SBE37SensorType
     {
         /// <summary> SBE37SI </summary>
-        public static readonly TypeSensorFmt0 SBE37SI_Fmt0 = TypeSensorFmt0.tt | TypeSensorFmt0.cc;
+        public static readonly TypeSensorFmt0 SBE37SI_Fmt0 = TypeSensorFmt0.tt 
+                                                            | TypeSensorFmt0.cc
+                                                            | TypeSensorFmt0.pp
+                                                            | TypeSensorFmt0.vv
+                                                            | TypeSensorFmt0.dm
+                                                            | TypeSensorFmt0.hm;
         /// <summary> SBE37SI </summary>
-        public static readonly TypeSensorFmt1 SBE37SI_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc;
+        public static readonly TypeSensorFmt1 SBE37SI_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
+                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
+                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
+                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
+                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
+
+        /// <summary> SBE37SIP </summary>
+        public static readonly TypeSensorFmt0 SBE37SIP_Fmt0 = TypeSensorFmt0.tt
+                                                            | TypeSensorFmt0.cc
+                                                            | TypeSensorFmt0.pp
+                                                            | TypeSensorFmt0.vv
+                                                            | TypeSensorFmt0.dm
+                                                            | TypeSensorFmt0.hm;
+        /// <summary> SBE37SIP </summary>
+        public static readonly TypeSensorFmt1 SBE37SIP_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
+                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
+                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
+                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
+                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
 
 
+        /// <summary> SBE37SM </summary>
+        public static readonly TypeSensorFmt0 SBE37SM_Fmt0 = TypeSensorFmt0.tt
+                                                            | TypeSensorFmt0.cc
+                                                            | TypeSensorFmt0.pp
+                                                            | TypeSensorFmt0.vv
+                                                            | TypeSensorFmt0.dm
+                                                            | TypeSensorFmt0.hm;
+        /// <summary> SBE37SM </summary>
+        public static readonly TypeSensorFmt1 SBE37SM_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
+                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
+                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
+                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
+                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
+
+
+        /// <summary> SBE37SMP </summary>
+        public static readonly TypeSensorFmt0 SBE37SMP_Fmt0 = TypeSensorFmt0.tt
+                                                            | TypeSensorFmt0.cc
+                                                            | TypeSensorFmt0.pp
+                                                            | TypeSensorFmt0.vv
+                                                            | TypeSensorFmt0.dm
+                                                            | TypeSensorFmt0.hm;
+        /// <summary> SBE37SMP </summary>
+        public static readonly TypeSensorFmt1 SBE37SMP_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
+                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
+                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
+                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
+                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
+
+        
+        /// <summary> SBE37SMP_ODO </summary>
+        public static readonly TypeSensorFmt0 SBE37SMP_ODO_Fmt0 = TypeSensorFmt0.tt
+                                                            | TypeSensorFmt0.cc
+                                                            | TypeSensorFmt0.pp
+                                                            | TypeSensorFmt0.vv
+                                                            | TypeSensorFmt0.dm
+                                                            | TypeSensorFmt0.hm;
+        
+        /// <summary> SBE37SMP_ODO </summary>
+        public static readonly TypeSensorFmt1 SBE37SMP_ODO_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
+                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
+                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
+                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
+                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
     }
 
     /// <summary>
@@ -132,16 +199,23 @@ namespace InstDevice
     /// </summary>
     internal enum SBE37Cmd : int
     {
+        /// <summary> 无指令 </summary>
         NoneCmd = 0,
-        OutputExecutedFlag = 1,
-        Dc = 2,
-        InitCmds = 3,
-        Start = 4,
-        Stop = 5,
-        Tc = 6,
-        Tcr = 7
+        /// <summary> Get and display configuration data </summary>
+        GetCD,
+        /// <summary> Get and display calibration coefficients </summary>
+        GetCC,
+        /// <summary> 开始读取数据 </summary>
+        Start,
+        /// <summary> 停止读取数据 </summary>
+        Stop,
+        /// <summary> xx </summary>
+        Ts,
+        /// <summary> xx </summary>
+        Tsr
     }
 
+    
 
     /// <summary>
     /// 仪器的错误状态

@@ -187,7 +187,7 @@ namespace ComTest
             }
 
 
-            this.comboBox_SrStatus.SelectedIndex = 0;
+            this.comboBox_SampleFormat.SelectedIndex = 0;
             this.comboBox_RyStatus.SelectedIndex = 0;
 
 
@@ -205,30 +205,9 @@ namespace ComTest
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void comboBox_SrStatus_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBox_SampleFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // 说明：虽然在错误状态不保持的情况下，控制流程会修改 SelectedIndex ，会再次（冗余）触发该事件，但是也不会有太坏的影响
-            lock(srLocker)
-            {
-                switch(comboBox_SrStatus.SelectedIndex)
-                {
-                    case 0:
-                        this.srErrStatus = SrStatus.OK;
-                        break;
-
-                    case 1:
-                        this.srErrStatus = SrStatus.DisConnected;
-                        break;
-
-                    case 2:
-                        this.srErrStatus = SrStatus.DataErr;
-                        break;
-
-                    default:
-                        this.srErrStatus = SrStatus.OK;
-                        break;
-                }
-            }
+            
         }
 
         /// <summary>
@@ -240,7 +219,7 @@ namespace ComTest
         {
             lock(srLocker)
             {
-                srErrLast = this.checkBox_SrErrLast.Checked;
+                srErrLast = this.checkBox_flag.Checked;
             }
         }
 

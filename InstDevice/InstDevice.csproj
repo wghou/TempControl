@@ -42,8 +42,8 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="SqlSugar, Version=5.0.0.14, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\sqlSugar.5.0.0.14\lib\SqlSugar.dll</HintPath>
+    <Reference Include="SqlSugar, Version=5.0.0.15, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\sqlSugar.5.0.0.15\lib\SqlSugar.dll</HintPath>
     </Reference>
     <Reference Include="Stateless, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93038f0927583c9a, processorArchitecture=MSIL">
       <HintPath>..\packages\Stateless.5.1.2\lib\net45\Stateless.dll</HintPath>
@@ -89,7 +89,7 @@
     <Compile Include="InstDevice.StateM.cs" />
     <Compile Include="InstDevice.Type.cs" />
     <Compile Include="InstSBE37.cs" />
-    <Compile Include="InstDevice.CmdChain.cs" />
+    <Compile Include="InstSBE37.xml.cs" />
     <Compile Include="InstSTD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

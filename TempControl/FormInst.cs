@@ -249,6 +249,13 @@ namespace TempControl
                     _device._instDevices[itm.Id].GetBasicInfo().PortName = portList[itm.portId].portName;
                     _device._instDevices[itm.Id].GetBasicInfo().BaudRate = baudList[itm.brId].baudRate;
                     confOK &= _device._instDevices[itm.Id].InitWithInfo();
+
+                    // todo: 初始化并配置仪器
+                    if(_device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Undefined &&
+                        _device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Standard)
+                    {
+                        confOK &= (_device._instDevices[itm.Id] as InstSBE).SetupSBE37(InstSampleMode.PolledSample_Fmt0, true);
+                    }
                 }
             }
 

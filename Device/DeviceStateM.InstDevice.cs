@@ -47,8 +47,7 @@ namespace Device
                 // 添加标准仪器接口
                 // todo: 在这个默认的 info 中，没有设置 testId
                 InstInfoBase info = new InstInfoBase() {
-                                        InstType = TypeInst.Standard,
-                                        SensorFlag = TypeSensor.Conduct | TypeSensor.Tempt };
+                                        InstType = TypeInst.Standard};
                 sdDeviceRef = new InstSTD(info);
                 
                 sdDeviceRef.ErrorOccurEvent += InstDevice_ErrorOccurEvent;

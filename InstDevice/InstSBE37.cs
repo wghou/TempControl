@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace InstDevice
 {
@@ -16,7 +17,7 @@ namespace InstDevice
         /// <summary>
         /// 仪器的采样方式 / 数据读取方式
         /// </summary>
-        private InstSampleMode sampleModel = InstSampleMode.AutoSample_Fmt1;
+        private InstSampleMode sampleMode = InstSampleMode.AutoSample_Fmt1;
         /// <summary>
         /// 当前发送给仪器的指令
         /// </summary>
@@ -38,9 +39,21 @@ namespace InstDevice
         /// </summary>
         private SBE37OutputFormat outputFormat = SBE37OutputFormat.Format_1;
         /// <summary>
-        /// calibration coefficients 通过指令 DC 获得
+        /// Configuration Data in Xml format
         /// </summary>
-        private string CalibCoeff = "";
+        private string ConfigDataXml = "";
+        /// <summary>
+        /// Configuration Data
+        /// </summary>
+        private SBE37ConfigData configData = new SBE37ConfigData();
+        /// <summary>
+        /// calibration coefficients in Xml format
+        /// </summary>
+        private string CalibCoeffXml = "";
+        /// <summary>
+        /// calibration coefficients
+        /// </summary>
+        private SBE37CalibCoeff calibCCoeff = new SBE37CalibCoeff();
 
 
         public InstSBE(InstSqlrd info) : base(info)
@@ -50,7 +63,7 @@ namespace InstDevice
 
             // todo: 
             _tickTimerInst = new System.Timers.Timer();
-            _tickTimerInst.Interval = 2000;
+            _tickTimerInst.Interval = 500;
             _tickTimerInst.AutoReset = true;
             _tickTimerInst.Elapsed += _tickTimerSample_Elapsed;
             //_tickTimerInst.Start(); 
@@ -63,25 +76,24 @@ namespace InstDevice
         /// <param name="mode"></param>
         /// <param name="useOptFlg"></param>
         /// <returns></returns>
-        public bool SetupSBE37(InstSampleMode mode, bool useOptFlg)
+        public bool SetupSBE37(InstSampleMode mode = InstSampleMode.AutoSample_Fmt0, bool useOptFlg = false)
         {
-            currentCmd = SBE37Cmd.InitCmds;
-            UseExecutedFlag = true;
+            Enable = true;
 
-            // todo: 这里的 while 感觉不是很好
+            // 读取 calibration coefficients
+            //currentCmd = SBE37Cmd.GetCC;
+            //CmdExecuted = false;
+            //sendCMD("GetCC");
+            //while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
+            //bool rlt1 = calibCCoeff.ResolveXml2Value(CalibCoeffXml);
+            //if (rlt1 == false)
+            //{
+            //    nlogger.Error("error when read and resolve configuration data from xml string");
+            //    return false;
+            //}
 
             // 设置返回标志位
             CmdExecuted = false;
-            sendCMD("OutputExecutedTag=Y");
-            while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
-
-            // 读取硬件信息
-            CmdExecuted = false;
-            sendCMD("DC");
-            while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
-
-            // 设置返回标志位
-            CmdExecuted = true;
             sendCMD("OutputExecutedTag=N");
             System.Threading.Thread.Sleep(10);
 
@@ -92,80 +104,79 @@ namespace InstDevice
                 case InstSampleMode.AutoSample_Fmt0:
                     sendCMD("SAMPLEMODE=2");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("SAMPLEINTERVAL=20");
+                    sendCMD("SAMPLEINTERVAL=4");
                     System.Threading.Thread.Sleep(10);
                     sendCMD("OUTPUTFORMAT=0");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTTIME=Y");
-                    System.Threading.Thread.Sleep(10);
                     sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
-
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
+                // ok
                 case InstSampleMode.AutoSample_Fmt1:
                     sendCMD("SAMPLEMODE=2");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("SAMPLEINTERVAL=20");
+                    sendCMD("SAMPLEINTERVAL=4");
                     System.Threading.Thread.Sleep(10);
                     sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTTIME=Y");
-                    System.Threading.Thread.Sleep(10);
                     sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
-
-                    outputFormat = SBE37OutputFormat.Format_1;
-                    break;
-
-                case InstSampleMode.PolledSample_Fmt0:
-                    sendCMD("SAMPLEMODE=1");
-                    System.Threading.Thread.Sleep(10);
-                    sendCMD("SAMPLEINTERVAL=20");
-                    System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTFORMAT=1");
-                    System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTTIME=Y");
-                    System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
-                    System.Threading.Thread.Sleep(10);
-
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
+                // ok
+                case InstSampleMode.PolledSample_Fmt0:
+                    sendCMD("SAMPLEMODE=1");
+                    System.Threading.Thread.Sleep(10);
+                    sendCMD("AUTORUN=N");
+                    System.Threading.Thread.Sleep(10);
+                    sendCMD("OUTPUTFORMAT=0");
+                    System.Threading.Thread.Sleep(10);
+                    outputFormat = SBE37OutputFormat.Format_0;
+                    break;
+
+                // ok
                 case InstSampleMode.PolledSample_Fmt1:
                     sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("SAMPLEINTERVAL=20");
+                    sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
                     sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTTIME=Y");
-                    System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
-                    System.Threading.Thread.Sleep(10);
-
-                    outputFormat = SBE37OutputFormat.Format_1;
+                    outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
+
+                // 暂时还不想用这种方法
                 case InstSampleMode.PolledSample_Fmt10:
                     sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("SAMPLEINTERVAL=20");
+                    sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
                     sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
-                    sendCMD("OUTPUTTIME=Y");
-                    System.Threading.Thread.Sleep(10);
-                    sendCMD("AUTORUN=N");
-                    System.Threading.Thread.Sleep(10);
-
-                    outputFormat = SBE37OutputFormat.Format_1;
+                    outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
                 default:
                     break;
+            }
+
+            sampleMode = mode;
+
+            // todo: 这里的 while 感觉不是很好
+            // 读取 configuration data
+            currentCmd = SBE37Cmd.GetCD;
+            CmdExecuted = false;
+            sendCMD("GetCD");
+            while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
+            bool rlt2 = configData.ResolveXml2Value(ConfigDataXml);
+            if (rlt2 == false)
+            {
+                nlogger.Error("error when read and resolve configuration data from xml string");
+                return false;
             }
 
             UseExecutedFlag = useOptFlg;
@@ -183,7 +194,7 @@ namespace InstDevice
         {
             base.internalEnterMeasureStep();
 
-            if(sampleModel == InstSampleMode.AutoSample_Fmt0 || sampleModel == InstSampleMode.AutoSample_Fmt1)
+            if(sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
             {
                 currentCmd = SBE37Cmd.Start;
                 CmdExecuted = false;
@@ -200,23 +211,35 @@ namespace InstDevice
         /// </summary>
         protected override void internalMeasureStep()
         {
-            if (sampleModel == InstSampleMode.AutoSample_Fmt0 || sampleModel == InstSampleMode.AutoSample_Fmt1)
+            if (sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
             {
                 
             }
-            else
+            else if(sampleMode == InstSampleMode.PolledSample_Fmt0)
             {
-                if(currentCmd == SBE37Cmd.Tc)
+                currentCmd = SBE37Cmd.Tsr;
+                CmdExecuted = false;
+                sendCMD("tsr");
+            }
+            else if(sampleMode == InstSampleMode.PolledSample_Fmt1)
+            {
+                currentCmd = SBE37Cmd.Ts;
+                CmdExecuted = false;
+                sendCMD("ts");
+            }
+            else if(sampleMode == InstSampleMode.PolledSample_Fmt10)
+            {
+                if(currentCmd == SBE37Cmd.Ts)
                 {
-                    currentCmd = SBE37Cmd.Tcr;
+                    currentCmd = SBE37Cmd.Tsr;
                     CmdExecuted = false;
-                    sendCMD("Tcr");
+                    sendCMD("tcr");
                 }
-                else if(currentCmd == SBE37Cmd.Tcr)
+                else if(currentCmd == SBE37Cmd.Tsr)
                 {
-                    currentCmd = SBE37Cmd.Tc;
+                    currentCmd = SBE37Cmd.Ts;
                     CmdExecuted = false;
-                    sendCMD("Tc");
+                    sendCMD("tc");
                 }
                 else{
                     OnErrorOccur(Err_sr.Error);
@@ -228,7 +251,7 @@ namespace InstDevice
         /// </summary>
         protected override void internalEnterStoreStep()
         {
-            if (sampleModel == InstSampleMode.AutoSample_Fmt0 || sampleModel == InstSampleMode.AutoSample_Fmt1)
+            if (sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
             {
                 currentCmd = SBE37Cmd.Stop;
                 CmdExecuted = false;
@@ -291,16 +314,31 @@ namespace InstDevice
 
             switch (currentCmd)
             {
-                case SBE37Cmd.Start:
-                case SBE37Cmd.Tc:
-                case SBE37Cmd.Tcr:
-                    // 是否会发生错误呢？
-                    rlt = SBE37ResolveStr2Data(str, out data);
+                case SBE37Cmd.GetCD:
+                    rlt = GetXmlData(str, out ConfigDataXml);
                     break;
 
-                case SBE37Cmd.Dc:
-                    rlt = GetCalibCoeff(str);
-                    data = null;
+                case SBE37Cmd.GetCC:
+                    rlt = GetXmlData(str, out CalibCoeffXml);
+                    break;
+
+                case SBE37Cmd.Start:
+                case SBE37Cmd.Stop:
+                    // 是否会发生错误呢？
+                    rlt = SBE37ResolveStr2Value(str, out data);
+                    break;
+
+                case SBE37Cmd.Ts:
+                    rlt = SBE37ResolveStr2Value(str, out data);
+                    // 如果是 轮询01 的方式查询数据
+                    if (sampleMode == InstSampleMode.PolledSample_Fmt10)
+                    {
+                        data = null;
+                    }
+                    break;
+
+                case SBE37Cmd.Tsr:
+                    rlt = SBE37ResolveStr2Value(str, out data);
                     break;
 
                 default:
@@ -311,39 +349,49 @@ namespace InstDevice
                     break;
             }
 
+            // 在不是 tc 和 tcr 的情况下，数据后面都会跟随有 <Executed/>
+            if (UseExecutedFlag == true && (currentCmd == SBE37Cmd.Ts && currentCmd == SBE37Cmd.Tsr))
+            {
+                // 读取数据末尾跟随的结束标志位
+                string str2 = sPort.ReadLine();
+                if (!str2.Contains(OutputFlag))
+                {
+                    return false;
+                }
+            }
+
             return rlt;
         }
 
 
         /// <summary>
-        /// 获取仪器信息
+        /// 重新读取 information data in xml format, 
+        /// such as configuration data & calibration coefficients
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private bool GetCalibCoeff(string str)
+        /// <param name="str"> 第一行字符串 </param>
+        /// <param name="xmlStr"> xml string 应放置的对象 </param>
+        /// <returns> 是否成功获取 </returns>
+        private bool GetXmlData(string str, out string xmlStr)
         {
-            // 清空原有的字符串
-            CalibCoeff = "";
+            // 清空原有的 xml data
+            xmlStr = "";
 
-            // bug: 这里，在显示信息的时候，是以 <Executed/> 为结尾的
-            // 或者，这里就干脆用超时代表结束吧
+            // 读取 configuration data until get the <Executed/>
             try
             {
-                CalibCoeff += str + "\r";
-                string data2 = sPort.ReadLine();
-                while (!data2.Contains(OutputFlag))
+                do
                 {
-                    CalibCoeff += data2 + "\r";
-                }
-
-                CmdExecuted = true;
+                    xmlStr += str;
+                    //xmlStr += str + "\r";
+                    str = sPort.ReadLine();
+                } while (!str.Contains(OutputFlag));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 CmdExecuted = true;
-                // return false;
+                return false;
             }
-            
+            CmdExecuted = true;
             return true;
         }
 
@@ -353,210 +401,231 @@ namespace InstDevice
         /// <param name="str"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private bool SBE37ResolveStr2Data(string str, out InstSBE37Data data)
+        private bool SBE37ResolveStr2Value(string str, out InstSBE37Data data)
         {
             data = null;
+            bool rlt = true;
 
             try
             {
-                // 日期（yyyy_MM_dd HH:mm: ss）-电导率频率 - 标准电导率示值 - 温度频率 - 标准温度示值 - 盐度 - 标志数
-                string[] valStrs = str.Split('-');
-
                 instData1Cache.vTestID = Info.testId;
                 instData1Cache.vInstrumentID = Info.instrumentId;
                 instData1Cache.vItemType = "";
                 
-
-
-                if(sampleModel == InstSampleMode.PolledSample_Fmt10)
-                {
-
-                }
-                else
-                {
-
-                }
-
-
                 // 解析数据
                 switch (outputFormat)
                 {
                     case SBE37OutputFormat.Format_0:
-                        int idx0 = 0;
-                        foreach(TypeSensorFmt0 itm in Enum.GetValues(typeof(TypeSensorFmt0)))
-                        {
-                            // 该位被置位
-                            if (Info.SensorFlagFmt0.HasFlag(itm))
-                            {
-                                switch (itm)
-                                {
-                                    case TypeSensorFmt0.tt:
-                                        // tttttt = temperature A/D counts.
-                                        int tt = int.Parse(valStrs[idx0]);
-                                        break;
-                                    case TypeSensorFmt0.cc:
-                                        // ccccc.ccc = conductivity frequency (Hz).
-                                        double cc = double.Parse(valStrs[idx0]);
-                                        break;
-                                    case TypeSensorFmt0.pp:
-                                        // pppppp = pressure sensor pressure A/D counts; 
-                                        // sent if optional pressure sensor installed.
-                                        int pp = int.Parse(valStrs[idx0]);
-                                        break;
-
-                                    case TypeSensorFmt0.vv:
-                                        // vvvv = pressure sensor pressure temperature compensation A/D counts; 
-                                        // sent if optional pressure sensor installed.
-                                        int vv = int.Parse(valStrs[idx0]);
-                                        break;
-
-                                    case TypeSensorFmt0.oo:
-                                        // oo.ooo = oxygen sensor phase (µsec).
-                                        double oo = double.Parse(valStrs[idx0]);
-                                        break;
-
-                                    case TypeSensorFmt0.ot:
-                                        // t.tttttt = oxygen sensor temperature voltage.
-                                        double ot = double.Parse(valStrs[idx0]);
-                                        break;
-
-                                    case TypeSensorFmt0.dm:
-                                        break;
-
-                                    case TypeSensorFmt0.hm:
-                                        break;
-
-                                    default:
-                                        return false;
-                                        break;
-                                }
-
-                                idx0++;
-                            }
-                        }
-                        
-                        // 返回数据缓存
-                        data = instData1Cache;
+                        rlt = SBE37ResolveStr2ValueFmt0(str, out data);
                         break;
 
                     case SBE37OutputFormat.Format_1:
-                        int idx1 = 0;
-                        foreach (TypeSensorFmt1 itm in Enum.GetValues(typeof(TypeSensorFmt1)))
-                        {
-                            // 该位被置位
-                            if (Info.SensorFlagFmt0.HasFlag(itm))
-                            {
-                                switch (itm)
-                                {
-                                    case TypeSensorFmt1.tt:
-                                        // tttt.tttt = temperature (°C, ITS-90).
-                                        double tt = double.Parse(valStrs[idx1]);
-                                        break;
-                                    case TypeSensorFmt1.cc:
-                                        // ccccc.ccc = conductivity (S/m).
-                                        double cc = double.Parse(valStrs[idx1]);
-                                        break;
-                                    case TypeSensorFmt1.pp:
-                                        // ppppp.ppp = pressure (decibars);
-                                        // sent if optional pressure sensor installed.
-                                        int pp = int.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.dd:
-                                        // dddd.ddd = depth (meters);
-                                        // sent if optional pressure sensor installed.
-                                        int dd = int.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.oo:
-                                        // oo.ooo = oxygen (sent if OutputOx=Y; units defined by SetOxUnits =).
-                                        double oo = double.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.ss:
-                                        // ssss.ssss = salinity (psu); sent only if OutputSal=Y.
-                                        double ss = double.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.vv:
-                                        // vvvv.vvv = sound velocity (meters/second); sent only if OutputSV=Y.
-                                        double vv = double.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.rr:
-                                        // rrr.rrrr = local density (kg/m3); sent only if OutputDensity=Y.
-                                        double rr = double.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.sc:
-                                        // ccc.ccccc = Specific Conductivity (S/m)
-                                        double sc = double.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.xx:
-                                        // x = specific conductivity; sent if OutputSC=Y
-                                        int xx = int.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.dm:
-                                        // dd mmm yyyy = day, month, year.
-                                        double dm = double.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.hm:
-                                        // hh:mm:ss = hour, minute, second.
-                                        double hm = double.Parse(valStrs[idx1]);
-                                        break;
-
-                                    case TypeSensorFmt1.nn:
-                                        // n = sample number in FLASH memory (sent if TxSampleNum=y,
-                                        int nn = int.Parse(valStrs[idx1]);
-                                        break;
-
-                                    default:
-                                        return false;
-                                        break;
-                                }
-
-                                idx1++;
-                            }
-                        }
-
-                        // 返回数据缓存
-                        data = instData1Cache;
+                        rlt = SBE37ResolveStr2ValueFmt0(str, out data);
                         break;
 
                     case SBE37OutputFormat.Format_2:
                         data = null;
-                        return false;
+                        rlt = false;
                         break;
 
                     case SBE37OutputFormat.Format_3:
                         data = null;
-                        return false;
+                        rlt = false;
                         break;
 
                     default:
                         data = null;
-                        return false;
+                        rlt = false;
                         break;
-                }
-
-
-
-                // 在不是 start 的情况下，数据后面都会跟随有 <Executed/>
-                if (UseExecutedFlag == true && currentCmd != SBE37Cmd.Start)
-                {
-                    // 读取数据末尾跟随的结束标志位
-                    string str2 = sPort.ReadLine();
-                    if (!str2.Contains(OutputFlag))
-                    {
-                        return false;
-                    }
                 }
             }
             catch (Exception ex)
             {
+                return false;
+            }
+
+            return rlt;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private bool SBE37ResolveStr2ValueFmt0(string str, out InstSBE37Data data)
+        {
+            data = null;
+            string[] strSplit = str.Split(',');
+
+            Debug.WriteLine("SBE37ResolveStr2ValueFmt0: " + str);
+
+            instData1Cache.addTime = DateTime.Now;
+            data = instData1Cache;
+            return true;
+
+            int idx = 0;
+            try
+            {
+                int ttt; double ccc;
+                int ppp, vvv;
+                double oo, ot;
+                DateTime dt = DateTime.Now;
+
+                // tttttt =temperature A/D counts
+                if (configData.OutputTemperature.ToUpper().Contains("YES"))
+                {
+                    ttt = int.Parse(strSplit[idx++]);
+                }
+
+                // cccc.ccc = conductivity frequency (Hz)
+                if (configData.OutputConductivity.ToUpper().Contains("YES"))
+                {
+                    ccc = double.Parse(strSplit[idx++]);
+                }
+
+                // pppppp = pressure sensor pressure A/D counts;
+                // vvvv = pressure sensor pressure temperature compensation A/D counts;
+                // sent only if pressure sensor installed
+                if (configData.PressureInstalled.ToUpper().Contains("YES") && configData.OutputPressure.ToUpper().Contains("YES"))
+                {
+                    ppp = int.Parse(strSplit[idx++]);
+                    vvv = int.Parse(strSplit[idx++]);
+                }
+
+                // oo.ooo = oxygen sensor phase (µsec)
+                // t.tttttt = oxygen sensor temperature voltage.
+                if (configData.OutputOxygen.ToUpper().Contains("YES"))
+                {
+                    oo = double.Parse(strSplit[idx++]);
+                    ot = double.Parse(strSplit[idx++]);
+                }
+
+                // dd mmm yyyy = day, month, year; sent only if OutputTime=Y
+                // hh:mm:ss = hour, minute, second; sent only if OutputTime=Y.
+                if (configData.OutputTime.ToUpper().Contains("YES"))
+                {
+                    dt = DateTime.Parse(strSplit[idx++]);
+                    dt = DateTime.Parse(strSplit[idx++]);
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("SBE37ResolveStr2ValueFmt0: error");
+                return false;
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private bool SBE37ResolveStr2ValueFmt1(string str, out InstSBE37Data data)
+        {
+            data = null;
+            string[] strSplit = str.Split(',');
+
+            Debug.WriteLine("SBE37ResolveStr2ValueFmt1: " + str);
+            instData1Cache.addTime = DateTime.Now;
+            data = instData1Cache;
+            return true;
+
+            int idx = 0;
+            try
+            {
+                double ttt; double ccc;
+                double ppp, ddd;
+                double sss,vvv;
+                double rrr, sc;
+                double xxx;
+                double oo;
+                int nn;
+                DateTime dt = DateTime.Now;
+
+                // tttt.tttt = temperature (°C, ITS-90).
+                if (configData.OutputTemperature.ToUpper().Contains("YES"))
+                {
+                    ttt = double.Parse(strSplit[idx++]);
+                }
+
+                // ccc.ccccc = conductivity (S/m).
+                if (configData.OutputConductivity.ToUpper().Contains("YES"))
+                {
+                    ccc = double.Parse(strSplit[idx++]);
+                }
+
+                // ppppp.ppp = pressure (decibars)
+                // sent only if pressure sensor installed
+                if (configData.PressureInstalled.ToUpper().Contains("YES") && configData.OutputPressure.ToUpper().Contains("YES"))
+                {
+                    ppp = double.Parse(strSplit[idx++]);
+                }
+
+                // dddd.ddd = depth (meters); 
+                // sent only if OutputDepth=Y
+                if (configData.OutputDepth.ToUpper().Contains("YES"))
+                {
+                    ddd = double.Parse(strSplit[idx++]);
+                }
+
+                // oo.ooo = oxygen sensor phase (µsec)
+                // t.tttttt = oxygen sensor temperature voltage.
+                if (configData.OutputOxygen.ToUpper().Contains("YES"))
+                {
+                    oo = double.Parse(strSplit[idx++]);
+                }
+
+                // ssss.ssss= salinity (psu); 
+                // sent only if OutputSal=Y
+                if (configData.OutputSalinity.ToUpper().Contains("YES"))
+                {
+                    sss = double.Parse(strSplit[idx++]);
+                }
+
+                // vvvv.vvv = sound velocity (meters/second); 
+                // sent only if OutputSV=Y
+                if (configData.OutputSV.ToUpper().Contains("YES"))
+                {
+                    vvv = double.Parse(strSplit[idx++]);
+                }
+
+                // rrr.rrrr = local density (kg/m3); 
+                // sent only if OutputDensity=Y
+                if (configData.OutputDensity.ToUpper().Contains("YES"))
+                {
+                    rrr = double.Parse(strSplit[idx++]);
+                }
+
+                // x = specific conductivity; 
+                //sent if OutputSC=Y
+                if (configData.OutputSC.ToUpper().Contains("YES"))
+                {
+                    xxx = double.Parse(strSplit[idx++]);
+                }
+
+                // dd mmm yyyy = day, month, year; sent only if OutputTime=Y
+                // hh:mm:ss = hour, minute, second; sent only if OutputTime=Y.
+                if (configData.OutputTime.ToUpper().Contains("YES"))
+                {
+                    dt = DateTime.Parse(strSplit[idx++]);
+                    dt = DateTime.Parse(strSplit[idx++]);
+                }
+
+                // n = sample number in FLASH memory 
+                // sent if TxSampleNum=y
+                if (configData.TxSampleNumber.ToUpper().Contains("YES"))
+                {
+                    nn = int.Parse(strSplit[idx++]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("SBE37ResolveStr2ValueFmt0: error");
+
                 return false;
             }
 

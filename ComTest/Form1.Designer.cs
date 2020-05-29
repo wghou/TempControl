@@ -36,8 +36,8 @@
             this.pictureBox_Sr = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.comboBox_SrStatus = new System.Windows.Forms.ComboBox();
-            this.checkBox_SrErrLast = new System.Windows.Forms.CheckBox();
+            this.comboBox_SampleFormat = new System.Windows.Forms.ComboBox();
+            this.checkBox_flag = new System.Windows.Forms.CheckBox();
             this.groupBox_Ry = new System.Windows.Forms.GroupBox();
             this.hslStatusManagement_ryS = new HslControls.HslStatusManagement();
             this.hslStatusManagement_ryM = new HslControls.HslStatusManagement();
@@ -123,8 +123,8 @@
             this.groupBox_Sr.Controls.Add(this.pictureBox_Sr);
             this.groupBox_Sr.Controls.Add(this.label2);
             this.groupBox_Sr.Controls.Add(this.label1);
-            this.groupBox_Sr.Controls.Add(this.comboBox_SrStatus);
-            this.groupBox_Sr.Controls.Add(this.checkBox_SrErrLast);
+            this.groupBox_Sr.Controls.Add(this.comboBox_SampleFormat);
+            this.groupBox_Sr.Controls.Add(this.checkBox_flag);
             this.groupBox_Sr.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox_Sr.Location = new System.Drawing.Point(14, 14);
             this.groupBox_Sr.Name = "groupBox_Sr";
@@ -200,33 +200,33 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(105, 14);
             this.label1.TabIndex = 2;
-            this.label1.Text = "设备错误状态：";
+            this.label1.Text = "SampleFormat：";
             // 
-            // comboBox_SrStatus
+            // comboBox_SampleFormat
             // 
-            this.comboBox_SrStatus.FormattingEnabled = true;
-            this.comboBox_SrStatus.Items.AddRange(new object[] {
+            this.comboBox_SampleFormat.FormattingEnabled = true;
+            this.comboBox_SampleFormat.Items.AddRange(new object[] {
             "正常工作 - OK",
             "连接断开 - DisConnected",
             "错误 - DataErr"});
-            this.comboBox_SrStatus.Location = new System.Drawing.Point(7, 65);
-            this.comboBox_SrStatus.Name = "comboBox_SrStatus";
-            this.comboBox_SrStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.comboBox_SrStatus.Size = new System.Drawing.Size(205, 22);
-            this.comboBox_SrStatus.TabIndex = 1;
-            this.comboBox_SrStatus.SelectedIndexChanged += new System.EventHandler(this.comboBox_SrStatus_SelectedIndexChanged);
+            this.comboBox_SampleFormat.Location = new System.Drawing.Point(7, 65);
+            this.comboBox_SampleFormat.Name = "comboBox_SampleFormat";
+            this.comboBox_SampleFormat.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.comboBox_SampleFormat.Size = new System.Drawing.Size(205, 22);
+            this.comboBox_SampleFormat.TabIndex = 1;
+            this.comboBox_SampleFormat.SelectedIndexChanged += new System.EventHandler(this.comboBox_SampleFormat_SelectedIndexChanged);
             // 
-            // checkBox_SrErrLast
+            // checkBox_flag
             // 
-            this.checkBox_SrErrLast.AutoSize = true;
-            this.checkBox_SrErrLast.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox_SrErrLast.Location = new System.Drawing.Point(238, 67);
-            this.checkBox_SrErrLast.Name = "checkBox_SrErrLast";
-            this.checkBox_SrErrLast.Size = new System.Drawing.Size(110, 18);
-            this.checkBox_SrErrLast.TabIndex = 0;
-            this.checkBox_SrErrLast.Text = "保持错误状态";
-            this.checkBox_SrErrLast.UseVisualStyleBackColor = true;
-            this.checkBox_SrErrLast.CheckedChanged += new System.EventHandler(this.checkBox_SrErrLast_CheckedChanged);
+            this.checkBox_flag.AutoSize = true;
+            this.checkBox_flag.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_flag.Location = new System.Drawing.Point(238, 67);
+            this.checkBox_flag.Name = "checkBox_flag";
+            this.checkBox_flag.Size = new System.Drawing.Size(110, 18);
+            this.checkBox_flag.TabIndex = 0;
+            this.checkBox_flag.Text = "ExecutedFlag";
+            this.checkBox_flag.UseVisualStyleBackColor = true;
+            this.checkBox_flag.CheckedChanged += new System.EventHandler(this.checkBox_SrErrLast_CheckedChanged);
             // 
             // groupBox_Ry
             // 
@@ -1009,8 +1009,8 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox_Sr;
-        private System.Windows.Forms.ComboBox comboBox_SrStatus;
-        private System.Windows.Forms.CheckBox checkBox_SrErrLast;
+        private System.Windows.Forms.ComboBox comboBox_SampleFormat;
+        private System.Windows.Forms.CheckBox checkBox_flag;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox_Sr;

@@ -35,22 +35,26 @@ namespace ComTest
         // 仪器设备
         ///
         /// <summary>
-        /// 仪器设备错误状态
+        /// 采样状态
         /// </summary>
-        enum SrStatus : int
+        enum SampleFormat : int
         {
             /// <summary>
-            /// 正常工作状态
+            /// 轮询采样 + 数据格式 0
             /// </summary>
-            OK = 0,
+            PolledSampleFormat_0 = 0,
             /// <summary>
-            /// 连接断开
+            /// 轮询采样 + 数据格式 1
             /// </summary>
-            DisConnected = 1,
+            PolledSampleFormat_1,
             /// <summary>
-            /// 数据错误
+            /// 自动采样 + 数据格式 0
             /// </summary>
-            DataErr = 2,
+            AutoSampleFormat_0,
+            /// <summary>
+            /// 自动采样 + 数据格式 1
+            /// </summary>
+            AutoSampleFormat_1
         }
         /// <summary>
         /// 仪器温度值
@@ -63,7 +67,7 @@ namespace ComTest
         /// <summary>
         /// 仪器 - 错误状态
         /// </summary>
-        SrStatus srErrStatus = SrStatus.OK;
+        SampleFormat srErrStatus = SampleFormat.AutoSampleFormat_0;
         /// <summary>
         /// 仪器 - 在产生一次错误状态后，是否保持错误状态 - 默认不保持
         /// </summary>
@@ -77,7 +81,26 @@ namespace ComTest
         ////////////////////////////////////
         // 端口数据传输函数
         ////////////////////////////////////
-        
+
+        string cdString = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r"
+                            + "<PressureInstalled>no</PressureInstalled>\r"
+                            + "<ReferencePressure>0.000000e+00</ReferencePressure>\r"
+                            + "<PumpInstalled>No</PumpInstalled>\r"
+                            + "<SampleMode>single sample</SampleMode>\r"
+                            + "<SampleDataFormat>XML</SampleDataFormat>\r"
+                            + "<ConductivityUnits>S/m</ConductivityUnits>\r"
+                            + "<OutputSalinity>yes</OutputSalinity>\r"
+                            + "<OutputSV>no</OutputSV>\r"
+                            + "<OutputDepth>yes</OutputDepth>\r"
+                            + "<Latitude>10.0</Latitude>\r"
+                            + "<OutputDensity>yes</OutputDensity>\r"
+                            + "<TxSampleNumber>yes</TxSampleNumber>\r"
+                            + "<SampleInterval>6</SampleInterval>\r"
+                            + "<OutputTime>no</OutputTime>\r"
+                            + "<AutoRun>no</AutoRun>\r"
+                            + "<StoreData>yes</StoreData>\r"
+                            + "</ConfigurationData>";
+
         /// <summary>
         /// 标准仪器发送数据
         /// </summary>
@@ -123,7 +146,6 @@ namespace ComTest
                 // 出现代码错误
                 srCodeErr = true;
             }
-            
 
             lock(ryLocker)
             {
@@ -132,39 +154,41 @@ namespace ComTest
 
                 try
                 {
-                    switch (srErrStatus)
+                    // 正常工作状态
+                    if (dataRev.Contains("GetCD"))
                     {
-                        case SrStatus.OK:
-                            // 正常工作状态
-                            if(dataRev.Contains("tsr"))
-                            {
-                                // 返回数据
-                                sPortSBE37SM.WriteLine("602818,  5298.894, 524770, 2252,  25 Mar 2020, 23:15:15");
-                            }
-                            else if (dataRev.Contains("ts"))
-                            {
-                                // 返回数据
-                                sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
-                            }
-
-                            System.Threading.Thread.Sleep(5);
-                            // 返回指令执行标志
-                            sPortSBE37SM.WriteLine("<Executed/>");
-
-                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
-                            break;
-                        case SrStatus.DisConnected:
-                            // 连接断开状态 - 不返回任何数据
-                            break;
-                        case SrStatus.DataErr:
-                            // 错误状态
-                            //sPortSBE37SM.WriteLine("@35EB:");
-                            //Debug.WriteLine("仪器错误数据： @035EB.");
-                            break;
-                        default:
-                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
-                            break;
+                        // 返回数据
+                        sPortSBE37SM.WriteLine(cdString);
+                        sPortSBE37SM.WriteLine("<Executed/>");
                     }
+                    else if (dataRev.Contains("GetCC"))
+                    {
+                        // 返回数据
+                        // sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                    }
+                    else if (dataRev.Contains("start"))
+                    {
+                        sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                    }
+                    else if (dataRev.Contains("stop"))
+                    {
+                        if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
+                    }
+                    else if (dataRev.Contains("ts"))
+                    {
+                        sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                        if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
+                    }
+                    else if (dataRev.Contains("tsr"))
+                    {
+                        sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                        if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
+                    }
+                    else
+                    {
+
+                    }
+                    
                 }
                 catch(Exception ex)
                 {
@@ -173,10 +197,6 @@ namespace ComTest
                     // 出现代码错误
                     srCodeErr = true;
                 }
-
-                // 如果错误不持续，则清空错误标记为
-                if (!srErrLast && srErrStatus != SrStatus.OK)
-                    this.BeginInvoke(new EventHandler(delegate { srErrStatus = SrStatus.OK; this.comboBox_SrStatus.SelectedIndex = 0; }));
             }
         }
 
@@ -202,59 +222,58 @@ namespace ComTest
                 srCodeErr = true;
             }
 
-
             lock (ryLocker)
             {
                 // 调试信息
-                Debug.WriteLine("仪器设备 sPortSBE37SMP 读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
+                Debug.WriteLine("仪器设备 sPortSBE37SM 读取到了数据：" + dataRev + " 设备状态：" + srErrStatus.ToString());
 
                 try
                 {
-                    switch (srErrStatus)
+                    // 正常工作状态
+                    if (dataRev.Contains("GetCD"))
                     {
-                        case SrStatus.OK:
-                            // 正常工作状态
-                            if (dataRev.Contains("tsr"))
-                            {
-                                // 返回数据
-                                sPortSBE37SMP.WriteLine("602818,  5298.894, 524770, 2252,  25 Mar 2020, 23:15:15");
-                            }
-                            else if (dataRev.Contains("ts"))
-                            {
-                                // 返回数据
-                                sPortSBE37SMP.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
-                            }
-                            System.Threading.Thread.Sleep(5);
-                            // 返回指令执行标志
-                            sPortSBE37SMP.WriteLine("<Executed/>");
-
-                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
-                            break;
-                        case SrStatus.DisConnected:
-                            // 连接断开状态 - 不返回任何数据
-                            break;
-                        case SrStatus.DataErr:
-                            // 错误状态
-                            //sPortSBE37SMP.WriteLine("@35EB:");
-                            //Debug.WriteLine("仪器错误数据： @035EB.");
-                            break;
-                        default:
-                            //Debug.WriteLine("仪器设备返回了数据：" + dataRev.ToString());
-                            break;
+                        // 返回数据
+                        sPortSBE37SMP.WriteLine(cdString);
+                        sPortSBE37SMP.WriteLine("<Executed/>");
                     }
+                    else if (dataRev.Contains("GetCC"))
+                    {
+                        // 返回数据
+                        // sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                    }
+                    else if (dataRev.Contains("start"))
+                    {
+                        sPortSBE37SMP.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                    }
+                    else if (dataRev.Contains("stop"))
+                    {
+                        if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
+                    }
+                    else if (dataRev.Contains("ts"))
+                    {
+                        sPortSBE37SMP.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                        if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
+                    }
+                    else if (dataRev.Contains("tsr"))
+                    {
+                        sPortSBE37SMP.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                        if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
+                    }
+                    else
+                    {
+
+                    }
+
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("SPortSBE37SMP_DataReceived exception when writeData : " + ex.Message);
+                    Debug.WriteLine("SPortSBE37SM_DataReceived exception when writeData : " + ex.Message);
 
                     // 出现代码错误
                     srCodeErr = true;
                 }
-
-                // 如果错误不持续，则清空错误标记为
-                if (!srErrLast && srErrStatus != SrStatus.OK)
-                    this.BeginInvoke(new EventHandler(delegate { srErrStatus = SrStatus.OK; this.comboBox_SrStatus.SelectedIndex = 0; }));
             }
+
         }
 
     }

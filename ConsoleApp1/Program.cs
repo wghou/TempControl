@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using InstDevice;
 using Device;
 using IotCS.Client;
+using System.Xml;
 
 namespace ConsoleApp1
 {
@@ -29,9 +30,53 @@ namespace ConsoleApp1
             public List<ABase> data { get; set; }
         }
 
+        /// <summary>
+        /// configuration data of SBE37
+        /// </summary>
+        public class SBE37ConfigData
+        {
+            public string DeviceType { get; set; }
+
+            public string SerialNumber { get; set; }
+
+            public bool PressureInstalled { get; set; }
+
+            public bool PumpInstalled { get; set; }
+
+            public float MinCondFreq { get; set; }
+
+            public string SampleMode { get; set; }
+
+            public string SampleDataFormat { get; set; }
+
+            public string ConductivityUnits { get; set; }
+
+            public bool OutputPressure { get; set; }
+
+            public bool OutputSalinity { get; set; }
+
+            public bool OutputSV { get; set; }
+
+            public bool OutputDepth { get; set; }
+
+            public string Latitude { get; set; }
+
+            public bool OutputDensity { get; set; }
+
+            public bool TxSampleNumber { get; set; }
+
+            public int SampleInterval { get; set; }
+
+            public bool OutputTime { get; set; }
+
+            public bool AutoRun { get; set; }
+
+            public bool StoreData { get; set; }
+        }
+
         static void Main(string[] args)
         {
-#if true
+#if false
             MySqlWriter writer = new MySqlWriter();
             writer.Init();
             bool rlt = true;
@@ -88,6 +133,61 @@ namespace ConsoleApp1
             IotSensorValueMessage srVal = new IotSensorValueMessage();
             srVal = JsonConvert.DeserializeObject<IotSensorValueMessage>(message.ToString(), new JsonSensorDataConverter());
 #endif
+
+#if false
+            string CalibCoeffXml = "<ConfigurationData DeviceType='SBE37SIP-RS232' SerialNumber='03720175'>\r<PressureInstalled>yes</PressureInstalled>\r</ConfigurationData>";
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(CalibCoeffXml);
+
+            SBE37ConfigData cfgdata = new SBE37ConfigData();
+
+            XmlNode node = xmlDoc.SelectSingleNode("ConfigurationData");
+
+            cfgdata.DeviceType = node.Attributes["DeviceType"].InnerText;
+            cfgdata.SerialNumber = node.Attributes["SerialNumber"].InnerText;
+
+            cfgdata.PressureInstalled = Boolean.Parse(node["PressureInstalled"].InnerText);
+            cfgdata.PumpInstalled = Boolean.Parse(node["PumpInstalled"].InnerText);
+            cfgdata.MinCondFreq = float.Parse(node["MinCondFreq"].InnerText);
+            cfgdata.SampleMode = node["SampleMode"].InnerText;
+            cfgdata.SampleDataFormat = node["SampleDataFormat"].InnerText;
+            cfgdata.ConductivityUnits = node["ConductivityUnits"].InnerText;
+            cfgdata.OutputPressure = Boolean.Parse(node["OutputPressure"].InnerText);
+            cfgdata.OutputSalinity = Boolean.Parse(node["OutputSalinity"].InnerText);
+            cfgdata.OutputSV = Boolean.Parse(node["OutputSV"].InnerText);
+            cfgdata.OutputDepth = Boolean.Parse(node["OutputDepth"].InnerText);
+            cfgdata.Latitude = node["Latitude"].InnerText;
+            cfgdata.OutputDensity = Boolean.Parse(node["OutputDensity"].InnerText);
+            cfgdata.TxSampleNumber = Boolean.Parse(node["TxSampleNumber"].InnerText);
+            cfgdata.SampleInterval = int.Parse(node["SampleInterval"].InnerText);
+            cfgdata.OutputTime = Boolean.Parse(node["OutputTime"].InnerText);
+            cfgdata.AutoRun = Boolean.Parse(node["AutoRun"].InnerText);
+            cfgdata.StoreData = Boolean.Parse(node["StoreData"].InnerText);
+
+#endif
+            InstSqlrd info = new InstSqlrd();
+            info.PortName = "COM11";
+            info.BaudRate = 9600;
+            info.InstType = TypeInst.SBE37SI;
+            info.vSpecification = "SMP";
+
+            InstSBE instDevice = new InstSBE(info);
+
+            instDevice.InitWithInfo();
+
+            instDevice.SetupSBE37(InstSampleMode.PolledSample_Fmt0, false);
+
+            instDevice.StartMeasure();
+
+            int i = 0;
+            while (i < 30)
+            {
+                System.Threading.Thread.Sleep(3000);
+            }
+
+            instDevice.StartStore();
+
+            instDevice.StopMeasure();
 
             return;
         }
