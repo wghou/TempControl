@@ -83,6 +83,16 @@ namespace ComTest
         ////////////////////////////////////
 
         string cdString = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r"
+                            + "<PressureInstalled>yes</PressureInstalled>\r"
+                            + "<OutputTemperature>yes</OutputTemperature>\r"
+                            + "<OutputConductivity>yes</OutputConductivity>\r"
+                            + "<OutputPressure>yes</OutputPressure>\r"
+                            + "<OutputOxygen>no</OutputOxygen>\r"
+                            + "<OutputDepth>yes</OutputDepth>\r"
+                            + "<OutputSalinity>yes</OutputSalinity>\r"
+                            + "</ConfigurationData>";
+
+        string cdString2 = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r"
                             + "<PressureInstalled>no</PressureInstalled>\r"
                             + "<ReferencePressure>0.000000e+00</ReferencePressure>\r"
                             + "<PumpInstalled>No</PumpInstalled>\r"
@@ -174,14 +184,14 @@ namespace ComTest
                     {
                         if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
                     }
-                    else if (dataRev.Contains("ts"))
-                    {
-                        sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
-                        if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
-                    }
                     else if (dataRev.Contains("tsr"))
                     {
-                        sPortSBE37SM.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                        sPortSBE37SM.WriteLine("579859,  5410.043, 528099, 1420, ");
+                        if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
+                    }
+                    else if (dataRev.Contains("ts"))
+                    {
+                        sPortSBE37SM.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643");
                         if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
                     }
                     else
@@ -249,14 +259,14 @@ namespace ComTest
                     {
                         if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
                     }
-                    else if (dataRev.Contains("ts"))
-                    {
-                        sPortSBE37SMP.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
-                        if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
-                    }
                     else if (dataRev.Contains("tsr"))
                     {
-                        sPortSBE37SMP.WriteLine("   0.3034,  2.91179,    0.607, 24 Sep 2019, 17:22:28");
+                        sPortSBE37SMP.WriteLine("579859,  5410.043, 528099, 1420, ");
+                        if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
+                    }
+                    else if (dataRev.Contains("ts"))
+                    {
+                        sPortSBE37SMP.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643");
                         if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
                     }
                     else

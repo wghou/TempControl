@@ -95,7 +95,7 @@ namespace InstDevice
         /// <summary>
         /// 当前需要测量的温度点
         /// </summary>
-        private float currentTemptPoint = 0.0f;
+        protected double currentTemptPoint = 0.0f;
 
 
         /// <summary>
@@ -172,9 +172,12 @@ namespace InstDevice
         /// <summary>
         /// 执行读取信息步骤
         /// </summary>
+        /// <param name="temptPoint"> 当前温度点 </param>
         /// <returns></returns>
-        public override bool StartMeasure()
+        public override bool StartMeasure(double temptPoint = 0)
         {
+            currentTemptPoint = temptPoint;
+
             if (!Enable) return  false;
 
             if (_instState != StateInst.Idle)
@@ -189,8 +192,9 @@ namespace InstDevice
         /// <summary>
         /// 开始存储数据
         /// </summary>
+        /// <param name="temptPoint"> 当前温度点 </param>
         /// <returns></returns>
-        public override bool StartStore()
+        public override bool StartStore(double temptPoint = 0)
         {
             if (!Enable) return false;
 
@@ -208,8 +212,9 @@ namespace InstDevice
         /// <summary>
         /// 停止测量数据
         /// </summary>
+        /// <param name="temptPoint"> 当前温度点 </param>
         /// <returns></returns>
-        public override bool StopMeasure()
+        public override bool StopMeasure(double temptPoint = 0)
         {
             if (!Enable) return false;
 

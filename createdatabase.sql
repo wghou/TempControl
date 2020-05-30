@@ -46,11 +46,13 @@ CREATE TABLE `s_instrumentdata` (
   `vTestID` varchar(50) DEFAULT NULL COMMENT '测试编号',
   `vInstrumentID` varchar(50) DEFAULT NULL COMMENT '仪器编号',
   `vItemType` varchar(255) DEFAULT NULL COMMENT '项目类型T/C',
+  `vTitularValue` double(11,0) DEFAULT NULL COMMENT '名义值',
   `vTemperature` double DEFAULT NULL COMMENT '电导率对应的温度值',
-  `vTitularValue` int(11) DEFAULT NULL COMMENT '名义值',
-  `vRealValue` double DEFAULT NULL COMMENT '平均值',
-  `vRawValue` double DEFAULT NULL COMMENT ' 原始值',
-  `vData` text COMMENT '某个校准点仪器所有数据',
+  `vConductivity` double DEFAULT NULL COMMENT '平均值',
+  `vSalinity` double DEFAULT NULL,
+  `vTemperatureRaw` int(11) DEFAULT NULL COMMENT ' 原始值',
+  `vConductivityRaw` double DEFAULT NULL COMMENT '某个校准点仪器所有数据',
+  `vMeasureTime` datetime DEFAULT NULL,
   `vAddTime` datetime DEFAULT NULL,
   `vUpdateTime` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -87,7 +89,7 @@ INSERT INTO `s_sensor` VALUES ('c818c760-89ba-4f9a-8638-17af9c1be8d2', '3633b6d4
 DROP TABLE IF EXISTS `s_standarddata`;
 CREATE TABLE `s_standarddata` (
   `vTestID` varchar(50) DEFAULT NULL COMMENT '测试编号',
-  `vTitularValue` int(11) DEFAULT NULL COMMENT '温度名义值',
+  `vTitularValue` double(11,0) DEFAULT NULL COMMENT '温度名义值',
   `vStandardT` double DEFAULT NULL COMMENT '标准温度',
   `vStandardC` double DEFAULT NULL COMMENT '标准电导率',
   `vMeasureTime` datetime DEFAULT NULL COMMENT '测量时间',

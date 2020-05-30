@@ -39,149 +39,6 @@ namespace InstDevice
         PolledSample_Fmt10
     }
 
-    /// <summary>
-    /// 仪器中传感器的标志位 - OutputFormat=0: raw decimal data, for diagnostic use at Sea-Bird
-    /// tttttt, cccc.ccc, pppppp, vvvv, dd mmm yyyy, hh:mm:ss（有的略有差异）
-    /// </summary>
-    [Flags]
-    public enum TypeSensorFmt0 : uint
-    {
-        /// <summary> 未定义传感器类型 </summary>
-        None = 0,
-        /// <summary> tttttt = temperature A/D counts. </summary>
-        tt = 0x00000001,
-        /// <summary> ccccc.ccc = conductivity frequency (Hz). </summary>
-        cc = 0x00000002,
-        /// <summary> pppppp = pressure sensor pressure A/D counts; sent if optional pressure sensor installed. </summary>
-        pp = 0x00000004,
-        /// <summary> vvvv = pressure sensor pressure temperature compensation A/D counts; sent if optional pressure sensor installed. </summary>
-        vv = 0x00000008,
-        /// <summary> oo.ooo = oxygen sensor phase (µsec). </summary>
-        oo = 0x00000010,
-        /// <summary> t.tttttt = oxygen sensor temperature voltage. </summary>
-        ot = 0x00000020,
-        /// <summary> dd mmm yyyy = day, month, year. </summary>
-        dm = 0x00000040,
-        /// <summary> hh:mm:ss = hour, minute, second. </summary>
-        hm = 0x00000080
-    }
-
-    /// <summary>
-    /// 仪器中传感器的标志位 - OutputFormat=1: converted decimal data
-    /// tttt.tttt,ccc.ccccc,ppppp.ppp,ssss.ssss,vvvvv.vvv,ccc.ccccc,dd mmm yyyy, hh:mm:ss
-    /// </summary>
-    [Flags]
-    public enum TypeSensorFmt1 : uint
-    {
-        /// <summary> 未定义传感器类型 </summary>
-        None = 0,
-        /// <summary> tttt.tttt = temperature (°C, ITS-90). </summary>
-        tt = 0x00000001,
-        /// <summary> ccccc.ccc = conductivity (S/m). </summary>
-        cc = 0x00000002,
-        /// <summary> ppppp.ppp = pressure (decibars); sent only if pressure sensor installed. </summary>
-        pp = 0x00000004,
-        /// <summary> dddd.ddd = depth (meters); sent only if OutputDepth=Y. </summary>
-        dd = 0x00000008,
-        /// <summary> oo.ooo = oxygen (sent if OutputOx=Y; units defined by SetOxUnits =). </summary>
-        oo = 0x00000010,
-        /// <summary> ssss.ssss = salinity (psu); sent only if OutputSal=Y. </summary>
-        ss = 0x00000020,
-        /// <summary> vvvv.vvv = sound velocity (meters/second); sent only if OutputSV=Y. </summary>
-        vv = 0x00000040,
-        /// <summary> rrr.rrrr = local density (kg/m3); sent only if OutputDensity=Y. </summary>
-        rr = 0x00000080,
-        /// <summary> ccc.ccccc = Specific Conductivity (S/m) </summary>
-        sc = 0x00000100,
-        /// <summary> x = specific conductivity; sent if OutputSC=Y </summary>
-        xx = 0x00000200,
-        /// <summary> dd mmm yyyy = day, month, year. </summary>
-        dm = 0x00000400,
-        /// <summary> hh:mm:ss = hour, minute, second. </summary>
-        hm = 0x00000800,
-        /// <summary> n = sample number in FLASH memory (sent if TxSampleNum=y, </summary>
-        nn = 0x00001000
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static class SBE37SensorType
-    {
-        /// <summary> SBE37SI </summary>
-        public static readonly TypeSensorFmt0 SBE37SI_Fmt0 = TypeSensorFmt0.tt 
-                                                            | TypeSensorFmt0.cc
-                                                            | TypeSensorFmt0.pp
-                                                            | TypeSensorFmt0.vv
-                                                            | TypeSensorFmt0.dm
-                                                            | TypeSensorFmt0.hm;
-        /// <summary> SBE37SI </summary>
-        public static readonly TypeSensorFmt1 SBE37SI_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
-                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
-                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
-                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
-                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
-
-        /// <summary> SBE37SIP </summary>
-        public static readonly TypeSensorFmt0 SBE37SIP_Fmt0 = TypeSensorFmt0.tt
-                                                            | TypeSensorFmt0.cc
-                                                            | TypeSensorFmt0.pp
-                                                            | TypeSensorFmt0.vv
-                                                            | TypeSensorFmt0.dm
-                                                            | TypeSensorFmt0.hm;
-        /// <summary> SBE37SIP </summary>
-        public static readonly TypeSensorFmt1 SBE37SIP_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
-                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
-                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
-                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
-                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
-
-
-        /// <summary> SBE37SM </summary>
-        public static readonly TypeSensorFmt0 SBE37SM_Fmt0 = TypeSensorFmt0.tt
-                                                            | TypeSensorFmt0.cc
-                                                            | TypeSensorFmt0.pp
-                                                            | TypeSensorFmt0.vv
-                                                            | TypeSensorFmt0.dm
-                                                            | TypeSensorFmt0.hm;
-        /// <summary> SBE37SM </summary>
-        public static readonly TypeSensorFmt1 SBE37SM_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
-                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
-                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
-                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
-                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
-
-
-        /// <summary> SBE37SMP </summary>
-        public static readonly TypeSensorFmt0 SBE37SMP_Fmt0 = TypeSensorFmt0.tt
-                                                            | TypeSensorFmt0.cc
-                                                            | TypeSensorFmt0.pp
-                                                            | TypeSensorFmt0.vv
-                                                            | TypeSensorFmt0.dm
-                                                            | TypeSensorFmt0.hm;
-        /// <summary> SBE37SMP </summary>
-        public static readonly TypeSensorFmt1 SBE37SMP_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
-                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
-                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
-                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
-                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
-
-        
-        /// <summary> SBE37SMP_ODO </summary>
-        public static readonly TypeSensorFmt0 SBE37SMP_ODO_Fmt0 = TypeSensorFmt0.tt
-                                                            | TypeSensorFmt0.cc
-                                                            | TypeSensorFmt0.pp
-                                                            | TypeSensorFmt0.vv
-                                                            | TypeSensorFmt0.dm
-                                                            | TypeSensorFmt0.hm;
-        
-        /// <summary> SBE37SMP_ODO </summary>
-        public static readonly TypeSensorFmt1 SBE37SMP_ODO_Fmt1 = TypeSensorFmt1.tt | TypeSensorFmt1.cc
-                                                            | TypeSensorFmt1.pp | TypeSensorFmt1.dd
-                                                            | TypeSensorFmt1.ss | TypeSensorFmt1.vv
-                                                            | TypeSensorFmt1.rr | TypeSensorFmt1.sc
-                                                            | TypeSensorFmt1.dm | TypeSensorFmt1.hm;
-    }
 
     /// <summary>
     /// 读取数据的返回格式
@@ -280,14 +137,6 @@ namespace InstDevice
         /// </summary>
         public int InstIdx_NotUsed = -1;
         /// <summary>
-        /// 包含仪器（数据）标志位 - format_0
-        /// </summary>
-        public TypeSensorFmt0 SensorFlagFmt0 = TypeSensorFmt0.None;
-        /// <summary>
-        /// 包含仪器（数据）标志位 - format_1
-        /// </summary>
-        public TypeSensorFmt1 SensorFlagFmt1 = TypeSensorFmt1.None;
-        /// <summary>
         /// 测试 id
         /// </summary>
         public string testId = "";
@@ -303,6 +152,10 @@ namespace InstDevice
         /// 设备的端口波特率
         /// </summary>
         public int BaudRate = 9600;
+        /// <summary>
+        /// 采样时间 - 秒
+        /// </summary>
+        public int sampleIntervalSec = 5;
 
         /// <summary>
         /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）
@@ -316,10 +169,6 @@ namespace InstDevice
     /// </summary>
     public class SensorInfoBase : mysqlData, ISql2InfoBase
     {
-        /// <summary>
-        /// 传感器类型
-        /// </summary>
-        public TypeSensorFmt1 SensorType = TypeSensorFmt1.None;
         /// <summary>
         /// 传感器所在仪器的编号
         /// 暂时不用！！
@@ -479,11 +328,13 @@ namespace InstDevice
                 InstType = TypeInst.Undefined;
             }
 
+            // todo: 从数据库中读取 instType
+            InstType = TypeInst.SBE37SI;
+
             // 更新传感器类型
             foreach(var itm in sensors)
             {
                 itm.FreshFromSql2Info();
-                SensorFlagFmt1 |= itm.SensorType;
             }
 
             testId = vTestID;
@@ -524,19 +375,6 @@ namespace InstDevice
         /// <returns></returns>
         public override bool FreshFromSql2Info()
         {
-            if(vSensorType == "C")
-            {
-                SensorType = TypeSensorFmt1.cc;
-            }
-            else if(vSensorType == "T")
-            {
-                SensorType = TypeSensorFmt1.tt;
-            }
-            else
-            {
-                SensorType = TypeSensorFmt1.None;
-            }
-
             return true;
         }
     }
@@ -576,19 +414,29 @@ namespace InstDevice
         public string vItemType { set; get; }
 
         /// <summary> </summary>
+        public double vTitularValue { set; get; }
+
+        /// <summary> </summary>
         public double vTemperature { set; get; }
 
         /// <summary> </summary>
-        public int vTitularValue { set; get; }
+        public double vConductivity { set; get; }
 
         /// <summary> </summary>
-        public double vRealValue { set; get; }
+        public double vSalinity { set; get; }
 
         /// <summary> </summary>
-        public double vRawValue { set; get; }
+        public int vTemperatureRaw { set; get; }
 
         /// <summary> </summary>
-        public string vData { set; get; }
+        public double vConductivityRaw { set; get; }
+
+        /// <summary> </summary>
+        public string vMeasureTime
+        {
+            get { return measureTime.ToString("yyyy-MM-dd HH:mm:ss"); }
+            set { measureTime = Convert.ToDateTime(value); }
+        }
 
         /// <summary> </summary>
         public string vAddTime
@@ -604,6 +452,8 @@ namespace InstDevice
             set { updateTime = Convert.ToDateTime(value); }
         }
 
+        /// <summary> </summary>
+        public DateTime measureTime = DateTime.Now;
         /// <summary> </summary>
         public DateTime addTime = DateTime.Now;
         /// <summary> </summary>
@@ -632,7 +482,7 @@ namespace InstDevice
         public string vTestID { set; get; }
 
         /// <summary> </summary>
-        public int vTitularValue { set; get; }
+        public double vTitularValue { set; get; }
 
         /// <summary> </summary>
         public double vStandardT { set; get; }

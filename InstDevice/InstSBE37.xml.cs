@@ -28,24 +28,24 @@ namespace InstDevice
 
         /// <summary> SI SIP SMP SMP-ODO </summary>
         public string PressureInstalled { get; set; }
-        /// <summary> SI </summary>
-        public float ReferencePressure { get; set; }
-        /// <summary> SI SIP </summary>
-        public string PumpInstalled { get; set; }
-        /// <summary> SIP  SMP SMP-ODO </summary>
-        public float MinCondFreq { get; set; }
-        /// <summary> SI SIP </summary>
-        public string SampleMode { get; set; }
-        /// <summary> SI SIP SM SMP SMP-ODO </summary>
-        public string SampleDataFormat { get; set; }
-        /// <summary> SM  SMP SMP-ODO </summary>
-        public string TemperatureUnits { set; get; }
-        /// <summary> SI SIP SM  SMP SMP-ODO </summary>
-        public string ConductivityUnits { get; set; }
-        /// <summary> SM  SMP SMP-ODO </summary>
-        public string PressureUnits { set; get; }
-        /// <summary> SMP-ODO </summary>
-        public string OxygenUnits { set; get; }
+        ///// <summary> SI </summary>
+        //public float ReferencePressure { get; set; }
+        ///// <summary> SI SIP </summary>
+        //public string PumpInstalled { get; set; }
+        ///// <summary> SIP  SMP SMP-ODO </summary>
+        //public float MinCondFreq { get; set; }
+        ///// <summary> SI SIP </summary>
+        //public string SampleMode { get; set; }
+        ///// <summary> SI SIP SM SMP SMP-ODO </summary>
+        //public string SampleDataFormat { get; set; }
+        ///// <summary> SM  SMP SMP-ODO </summary>
+        //public string TemperatureUnits { set; get; }
+        ///// <summary> SI SIP SM  SMP SMP-ODO </summary>
+        //public string ConductivityUnits { get; set; }
+        ///// <summary> SM  SMP SMP-ODO </summary>
+        //public string PressureUnits { set; get; }
+        ///// <summary> SMP-ODO </summary>
+        //public string OxygenUnits { set; get; }
         /// <summary> SM  SMP SMP-ODO </summary>
         public string OutputTemperature { set; get; }
         /// <summary> SM  SMP SMP-ODO </summary>
@@ -54,40 +54,40 @@ namespace InstDevice
         public string OutputPressure { get; set; }
         /// <summary> SMP-ODO </summary>
         public string OutputOxygen { set; get; }
-        /// <summary> SI SIP  SMP SMP-ODO </summary>
-        public string OutputSalinity { get; set; }
-        /// <summary> SI SIP  SMP SMP-ODO </summary>
-        public string OutputSV { get; set; }
-        /// <summary> SM  SMP SMP-ODO </summary>
-        public string OutputSC { set; get; }
-        /// <summary> SM  SMP SMP-ODO </summary>
-        public float SCCoeff { set; get; }
+        ///// <summary> SI SIP  SMP SMP-ODO </summary>
+        //public string OutputSV { get; set; }
+        ///// <summary> SM  SMP SMP-ODO </summary>
+        //public string OutputSC { set; get; }
+        ///// <summary> SM  SMP SMP-ODO </summary>
+        //public float SCCoeff { set; get; }
         /// <summary> SI SIP </summary>
         public string OutputDepth { get; set; }
-        /// <summary> SI SIP </summary>
-        public string Latitude { get; set; }
-        /// <summary> SI SIP </summary>
-        public string OutputDensity { get; set; }
         /// <summary> SI SIP  SMP SMP-ODO </summary>
-        public string TxSampleNumber { get; set; }
-        /// <summary> SI SIP  SMP SMP-ODO </summary>
-        public int SampleInterval { get; set; }
-        /// <summary> SM  SMP SMP-ODO </summary>
-        public string TxRealTime { set; get; }
-        /// <summary> SM  SMP SMP-ODO </summary>
-        public string SyncMode { set; get; }
-        /// <summary> SI SIP </summary>
-        public string OutputTime { get; set; }
-        /// <summary> SI SIP </summary>
-        public string AutoRun { get; set; }
-        /// <summary> SI SIP </summary>
-        public string StoreData { get; set; }
-        /// <summary> SMP-ODO </summary>
-        public string AdaptivePumpControl { set; get; }
-        /// <summary> SMP-ODO </summary>
-        public float nTau { set; get; }
-        /// <summary> SMP-ODO </summary>
-        public float PumpOnTime { set; get; }
+        public string OutputSalinity { get; set; }
+        ///// <summary> SI SIP </summary>
+        //public string Latitude { get; set; }
+        ///// <summary> SI SIP </summary>
+        //public string OutputDensity { get; set; }
+        ///// <summary> SI SIP  SMP SMP-ODO </summary>
+        //public string TxSampleNumber { get; set; }
+        ///// <summary> SI SIP  SMP SMP-ODO </summary>
+        //public int SampleInterval { get; set; }
+        ///// <summary> SM  SMP SMP-ODO </summary>
+        //public string TxRealTime { set; get; }
+        ///// <summary> SM  SMP SMP-ODO </summary>
+        //public string SyncMode { set; get; }
+        ///// <summary> SI SIP </summary>
+        //public string OutputTime { get; set; }
+        ///// <summary> SI SIP </summary>
+        //public string AutoRun { get; set; }
+        ///// <summary> SI SIP </summary>
+        //public string StoreData { get; set; }
+        ///// <summary> SMP-ODO </summary>
+        //public string AdaptivePumpControl { set; get; }
+        ///// <summary> SMP-ODO </summary>
+        //public float nTau { set; get; }
+        ///// <summary> SMP-ODO </summary>
+        //public float PumpOnTime { set; get; }
 
         /// <summary>
         /// 
@@ -105,23 +105,27 @@ namespace InstDevice
 
                 this.DeviceType = node.Attributes["DeviceType"].InnerText;
                 this.SerialNumber = node.Attributes["SerialNumber"].InnerText;
-                this.PressureInstalled = node.SelectSingleNode("PressureInstalled")==null?"": node["PressureInstalled"].InnerText;
-                this.PumpInstalled = node.SelectSingleNode("PumpInstalled") == null ? "" : node["PumpInstalled"].InnerText;
-                this.MinCondFreq = node.SelectSingleNode("MinCondFreq") == null ? 0 : float.Parse(node["MinCondFreq"].InnerText);
-                this.SampleMode = node.SelectSingleNode("SampleMode") == null ? "" : node["SampleMode"].InnerText;
-                this.SampleDataFormat = node.SelectSingleNode("SampleDataFormat") == null ? "" : node["SampleDataFormat"].InnerText;
-                this.ConductivityUnits = node.SelectSingleNode("ConductivityUnits") == null ? "" : node["ConductivityUnits"].InnerText;
-                this.OutputPressure = node.SelectSingleNode("OutputPressure") == null ? "" : node["OutputPressure"].InnerText;
-                this.OutputSalinity = node.SelectSingleNode("OutputSalinity") == null ? "" : node["OutputSalinity"].InnerText;
-                this.OutputSV = node.SelectSingleNode("OutputSV") == null ? "" : node["OutputSV"].InnerText;
-                this.OutputDepth = node.SelectSingleNode("OutputDepth") == null ? "" : node["OutputDepth"].InnerText;
-                this.Latitude = node.SelectSingleNode("Latitude") == null ? "" : node["Latitude"].InnerText;
-                this.OutputDensity = node.SelectSingleNode("OutputDensity") == null ? "" : node["OutputDensity"].InnerText;
-                this.TxSampleNumber = node.SelectSingleNode("TxSampleNumber") == null ? "" : node["TxSampleNumber"].InnerText;
-                this.SampleInterval = node.SelectSingleNode("SampleInterval") == null ? 0 : int.Parse(node["SampleInterval"].InnerText);
-                this.OutputTime = node.SelectSingleNode("OutputTime") == null ? "" : node["OutputTime"].InnerText;
-                this.AutoRun = node.SelectSingleNode("AutoRun") == null ? "" : node["AutoRun"].InnerText;
-                this.StoreData = node.SelectSingleNode("StoreData") == null ? "" : node["StoreData"].InnerText;
+                this.PressureInstalled = node.SelectSingleNode("PressureInstalled")==null?"no": node["PressureInstalled"].InnerText;
+                //this.PumpInstalled = node.SelectSingleNode("PumpInstalled") == null ? "" : node["PumpInstalled"].InnerText;
+                //this.MinCondFreq = node.SelectSingleNode("MinCondFreq") == null ? 0 : float.Parse(node["MinCondFreq"].InnerText);
+                //this.SampleMode = node.SelectSingleNode("SampleMode") == null ? "" : node["SampleMode"].InnerText;
+                //this.SampleDataFormat = node.SelectSingleNode("SampleDataFormat") == null ? "" : node["SampleDataFormat"].InnerText;
+                //this.ConductivityUnits = node.SelectSingleNode("ConductivityUnits") == null ? "" : node["ConductivityUnits"].InnerText;
+
+                this.OutputTemperature = node.SelectSingleNode("OutputTemperature")==null?"yes": node["OutputTemperature"].InnerText;
+                this.OutputConductivity = node.SelectSingleNode("OutputConductivity") == null ? "yes" : node["OutputConductivity"].InnerText;
+                this.OutputPressure = node.SelectSingleNode("OutputPressure") == null ? "yes" : node["OutputPressure"].InnerText;
+                this.OutputSalinity = node.SelectSingleNode("OutputSalinity") == null ? "yes" : node["OutputSalinity"].InnerText;
+                //this.OutputSV = node.SelectSingleNode("OutputSV") == null ? "" : node["OutputSV"].InnerText;
+                this.OutputOxygen = node.SelectSingleNode("OutputOxygen") == null ? "no" : node["OutputOxygen"].InnerText;
+                this.OutputDepth = node.SelectSingleNode("OutputDepth") == null ? "no" : node["OutputDepth"].InnerText;
+                //this.Latitude = node.SelectSingleNode("Latitude") == null ? "" : node["Latitude"].InnerText;
+                //this.OutputDensity = node.SelectSingleNode("OutputDensity") == null ? "" : node["OutputDensity"].InnerText;
+                //this.TxSampleNumber = node.SelectSingleNode("TxSampleNumber") == null ? "" : node["TxSampleNumber"].InnerText;
+                //this.SampleInterval = node.SelectSingleNode("SampleInterval") == null ? 0 : int.Parse(node["SampleInterval"].InnerText);
+                //this.OutputTime = node.SelectSingleNode("OutputTime") == null ? "" : node["OutputTime"].InnerText;
+                //this.AutoRun = node.SelectSingleNode("AutoRun") == null ? "" : node["AutoRun"].InnerText;
+                //this.StoreData = node.SelectSingleNode("StoreData") == null ? "" : node["StoreData"].InnerText;
             }
             catch(Exception e)
             {

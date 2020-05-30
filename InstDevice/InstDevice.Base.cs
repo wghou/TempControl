@@ -111,18 +111,21 @@ namespace InstDevice
         /// <summary>
         /// 开始测量数据
         /// </summary>
+        /// <param name="temptPoint"> 当前温度点 </param>
         /// <returns></returns>
-        public virtual bool StartMeasure() { return false; }
+        public virtual bool StartMeasure(double temptPoint = 0) { return false; }
         /// <summary>
         /// 开始存储数据
         /// </summary>
+        /// <param name="temptPoint"> 当前温度点 </param>
         /// <returns></returns>
-        public virtual bool StartStore() { return false; }
+        public virtual bool StartStore(double temptPoint = 0) { return false; }
         /// <summary>
         /// 停止测量数据
         /// </summary>
+        /// <param name="temptPoint"> 当前温度点 </param>
         /// <returns></returns>
-        public virtual bool StopMeasure() { return false; }
+        public virtual bool StopMeasure(double temptPoint = 0) { return false; }
         
 
         /// <summary>

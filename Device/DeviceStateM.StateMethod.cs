@@ -580,7 +580,7 @@ namespace Device
             bool rlt = true;
             foreach (var itm in _instDevices)
             {
-                rlt &= itm.StartMeasure();
+                rlt &= itm.StartMeasure(currentTemptPointState.stateTemp);
             }
 
             if (rlt == false)

@@ -92,7 +92,7 @@ namespace InstDevice
                 string[] valStrs = str.Split('-');
 
                 data.vTestID = Info.testId;
-                data.vTitularValue = 123123;
+                data.vTitularValue = currentTemptPoint;
                 data.vStandardC = double.Parse(valStrs[4]);
                 data.vStandardT = double.Parse(valStrs[5]);
                 data.measureTime = DateTime.ParseExact(valStrs[0], "yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
@@ -101,6 +101,7 @@ namespace InstDevice
             }
             catch (Exception ex)
             {
+                nlogger.Error("error in InstSTD.ResolveStr2Data");
                 return false;
             }
 

@@ -28,8 +28,9 @@ namespace InstDevice
         private bool CmdExecuted = false;
         /// <summary>
         /// 是否使用 OutputExecutedFlag
+        /// 暂时不考虑用这个
         /// </summary>
-        private bool UseExecutedFlag = false;
+        private readonly bool UseExecutedFlag = false;
         /// <summary>
         /// 指令执行完成返回标志位
         /// </summary>
@@ -63,7 +64,7 @@ namespace InstDevice
 
             // todo: 
             _tickTimerInst = new System.Timers.Timer();
-            _tickTimerInst.Interval = 500;
+            _tickTimerInst.Interval = info.sampleIntervalSec * 1000;
             _tickTimerInst.AutoReset = true;
             _tickTimerInst.Elapsed += _tickTimerSample_Elapsed;
             //_tickTimerInst.Start(); 
@@ -74,11 +75,12 @@ namespace InstDevice
         /// 配置当前的仪器
         /// </summary>
         /// <param name="mode"></param>
-        /// <param name="useOptFlg"></param>
         /// <returns></returns>
-        public bool SetupSBE37(InstSampleMode mode = InstSampleMode.AutoSample_Fmt0, bool useOptFlg = false)
+        public bool SetupSBE37(InstSampleMode mode = InstSampleMode.PolledSample_Fmt10)
         {
             Enable = true;
+
+            _tickTimerInst.Interval = Info.sampleIntervalSec * 1000;
 
             // 读取 calibration coefficients
             //currentCmd = SBE37Cmd.GetCC;
@@ -93,19 +95,20 @@ namespace InstDevice
             //}
 
             // 设置返回标志位
-            CmdExecuted = false;
-            bool rlt2 = sendCMD("OutputExecutedTag=N");
-            System.Threading.Thread.Sleep(10);
-            if(rlt2 == false)
-            {
-                nlogger.Error("Error in setup instDevice 1.");
-                return false;
-            }
+            //CmdExecuted = false;
+            //bool rlt2 = sendCMD("OutputExecutedTag=N");
+            //System.Threading.Thread.Sleep(10);
+            //if(rlt2 == false)
+            //{
+            //    nlogger.Error("Error in setup instDevice 1.");
+            //    return false;
+            //}
 
             // 写入一些设置信息
             bool rlt3 = true;
             switch (mode)
             {
+                // 暂时还不用这种方法
                 case InstSampleMode.AutoSample_Fmt0:
                     rlt3 &= sendCMD("SAMPLEMODE=2");
                     System.Threading.Thread.Sleep(10);
@@ -118,7 +121,7 @@ namespace InstDevice
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
-                // ok
+                // 暂时还不用这种方法
                 case InstSampleMode.AutoSample_Fmt1:
                     rlt3 &= sendCMD("SAMPLEMODE=2");
                     System.Threading.Thread.Sleep(10);
@@ -128,10 +131,10 @@ namespace InstDevice
                     System.Threading.Thread.Sleep(10);
                     rlt3 &= sendCMD("AUTORUN=N");
                     System.Threading.Thread.Sleep(10);
-                    outputFormat = SBE37OutputFormat.Format_0;
+                    outputFormat = SBE37OutputFormat.Format_1;
                     break;
 
-                // ok
+                // 暂时还不用这种方法
                 case InstSampleMode.PolledSample_Fmt0:
                     rlt3 &= sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
@@ -142,7 +145,7 @@ namespace InstDevice
                     outputFormat = SBE37OutputFormat.Format_0;
                     break;
 
-                // ok
+                // 暂时还不用这种方法
                 case InstSampleMode.PolledSample_Fmt1:
                     rlt3 &= sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
@@ -150,11 +153,11 @@ namespace InstDevice
                     System.Threading.Thread.Sleep(10);
                     rlt3 &= sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
-                    outputFormat = SBE37OutputFormat.Format_0;
+                    outputFormat = SBE37OutputFormat.Format_1;
                     break;
 
 
-                // 暂时还不想用这种方法
+                // 
                 case InstSampleMode.PolledSample_Fmt10:
                     rlt3 &= sendCMD("SAMPLEMODE=1");
                     System.Threading.Thread.Sleep(10);
@@ -162,7 +165,7 @@ namespace InstDevice
                     System.Threading.Thread.Sleep(10);
                     rlt3 &= sendCMD("OUTPUTFORMAT=1");
                     System.Threading.Thread.Sleep(10);
-                    outputFormat = SBE37OutputFormat.Format_0;
+                    outputFormat = SBE37OutputFormat.Format_1;
                     break;
 
                 default:
@@ -182,7 +185,13 @@ namespace InstDevice
             currentCmd = SBE37Cmd.GetCD;
             CmdExecuted = false;
             bool rlt4 = sendCMD("GetCD");
-            while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
+            int i = 0;
+            while (!CmdExecuted && i<20) { System.Threading.Thread.Sleep(10); i++; }
+            if (i > 19)
+            {
+                nlogger.Error("timeout when read configuration data from xml string");
+                return false;
+            }
             rlt4 &= configData.ResolveXml2Value(ConfigDataXml);
             if (rlt4 == false)
             {
@@ -190,18 +199,18 @@ namespace InstDevice
                 return false;
             }
 
-            bool rlt5 = true;
-            UseExecutedFlag = useOptFlg;
-            if (UseExecutedFlag == true ) {
-                CmdExecuted = false;
-                rlt5 = sendCMD("OutputExecutedTag=Y");
-                if(rlt5 == false)
-                {
-                    return false;
-                }
+            //bool rlt5 = true;
+            //UseExecutedFlag = useOptFlg;
+            //if (UseExecutedFlag == true ) {
+            //    CmdExecuted = false;
+            //    rlt5 = sendCMD("OutputExecutedTag=Y");
+            //    if(rlt5 == false)
+            //    {
+            //        return false;
+            //    }
 
-                while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
-            }
+            //    while (!CmdExecuted) { System.Threading.Thread.Sleep(10); }
+            //}
 
             return true;
         }
@@ -225,6 +234,9 @@ namespace InstDevice
         {
             base.internalEnterMeasureStep();
 
+            // 确保打开了串口，确保清空串口中的数据
+            try { sPort.Open(); sPort.DiscardInBuffer(); } catch { }
+
             if(sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
             {
                 currentCmd = SBE37Cmd.Start;
@@ -238,6 +250,8 @@ namespace InstDevice
             }
             else
             {
+                currentCmd = SBE37Cmd.Ts;
+                CmdExecuted = false;
                 _tickTimerInst.Start();
             }
         }
@@ -279,7 +293,7 @@ namespace InstDevice
             {
                 currentCmd = SBE37Cmd.Ts;
                 CmdExecuted = false;
-                bool rlt = sendCMD("tsr");
+                bool rlt = sendCMD("ts");
                 if (rlt == false)
                 {
                     nlogger.Error("error in sendCmd with internalMeasureStep");
@@ -303,7 +317,7 @@ namespace InstDevice
                 {
                     currentCmd = SBE37Cmd.Ts;
                     CmdExecuted = false;
-                    bool rlt = sendCMD("tsr");
+                    bool rlt = sendCMD("ts");
                     if (rlt == false)
                     {
                         nlogger.Error("error in sendCmd with internalMeasureStep");
@@ -359,7 +373,7 @@ namespace InstDevice
                 {
                     CmdExecuted = true;
                 }
-                else
+                else if(UseExecutedFlag == true)
                 {
                     nlogger.Error("received the executed flag agin.");
                     // 重复接收到 ExecutedFlag
@@ -404,7 +418,7 @@ namespace InstDevice
 
                 case SBE37Cmd.Ts:
                     rlt = SBE37ResolveStr2Value(str, out data);
-                    // 如果是 轮询01 的方式查询数据
+                    // 如果是 轮询 10 的方式查询数据
                     // todo: 不知道这儿这么写合理与否
                     if (sampleMode == InstSampleMode.PolledSample_Fmt10)
                     {
@@ -429,13 +443,21 @@ namespace InstDevice
             if (UseExecutedFlag == true && (currentCmd == SBE37Cmd.Ts && currentCmd == SBE37Cmd.Tsr))
             {
                 // 读取数据末尾跟随的结束标志位
-                string str2 = sPort.ReadLine();
+                string str2 = "";
+                try { str2 = sPort.ReadLine(); } catch { }
+                    
                 if (!str2.Contains(OutputFlag))
                 {
                     nlogger.Error("did not receive executed flag at the end of ts / tsr.");
                     return false;
                 }
                 CmdExecuted = true;
+            }
+            else
+            {
+                // 直接舍弃其他的接收数据
+                // 理论上，应该也啥也没有了
+                try { sPort.DiscardInBuffer(); } catch { }
             }
 
             return rlt;
@@ -490,36 +512,44 @@ namespace InstDevice
                 instData1Cache.vTestID = Info.testId;
                 instData1Cache.vInstrumentID = Info.instrumentId;
                 instData1Cache.vItemType = "";
-                
-                // 解析数据
-                switch (outputFormat)
+                instData1Cache.vTitularValue = currentTemptPoint;
+
+                if(currentCmd == SBE37Cmd.Tsr)
                 {
-                    case SBE37OutputFormat.Format_0:
-                        rlt = SBE37ResolveStr2ValueFmt0(str, out data);
-                        break;
-
-                    case SBE37OutputFormat.Format_1:
-                        rlt = SBE37ResolveStr2ValueFmt0(str, out data);
-                        break;
-
-                    case SBE37OutputFormat.Format_2:
-                        data = null;
-                        rlt = false;
-                        nlogger.Error("error of output format: Format_2");
-                        break;
-
-                    case SBE37OutputFormat.Format_3:
-                        data = null;
-                        rlt = false;
-                        nlogger.Error("error of output format: Format_3");
-                        break;
-
-                    default:
-                        data = null;
-                        rlt = false;
-                        nlogger.Error("error of output format: unknown");
-                        break;
+                    rlt = SBE37ResolveStr2ValueFmt0(str, out data);
                 }
+                else
+                {
+                    // 解析数据
+                    switch (outputFormat)
+                    {
+                        case SBE37OutputFormat.Format_0:
+                            rlt = SBE37ResolveStr2ValueFmt0(str, out data);
+                            break;
+
+                        case SBE37OutputFormat.Format_1:
+                            rlt = SBE37ResolveStr2ValueFmt1(str, out data);
+                            break;
+
+                        case SBE37OutputFormat.Format_2:
+                            data = null;
+                            rlt = false;
+                            nlogger.Error("error of output format: Format_2");
+                            break;
+
+                        case SBE37OutputFormat.Format_3:
+                            data = null;
+                            rlt = false;
+                            nlogger.Error("error of output format: Format_3");
+                            break;
+
+                        default:
+                            data = null;
+                            rlt = false;
+                            nlogger.Error("error of output format: unknown");
+                            break;
+                    }
+                }  
             }
             catch (Exception ex)
             {
@@ -545,13 +575,11 @@ namespace InstDevice
             nlogger.Info("SBE37ResolveStr2ValueFmt0: " + str);
 
             instData1Cache.addTime = DateTime.Now;
-            data = instData1Cache;
-            return true;
 
             int idx = 0;
             try
             {
-                int ttt; double ccc;
+                int ttt = 0; double ccc = 0;
                 int ppp, vvv;
                 double oo, ot;
                 DateTime dt = DateTime.Now;
@@ -568,34 +596,40 @@ namespace InstDevice
                     ccc = double.Parse(strSplit[idx++]);
                 }
 
-                // pppppp = pressure sensor pressure A/D counts;
-                // vvvv = pressure sensor pressure temperature compensation A/D counts;
-                // sent only if pressure sensor installed
-                if (configData.PressureInstalled.ToUpper().Contains("YES") && configData.OutputPressure.ToUpper().Contains("YES"))
-                {
-                    ppp = int.Parse(strSplit[idx++]);
-                    vvv = int.Parse(strSplit[idx++]);
-                }
+                instData1Cache.vTemperatureRaw = ttt;
+                instData1Cache.vConductivityRaw = ccc;
 
-                // oo.ooo = oxygen sensor phase (µsec)
-                // t.tttttt = oxygen sensor temperature voltage.
-                if (configData.OutputOxygen.ToUpper().Contains("YES"))
-                {
-                    oo = double.Parse(strSplit[idx++]);
-                    ot = double.Parse(strSplit[idx++]);
-                }
+                //// pppppp = pressure sensor pressure A/D counts;
+                //// vvvv = pressure sensor pressure temperature compensation A/D counts;
+                //// sent only if pressure sensor installed
+                //if (configData.PressureInstalled.ToUpper().Contains("YES") && configData.OutputPressure.ToUpper().Contains("YES"))
+                //{
+                //    ppp = int.Parse(strSplit[idx++]);
+                //    vvv = int.Parse(strSplit[idx++]);
+                //}
 
-                // dd mmm yyyy = day, month, year; sent only if OutputTime=Y
-                // hh:mm:ss = hour, minute, second; sent only if OutputTime=Y.
-                if (configData.OutputTime.ToUpper().Contains("YES"))
-                {
-                    dt = DateTime.Parse(strSplit[idx++]);
-                    dt = DateTime.Parse(strSplit[idx++]);
-                }
+                //// oo.ooo = oxygen sensor phase (µsec)
+                //// t.tttttt = oxygen sensor temperature voltage.
+                //if (configData.OutputOxygen.ToUpper().Contains("YES"))
+                //{
+                //    oo = double.Parse(strSplit[idx++]);
+                //    ot = double.Parse(strSplit[idx++]);
+                //}
+
+                //// dd mmm yyyy = day, month, year; sent only if OutputTime=Y
+                //// hh:mm:ss = hour, minute, second; sent only if OutputTime=Y.
+                //if (configData.OutputTime.ToUpper().Contains("YES"))
+                //{
+                //    dt = DateTime.Parse(strSplit[idx++]);
+                //    dt = DateTime.Parse(strSplit[idx++]);
+                //}
+
+                data = instData1Cache;
             }
             catch(Exception ex)
             {
                 nlogger.Error("exception in SBE37ResolveStr2ValueFmt0: " + ex.Message);
+                nlogger.Error("error string: " + str);
                 return false;
             }
 
@@ -614,15 +648,13 @@ namespace InstDevice
 
             nlogger.Info("SBE37ResolveStr2ValueFmt1: " + str);
             instData1Cache.addTime = DateTime.Now;
-            data = instData1Cache;
-            return true;
 
             int idx = 0;
             try
             {
-                double ttt; double ccc;
+                double ttt = 0; double ccc = 0;
                 double ppp, ddd;
-                double sss,vvv;
+                double sss = 0,vvv;
                 double rrr, sc;
                 double xxx;
                 double oo;
@@ -669,45 +701,55 @@ namespace InstDevice
                     sss = double.Parse(strSplit[idx++]);
                 }
 
-                // vvvv.vvv = sound velocity (meters/second); 
-                // sent only if OutputSV=Y
-                if (configData.OutputSV.ToUpper().Contains("YES"))
-                {
-                    vvv = double.Parse(strSplit[idx++]);
-                }
+                instData1Cache.vTemperature = ttt;
+                instData1Cache.vConductivity = ccc;
+                instData1Cache.vSalinity = sss;
+                instData1Cache.measureTime = DateTime.Now;
+                instData1Cache.addTime = instData1Cache.measureTime;
+                instData1Cache.updateTime = instData1Cache.measureTime;
 
-                // rrr.rrrr = local density (kg/m3); 
-                // sent only if OutputDensity=Y
-                if (configData.OutputDensity.ToUpper().Contains("YES"))
-                {
-                    rrr = double.Parse(strSplit[idx++]);
-                }
+                //// vvvv.vvv = sound velocity (meters/second); 
+                //// sent only if OutputSV=Y
+                //if (configData.OutputSV.ToUpper().Contains("YES"))
+                //{
+                //    vvv = double.Parse(strSplit[idx++]);
+                //}
 
-                // x = specific conductivity; 
-                //sent if OutputSC=Y
-                if (configData.OutputSC.ToUpper().Contains("YES"))
-                {
-                    xxx = double.Parse(strSplit[idx++]);
-                }
+                //// rrr.rrrr = local density (kg/m3); 
+                //// sent only if OutputDensity=Y
+                //if (configData.OutputDensity.ToUpper().Contains("YES"))
+                //{
+                //    rrr = double.Parse(strSplit[idx++]);
+                //}
 
-                // dd mmm yyyy = day, month, year; sent only if OutputTime=Y
-                // hh:mm:ss = hour, minute, second; sent only if OutputTime=Y.
-                if (configData.OutputTime.ToUpper().Contains("YES"))
-                {
-                    dt = DateTime.Parse(strSplit[idx++]);
-                    dt = DateTime.Parse(strSplit[idx++]);
-                }
+                //// x = specific conductivity; 
+                ////sent if OutputSC=Y
+                //if (configData.OutputSC.ToUpper().Contains("YES"))
+                //{
+                //    xxx = double.Parse(strSplit[idx++]);
+                //}
 
-                // n = sample number in FLASH memory 
-                // sent if TxSampleNum=y
-                if (configData.TxSampleNumber.ToUpper().Contains("YES"))
-                {
-                    nn = int.Parse(strSplit[idx++]);
-                }
+                //// dd mmm yyyy = day, month, year; sent only if OutputTime=Y
+                //// hh:mm:ss = hour, minute, second; sent only if OutputTime=Y.
+                //if (configData.OutputTime.ToUpper().Contains("YES"))
+                //{
+                //    dt = DateTime.Parse(strSplit[idx++]);
+                //    dt = DateTime.Parse(strSplit[idx++]);
+                //}
+
+                //// n = sample number in FLASH memory 
+                //// sent if TxSampleNum=y
+                //if (configData.TxSampleNumber.ToUpper().Contains("YES"))
+                //{
+                //    nn = int.Parse(strSplit[idx++]);
+                //}
+
+                data = instData1Cache;
             }
             catch (Exception ex)
             {
                 nlogger.Error("exception in SBE37ResolveStr2ValueFmt1: " + ex.Message);
+                nlogger.Error("error string: " + str);
                 return false;
             }
 

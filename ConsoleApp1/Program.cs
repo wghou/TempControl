@@ -175,7 +175,7 @@ namespace ConsoleApp1
 
             instDevice.InitWithInfo();
 
-            instDevice.SetupSBE37(InstSampleMode.PolledSample_Fmt0, false);
+            instDevice.SetupSBE37();
 
             instDevice.StartMeasure();
 

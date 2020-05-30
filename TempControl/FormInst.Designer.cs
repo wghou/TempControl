@@ -39,6 +39,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.comboBox_baudRate = new System.Windows.Forms.ComboBox();
             this.comboBox_port = new System.Windows.Forms.ComboBox();
+            this.comboBox_spInterval = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,7 +63,7 @@
             this.label1.Size = new System.Drawing.Size(90, 23);
             this.label1.TabIndex = 2;
             this.label1.Text = "仪器编号：";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox1
             // 
@@ -147,7 +149,7 @@
             this.label3.Size = new System.Drawing.Size(90, 23);
             this.label3.TabIndex = 2;
             this.label3.Text = "波特率：";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label2
             // 
@@ -157,7 +159,7 @@
             this.label2.Size = new System.Drawing.Size(90, 23);
             this.label2.TabIndex = 2;
             this.label2.Text = "硬件接口：";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // comboBox_baudRate
             // 
@@ -179,12 +181,34 @@
             this.comboBox_port.Size = new System.Drawing.Size(98, 22);
             this.comboBox_port.TabIndex = 0;
             // 
+            // comboBox_spInterval
+            // 
+            this.comboBox_spInterval.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_spInterval.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comboBox_spInterval.FormattingEnabled = true;
+            this.comboBox_spInterval.Location = new System.Drawing.Point(293, 184);
+            this.comboBox_spInterval.Name = "comboBox_spInterval";
+            this.comboBox_spInterval.Size = new System.Drawing.Size(126, 22);
+            this.comboBox_spInterval.TabIndex = 4;
+            // 
+            // label4
+            // 
+            this.label4.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label4.Location = new System.Drawing.Point(293, 155);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(106, 23);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "采样间隔/秒：";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormInst
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.comboBox_spInterval);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.label4);
             this.MaximizeBox = false;
             this.Name = "FormInst";
             this.Text = "FormInst";
@@ -206,5 +230,7 @@
         private System.Windows.Forms.ComboBox comboBox_baudRate;
         private System.Windows.Forms.CheckBox checkBox_set2dev;
         private System.Windows.Forms.CheckBox checkBox_rdDev;
+        private System.Windows.Forms.ComboBox comboBox_spInterval;
+        private System.Windows.Forms.Label label4;
     }
 }
