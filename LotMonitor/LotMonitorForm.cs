@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Device;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -51,6 +53,18 @@ namespace IotMonitor
         private void IotMonitorForm_Shown(object sender, EventArgs e)
         {
             setupIotClient();
+        }
+
+        /// <summary>
+        /// 发送指令，读取
+        /// </summary>
+        private void getDeviceState()
+        {
+            IotCmdMessage msg = new IotCmdMessage();
+            msg.Topic = IotCS.Client.IotTopic.DeviceCmd;
+            msg.DorS = IotDorS.Set;
+            msg.cmd = Cmd2Device.StateRqt;
+            _iotClient.PublishMessage(IotCS.Client.IotTopic.DeviceCmd, JObject.FromObject(msg));
         }
 
         ///////////////////////////////////////////////////

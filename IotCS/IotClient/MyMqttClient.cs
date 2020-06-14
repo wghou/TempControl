@@ -56,6 +56,12 @@ namespace IotCS.Client
         /// </summary>
         public event MessageReceievedEventHandler MessageReceievedEvent;
 
+        public delegate void ClientConnectedEventHandler();
+        /// <summary>
+        /// 事件 - Mqtt 连接成功
+        /// </summary>
+        public event ClientConnectedEventHandler ClientConnectedEvent;
+
 
         public MyMqttClient()
         {
@@ -274,6 +280,8 @@ namespace IotCS.Client
             {
                 Console.WriteLine(exp.Message);
             }
+
+            ClientConnectedEvent?.Invoke();
         }
 
 

@@ -285,6 +285,10 @@
       <Project>{3ecb116b-4205-43d3-b34d-94b7ddfc7864}</Project>
       <Name>InstDevice</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IotCS\IotClient\IotClient.csproj">
+      <Project>{d93e4702-a64c-4499-afaa-32980d78d28b}</Project>
+      <Name>IotClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IotCS\IotService\IotService.csproj">
       <Project>{1a561098-2047-4de2-b4fa-f70a548af8b0}</Project>
       <Name>IotService</Name>

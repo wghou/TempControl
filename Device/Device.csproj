@@ -103,6 +103,7 @@
     <Compile Include="DeviceStateM.IotService.cs" />
     <Compile Include="DeviceStateM.InstDevice.cs" />
     <Compile Include="DeviceStateM.Socket.cs" />
+    <Compile Include="DeviceStateM.Socket.Type.cs" />
     <Compile Include="DeviceStateM.Sql.cs" />
     <Compile Include="DeviceStateM.Stateless.cs" />
     <Compile Include="DeviceStateM.StateMethod.cs" />

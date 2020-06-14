@@ -510,6 +510,8 @@ namespace InstDevice
             try
             {
                 instData1Cache.vTestID = Info.testId;
+                instData1Cache.InstIdx = Info.InstIdx_NotUsed;
+                instData1Cache.InstType = Info.InstType;
                 instData1Cache.vInstrumentID = Info.instrumentId;
                 instData1Cache.vItemType = "";
                 instData1Cache.vTitularValue = currentTemptPoint;

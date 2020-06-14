@@ -35,7 +35,9 @@ namespace IotCS.Client
         /// <summary> 仪器的状态数据 </summary>
         InstState,
         /// <summary> 仪器的测量值 </summary>
-        InstValue
+        InstValue,
+        /// <summary> 向设备写入的指令 </summary>
+        DeviceCmd
     }
 
 
@@ -71,6 +73,9 @@ namespace IotCS.Client
                         else nlogger.Debug("配置 MqttCloud 成功");
                     }  
                 }
+
+                // bug: 如果多次调用 config，就会注册多个事件处理函数
+                _mqttCloud.ClientConnectedEvent += _mqttCloud_ClientConnectedEvent;
             }
             catch(Exception ex)
             {
@@ -79,6 +84,15 @@ namespace IotCS.Client
             }
 
             return confOK;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void _mqttCloud_ClientConnectedEvent()
+        {
+            // 触发事件
+            UserPortConnectedEvent?.Invoke();
         }
 
 

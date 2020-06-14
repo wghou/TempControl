@@ -129,6 +129,9 @@ namespace InstDevice
                 return false;
             }
 
+            // 记录设备的编号
+            Info.InstIdx_NotUsed = this.InstIdx;
+
             if(Info.InstType == TypeInst.Undefined) {
                 nlogger.Error("the Info.InstType undefined.");
                 return false;

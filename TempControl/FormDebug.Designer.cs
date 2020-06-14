@@ -699,6 +699,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.BntUpdate);
             this.Controls.Add(this.BntRead);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormDebug";
             this.Text = "FormDebug";
             this.Load += new System.EventHandler(this.FormDebug_Load);

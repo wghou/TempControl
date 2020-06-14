@@ -17,5 +17,12 @@ namespace IotCS.Client
         /// 事件 - 接收到消息
         /// </summary>
         public event UserPortMessageReceievedEventHandler IotPortReceiveMessageEvent;
+
+
+        public delegate void UserPortConnectedEventHandler();
+        /// <summary>
+        /// 事件 - Iot Port 连接成功
+        /// </summary>
+        public event UserPortConnectedEventHandler UserPortConnectedEvent;
     }
 }

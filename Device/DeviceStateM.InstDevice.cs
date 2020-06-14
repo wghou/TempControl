@@ -115,6 +115,7 @@ namespace Device
                     {
                         InstSBE ist = new InstSBE(itm);
                         ist.ErrorOccurEvent += InstDevice_ErrorOccurEvent;
+                        ist.DataReceivedEvent += Ist_DataReceivedEvent;
                         _instDevices.Add(ist);
                     }
                 }
@@ -130,6 +131,23 @@ namespace Device
 
 
         /// <summary>
+        /// 接收到 仪器信息
+        /// </summary>
+        /// <param name="data"></param>
+        private void Ist_DataReceivedEvent(InstSBE37Data data)
+        {
+            IotInstValueMessage istVal = new IotInstValueMessage();
+            istVal.InstData = new InstDataShow(data as InstDataBase);
+            istVal.Topic = IotCS.Client.IotTopic.InstValue;
+            istVal.DorS = IotDorS.Display;
+            istVal.InstData.dtTime = data.measureTime;
+            istVal.InstData.Tempt = data.vTemperature;
+            istVal.InstData.Conduct = data.vConductivity;
+            _userPorts.PublishMessage(IotCS.Client.IotTopic.InstValue, JObject.FromObject(istVal));
+
+        }
+
+        /// <summary>
         /// 标准仪器设备接收到数据 - 事件处理函数
         /// </summary>
         /// <param name="data"></param>
@@ -137,12 +155,14 @@ namespace Device
         {
             InstSDReceiveDataEvent?.Invoke(data);
 
-            IotInstValueMessage srVal = new IotInstValueMessage();
-            srVal.InstData = new List<InstDataBase>();
-            srVal.Topic = IotCS.Client.IotTopic.InstValue;
-            srVal.DorS = IotDorS.Display;
-            srVal.InstData.Add(data);
-            _userPorts.PublishMessage(IotCS.Client.IotTopic.InstValue, JObject.FromObject(srVal));
+            IotInstValueMessage istVal = new IotInstValueMessage();
+            istVal.InstData = new InstDataShow(data as InstDataBase);
+            istVal.Topic = IotCS.Client.IotTopic.InstValue;
+            istVal.DorS = IotDorS.Display;
+            istVal.InstData.dtTime = data.measureTime;
+            istVal.InstData.Tempt = data.vStandardT;
+            istVal.InstData.Conduct = data.vStandardC;
+            _userPorts.PublishMessage(IotCS.Client.IotTopic.InstValue, JObject.FromObject(istVal));
         }
 
         /// <summary>

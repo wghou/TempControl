@@ -59,7 +59,9 @@
             this.pictureBox_iot = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.checkBox_instVal = new System.Windows.Forms.CheckBox();
             this.label49 = new System.Windows.Forms.Label();
+            this.richTextBox_sdVal = new System.Windows.Forms.RichTextBox();
             this.richTextBox_log = new System.Windows.Forms.RichTextBox();
             this.label_sample = new System.Windows.Forms.Label();
             this.label_state = new System.Windows.Forms.Label();
@@ -69,23 +71,17 @@
             this.label_tm1 = new System.Windows.Forms.Label();
             this.label_tm5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.textBox_vStandardC = new System.Windows.Forms.TextBox();
-            this.label50 = new System.Windows.Forms.Label();
-            this.textBox_vStandardT = new System.Windows.Forms.TextBox();
-            this.label51 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // hslGaugeChart_temptM
@@ -486,12 +482,14 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(887, 677);
+            this.tabControl1.Size = new System.Drawing.Size(1250, 677);
             this.tabControl1.TabIndex = 45;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.checkBox_instVal);
             this.tabPage1.Controls.Add(this.label49);
+            this.tabPage1.Controls.Add(this.richTextBox_sdVal);
             this.tabPage1.Controls.Add(this.richTextBox_log);
             this.tabPage1.Controls.Add(this.label_sample);
             this.tabPage1.Controls.Add(this.label_state);
@@ -509,6 +507,7 @@
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.hslLedDisplay_temptSetM);
             this.tabPage1.Controls.Add(this.label12);
+            this.tabPage1.Controls.Add(this.label13);
             this.tabPage1.Controls.Add(this.label11);
             this.tabPage1.Controls.Add(this.label10);
             this.tabPage1.Controls.Add(this.label4);
@@ -538,10 +537,23 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(879, 647);
+            this.tabPage1.Size = new System.Drawing.Size(1242, 647);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "监测界面";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_instVal
+            // 
+            this.checkBox_instVal.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_instVal.AutoCheck = false;
+            this.checkBox_instVal.Location = new System.Drawing.Point(1039, 20);
+            this.checkBox_instVal.Name = "checkBox_instVal";
+            this.checkBox_instVal.Size = new System.Drawing.Size(135, 38);
+            this.checkBox_instVal.TabIndex = 50;
+            this.checkBox_instVal.Text = "显示仪器数据";
+            this.checkBox_instVal.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_instVal.UseVisualStyleBackColor = true;
+            this.checkBox_instVal.Click += new System.EventHandler(this.checkBox_instVal_Click);
             // 
             // label49
             // 
@@ -552,6 +564,16 @@
             this.label49.Size = new System.Drawing.Size(35, 14);
             this.label49.TabIndex = 49;
             this.label49.Text = "Iot:";
+            // 
+            // richTextBox_sdVal
+            // 
+            this.richTextBox_sdVal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.richTextBox_sdVal.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.richTextBox_sdVal.Location = new System.Drawing.Point(893, 90);
+            this.richTextBox_sdVal.Name = "richTextBox_sdVal";
+            this.richTextBox_sdVal.Size = new System.Drawing.Size(343, 554);
+            this.richTextBox_sdVal.TabIndex = 48;
+            this.richTextBox_sdVal.Text = "";
             // 
             // richTextBox_log
             // 
@@ -637,6 +659,16 @@
             this.label12.TabIndex = 27;
             this.label12.Text = "采样状态";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label13.Location = new System.Drawing.Point(890, 71);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(88, 16);
+            this.label13.TabIndex = 27;
+            this.label13.Text = "标准仪器值";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -689,67 +721,20 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.groupBox7);
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(879, 647);
+            this.tabPage2.Size = new System.Drawing.Size(1202, 647);
             this.tabPage2.TabIndex = 2;
             this.tabPage2.Text = "仪器状态";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.AutoSize = true;
-            this.groupBox7.Controls.Add(this.textBox_vStandardC);
-            this.groupBox7.Controls.Add(this.label50);
-            this.groupBox7.Controls.Add(this.textBox_vStandardT);
-            this.groupBox7.Controls.Add(this.label51);
-            this.groupBox7.Location = new System.Drawing.Point(8, 31);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(223, 110);
-            this.groupBox7.TabIndex = 0;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "标准器";
-            // 
-            // textBox_vStandardC
-            // 
-            this.textBox_vStandardC.Location = new System.Drawing.Point(95, 59);
-            this.textBox_vStandardC.Name = "textBox_vStandardC";
-            this.textBox_vStandardC.Size = new System.Drawing.Size(108, 26);
-            this.textBox_vStandardC.TabIndex = 1;
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(6, 62);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(80, 16);
-            this.label50.TabIndex = 0;
-            this.label50.Text = "StandardT";
-            // 
-            // textBox_vStandardT
-            // 
-            this.textBox_vStandardT.Location = new System.Drawing.Point(95, 27);
-            this.textBox_vStandardT.Name = "textBox_vStandardT";
-            this.textBox_vStandardT.Size = new System.Drawing.Size(108, 26);
-            this.textBox_vStandardT.TabIndex = 1;
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(6, 30);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(80, 16);
-            this.label51.TabIndex = 0;
-            this.label51.Text = "StandardT";
             // 
             // tabPage3
             // 
             this.tabPage3.Location = new System.Drawing.Point(4, 26);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(879, 647);
+            this.tabPage3.Size = new System.Drawing.Size(1202, 647);
             this.tabPage3.TabIndex = 1;
             this.tabPage3.Text = "控制界面";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -758,19 +743,17 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(887, 677);
+            this.ClientSize = new System.Drawing.Size(1250, 677);
             this.Controls.Add(this.tabControl1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "IotMonitorForm";
-            this.Text = "Form1";
+            this.Text = "Form Monitor";
             this.Shown += new System.EventHandler(this.IotMonitorForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -825,11 +808,9 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Label label49;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.TextBox textBox_vStandardC;
-        private System.Windows.Forms.Label label50;
-        private System.Windows.Forms.TextBox textBox_vStandardT;
-        private System.Windows.Forms.Label label51;
+        private System.Windows.Forms.CheckBox checkBox_instVal;
+        private System.Windows.Forms.RichTextBox richTextBox_sdVal;
+        private System.Windows.Forms.Label label13;
     }
 }
 

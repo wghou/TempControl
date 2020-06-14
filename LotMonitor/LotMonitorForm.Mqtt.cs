@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using IotCS.Client;
 using Device;
 using InstDevice;
+using System.Windows.Forms;
 
 namespace IotMonitor
 {
@@ -27,6 +28,17 @@ namespace IotMonitor
         /// 是否与 mqtt server 连接成功
         /// </summary>
         public bool isMqttConnected { get { return _iotClient.isConnected(); } }
+        /// <summary>
+        /// 仪器设备的信息
+        /// </summary>
+        public List<InstInfoBase> instInfos = new List<InstInfoBase>();
+
+
+        public delegate void DataReceivedEventHandler(InstDataShow data);
+        /// <summary>
+        /// 仪器接收到数据 - 事件
+        /// </summary>
+        public event DataReceivedEventHandler InstDataReceivedEvent;
 
 
         private bool setupIotClient()
@@ -48,6 +60,7 @@ namespace IotMonitor
                         IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.DeviceState, IotTopic.Error, IotTopic.SampleState, IotTopic.InstState, IotTopic.InstValue };
                     _iotClient.configIotPorts(child, tpSub);
                     _iotClient.IotPortReceiveMessageEvent += IotClient_MessageReceievedEvent;
+                    _iotClient.UserPortConnectedEvent += _iotClient_UserPortConnectedEvent;
                 }  
             }
             catch(Exception ex)
@@ -56,6 +69,14 @@ namespace IotMonitor
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Iot Port 连接成功
+        /// </summary>
+        private void _iotClient_UserPortConnectedEvent()
+        {
+            getDeviceState();
         }
 
         /// <summary>
@@ -113,7 +134,8 @@ namespace IotMonitor
                         // 记录这段时间内的错误
                         if(err.errCnt[itm] > 0)
                         {
-                            writeLog(DateTime.Now.ToString("hh-mm-ss") + " : " + itm.ToString());
+                            writeLog(DateTime.Now.ToString("hh-mm-ss") + " : " + itm.ToString(),
+                                richTextBox_log, 20);
                         }
                     }
 
@@ -137,44 +159,26 @@ namespace IotMonitor
 
                 case IotTopic.InstState:
                     IotInstStateMessage srSt = message.ToObject<IotInstStateMessage>();
-                    this.BeginInvoke(new EventHandler(delegate
-                    {
-                        // 将仪器信息显示
-                        foreach(var itm in srSt.InstInfos)
-                        {
-                            if (itm.InstIdx_NotUsed < 0 || itm.InstIdx_NotUsed > 6) continue;
-
-                            
-                        }
-                    }));
+                    instInfos = srSt.InstInfos;
+                    this.InstDataReceivedEvent?.Invoke(null);
                     break;
 
                 case IotTopic.InstValue:
                     // todo: 优化
                     IotInstValueMessage srVal = new IotInstValueMessage();
-                    srVal = JsonConvert.DeserializeObject<IotInstValueMessage>(message.ToString(), new JsonInstDataConverter());
+                    //srVal = JsonConvert.DeserializeObject<IotInstValueMessage>(message.ToString(), new JsonInstDataConverter());
+                    srVal = JsonConvert.DeserializeObject<IotInstValueMessage>(message.ToString());
 
                     this.BeginInvoke(new EventHandler(delegate
                     {
-                        // 将仪器信息显示
-                        foreach(var itm in srVal.InstData)
+                        if(srVal.InstData.InstIdx == 0)
                         {
-                            // todo: 解析
-                            switch(itm.InstType)
-                            {
-                                case TypeInst.Standard:
-                                    InstSTDData dt = (InstSTDData)itm;
-                                    this.textBox_vStandardC.Text = dt.vStandardC.ToString();
-                                    this.textBox_vStandardT.Text = dt.vStandardT.ToString();
-                                    break;
-
-                                case TypeInst.SBE37SI:
-                                    
-                                    break;
-
-                                default:
-                                    break;
-                            }
+                            writeLog(srVal.InstData.dtTime.ToString("hh-mm-ss") + "  Tempt: " + srVal.InstData.Tempt.ToString("0.0000") + "   Conduct: " + srVal.InstData.Conduct.ToString("0.0000"),
+                                richTextBox_sdVal, 50);
+                        }
+                        else
+                        {
+                            this.InstDataReceivedEvent?.Invoke(srVal.InstData);
                         }
                     }));
                     break;
@@ -186,29 +190,70 @@ namespace IotMonitor
             }
         }
 
-
-        private void writeLog(string log)
+        /// <summary>
+        /// 显示仪器数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox_instVal_Click(object sender, EventArgs e)
         {
-            richTextBox_log.AppendText(log);
-            richTextBox_log.AppendText(Environment.NewLine);
-            richTextBox_log.ScrollToCaret();
+            foreach(var itm in instInfos)
+            {
+                if(itm.InstIdx_NotUsed > 0)
+                {
+                    bool formExist = false;
+                    foreach (Form fm in Application.OpenForms)
+                    {
+                        if (fm.Name == ("FormInst " + itm.InstIdx_NotUsed.ToString()))
+                        {
+                            // Avoid form being minimized
+                            fm.WindowState = FormWindowState.Normal;
+                            fm.Location = new System.Drawing.Point(10, 12);
+                            fm.BringToFront();
+                            formExist = true;
+                        }
+                    }
 
-            limitLine(20);
+                    if (!formExist)
+                    {
+                        FormInst fm = new FormInst(this);
+                        fm.instIdx = itm.InstIdx_NotUsed;
+                        fm.Location = new System.Drawing.Point(10, 12);
+                        fm.Name = ("FormInst " + itm.InstIdx_NotUsed.ToString());
+                        fm.Show();
+                    }
+                }
+            }
         }
 
-        private void limitLine(int maxLength)
+
+        private void writeLog(string log, RichTextBox box, int maxLength)
         {
-            if (richTextBox_log.Lines.Length > maxLength)
+            if (box == null) return;
+
+            try
             {
-                int moreLines = richTextBox_log.Lines.Length - maxLength;
-                string[] lines = richTextBox_log.Lines;
-                Array.Copy(lines, moreLines, lines, 0, maxLength);
-                Array.Resize(ref lines, maxLength);
-                richTextBox_log.Lines = lines;
-                richTextBox_log.SelectionStart = richTextBox_log.Text.Length;
-                richTextBox_log.SelectionLength = 0;
-                richTextBox_log.Focus();
+                box.AppendText(log);
+                box.AppendText(Environment.NewLine);
+                box.ScrollToCaret();
+
+                if (box.Lines.Length > maxLength)
+                {
+                    int moreLines = box.Lines.Length - maxLength;
+                    string[] lines = box.Lines;
+                    Array.Copy(lines, moreLines, lines, 0, maxLength);
+                    Array.Resize(ref lines, maxLength);
+                    box.Lines = lines;
+                    box.SelectionStart = box.Text.Length;
+                    box.SelectionLength = 0;
+                    //box.Focus();
+                }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
     }
 }

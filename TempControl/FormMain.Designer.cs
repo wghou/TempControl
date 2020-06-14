@@ -848,6 +848,7 @@
             this.Controls.Add(this.groupBox_ry1);
             this.Controls.Add(this.checkBox_debug);
             this.Controls.Add(this.pictureBox_logo);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "FormMain";
             this.Text = "自动控温系统 -- 北京三原兆兴";

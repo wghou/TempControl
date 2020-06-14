@@ -92,6 +92,8 @@ namespace InstDevice
                 string[] valStrs = str.Split('-');
 
                 data.vTestID = Info.testId;
+                data.InstIdx = Info.InstIdx_NotUsed;
+                data.InstType = Info.InstType;
                 data.vTitularValue = currentTemptPoint;
                 data.vStandardC = double.Parse(valStrs[4]);
                 data.vStandardT = double.Parse(valStrs[5]);

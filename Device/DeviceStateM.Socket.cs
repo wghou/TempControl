@@ -11,63 +11,6 @@ using InstDevice;
 
 namespace Device
 {
-    /// <summary>
-    /// 通信所用的指令
-    /// </summary>
-    public enum SocketCmd : int
-    {
-        /// <summary> 开始自动控温 </summary>
-        AutoStart = 0,
-        /// <summary> 停止 </summary>
-        Stop,
-        /// <summary> 测量完成 </summary>
-        Finished,
-        /// <summary> 测试 Idx </summary>
-        TestId,
-        /// <summary> 设备状态 </summary>
-        DeviceState,
-        /// <summary> 未知 </summary>
-        Unknown
-    }
-
-    /// <summary>
-    /// 用于 Socket 通信的数据格式 - 命令
-    /// </summary>
-    public class SocketCmdMessage
-    {
-        /// <summary> Socket Message 的类型 </summary>
-        public SocketCmd cmdType { get; set; } = SocketCmd.Unknown;
-        /// <summary> 该条指令是否正确执行 </summary>
-        public bool ExecuteSucceed { set; get; } = false;
-
-        public SocketCmdMessage(SocketCmd tp) { cmdType = tp; } 
-    }
-
-    /// <summary>
-    /// 用于 Socket 通信的数据格式 - TestIdx
-    /// </summary>
-    public class SocketTestIdxMessage : SocketCmdMessage
-    {
-        public SocketTestIdxMessage() : base(SocketCmd.TestId) { }
-
-        /// <summary> 测试编号 </summary>
-        public string TestIdx { get; set; }
-    }
-
-    /// <summary>
-    /// 用于 Socket 通信的数据格式 - 设备状态
-    /// </summary>
-    public class SocketStateMessage : SocketCmdMessage
-    {
-        public SocketStateMessage() : base(SocketCmd.DeviceState) { }
-
-        /// <summary> 设备状态 </summary>
-        public State devSt { set; get; } = State.Idle;
-        /// <summary> 是否发生了错误：true 表示发生了错误 </summary>
-        public bool ErrorSt { set; get; } = false;
-    }
-
-
     public partial class DeviceStateM
     {
         private MySocketServer _socketServer = new MySocketServer();
@@ -139,6 +82,9 @@ namespace Device
                     bool rlt = getInstInfoFromSql(msgSend1.TestIdx);
                     msgSend1.ExecuteSucceed = rlt;
                     _socketServer.pushMessage(JObject.FromObject(msgSend1));
+
+                    // Iot 发布仪器信息
+                    iotPublishMessage(IotCS.Client.IotTopic.InstState);
                     break;
 
                 case SocketCmd.DeviceState:

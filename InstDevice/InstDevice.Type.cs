@@ -397,6 +397,39 @@ namespace InstDevice
 
 
     /// <summary>
+    /// 设备的数据，仅用于显示
+    /// </summary>
+    public class InstDataShow : InstDataBase
+    {
+        public InstDataShow(InstDataBase bs){
+            this.InstIdx = bs.InstIdx;
+            this.InstType = bs.InstType;
+        }
+
+        public InstDataShow() { }
+
+        /// <summary>
+        /// 数据采集的时间
+        /// </summary>
+        public DateTime dtTime { set; get; }
+        /// <summary>
+        /// 温度值
+        /// </summary>
+        public double Tempt { set; get; }
+        /// <summary>
+        /// 电导率值
+        /// </summary>
+        public double Conduct { set; get; }
+
+
+        public override bool FreshFromData2Sql()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    /// <summary>
     /// s_instrument 表 for mysql
     /// </summary>
     [SugarTable("s_instrumentdata")]

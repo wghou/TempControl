@@ -209,6 +209,7 @@
             this.Controls.Add(this.comboBox_spInterval);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label4);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "FormInst";
             this.Text = "FormInst";

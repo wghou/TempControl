@@ -19,7 +19,7 @@ namespace Device
 
         bool InitIotPort(JObject child)
         {
-            IotTopic[] tpSub = new IotTopic[] { IotTopic.ParamT, IotTopic.Relay, IotTopic.Error, IotTopic.SampleState };
+            IotTopic[] tpSub = new IotTopic[] { IotTopic.DeviceCmd };
             bool confOK = _userPorts.configIotPorts(child, tpSub);
 
             _userPorts.IotPortReceiveMessageEvent += _userPorts_UserPortMsgRvSetEvent;
@@ -102,6 +102,14 @@ namespace Device
                     nlogger.Info("Receive message from mqtt with topic Topic.Relay");
                     break;
 
+                case IotTopic.DeviceCmd:
+                    iotPublishMessage(IotTopic.Relay);
+                    iotPublishMessage(IotTopic.DeviceState);
+                    iotPublishMessage(IotTopic.Error);
+                    iotPublishMessage(IotTopic.SampleState);
+                    iotPublishMessage(IotTopic.InstState);
+                    break;
+
                 default:
                     Console.WriteLine("Unknown message receieved.");
                     break;
@@ -179,17 +187,22 @@ namespace Device
                     _userPorts.PublishMessage(IotTopic.SampleState, JObject.FromObject(jSample));
                     break;
 
+                case IotTopic.InstState:
+                    IotInstStateMessage jInstState = new IotInstStateMessage();
+                    jInstState.DorS = IotDorS.Display;
+                    jInstState.Topic = IotTopic.InstState;
+                    jInstState.InstInfos = new List<InstInfoBase>();
+                    foreach(var itm in _instDevices)
+                    {
+                        jInstState.InstInfos.Add(itm.GetBasicInfo());
+                    }
+
+                    _userPorts.PublishMessage(IotTopic.InstState, JObject.FromObject(jInstState));
+                    break;
+
                 case IotTopic.InstValue:
                     // todo: add the sensor value
-                    IotInstValueMessage jSensorVal = new IotInstValueMessage();
-                    jSensorVal.DorS = IotDorS.Display;
-                    jSensorVal.Topic = IotTopic.InstValue;
-                    jSensorVal.InstData = new List<InstDataBase>();
-
-                    // todo: dataAll.empty 如果为空
-                    jSensorVal.InstData.Add(sdDeviceRef.GetInstData().Last());
-
-                    _userPorts.PublishMessage(IotTopic.InstValue, JObject.FromObject(jSensorVal));
+                    nlogger.Error("code error");
                     break;
 
                 default:

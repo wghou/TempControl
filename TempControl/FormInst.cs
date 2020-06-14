@@ -304,7 +304,10 @@ namespace TempControl
                 }
             }
 
-            if(confOK == false)
+            // Iot 发布仪器信息
+            _device.iotPublishMessage(IotCS.Client.IotTopic.InstState);
+
+            if (confOK == false)
             {
                 MessageBox.Show("配置端口过程总发生错误！");
             }

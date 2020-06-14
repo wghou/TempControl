@@ -101,6 +101,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormInst.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInst.Designer.cs">
+      <DependentUpon>FormInst.cs</DependentUpon>
+    </Compile>
     <Compile Include="LotMonitorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +118,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormInst.resx">
+      <DependentUpon>FormInst.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LotMonitorForm.resx">
       <DependentUpon>LotMonitorForm.cs</DependentUpon>
     </EmbeddedResource>

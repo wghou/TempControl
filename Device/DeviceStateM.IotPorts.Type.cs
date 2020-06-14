@@ -302,6 +302,30 @@ namespace Device
 
 
     /// <summary>
+    /// 向设备写入的指令
+    /// </summary>
+    public enum Cmd2Device : int
+    {
+        None = 0,
+        /// <summary> 向设备请求发送状态 </summary>
+        StateRqt
+    }
+
+    /// <summary>
+    /// 用于向 Device 写入指令的 Json 字符串类
+    /// </summary>
+    public class IotCmdMessage : IotMessageBase
+    {
+        public IotCmdMessage(): base(IotTopic.DeviceCmd) { }
+
+        /// <summary>
+        /// 向设备写入的指令
+        /// </summary>
+        public Cmd2Device cmd { set; get; } = Cmd2Device.None;
+    }
+
+
+    /// <summary>
     /// 用于传输仪器数据的 Json 字符串类
     /// </summary>
     public class IotInstStateMessage : IotMessageBase
@@ -319,11 +343,11 @@ namespace Device
     /// </summary>
     public class IotInstValueMessage : IotMessageBase
     {
-        public IotInstValueMessage() : base(IotTopic.InstState) { }
+        public IotInstValueMessage() : base(IotTopic.InstValue) { }
 
         // todo:
         // add the Instrumen value
-        public List<InstDataBase> InstData { set; get; }
+        public InstDataShow InstData { set; get; }
     }
 
 
