@@ -69,6 +69,11 @@ namespace InstDevice
         /// 设备的信息 Info
         /// </summary>
         public TInfo Info { get; set; }
+        /// <summary>
+        /// 采样时间 - 秒
+        /// </summary>
+        public static int sampleIntervalSec = 5;
+
 
 
         /// <summary>

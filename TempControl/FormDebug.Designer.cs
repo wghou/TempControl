@@ -85,6 +85,8 @@
             this.label19 = new System.Windows.Forms.Label();
             this.textBox18 = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
+            this.textBox_measureTime = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button10
@@ -637,12 +639,31 @@
             this.label20.TabIndex = 95;
             this.label20.Text = "温度不下降-低温-阈值";
             // 
+            // textBox_measureTime
+            // 
+            this.textBox_measureTime.Location = new System.Drawing.Point(480, 120);
+            this.textBox_measureTime.Name = "textBox_measureTime";
+            this.textBox_measureTime.Size = new System.Drawing.Size(100, 21);
+            this.textBox_measureTime.TabIndex = 94;
+            this.textBox_measureTime.Enter += new System.EventHandler(this.textBox18_Enter);
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(334, 123);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(77, 12);
+            this.label21.TabIndex = 95;
+            this.label21.Text = "测量读数时长";
+            // 
             // FormDebug
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(629, 578);
+            this.Controls.Add(this.label21);
             this.Controls.Add(this.label20);
+            this.Controls.Add(this.textBox_measureTime);
             this.Controls.Add(this.textBox18);
             this.Controls.Add(this.textBox17);
             this.Controls.Add(this.label19);
@@ -767,5 +788,7 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox textBox18;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox textBox_measureTime;
+        private System.Windows.Forms.Label label21;
     }
 }

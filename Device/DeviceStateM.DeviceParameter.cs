@@ -140,6 +140,11 @@ namespace Device
         public float subCoolFNotDownThr = 5.0f;
 
         /// <summary>
+        /// 测量读数的时长
+        /// </summary>
+        public int measureTimeSec = 120;
+
+        /// <summary>
         /// 温度点排序 - 升序 / 降序
         /// </summary>
         public string sort = "descend";
@@ -190,6 +195,7 @@ namespace Device
                 tempDownCoolFShutdownHot = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString()));
                 tempDownCoolFShutdownCool = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString()));
                 subCoolFNotDownThr = float.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "subCoolFNotDownThr", subCoolFNotDownThr.ToString()));
+                measureTimeSec = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "Paramters", "measureTimeSec", measureTimeSec.ToString()));
 
                 // 其他
                 sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
@@ -231,6 +237,7 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownHot", tempDownCoolFShutdownHot.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "tempDownCoolFShutdownCool", tempDownCoolFShutdownCool.ToString());
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "subCoolFNotDownThr", subCoolFNotDownThr.ToString());
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Paramters", "measureTimeSec", measureTimeSec.ToString());
 
                 // 一些其他的调试参数
                 // 升序还是降序

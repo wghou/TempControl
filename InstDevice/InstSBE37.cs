@@ -64,7 +64,7 @@ namespace InstDevice
 
             // todo: 
             _tickTimerInst = new System.Timers.Timer();
-            _tickTimerInst.Interval = info.sampleIntervalSec * 1000;
+            _tickTimerInst.Interval = sampleIntervalSec * 1000;
             _tickTimerInst.AutoReset = true;
             _tickTimerInst.Elapsed += _tickTimerSample_Elapsed;
             //_tickTimerInst.Start(); 
@@ -80,7 +80,7 @@ namespace InstDevice
         {
             Enable = true;
 
-            _tickTimerInst.Interval = Info.sampleIntervalSec * 1000;
+            _tickTimerInst.Interval = sampleIntervalSec * 1000;
 
             // 读取 calibration coefficients
             //currentCmd = SBE37Cmd.GetCC;

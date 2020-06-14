@@ -614,7 +614,7 @@ namespace Device
             }
 #endif
             // 测量满两分钟
-            if(currentTemptPointState.stateCounts < 30 / _runningParameters.readTempIntervalSec)
+            if(currentTemptPointState.stateCounts < _runningParameters.measureTimeSec / _runningParameters.readTempIntervalSec)
             {
                 return;
             }

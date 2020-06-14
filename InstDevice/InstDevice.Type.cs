@@ -152,10 +152,6 @@ namespace InstDevice
         /// 设备的端口波特率
         /// </summary>
         public int BaudRate = 9600;
-        /// <summary>
-        /// 采样时间 - 秒
-        /// </summary>
-        public int sampleIntervalSec = 5;
 
         /// <summary>
         /// 根据 Sql 数据（一般为属性）刷新 Info 数据（一般为成员变量）

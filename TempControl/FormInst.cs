@@ -130,7 +130,6 @@ namespace TempControl
             public string instType = "Undefined";
             public int portId = -1;
             public int brId = -1;
-            public int itvId = -1;
             public bool initialized = false;
         }
 
@@ -164,6 +163,9 @@ namespace TempControl
                 }
             }
 
+            var rlt3 = spIntervalList.Where(p => p.interval == InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalSec);
+            comboBox_spInterval.SelectedValue = (rlt3.Count() == 0) ? 4 : rlt3.First().Id;
+
             foreach (var itm in _device._instDevices)
             {
                 InstInfoItem pt = new InstInfoItem();
@@ -182,9 +184,7 @@ namespace TempControl
                 
                 var rlt2 = baudList.Where(p => p.baudRate == itm.GetBasicInfo().BaudRate);
                 pt.brId = (rlt2.Count() == 0) ? -1 : rlt2.First().Id;
-                var rlt3 = spIntervalList.Where(p => p.interval == itm.GetBasicInfo().sampleIntervalSec);
-                pt.itvId = (rlt3.Count() == 0) ? 4 : rlt3.First().Id;
-
+                
                 pt.initialized = itm.Enable;
                 instList.Add(pt);
             }
@@ -222,16 +222,13 @@ namespace TempControl
             {
                 comboBox_port.SelectedValue = (comboBox_inst.SelectedItem as InstInfoItem).portId;
                 comboBox_baudRate.SelectedValue = (comboBox_inst.SelectedItem as InstInfoItem).brId;
-                comboBox_spInterval.SelectedValue = (comboBox_inst.SelectedItem as InstInfoItem).itvId;
                 comboBox_port.Enabled = false;
                 comboBox_baudRate.Enabled = false;
-                comboBox_spInterval.Enabled = false;
             }
             else
             {
                 comboBox_port.Enabled = true;
                 comboBox_baudRate.Enabled = true;
-                comboBox_spInterval.Enabled = true;
             }
         }
 
@@ -248,7 +245,6 @@ namespace TempControl
                 instList[(int)comboBox_inst.SelectedValue].initialized = true;
                 instList[(int)comboBox_inst.SelectedValue].portId = (int)comboBox_port.SelectedValue;
                 instList[(int)comboBox_inst.SelectedValue].brId = (int)comboBox_baudRate.SelectedValue;
-                instList[(int)comboBox_inst.SelectedValue].itvId = (int)comboBox_spInterval.SelectedValue;
 
                 portList[(int)comboBox_port.SelectedValue].obtained = true;
 
@@ -270,7 +266,6 @@ namespace TempControl
                 portList[instList[(int)comboBox_inst.SelectedValue].portId].obtained = false;
                 comboBox_port.Enabled = true;
                 comboBox_baudRate.Enabled = true;
-                comboBox_spInterval.Enabled = true;
                 updateComboboxShow();
             }
         }
@@ -292,7 +287,6 @@ namespace TempControl
                 {
                     _device._instDevices[itm.Id].GetBasicInfo().PortName = portList[itm.portId].portName;
                     _device._instDevices[itm.Id].GetBasicInfo().BaudRate = baudList[itm.brId].baudRate;
-                    _device._instDevices[itm.Id].GetBasicInfo().sampleIntervalSec = spIntervalList[itm.itvId].interval;
                     confOK &= _device._instDevices[itm.Id].InitWithInfo();
 
                     // todo: 初始化并配置仪器
@@ -304,6 +298,8 @@ namespace TempControl
                 }
             }
 
+            // 写入采样时间间隔
+            InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalSec = spIntervalList[(int)comboBox_spInterval.SelectedValue].interval;
             // Iot 发布仪器信息
             _device.iotPublishMessage(IotCS.Client.IotTopic.InstState);
 
