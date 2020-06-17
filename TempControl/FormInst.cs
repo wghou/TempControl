@@ -164,7 +164,7 @@ namespace TempControl
                 }
             }
 
-            var rlt3 = spIntervalList.Where(p => p.interval == InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalSec);
+            var rlt3 = spIntervalList.Where(p => (p.interval * 2) == InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalHalfSec);
             comboBox_spInterval.SelectedValue = (rlt3.Count() == 0) ? 4 : rlt3.First().Id;
 
             foreach (var itm in _device._instDevices)
@@ -301,7 +301,7 @@ namespace TempControl
             }
 
             // 写入采样时间间隔
-            InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalSec = spIntervalList[(int)comboBox_spInterval.SelectedValue].interval;
+            InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalHalfSec = spIntervalList[(int)comboBox_spInterval.SelectedValue].interval * 2;
             // Iot 发布仪器信息
             _device.iotPublishMessage(IotCS.Client.IotTopic.InstState);
 

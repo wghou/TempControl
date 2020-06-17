@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -101,6 +102,7 @@ namespace InstDevice
             try
             {
                 xmlDoc.LoadXml(xmlString);
+
                 XmlNode node = xmlDoc.SelectSingleNode("ConfigurationData");
 
                 this.DeviceType = node.Attributes["DeviceType"].InnerText;
@@ -126,6 +128,26 @@ namespace InstDevice
                 //this.OutputTime = node.SelectSingleNode("OutputTime") == null ? "" : node["OutputTime"].InnerText;
                 //this.AutoRun = node.SelectSingleNode("AutoRun") == null ? "" : node["AutoRun"].InnerText;
                 //this.StoreData = node.SelectSingleNode("StoreData") == null ? "" : node["StoreData"].InnerText;
+
+
+                string _pathLog = "Logs";
+                string _pathIst = _pathLog + "/InstConfigInfo";
+                // 建立日志文件夹
+                if (!Directory.Exists(_pathLog))
+                    Directory.CreateDirectory(_pathLog);
+                if (!Directory.Exists(_pathIst))
+                    Directory.CreateDirectory(_pathIst);
+
+                string confFile = _pathIst + "/" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm ") + DeviceType + "-" + SerialNumber + "-";
+                for(int i = 0; i < 20; i++)
+                {
+                    string fileP = confFile + i.ToString() + ".xml";
+                    if (!File.Exists(fileP))
+                    {
+                        xmlDoc.Save(fileP);
+                        break;
+                    }
+                }
             }
             catch(Exception e)
             {

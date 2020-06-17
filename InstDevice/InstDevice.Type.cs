@@ -496,6 +496,28 @@ namespace InstDevice
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 从另外一个对象中拷贝数据
+        /// </summary>
+        /// <param name="data"></param>
+        public InstSBE37Data CopyFrom(InstSBE37Data data)
+        {
+            this.vTestID = data.vTestID;
+            this.vInstrumentID = data.vInstrumentID;
+            this.vItemType = data.vItemType;
+            this.vTitularValue = data.vTitularValue;
+            this.vTemperature = data.vTemperature;
+            this.vConductivity = data.vConductivity;
+            this.vSalinity = data.vSalinity;
+            this.vTemperatureRaw = data.vTemperatureRaw;
+            this.vConductivityRaw = data.vConductivityRaw;
+            this.measureTime = data.measureTime;
+            this.addTime = data.addTime;
+            this.updateTime = data.updateTime;
+
+            return this;
+        }
     }
 
 

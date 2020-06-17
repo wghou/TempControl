@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.IO;
 
 namespace InstDevice
 {
@@ -64,7 +65,7 @@ namespace InstDevice
 
             // todo: 
             _tickTimerInst = new System.Timers.Timer();
-            _tickTimerInst.Interval = sampleIntervalSec * 1000;
+            _tickTimerInst.Interval = sampleIntervalHalfSec * 500;
             _tickTimerInst.AutoReset = true;
             _tickTimerInst.Elapsed += _tickTimerSample_Elapsed;
             //_tickTimerInst.Start(); 
@@ -80,7 +81,7 @@ namespace InstDevice
         {
             Enable = true;
 
-            _tickTimerInst.Interval = sampleIntervalSec * 1000;
+            _tickTimerInst.Interval = sampleIntervalHalfSec * 500;
 
             // 读取 calibration coefficients
             //currentCmd = SBE37Cmd.GetCC;
@@ -191,7 +192,8 @@ namespace InstDevice
             {
                 nlogger.Error("timeout when read configuration data from xml string");
                 return false;
-            }
+            } 
+
             rlt4 &= configData.ResolveXml2Value(ConfigDataXml);
             if (rlt4 == false)
             {
@@ -237,22 +239,42 @@ namespace InstDevice
             // 确保打开了串口，确保清空串口中的数据
             try { sPort.Open(); sPort.DiscardInBuffer(); } catch { }
 
-            if(sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
+            switch (sampleMode)
             {
-                currentCmd = SBE37Cmd.Start;
-                CmdExecuted = false;
-                bool rlt = sendCMD("Start");
-                if(rlt == false)
-                {
-                    nlogger.Error("error in sendCmd with internalEnterMeasureStep");
-                    OnErrorOccur(Err_sr.Error);
-                }
-            }
-            else
-            {
-                currentCmd = SBE37Cmd.Ts;
-                CmdExecuted = false;
-                _tickTimerInst.Start();
+                case InstSampleMode.AutoSample_Fmt0:
+                case InstSampleMode.AutoSample_Fmt1:
+                    currentCmd = SBE37Cmd.Start;
+                    CmdExecuted = false;
+                    bool rlt = sendCMD("Start");
+                    if (rlt == false)
+                    {
+                        nlogger.Error("error in sendCmd with internalEnterMeasureStep");
+                        OnErrorOccur(Err_sr.Error);
+                    }
+                    break;
+
+                case InstSampleMode.PolledSample_Fmt10:
+                    // 此处为前一个指令
+                    currentCmd = SBE37Cmd.Tsr;
+                    CmdExecuted = false;
+                    _tickTimerInst.Start();
+                    break;
+                case InstSampleMode.PolledSample_Fmt0:
+                    currentCmd = SBE37Cmd.Ts;
+                    CmdExecuted = false;
+                    // todo:
+
+                    break;
+
+                case InstSampleMode.PolledSample_Fmt1:
+                    currentCmd = SBE37Cmd.Tsr;
+                    CmdExecuted = false;
+                    // todo:
+
+                    break;
+
+                default:
+                    break;
             }
         }
         /// <summary>
@@ -397,16 +419,17 @@ namespace InstDevice
             // 程序执行到这里，说明已经通过 ResolveStr2Cmd(string str) 判断得到，
             // str 中不包含有 <Executed/>
 
-            data = null;
             bool rlt = true;
 
             switch (currentCmd)
             {
                 case SBE37Cmd.GetCD:
+                    data = null;
                     rlt = GetXmlData(str, out ConfigDataXml);
                     break;
 
                 case SBE37Cmd.GetCC:
+                    data = null;
                     rlt = GetXmlData(str, out CalibCoeffXml);
                     break;
 
@@ -504,61 +527,53 @@ namespace InstDevice
         /// <returns></returns>
         private bool SBE37ResolveStr2Value(string str, out InstSBE37Data data)
         {
-            data = null;
+            instData1Cache.vTestID = Info.testId;
+            instData1Cache.InstIdx = Info.InstIdx_NotUsed;
+            instData1Cache.InstType = Info.InstType;
+            instData1Cache.vInstrumentID = Info.instrumentId;
+            instData1Cache.vItemType = "";
+            instData1Cache.vTitularValue = currentTemptPoint;
+            instData1Cache.measureTime = DateTime.Now;
+            instData1Cache.addTime = instData1Cache.measureTime;
+            instData1Cache.updateTime = instData1Cache.measureTime;
+
             bool rlt = true;
-
-            try
+            if (currentCmd == SBE37Cmd.Tsr)
             {
-                instData1Cache.vTestID = Info.testId;
-                instData1Cache.InstIdx = Info.InstIdx_NotUsed;
-                instData1Cache.InstType = Info.InstType;
-                instData1Cache.vInstrumentID = Info.instrumentId;
-                instData1Cache.vItemType = "";
-                instData1Cache.vTitularValue = currentTemptPoint;
-
-                if(currentCmd == SBE37Cmd.Tsr)
+                rlt = SBE37ResolveStr2ValueFmt0(str, out data);
+            }
+            else
+            {
+                // 解析数据
+                switch (outputFormat)
                 {
-                    rlt = SBE37ResolveStr2ValueFmt0(str, out data);
+                    case SBE37OutputFormat.Format_0:
+                        rlt = SBE37ResolveStr2ValueFmt0(str, out data);
+                        break;
+
+                    case SBE37OutputFormat.Format_1:
+                        rlt = SBE37ResolveStr2ValueFmt1(str, out data);
+                        break;
+
+                    case SBE37OutputFormat.Format_2:
+                        data = null;
+                        rlt = false;
+                        nlogger.Error("error of output format: Format_2");
+                        break;
+
+                    case SBE37OutputFormat.Format_3:
+                        data = null;
+                        rlt = false;
+                        nlogger.Error("error of output format: Format_3");
+                        break;
+
+                    default:
+                        data = null;
+                        rlt = false;
+                        nlogger.Error("error of output format: unknown");
+                        break;
                 }
-                else
-                {
-                    // 解析数据
-                    switch (outputFormat)
-                    {
-                        case SBE37OutputFormat.Format_0:
-                            rlt = SBE37ResolveStr2ValueFmt0(str, out data);
-                            break;
-
-                        case SBE37OutputFormat.Format_1:
-                            rlt = SBE37ResolveStr2ValueFmt1(str, out data);
-                            break;
-
-                        case SBE37OutputFormat.Format_2:
-                            data = null;
-                            rlt = false;
-                            nlogger.Error("error of output format: Format_2");
-                            break;
-
-                        case SBE37OutputFormat.Format_3:
-                            data = null;
-                            rlt = false;
-                            nlogger.Error("error of output format: Format_3");
-                            break;
-
-                        default:
-                            data = null;
-                            rlt = false;
-                            nlogger.Error("error of output format: unknown");
-                            break;
-                    }
-                }  
             }
-            catch (Exception ex)
-            {
-                nlogger.Error("exception in SBE37ResolveStr2Value(..)");
-                return false;
-            }
-
             return rlt;
         }
 
@@ -571,12 +586,10 @@ namespace InstDevice
         /// <returns></returns>
         private bool SBE37ResolveStr2ValueFmt0(string str, out InstSBE37Data data)
         {
-            data = null;
+            data = new InstSBE37Data();
             string[] strSplit = str.Split(',');
 
             nlogger.Info("SBE37ResolveStr2ValueFmt0: " + str);
-
-            instData1Cache.addTime = DateTime.Now;
 
             int idx = 0;
             try
@@ -625,8 +638,6 @@ namespace InstDevice
                 //    dt = DateTime.Parse(strSplit[idx++]);
                 //    dt = DateTime.Parse(strSplit[idx++]);
                 //}
-
-                data = instData1Cache;
             }
             catch(Exception ex)
             {
@@ -634,6 +645,9 @@ namespace InstDevice
                 nlogger.Error("error string: " + str);
                 return false;
             }
+
+            // bug
+            data.CopyFrom(instData1Cache);
 
             return true;
         }
@@ -645,11 +659,10 @@ namespace InstDevice
         /// <returns></returns>
         private bool SBE37ResolveStr2ValueFmt1(string str, out InstSBE37Data data)
         {
-            data = null;
+            data = new InstSBE37Data();
             string[] strSplit = str.Split(',');
 
             nlogger.Info("SBE37ResolveStr2ValueFmt1: " + str);
-            instData1Cache.addTime = DateTime.Now;
 
             int idx = 0;
             try
@@ -706,9 +719,7 @@ namespace InstDevice
                 instData1Cache.vTemperature = ttt;
                 instData1Cache.vConductivity = ccc;
                 instData1Cache.vSalinity = sss;
-                instData1Cache.measureTime = DateTime.Now;
-                instData1Cache.addTime = instData1Cache.measureTime;
-                instData1Cache.updateTime = instData1Cache.measureTime;
+                
 
                 //// vvvv.vvv = sound velocity (meters/second); 
                 //// sent only if OutputSV=Y
@@ -745,8 +756,6 @@ namespace InstDevice
                 //{
                 //    nn = int.Parse(strSplit[idx++]);
                 //}
-
-                data = instData1Cache;
             }
             catch (Exception ex)
             {
@@ -754,6 +763,9 @@ namespace InstDevice
                 nlogger.Error("error string: " + str);
                 return false;
             }
+
+            // bug
+            data.CopyFrom(instData1Cache);
 
             return true;
         }

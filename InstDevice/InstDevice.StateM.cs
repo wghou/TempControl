@@ -72,7 +72,7 @@ namespace InstDevice
         /// <summary>
         /// 采样时间 - 秒
         /// </summary>
-        public static int sampleIntervalSec = 5;
+        public static int sampleIntervalHalfSec = 5;
 
 
 

@@ -197,9 +197,9 @@
             this.label4.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.Location = new System.Drawing.Point(293, 155);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(106, 23);
+            this.label4.Size = new System.Drawing.Size(126, 23);
             this.label4.TabIndex = 2;
-            this.label4.Text = "采样间隔/秒：";
+            this.label4.Text = "采样间隔 / 秒：";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBox_instID
