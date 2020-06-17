@@ -143,7 +143,7 @@ namespace InstDevice
         /// <summary>
         /// 仪器 id
         /// </summary>
-        public string instrumentId = "";
+        public string instrumentId = "standard device";
         /// <summary>
         /// 设备的端口号
         /// </summary>

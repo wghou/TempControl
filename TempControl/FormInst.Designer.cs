@@ -41,6 +41,7 @@
             this.comboBox_port = new System.Windows.Forms.ComboBox();
             this.comboBox_spInterval = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.textBox_instID = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -201,11 +202,19 @@
             this.label4.Text = "采样间隔/秒：";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // textBox_instID
+            // 
+            this.textBox_instID.Location = new System.Drawing.Point(21, 186);
+            this.textBox_instID.Name = "textBox_instID";
+            this.textBox_instID.Size = new System.Drawing.Size(252, 21);
+            this.textBox_instID.TabIndex = 5;
+            // 
             // FormInst
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.textBox_instID);
             this.Controls.Add(this.comboBox_spInterval);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label4);
@@ -215,6 +224,7 @@
             this.Text = "FormInst";
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -233,5 +243,6 @@
         private System.Windows.Forms.CheckBox checkBox_rdDev;
         private System.Windows.Forms.ComboBox comboBox_spInterval;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox_instID;
     }
 }

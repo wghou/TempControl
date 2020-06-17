@@ -38,7 +38,7 @@ namespace IotMonitor
 
                 if (data.InstIdx == this.instIdx)
                 {
-                    writeLog(data.dtTime.ToString("hh-mm-ss") + "  Tempt: " + data.Tempt.ToString("0.0000") + "   Conduct: " + data.Conduct.ToString("0.0000"),
+                    writeLog(data.dtTime.ToString("HH:mm:ss") + "  Tempt: " + data.Tempt.ToString("0.0000") + "   Conduct: " + data.Conduct.ToString("0.0000"),
                                     richTextBox_istVal, 50);
                 }
             }

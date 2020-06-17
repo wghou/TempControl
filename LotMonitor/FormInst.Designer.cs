@@ -38,7 +38,7 @@
             this.richTextBox_istVal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBox_istVal.Location = new System.Drawing.Point(12, 70);
             this.richTextBox_istVal.Name = "richTextBox_istVal";
-            this.richTextBox_istVal.Size = new System.Drawing.Size(303, 315);
+            this.richTextBox_istVal.Size = new System.Drawing.Size(412, 315);
             this.richTextBox_istVal.TabIndex = 50;
             this.richTextBox_istVal.Text = "";
             // 
@@ -56,14 +56,14 @@
             // 
             this.textBox_info.Location = new System.Drawing.Point(12, 12);
             this.textBox_info.Name = "textBox_info";
-            this.textBox_info.Size = new System.Drawing.Size(305, 21);
+            this.textBox_info.Size = new System.Drawing.Size(412, 21);
             this.textBox_info.TabIndex = 51;
             // 
             // FormInst
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(329, 397);
+            this.ClientSize = new System.Drawing.Size(436, 397);
             this.Controls.Add(this.textBox_info);
             this.Controls.Add(this.richTextBox_istVal);
             this.Controls.Add(this.label13);

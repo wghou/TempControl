@@ -316,41 +316,6 @@ namespace TempControl
                     return;
                 }
 
-
-                // 将温度点数据保存到缓存中
-                try
-                {
-                    // 清空原有文件
-                    FileStream fs = File.Open(@"./params.cache", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                    if (fs != null) fs.Close();
-
-                    StreamWriter sw = new StreamWriter(@"./params.cache", false, Encoding.UTF8);
-                    for (int i = 0; i < paramList.Count; i++)
-                    {
-                        for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
-                        {
-                            sw.Write(paramList[i].paramM[j].ToString() + " ");
-                        }
-                        sw.Write(paramList[i].paramM[paramList[i].paramM.Length - 1].ToString());
-                        sw.WriteLine();
-                        for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
-                        {
-                            sw.Write(paramList[i].paramS[j].ToString() + " ");
-                        }
-                        sw.Write(paramList[i].paramS[paramList[i].paramM.Length - 1].ToString());
-                        sw.WriteLine();
-                    }
-                    sw.Flush();
-                    sw.Close();
-                }
-                catch (Exception ex)
-                {
-                    nlogger.Warn("存储温度点缓存时，发生异常：" + ex.Message);
-                    MessageBox.Show("存储温度点缓存时，发生异常：" + ex.Message);
-                    this.checkBox_start.Checked = false;
-                    return;
-                }
-
                 // 开始自动控温流程
                 lock (devicesAll.stepLocker)
                 {
@@ -450,7 +415,7 @@ namespace TempControl
         {
 
             // 取消操作
-            this.Dispose();
+            this.Close();
         }
 
 
@@ -528,7 +493,6 @@ namespace TempControl
                     return;
                 }
             }
-
 
 
             // 添加温度点
@@ -1430,6 +1394,43 @@ namespace TempControl
                     if (paramM[0] == otherState.paramM[0]) { return 0; }
                     else { return -1; }
                 }
+            }
+        }
+
+        private void FormAutoSet_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // 将温度点数据保存到缓存中
+            try
+            {
+                // 清空原有文件
+                FileStream fs = File.Open(@"./params.cache", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                if (fs != null) fs.Close();
+
+                StreamWriter sw = new StreamWriter(@"./params.cache", false, Encoding.UTF8);
+                for (int i = 0; i < paramList.Count; i++)
+                {
+                    for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
+                    {
+                        sw.Write(paramList[i].paramM[j].ToString() + " ");
+                    }
+                    sw.Write(paramList[i].paramM[paramList[i].paramM.Length - 1].ToString());
+                    sw.WriteLine();
+                    for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
+                    {
+                        sw.Write(paramList[i].paramS[j].ToString() + " ");
+                    }
+                    sw.Write(paramList[i].paramS[paramList[i].paramM.Length - 1].ToString());
+                    sw.WriteLine();
+                }
+                sw.Flush();
+                sw.Close();
+            }
+            catch (Exception ex)
+            {
+                nlogger.Warn("存储温度点缓存时，发生异常：" + ex.Message);
+                MessageBox.Show("存储温度点缓存时，发生异常：" + ex.Message);
+                this.checkBox_start.Checked = false;
+                return;
             }
         }
     }

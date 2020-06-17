@@ -131,6 +131,7 @@ namespace TempControl
             public int portId = -1;
             public int brId = -1;
             public bool initialized = false;
+            public string instrumentID = "null";
         }
 
         List<PortInfoItem> portList = new List<PortInfoItem>();
@@ -186,6 +187,7 @@ namespace TempControl
                 pt.brId = (rlt2.Count() == 0) ? -1 : rlt2.First().Id;
                 
                 pt.initialized = itm.Enable;
+                pt.instrumentID = itm.GetBasicInfo().instrumentId;
                 instList.Add(pt);
             }
 
@@ -329,6 +331,12 @@ namespace TempControl
             if (comboBox_inst.SelectedItem == null) return;
 
             linkedInst2Port();
+
+            try
+            {
+                textBox_instID.Text = (comboBox_inst.SelectedItem as InstInfoItem).instrumentID;
+            }
+            catch { }
         }
     }
 }

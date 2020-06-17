@@ -134,7 +134,7 @@ namespace IotMonitor
                         // 记录这段时间内的错误
                         if(err.errCnt[itm] > 0)
                         {
-                            writeLog(DateTime.Now.ToString("hh-mm-ss") + " : " + itm.ToString(),
+                            writeLog(DateTime.Now.ToString("HH:mm:ss") + " : " + itm.ToString(),
                                 richTextBox_log, 20);
                         }
                     }
@@ -173,7 +173,7 @@ namespace IotMonitor
                     {
                         if(srVal.InstData.InstIdx == 0)
                         {
-                            writeLog(srVal.InstData.dtTime.ToString("hh-mm-ss") + "  Tempt: " + srVal.InstData.Tempt.ToString("0.0000") + "   Conduct: " + srVal.InstData.Conduct.ToString("0.0000"),
+                            writeLog(srVal.InstData.dtTime.ToString("HH:mm:ss") + "  Tempt: " + srVal.InstData.Tempt.ToString("0.0000") + "   Conduct: " + srVal.InstData.Conduct.ToString("0.0000"),
                                 richTextBox_sdVal, 50);
                         }
                         else

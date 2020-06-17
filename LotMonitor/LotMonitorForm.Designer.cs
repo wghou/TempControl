@@ -482,7 +482,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1250, 677);
+            this.tabControl1.Size = new System.Drawing.Size(1281, 677);
             this.tabControl1.TabIndex = 45;
             // 
             // tabPage1
@@ -537,7 +537,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1242, 647);
+            this.tabPage1.Size = new System.Drawing.Size(1273, 647);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "监测界面";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -571,7 +571,7 @@
             this.richTextBox_sdVal.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.richTextBox_sdVal.Location = new System.Drawing.Point(893, 90);
             this.richTextBox_sdVal.Name = "richTextBox_sdVal";
-            this.richTextBox_sdVal.Size = new System.Drawing.Size(343, 554);
+            this.richTextBox_sdVal.Size = new System.Drawing.Size(374, 554);
             this.richTextBox_sdVal.TabIndex = 48;
             this.richTextBox_sdVal.Text = "";
             // 
@@ -724,7 +724,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1202, 647);
+            this.tabPage2.Size = new System.Drawing.Size(1242, 647);
             this.tabPage2.TabIndex = 2;
             this.tabPage2.Text = "仪器状态";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -734,7 +734,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 26);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1202, 647);
+            this.tabPage3.Size = new System.Drawing.Size(1242, 647);
             this.tabPage3.TabIndex = 1;
             this.tabPage3.Text = "控制界面";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -743,7 +743,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1250, 677);
+            this.ClientSize = new System.Drawing.Size(1281, 677);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;

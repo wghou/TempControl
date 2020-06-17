@@ -242,7 +242,7 @@ namespace InstDevice
             }
             catch (Exception ex)
             {
-                nlogger.Error("标准数据采集器设备接受数据发生异常：" + ex.Message);
+                nlogger.Error("仪器设备接收数据发生异常：" + ex.Message);
                 // 引发错误
                 OnErrorOccur(Err_sr.Error);
             }
