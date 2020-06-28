@@ -5,6 +5,7 @@ using System.Text;
 using System.IO.Ports;
 using System.Threading;
 using System.Diagnostics;
+using System.Timers;
 
 namespace Device
 {
@@ -31,7 +32,6 @@ namespace Device
         /// <summary>串口读-写时间间隔</summary>
         private const int intervalOfWR = 20;
 
-
         public string srDeviceName = string.Empty;
         public string srDevicePortName = string.Empty;
 
@@ -50,6 +50,8 @@ namespace Device
         // 用于显示温度曲线的，只保存最新的数据，可以被清空
         public object srShowLocker = new object();
         public List<float> temperaturesShow = new List<float>();
+        private System.Timers.Timer timer = new System.Timers.Timer();
+        private int temptNoErrCnt = 0;
 
         /// <summary>
         /// 请求进入下一个温度点
@@ -81,19 +83,14 @@ namespace Device
                 return !Enable;
             }
 
-            try
-            {
-                sPort.Open();
+            timer.Interval = 3000;
+            timer.AutoReset = true;
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
 
-                currentComStatus = true;
-            }
-            catch(Exception ex)
-            {
-                currentComStatus = false;
-            }
-            
             return true;
         }
+
 
         /// <summary>
         /// 初始化传感器设备 - 设定串口
@@ -135,6 +132,14 @@ namespace Device
             }
 
             return true;
+        }
+
+
+        // 看门狗功能
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            temptNoErrCnt = 0;
+            currentComStatus = false;
         }
 
 
@@ -187,11 +192,20 @@ namespace Device
                         temperaturesShow.Add(val);
                     }
 
+                    timer.Stop();
+
+                    if(++temptNoErrCnt > tempMaxLen)
+                    {
+                        temptNoErrCnt = tempMaxLen;
+                    }
+
                     currentComStatus = true;
 
                     Thread.Sleep(intervalOfWR);
                     // 返回正确标志
                     try{ sPort.WriteLine("CTEMP@"); } catch { }
+
+                    timer.Start();
                 }
                 else
                 {
@@ -359,6 +373,12 @@ namespace Device
         /// <returns>返回成功与否</returns>
         public bool GetFluc(int count, out float fluctuation)
         {
+            if(temptNoErrCnt < count)
+            {
+                fluctuation = -1;
+                return false;
+            }
+
             lock (srLocker)
             {
                 if (temperatures.Count == 0 || temperatures.Count < count)

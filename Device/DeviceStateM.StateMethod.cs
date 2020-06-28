@@ -205,6 +205,13 @@ namespace Device
             // 如果当前主槽温度刚好处于温度点附近，且满足阈值条件，则直接进入控温状态
             if (Math.Abs(tpDeviceM.temperatures.Last() - currentTemptPointState.stateTemp) < _runningParameters.controlTempThr)
             {
+                // 设置主槽 / 辅槽控温设备的参数
+                currentTemptPointState.paramM[1] = 0.0f;    //  清空修正值
+                currentTemptPointState.paramM.CopyTo(tpDeviceM.tpParamToSet, 0);
+                // 将参数更新到下位机
+                // 如果出现错误，则由 _deviceErrorMonitor 记录错误状态
+                WriteTempDeviceM(true);
+
                 // 状态 - 控温
                 _machine.Fire(Trigger.StartControl);
             }

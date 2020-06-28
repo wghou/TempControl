@@ -155,6 +155,28 @@ namespace TempControl
                         this.label_controlState.Text = "未定义";
                         break;
                 }
+
+                // 禁用按键
+                switch (st)
+                {
+                    case Device.State.Start:
+                    case Device.State.TempDown:
+                    case Device.State.TempUp:
+                    case Device.State.Control:
+                    case Device.State.Stable:
+                    case Device.State.Measure:
+                        this.checkBox_ryM0.Enabled = false;
+                        this.checkBox_ryM4.Enabled = false;
+                        this.checkBox_ryM5.Enabled = false;
+                        this.checkBox_ryM6.Enabled = false;
+                        break;
+                    default:
+                        this.checkBox_ryM0.Enabled = true;
+                        this.checkBox_ryM4.Enabled = true;
+                        this.checkBox_ryM5.Enabled = true;
+                        this.checkBox_ryM6.Enabled = true;
+                        break;
+                }
             }));
         }
 

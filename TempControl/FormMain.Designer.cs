@@ -534,7 +534,6 @@
             this.Name = "FormMain";
             this.Text = "自动控温系统 -- 北京三原兆兴 ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
-            this.Load += new System.EventHandler(this.FormMain_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox_ry1.ResumeLayout(false);

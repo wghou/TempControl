@@ -63,9 +63,9 @@ namespace Device
                 //}
 
                 // 辅槽控温设备
-                //confOK &= srDevice.ConfigSyn(_runningParameters.portTp2);
-                //if (!confOK) Utils.Logger.Sys("配置传感器设备失败! 端口号: " + srDevice.srDevicePortName);
-                //else Debug.WriteLine("配置传感器设备成功! 端口号: " + srDevice.srDevicePortName);
+                confOK &= srDevice.ConfigSyn(_runningParameters.portSr);
+                if (!confOK) Utils.Logger.Sys("配置传感器设备失败! 端口号: " + srDevice.srDevicePortName);
+                else Debug.WriteLine("配置传感器设备成功! 端口号: " + srDevice.srDevicePortName);
 
                 // 继电器设备 1
                 confOK &= ryDeviceM.SetPortName(_runningParameters.portRy1);
