@@ -274,7 +274,7 @@ namespace Device
 
 
             // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
-            if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp - 0.1)
+            if (tpDeviceM.temperatures.Last() > currentTemptPointState.stateTemp - _runningParameters.controlTempThr)
             {
                 // 如果主槽中温度高于设定值，则进入下一个状态 - 控温
                 _machine.Fire(Trigger.StartControl);
@@ -340,7 +340,7 @@ namespace Device
 
 
             // 判断 - 温度上升到设定值以上（0.1度），则进入控温状态
-            if (tpDeviceM.temperatures.Last() < currentTemptPointState.stateTemp + 0.1)
+            if (tpDeviceM.temperatures.Last() < currentTemptPointState.stateTemp + _runningParameters.controlTempThr)
             {
                 // 如果主槽中温度高于设定值，则进入下一个状态 - 控温
                 _machine.Fire(Trigger.StartControl);
@@ -490,7 +490,9 @@ namespace Device
             {
                 bool steady = srDevice.chekFluc(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
                 if (steady == false) return;
-                
+
+
+                if (srDevice.temperatures.Count == 0) { SetErrorStatus(ErrorCode.SensorError); return; }
 
                 float diff = srDevice.temperatures.Last() - tpDeviceM.temperatures.Last();
                 if (Math.Abs(diff) < _runningParameters.temperatureDiff)

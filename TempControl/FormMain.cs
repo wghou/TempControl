@@ -161,7 +161,8 @@ namespace TempControl
             RySetHandler setRyStatus = new RySetHandler(this._device.WriteRelayDeviceM);
             setRyStatus.BeginInvoke(true, null, null);
 
-            _device.tpDeviceM.UpdateParamFromDevice();
+            // 更新控温表参数
+            _device.ReadTempDeviceM(false);
         }
 
 
@@ -333,11 +334,6 @@ namespace TempControl
         private void checkBox1_Click(object sender, EventArgs e)
         {
            
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

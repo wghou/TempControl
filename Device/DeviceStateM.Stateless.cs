@@ -176,7 +176,7 @@ namespace Device
                 .OnEntry(t => StableEntry())
                 .OnExit(t => StableExit())
                 .InternalTransition(_TickTrigger, (tic, t) => StableTick(tic))
-                .Permit(Trigger.NeedModify, State.Control)
+                .Permit(Trigger.NeedModify, State.Start)
                 .Permit(Trigger.StartMeasure, State.Measure)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceStop, State.Stop);
