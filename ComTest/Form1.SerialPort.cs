@@ -1,9 +1,4 @@
-﻿
-#define OUT1
-
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,44 +14,6 @@ namespace ComTest
         ////////////////////////////
         // 参数 - 用于生成相关类型的数据曲线
         ////////////////////////////
-
-        ////////////////////////////
-        // 继电器状态
-        ///
-        /// <summary>
-        /// 继电器设备错误状态
-        /// </summary>
-        enum RyStatus : int
-        {
-            /// <summary>
-            /// 处于正常工作状态
-            /// </summary>
-            OK = 0,
-            /// <summary>
-            /// 连接断开 - 即不返回任何数据
-            /// </summary>
-            DisConnected = 1,
-            /// <summary>
-            /// 数据错误
-            /// </summary>
-            DataErr = 2,
-        }
-        /// <summary>
-        /// 锁 - 用于锁定继电器状态参数
-        /// </summary>
-        object ryLocker = new object();
-        /// <summary>
-        /// 继电器设备 - 当前工作状态 - 默认正常工作
-        /// </summary>
-        RyStatus ryErrStatus = RyStatus.OK;
-        /// <summary>
-        /// 继电器设备 - 在产生一次错误状态后，是否保持错误状态 - 默认不保持
-        /// </summary>
-        bool ryErrLast = false;
-        /// <summary>
-        /// 继电器设备代码错误
-        /// </summary>
-        bool ryCodeErr = false;
 
 
         ///////////////////////////////
@@ -237,77 +194,9 @@ namespace ComTest
         bool srCodeErr = false;
 
 
-        /// <summary>
-        /// 继电器 - 信息收发
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SPortRy_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            byte[] dataRev = new byte[8];
-            int len = 8;
-
-            try
-            {
-                len = sPortRy.BytesToRead;
-                if (len != 8)
-                {
-                    Debug.WriteLine("接收到了错误数据，长度不为 8 ");
-                    return;
-                }
-                sPortRy.Read(dataRev, 0, len);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine("SPortRy_DataReceived exception when readData : " + ex.Message);
-
-                // 出现代码错误
-                ryCodeErr = true;
-            }
-            
-
-            // 读取到数据后，根据所模拟的继电器状态，返回相应的继电器模拟数据
-            lock(ryLocker)
-            {
-                // 调试信息输出
-                Debug.WriteLine("接收到传感器数据： " + BitConverter.ToString(dataRev) + " 设备状态：" + ryErrStatus.ToString());
-
-                try
-                {
-                    switch (ryErrStatus)
-                    {
-                        case RyStatus.OK:
-                            // 将原始数据返回，即为正确数据
-                            sPortRy.Write(dataRev, 0, len);
-                            break;
-                        case RyStatus.DisConnected:
-                            // 不返回任何数据，即模拟连接断开
-                            break;
-                        case RyStatus.DataErr:
-                            sPortRy.WriteLine("@35EB:");
-                            Debug.WriteLine("继电器错误数据： @035EB.");
-                            break;
-                        default:
-                            // 默认状态下，为无错误状态
-                            sPortRy.Write(dataRev, 0, len);
-                            break;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Debug.WriteLine("SPortRy_DataReceived exception when writeData : " + ex.Message);
-
-                    // 出现代码错误
-                    ryCodeErr = true;
-                }
-
-                // 如果错误不持续，则清空错误标记为
-                if (!ryErrLast && ryErrStatus != RyStatus.OK)
-                    this.BeginInvoke(new EventHandler(delegate { ryErrStatus = RyStatus.OK; this.comboBox_RyStatus.SelectedIndex = 0; }));
-            }
-            
-        }
-
+        ////////////////////////////////////
+        // 端口数据传输函数
+        ////////////////////////////////////
 
         /// <summary>
         /// 辅槽控温 - 信息收发
@@ -601,6 +490,11 @@ namespace ComTest
         }
 
 
+        /// <summary>
+        /// 电桥温度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SPortBg_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             string dataRev = string.Empty;

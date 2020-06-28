@@ -1,0 +1,32 @@
+{
+  "TempM": {
+    "PortName": "COM2",
+    "BaudRate": 2400,
+    "Enable": true
+  },
+  "TempS": {
+    "PortName": "COM4",
+    "BaudRate": 2400,
+    "Enable": false
+  },
+  "RelayM": {
+    "PortName": "COM6",
+    "BaudRate": 9600,
+    "Enable": true
+  },
+  "RelayS": {
+    "PortName": "COM8",
+    "BaudRate": 9600,
+    "Enable": false
+  },
+  "Sensor": {
+    "PortName": "COM4",
+    "BaudRate": 9600,
+    "Enable": true
+  },
+  "Bridge": {
+    "PortName": "COM5",
+    "BaudRate": 9600,
+    "Enable": false
+  }
+}
