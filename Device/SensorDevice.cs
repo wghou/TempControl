@@ -260,6 +260,10 @@ namespace Device
         }
 
 
+        /// <summary>
+        /// 检查传感器当前错误状态
+        /// </summary>
+        /// <returns></returns>
         public bool CheckStatus()
         {
             try

@@ -40,6 +40,7 @@ namespace ComTest
         /// 传感器 - 通信端口
         /// </summary>
         private SerialPort sPortSr = new SerialPort();
+        private Timer _timerSr = new Timer();
 
         Bitmap mBmp_Sr;
 
@@ -109,6 +110,9 @@ namespace ComTest
                 sPortSr.Parity = Parity.None;
                 sPortSr.ReadBufferSize = 64;
                 sPortSr.WriteBufferSize = 64;
+                _timerSr.Interval = 1000;
+                _timerSr.Tick += _timerSr_Tick;
+                _timerSr.Start();
             }
             catch(Exception ex)
             {
@@ -122,7 +126,6 @@ namespace ComTest
             sPortTm.DataReceived += SPortTm_DataReceived;
             sPortTs.DataReceived += SPortTs_DataReceived;
             sPortRy.DataReceived += SPortRy_DataReceived;
-            sPortSr.DataReceived += SPortSr_DataReceived;
             sPortBg.DataReceived += SPortBg_DataReceived;
 
 
@@ -132,7 +135,7 @@ namespace ComTest
                 sPortTm.Open();
                 sPortTs.Open();
                 //sPortRy.Open();
-                //sPortSr.Open();
+                sPortSr.Open();
                 //sPortBg.Open();
             }
             catch(Exception ex)
@@ -142,8 +145,6 @@ namespace ComTest
                 return;
             }
 
-
-            this.comboBox_SrStatus.SelectedIndex = 0;
             this.comboBox_RyStatus.SelectedIndex = 0;
 
 
@@ -153,52 +154,6 @@ namespace ComTest
             Graphics mGhp_Sr = Graphics.FromImage(mBmp_Sr);
             mGhp_Sr.Clear(Color.Green);
             pictureBox_Sr.Image = mBmp_Sr;
-        }
-
-
-
-        /// <summary>
-        /// 传感器设备 - 错误状态设置
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void comboBox_SrStatus_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // 说明：虽然在错误状态不保持的情况下，控制流程会修改 SelectedIndex ，会再次（冗余）触发该事件，但是也不会有太坏的影响
-            lock(srLocker)
-            {
-                switch(comboBox_SrStatus.SelectedIndex)
-                {
-                    case 0:
-                        this.srErrStatus = SrStatus.OK;
-                        break;
-
-                    case 1:
-                        this.srErrStatus = SrStatus.DisConnected;
-                        break;
-
-                    case 2:
-                        this.srErrStatus = SrStatus.DataErr;
-                        break;
-
-                    default:
-                        this.srErrStatus = SrStatus.OK;
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 传感器设备 - 错误状态持续
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void checkBox_SrErrLast_CheckedChanged(object sender, EventArgs e)
-        {
-            lock(srLocker)
-            {
-                srErrLast = this.checkBox_SrErrLast.Checked;
-            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -343,6 +298,85 @@ namespace ComTest
             this.label_Sr.Text = (12.0f + (hScrollBar_Sr.Value - 50) * 0.2f).ToString("0.000");
 
             lock (srLocker) { this.srValue = 12.0f + (hScrollBar_Sr.Value - 50) * 0.2f; }
+        }
+
+        /// <summary>
+        /// 开始
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox_start_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                sPortSr.WriteLine("STOPR@\r\n");
+
+                System.Threading.Thread.Sleep(20);
+
+                string data = sPortSr.ReadTo("@");
+                if (!data.Contains("STOPR"))
+                {
+                    Console.WriteLine("UnReceive stop return.");
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("exception when sensor send start.");
+            }
+        }
+
+        /// <summary>
+        /// 下一个点
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox_nextp_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                float tp = 0.0f;
+                tp = float.Parse(textBox_nextp.Text);
+                sPortSr.WriteLine("NEXTP:" + tp.ToString("0.000") + "@\r\n");
+
+                System.Threading.Thread.Sleep(20);
+
+                string data = sPortSr.ReadTo("@");
+                if (!data.Contains("NEXTP"))
+                {
+                    Console.WriteLine("UnReceive NEXTP return.");
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("exception when sensor send nextp.");
+            }
+        }
+
+        /// <summary>
+        /// 传感器定时事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _timerSr_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                float tp = 0.0f;
+                tp = float.Parse(label_Sr.Text);
+                sPortSr.WriteLine("CTEMP:" + tp.ToString("0.000") + "@\r\n");
+
+                System.Threading.Thread.Sleep(20);
+
+                string data = sPortSr.ReadTo("@");
+                if (data == null || !data.Contains("CTEMP"))
+                {
+                    Console.WriteLine("UnReceive CTEMP return.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("exception when sensor send CTEMP.");
+            }
         }
     }
 }

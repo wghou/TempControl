@@ -29,11 +29,15 @@
         private void InitializeComponent()
         {
             this.groupBox_Sr = new System.Windows.Forms.GroupBox();
+            this.textBox_nextp = new System.Windows.Forms.TextBox();
+            this.checkBox_stop = new System.Windows.Forms.CheckBox();
+            this.checkBox_nextp = new System.Windows.Forms.CheckBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.hScrollBar_Sr = new System.Windows.Forms.HScrollBar();
+            this.label_Sr = new System.Windows.Forms.Label();
             this.pictureBox_Sr = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBox_SrStatus = new System.Windows.Forms.ComboBox();
-            this.checkBox_SrErrLast = new System.Windows.Forms.CheckBox();
             this.groupBox_Ry = new System.Windows.Forms.GroupBox();
             this.pictureBox_Ry = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -93,10 +97,6 @@
             this.label_CurTempS = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
-            this.label_Sr = new System.Windows.Forms.Label();
-            this.hScrollBar_Sr = new System.Windows.Forms.HScrollBar();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
             this.groupBox_Sr.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Sr)).BeginInit();
             this.groupBox_Ry.SuspendLayout();
@@ -109,15 +109,15 @@
             // 
             // groupBox_Sr
             // 
+            this.groupBox_Sr.Controls.Add(this.textBox_nextp);
+            this.groupBox_Sr.Controls.Add(this.checkBox_stop);
+            this.groupBox_Sr.Controls.Add(this.checkBox_nextp);
             this.groupBox_Sr.Controls.Add(this.label28);
             this.groupBox_Sr.Controls.Add(this.label26);
             this.groupBox_Sr.Controls.Add(this.hScrollBar_Sr);
             this.groupBox_Sr.Controls.Add(this.label_Sr);
             this.groupBox_Sr.Controls.Add(this.pictureBox_Sr);
             this.groupBox_Sr.Controls.Add(this.label2);
-            this.groupBox_Sr.Controls.Add(this.label1);
-            this.groupBox_Sr.Controls.Add(this.comboBox_SrStatus);
-            this.groupBox_Sr.Controls.Add(this.checkBox_SrErrLast);
             this.groupBox_Sr.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox_Sr.Location = new System.Drawing.Point(14, 14);
             this.groupBox_Sr.Name = "groupBox_Sr";
@@ -125,6 +125,81 @@
             this.groupBox_Sr.TabIndex = 0;
             this.groupBox_Sr.TabStop = false;
             this.groupBox_Sr.Text = "传感器设备";
+            // 
+            // textBox_nextp
+            // 
+            this.textBox_nextp.Location = new System.Drawing.Point(162, 60);
+            this.textBox_nextp.Name = "textBox_nextp";
+            this.textBox_nextp.Size = new System.Drawing.Size(82, 23);
+            this.textBox_nextp.TabIndex = 11;
+            this.textBox_nextp.Text = "18.0";
+            // 
+            // checkBox_stop
+            // 
+            this.checkBox_stop.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_stop.AutoCheck = false;
+            this.checkBox_stop.ForeColor = System.Drawing.Color.Red;
+            this.checkBox_stop.Location = new System.Drawing.Point(10, 56);
+            this.checkBox_stop.Name = "checkBox_stop";
+            this.checkBox_stop.Size = new System.Drawing.Size(99, 31);
+            this.checkBox_stop.TabIndex = 10;
+            this.checkBox_stop.Text = "停止";
+            this.checkBox_stop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_stop.UseVisualStyleBackColor = true;
+            this.checkBox_stop.Click += new System.EventHandler(this.checkBox_start_Click);
+            // 
+            // checkBox_nextp
+            // 
+            this.checkBox_nextp.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_nextp.AutoCheck = false;
+            this.checkBox_nextp.Location = new System.Drawing.Point(259, 56);
+            this.checkBox_nextp.Name = "checkBox_nextp";
+            this.checkBox_nextp.Size = new System.Drawing.Size(98, 31);
+            this.checkBox_nextp.TabIndex = 10;
+            this.checkBox_nextp.Text = "下一个点";
+            this.checkBox_nextp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_nextp.UseVisualStyleBackColor = true;
+            this.checkBox_nextp.Click += new System.EventHandler(this.checkBox_nextp_Click);
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label28.Location = new System.Drawing.Point(299, 115);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(42, 14);
+            this.label28.TabIndex = 9;
+            this.label28.Text = "10.00";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label26.Location = new System.Drawing.Point(202, 115);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(49, 14);
+            this.label26.TabIndex = 8;
+            this.label26.Text = "-10.00";
+            // 
+            // hScrollBar_Sr
+            // 
+            this.hScrollBar_Sr.Location = new System.Drawing.Point(205, 144);
+            this.hScrollBar_Sr.Maximum = 109;
+            this.hScrollBar_Sr.Name = "hScrollBar_Sr";
+            this.hScrollBar_Sr.Size = new System.Drawing.Size(143, 17);
+            this.hScrollBar_Sr.TabIndex = 7;
+            this.hScrollBar_Sr.Value = 50;
+            this.hScrollBar_Sr.ValueChanged += new System.EventHandler(this.hScrollBar_Sr_ValueChanged);
+            // 
+            // label_Sr
+            // 
+            this.label_Sr.AutoSize = true;
+            this.label_Sr.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_Sr.Location = new System.Drawing.Point(52, 144);
+            this.label_Sr.Name = "label_Sr";
+            this.label_Sr.Size = new System.Drawing.Size(49, 14);
+            this.label_Sr.TabIndex = 6;
+            this.label_Sr.Text = "12.000";
             // 
             // pictureBox_Sr
             // 
@@ -144,42 +219,6 @@
             this.label2.Size = new System.Drawing.Size(105, 14);
             this.label2.TabIndex = 4;
             this.label2.Text = "传感器温度值：";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(7, 35);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 14);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "设备错误状态：";
-            // 
-            // comboBox_SrStatus
-            // 
-            this.comboBox_SrStatus.FormattingEnabled = true;
-            this.comboBox_SrStatus.Items.AddRange(new object[] {
-            "正常工作 - OK",
-            "连接断开 - DisConnected",
-            "错误 - DataErr"});
-            this.comboBox_SrStatus.Location = new System.Drawing.Point(7, 65);
-            this.comboBox_SrStatus.Name = "comboBox_SrStatus";
-            this.comboBox_SrStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.comboBox_SrStatus.Size = new System.Drawing.Size(205, 22);
-            this.comboBox_SrStatus.TabIndex = 1;
-            this.comboBox_SrStatus.SelectedIndexChanged += new System.EventHandler(this.comboBox_SrStatus_SelectedIndexChanged);
-            // 
-            // checkBox_SrErrLast
-            // 
-            this.checkBox_SrErrLast.AutoSize = true;
-            this.checkBox_SrErrLast.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox_SrErrLast.Location = new System.Drawing.Point(238, 67);
-            this.checkBox_SrErrLast.Name = "checkBox_SrErrLast";
-            this.checkBox_SrErrLast.Size = new System.Drawing.Size(110, 18);
-            this.checkBox_SrErrLast.TabIndex = 0;
-            this.checkBox_SrErrLast.Text = "保持错误状态";
-            this.checkBox_SrErrLast.UseVisualStyleBackColor = true;
-            this.checkBox_SrErrLast.CheckedChanged += new System.EventHandler(this.checkBox_SrErrLast_CheckedChanged);
             // 
             // groupBox_Ry
             // 
@@ -842,46 +881,6 @@
             this.label39.TabIndex = 26;
             this.label39.Text = "CurTemp:";
             // 
-            // label_Sr
-            // 
-            this.label_Sr.AutoSize = true;
-            this.label_Sr.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_Sr.Location = new System.Drawing.Point(52, 144);
-            this.label_Sr.Name = "label_Sr";
-            this.label_Sr.Size = new System.Drawing.Size(49, 14);
-            this.label_Sr.TabIndex = 6;
-            this.label_Sr.Text = "12.000";
-            // 
-            // hScrollBar_Sr
-            // 
-            this.hScrollBar_Sr.Location = new System.Drawing.Point(205, 144);
-            this.hScrollBar_Sr.Maximum = 109;
-            this.hScrollBar_Sr.Name = "hScrollBar_Sr";
-            this.hScrollBar_Sr.Size = new System.Drawing.Size(143, 17);
-            this.hScrollBar_Sr.TabIndex = 7;
-            this.hScrollBar_Sr.Value = 50;
-            this.hScrollBar_Sr.ValueChanged += new System.EventHandler(this.hScrollBar_Sr_ValueChanged);
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label26.Location = new System.Drawing.Point(202, 115);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(49, 14);
-            this.label26.TabIndex = 8;
-            this.label26.Text = "-10.00";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label28.Location = new System.Drawing.Point(299, 115);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(42, 14);
-            this.label28.TabIndex = 9;
-            this.label28.Text = "10.00";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
@@ -915,9 +914,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox_Sr;
-        private System.Windows.Forms.ComboBox comboBox_SrStatus;
-        private System.Windows.Forms.CheckBox checkBox_SrErrLast;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox_Sr;
         private System.Windows.Forms.GroupBox groupBox_Ry;
@@ -983,6 +979,9 @@
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.HScrollBar hScrollBar_Sr;
         private System.Windows.Forms.Label label_Sr;
+        private System.Windows.Forms.CheckBox checkBox_nextp;
+        private System.Windows.Forms.CheckBox checkBox_stop;
+        private System.Windows.Forms.TextBox textBox_nextp;
     }
 }
 

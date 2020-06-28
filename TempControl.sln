@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device", "Device\Device.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{665E85E4-8DA9-4E1D-B628-767814C15DF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComTest", "ComTest\ComTest.csproj", "{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,14 +41,6 @@ Global
 		{665E85E4-8DA9-4E1D-B628-767814C15DF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{665E85E4-8DA9-4E1D-B628-767814C15DF3}.Release|x86.ActiveCfg = Release|x86
 		{665E85E4-8DA9-4E1D-B628-767814C15DF3}.Release|x86.Build.0 = Release|x86
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Debug|x86.Build.0 = Debug|Any CPU
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Release|x86.ActiveCfg = Release|Any CPU
-		{876CCC1D-15BD-467E-B6E9-4C90CB8FE17A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
