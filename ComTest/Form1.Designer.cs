@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.groupBox_Sr = new System.Windows.Forms.GroupBox();
+            this.textBox_nextp = new System.Windows.Forms.TextBox();
+            this.checkBox_nextp = new System.Windows.Forms.CheckBox();
+            this.checkBox_stop = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.hScrollBar_Sr = new System.Windows.Forms.HScrollBar();
@@ -96,9 +99,7 @@
             this.label_CurTempS = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
-            this.checkBox_stop = new System.Windows.Forms.CheckBox();
-            this.checkBox_nextp = new System.Windows.Forms.CheckBox();
-            this.textBox_nextp = new System.Windows.Forms.TextBox();
+            this.checkBox_start = new System.Windows.Forms.CheckBox();
             this.groupBox_Sr.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Sr)).BeginInit();
             this.groupBox_Ry.SuspendLayout();
@@ -111,6 +112,7 @@
             // 
             // groupBox_Sr
             // 
+            this.groupBox_Sr.Controls.Add(this.checkBox_start);
             this.groupBox_Sr.Controls.Add(this.textBox_nextp);
             this.groupBox_Sr.Controls.Add(this.checkBox_nextp);
             this.groupBox_Sr.Controls.Add(this.checkBox_stop);
@@ -127,6 +129,41 @@
             this.groupBox_Sr.TabIndex = 0;
             this.groupBox_Sr.TabStop = false;
             this.groupBox_Sr.Text = "传感器设备";
+            // 
+            // textBox_nextp
+            // 
+            this.textBox_nextp.Location = new System.Drawing.Point(13, 62);
+            this.textBox_nextp.Name = "textBox_nextp";
+            this.textBox_nextp.Size = new System.Drawing.Size(72, 23);
+            this.textBox_nextp.TabIndex = 11;
+            this.textBox_nextp.Text = "12.0";
+            // 
+            // checkBox_nextp
+            // 
+            this.checkBox_nextp.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_nextp.AutoCheck = false;
+            this.checkBox_nextp.Location = new System.Drawing.Point(104, 57);
+            this.checkBox_nextp.Name = "checkBox_nextp";
+            this.checkBox_nextp.Size = new System.Drawing.Size(98, 32);
+            this.checkBox_nextp.TabIndex = 10;
+            this.checkBox_nextp.Text = "下一点";
+            this.checkBox_nextp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_nextp.UseVisualStyleBackColor = true;
+            this.checkBox_nextp.Click += new System.EventHandler(this.checkBox_nextp_Click);
+            // 
+            // checkBox_stop
+            // 
+            this.checkBox_stop.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_stop.AutoCheck = false;
+            this.checkBox_stop.ForeColor = System.Drawing.Color.Red;
+            this.checkBox_stop.Location = new System.Drawing.Point(259, 58);
+            this.checkBox_stop.Name = "checkBox_stop";
+            this.checkBox_stop.Size = new System.Drawing.Size(98, 30);
+            this.checkBox_stop.TabIndex = 10;
+            this.checkBox_stop.Text = "停止";
+            this.checkBox_stop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_stop.UseVisualStyleBackColor = true;
+            this.checkBox_stop.Click += new System.EventHandler(this.checkBox_stop_Click);
             // 
             // label28
             // 
@@ -170,7 +207,7 @@
             // 
             // pictureBox_Sr
             // 
-            this.pictureBox_Sr.Location = new System.Drawing.Point(318, 22);
+            this.pictureBox_Sr.Location = new System.Drawing.Point(13, 22);
             this.pictureBox_Sr.Name = "pictureBox_Sr";
             this.pictureBox_Sr.Size = new System.Drawing.Size(40, 15);
             this.pictureBox_Sr.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -870,40 +907,18 @@
             this.label39.TabIndex = 26;
             this.label39.Text = "CurTemp:";
             // 
-            // checkBox_stop
+            // checkBox_start
             // 
-            this.checkBox_stop.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_stop.AutoCheck = false;
-            this.checkBox_stop.ForeColor = System.Drawing.Color.Red;
-            this.checkBox_stop.Location = new System.Drawing.Point(259, 58);
-            this.checkBox_stop.Name = "checkBox_stop";
-            this.checkBox_stop.Size = new System.Drawing.Size(98, 30);
-            this.checkBox_stop.TabIndex = 10;
-            this.checkBox_stop.Text = "停止";
-            this.checkBox_stop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_stop.UseVisualStyleBackColor = true;
-            this.checkBox_stop.Click += new System.EventHandler(this.checkBox_stop_Click);
-            // 
-            // checkBox_nextp
-            // 
-            this.checkBox_nextp.Appearance = System.Windows.Forms.Appearance.Button;
-            this.checkBox_nextp.AutoCheck = false;
-            this.checkBox_nextp.Location = new System.Drawing.Point(104, 57);
-            this.checkBox_nextp.Name = "checkBox_nextp";
-            this.checkBox_nextp.Size = new System.Drawing.Size(98, 32);
-            this.checkBox_nextp.TabIndex = 10;
-            this.checkBox_nextp.Text = "下一点";
-            this.checkBox_nextp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBox_nextp.UseVisualStyleBackColor = true;
-            this.checkBox_nextp.Click += new System.EventHandler(this.checkBox_nextp_Click);
-            // 
-            // textBox_nextp
-            // 
-            this.textBox_nextp.Location = new System.Drawing.Point(13, 62);
-            this.textBox_nextp.Name = "textBox_nextp";
-            this.textBox_nextp.Size = new System.Drawing.Size(72, 23);
-            this.textBox_nextp.TabIndex = 11;
-            this.textBox_nextp.Text = "12.0";
+            this.checkBox_start.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_start.AutoCheck = false;
+            this.checkBox_start.Location = new System.Drawing.Point(260, 19);
+            this.checkBox_start.Name = "checkBox_start";
+            this.checkBox_start.Size = new System.Drawing.Size(98, 30);
+            this.checkBox_start.TabIndex = 12;
+            this.checkBox_start.Text = "开始";
+            this.checkBox_start.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_start.UseVisualStyleBackColor = true;
+            this.checkBox_start.Click += new System.EventHandler(this.checkBox_start_Click);
             // 
             // Form1
             // 
@@ -1008,6 +1023,7 @@
         private System.Windows.Forms.TextBox textBox_nextp;
         private System.Windows.Forms.CheckBox checkBox_nextp;
         private System.Windows.Forms.CheckBox checkBox_stop;
+        private System.Windows.Forms.CheckBox checkBox_start;
     }
 }
 

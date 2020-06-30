@@ -148,7 +148,7 @@ namespace ComTest
                         sPortSr.ReadTimeout = 200;
                         _timerSr.Interval = 1000;
                         _timerSr.Tick += _timerSr_Tick;
-                        _timerSr.Start();
+                        //_timerSr.Start();
                     }
                 }
             }
@@ -344,23 +344,53 @@ namespace ComTest
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void checkBox_stop_Click(object sender, EventArgs e)
+        private void checkBox_start_Click(object sender, EventArgs e)
         {
             try
             {
-                sPortSr.WriteLine("STOPR@\r\n");
+                sPortSr.WriteLine("CSTART@\r\n");
 
                 System.Threading.Thread.Sleep(20);
 
                 string data = sPortSr.ReadTo("@");
-                if (!data.Contains("STOPR"))
+                if (!data.Contains("CSTART"))
+                {
+                    Console.WriteLine("UnReceive start return.");
+                }
+
+                if (!_timerSr.Enabled)
+                {
+                    _timerSr.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("exception when sensor send start.");
+            }
+        }
+
+        /// <summary>
+        /// 停止
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBox_stop_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                sPortSr.WriteLine("CSTOP@\r\n");
+
+                System.Threading.Thread.Sleep(20);
+
+                string data = sPortSr.ReadTo("@");
+                if (!data.Contains("CSTOP"))
                 {
                     Console.WriteLine("UnReceive stop return.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("exception when sensor send start.");
+                Console.WriteLine("exception when sensor send stop.");
             }
         }
 
@@ -375,14 +405,14 @@ namespace ComTest
             {
                 float tp = 0.0f;
                 tp = float.Parse(textBox_nextp.Text);
-                sPortSr.WriteLine("NEXTP:" + tp.ToString("0.000") + "@\r\n");
+                sPortSr.WriteLine("CNEXTP:" + tp.ToString("0.000") + "@\r\n");
 
                 System.Threading.Thread.Sleep(20);
 
                 string data = sPortSr.ReadTo("@");
-                if (!data.Contains("NEXTP"))
+                if (!data.Contains("CNEXTP"))
                 {
-                    Console.WriteLine("UnReceive NEXTP return.");
+                    Console.WriteLine("UnReceive CNEXTP return.");
                 }
             }
             catch (Exception ex)

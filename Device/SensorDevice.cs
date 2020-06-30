@@ -86,7 +86,7 @@ namespace Device
             timer.Interval = 3000;
             timer.AutoReset = true;
             timer.Elapsed += Timer_Elapsed;
-            timer.Start();
+            //timer.Start();
 
             return true;
         }
@@ -170,7 +170,17 @@ namespace Device
 
             // 解析数据
             float val = 0.0f;
-            if(dataRev.Contains("CTEMP:"))
+            if (dataRev.Contains("CSTART"))
+            {
+                currentComStatus = true;
+                Thread.Sleep(intervalOfWR);
+                // 返回正确标志
+                try { sPort.WriteLine("CSTART@"); } catch { }
+
+                // 开启看门狗定时器
+                timer.Start();
+            }
+            else if(dataRev.Contains("CTEMP:"))
             {
                 // 温度数据
                 if(float.TryParse(dataRev.Substring(6),out val))
@@ -217,17 +227,17 @@ namespace Device
                     try{ sPort.WriteLine("ERROR@"); } catch { }
                 }
             }
-            else if(dataRev.Contains("NEXTP:"))
+            else if(dataRev.Contains("CNEXTP:"))
             {
                 // 下一个温度点
-                if (float.TryParse(dataRev.Substring(6), out val))
+                if (float.TryParse(dataRev.Substring(7), out val))
                 {
                     currentComStatus = true;
 
                     lock (srLocker) { nextTempPointRQT = true; nextTempPoint = val; }
                     Thread.Sleep(intervalOfWR);
                     // 返回正确标志
-                    try{ sPort.WriteLine("NEXTP@"); } catch { }
+                    try{ sPort.WriteLine("CNEXTP@"); } catch { }
                 }
                 else
                 {
@@ -239,7 +249,14 @@ namespace Device
                     try{ sPort.WriteLine("ERROR@"); } catch { }
                 }
             }
-            else if(dataRev.Contains("STOPR"))
+            else if (dataRev.Contains("CECHO"))
+            {
+                currentComStatus = true;
+                Thread.Sleep(intervalOfWR);
+                // 返回正确标志
+                try { sPort.WriteLine("CECHO@"); } catch { }
+            }
+            else if(dataRev.Contains("CSTOP"))
             {
                 currentComStatus = true;
 
@@ -247,7 +264,10 @@ namespace Device
                 lock (srLocker) { stopRunRQT = true; }
                 Thread.Sleep(intervalOfWR);
                 // 返回正确标志
-                try{ sPort.WriteLine("STOPR@"); } catch { }
+                try{ sPort.WriteLine("CTOPR@"); } catch { }
+
+                // 开启看门狗定时器
+                timer.Stop();
             }
             else
             {
