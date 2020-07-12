@@ -160,12 +160,13 @@ namespace InstDevice
 
                 // 
                 case InstSampleMode.PolledSample_Fmt10:
-                    rlt3 &= sendCMD("SAMPLEMODE=1");
-                    System.Threading.Thread.Sleep(10);
-                    rlt3 &= sendCMD("AUTORUN=N");
-                    System.Threading.Thread.Sleep(10);
+                    //rlt3 &= sendCMD("SAMPLEMODE=1");
+                    //System.Threading.Thread.Sleep(10);
+                    //rlt3 &= sendCMD("AUTORUN=N");
+                    //System.Threading.Thread.Sleep(10);
                     rlt3 &= sendCMD("OUTPUTFORMAT=1");
-                    System.Threading.Thread.Sleep(10);
+                    int ii = 0;
+                    while (ii < 15) { System.Threading.Thread.Sleep(100); ii++; }
                     outputFormat = SBE37OutputFormat.Format_1;
                     break;
 
@@ -187,8 +188,8 @@ namespace InstDevice
             CmdExecuted = false;
             bool rlt4 = sendCMD("GetCD");
             int i = 0;
-            while (!CmdExecuted && i<20) { System.Threading.Thread.Sleep(10); i++; }
-            if (i > 19)
+            while (!CmdExecuted && i<200) { System.Threading.Thread.Sleep(50); i++; }
+            if (i > 199)
             {
                 nlogger.Error("timeout when read configuration data from xml string");
                 return false;
@@ -324,6 +325,7 @@ namespace InstDevice
             }
             else if(sampleMode == InstSampleMode.PolledSample_Fmt10)
             {
+                // 判断前一个指令
                 if(currentCmd == SBE37Cmd.Ts)
                 {
                     currentCmd = SBE37Cmd.Tsr;
@@ -335,6 +337,7 @@ namespace InstDevice
                         OnErrorOccur(Err_sr.Error);
                     }
                 }
+                // 判断前一个指令
                 else if(currentCmd == SBE37Cmd.Tsr)
                 {
                     currentCmd = SBE37Cmd.Ts;
@@ -388,24 +391,94 @@ namespace InstDevice
             //    return true;
             //}
 
-            // 如果当前字符串是返回标志位
-            if (str.Contains(OutputFlag))
+            switch (currentCmd)
             {
-                if(CmdExecuted == false)
-                {
-                    CmdExecuted = true;
-                }
-                else if(UseExecutedFlag == true)
-                {
-                    nlogger.Error("received the executed flag agin.");
-                    // 重复接收到 ExecutedFlag
-                    OnErrorOccur(Err_sr.Error);
-                }
+                case SBE37Cmd.GetCD:
+                    if (str.ToUpper().Contains("GETCD"))
+                    {
+                        nlogger.Error("elimate cmd: " + str);
+                        return true;
+                    }
+                    break;
 
+                case SBE37Cmd.GetCC:
+                    if (str.ToUpper().Contains("GETCC"))
+                    {
+                        nlogger.Error("elimate cmd: " + str);
+                        return true;
+                    }
+                    break;
+
+                case SBE37Cmd.Start:
+                    if (str.ToUpper().Contains("START"))
+                    {
+                        nlogger.Error("elimate cmd: " + str);
+                        return true;
+                    }
+                    break;
+
+                case SBE37Cmd.Ts:
+                    if (str.ToUpper().Contains("TS")) {
+                        nlogger.Error("elimate cmd: " + str);
+                        return true; }
+                    break;
+                case SBE37Cmd.Tsr:
+                    if (str.ToUpper().Contains("TSR")) {
+                        nlogger.Error("elimate cmd:" + str);
+                        return true; }
+                    break;
+
+                default:
+                    break;
+            }
+
+            // set output format
+            if (str.ToUpper().Contains("OUTPUTFORMAT"))
+            {
+                nlogger.Error("elimate cmd: " + str);
                 return true;
             }
 
+            // 如果当前字符串是返回标志位
+            //if (str.Contains(OutputFlag))
+            //{
+            //    if(CmdExecuted == false)
+            //    {
+            //        CmdExecuted = true;
+            //    }
+            //    else if(UseExecutedFlag == true)
+            //    {
+            //        nlogger.Error("received the executed flag agin.");
+            //        // 重复接收到 ExecutedFlag
+            //        OnErrorOccur(Err_sr.Error);
+            //    }
+
+            //    return true;
+            //}
+
             return false;
+        }
+        /// <summary>
+        /// 由接收到的字符串解析为结束符 Executed
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        protected override bool ResolveStr2ExecutedFlag(string str)
+        {
+            // 在不是 tc 和 tcr 的情况下，数据后面都会跟随有 <Executed/>
+            bool rlt = false;
+            if (str.Contains(OutputFlag))
+            {
+                rlt = true;
+                nlogger.Info("receive executed flag at the end of ts / tsr.");
+            }
+
+            if (UseExecutedFlag == true && (currentCmd == SBE37Cmd.Ts && currentCmd == SBE37Cmd.Tsr))
+            {
+                CmdExecuted = true;
+            }
+
+            return rlt;
         }
         /// <summary>
         /// 由收到的字符串解析为数据。
@@ -462,27 +535,6 @@ namespace InstDevice
                     break;
             }
 
-            // 在不是 tc 和 tcr 的情况下，数据后面都会跟随有 <Executed/>
-            if (UseExecutedFlag == true && (currentCmd == SBE37Cmd.Ts && currentCmd == SBE37Cmd.Tsr))
-            {
-                // 读取数据末尾跟随的结束标志位
-                string str2 = "";
-                try { str2 = sPort.ReadLine(); } catch { }
-                    
-                if (!str2.Contains(OutputFlag))
-                {
-                    nlogger.Error("did not receive executed flag at the end of ts / tsr.");
-                    return false;
-                }
-                CmdExecuted = true;
-            }
-            else
-            {
-                // 直接舍弃其他的接收数据
-                // 理论上，应该也啥也没有了
-                try { sPort.DiscardInBuffer(); } catch { }
-            }
-
             return rlt;
         }
 
@@ -504,16 +556,24 @@ namespace InstDevice
             {
                 do
                 {
-                    xmlStr += str;
+                    if(str.ToUpper().Contains("GETCC") || str.ToUpper().Contains("GETCD")) {
+                        nlogger.Error("elimate the cmd: " + str);
+                    }
+                    else
+                    {
+                        xmlStr += str;
+                    }
+                        
                     //xmlStr += str + "\r";
                     str = sPort.ReadLine();
                 } while (!str.Contains(OutputFlag));
+                sPort.DiscardInBuffer();
             }
             catch (Exception ex)
             {
                 nlogger.Error("error in get xml data");
                 CmdExecuted = true;
-                return false;
+                return true;
             }
             CmdExecuted = true;
             return true;
@@ -589,7 +649,7 @@ namespace InstDevice
             data = new InstSBE37Data();
             string[] strSplit = str.Split(',');
 
-            nlogger.Info("SBE37ResolveStr2ValueFmt0: " + str);
+            nlogger.Error("SBE37ResolveStr2ValueFmt0: " + str);
 
             int idx = 0;
             try
@@ -662,7 +722,7 @@ namespace InstDevice
             data = new InstSBE37Data();
             string[] strSplit = str.Split(',');
 
-            nlogger.Info("SBE37ResolveStr2ValueFmt1: " + str);
+            //nlogger.Error("SBE37ResolveStr2ValueFmt1: " + str);
 
             int idx = 0;
             try

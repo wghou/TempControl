@@ -89,7 +89,7 @@ namespace InstDevice
             try
             {
                 // 日期（yyyy_MM_dd HH:mm: ss）-电导率频率 - 标准电导率示值 - 温度频率 - 标准温度示值 - 盐度 - 标志数
-                string[] valStrs = str.Split('-');
+                string[] valStrs = str.Split(',');
 
                 data.vTestID = Info.testId;
                 data.InstIdx = Info.InstIdx_NotUsed;
@@ -97,7 +97,7 @@ namespace InstDevice
                 data.vTitularValue = currentTemptPoint;
                 data.vStandardC = double.Parse(valStrs[4]);
                 data.vStandardT = double.Parse(valStrs[5]);
-                data.measureTime = DateTime.ParseExact(valStrs[0], "yyyy_MM_dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                data.measureTime = DateTime.ParseExact(valStrs[0], "yyyy:MM:dd:HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
                 data.addTime = data.measureTime;
                 data.updateTime = data.measureTime;
             }

@@ -57,6 +57,7 @@ namespace Device
 
             if (ryDeviceS.DisconnectProtect == true)
             {
+                if (ryDeviceS.Enable == false) return;
                 RelayDevice.Err_r err = ryDeviceS.UpdateStatusToDevice();
                 if (err != RelayDevice.Err_r.NoError) SetErrorStatus(ErrorCode.RelayError);
             }

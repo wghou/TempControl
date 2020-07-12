@@ -124,8 +124,8 @@ namespace ComTest
             {
                 if (!sPortSTD.IsOpen) sPortSTD.Open();
 
-                string msg = DateTime.Now.ToString("yyyy_MM_dd HH:mm:ss");
-                msg = msg + "-12.000000-12.000000-12.000000-12.00000-" + (12.0f + (hScrollBar_Sr.Value - 50) * 0.2f).ToString("0.000000") + "-37";
+                string msg = DateTime.Now.ToString("yyyy:MM:dd:HH:mm:ss");
+                msg = msg + ",12.000000,12.000000,12.000000,12.00000," + (12.0f + (hScrollBar_Sr.Value - 50) * 0.2f).ToString("0.000000") + ",37";
 
                 sPortSTD.WriteLine(msg);
             }
@@ -168,7 +168,12 @@ namespace ComTest
                     if (dataRev.Contains("GetCD"))
                     {
                         // 返回数据
-                        sPortSBE37SM.WriteLine(cdString);
+                        foreach(string lin in cdString.Split('\r'))
+                        {
+                            sPortSBE37SM.WriteLine(lin);
+                            System.Threading.Thread.Sleep(300);
+                        }
+                        System.Threading.Thread.Sleep(300);
                         sPortSBE37SM.WriteLine("<Executed/>");
                     }
                     else if (dataRev.Contains("GetCC"))
@@ -186,11 +191,17 @@ namespace ComTest
                     }
                     else if (dataRev.Contains("tsr"))
                     {
+                        System.Threading.Thread.Sleep(20);
+                        sPortSBE37SM.WriteLine("tsr");
+                        System.Threading.Thread.Sleep(800);
                         sPortSBE37SM.WriteLine("579859,  5410.043, 528099, 1420, ");
                         if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
                     }
                     else if (dataRev.Contains("ts"))
                     {
+                        System.Threading.Thread.Sleep(20);
+                        sPortSBE37SM.WriteLine("ts");
+                        System.Threading.Thread.Sleep(800);
                         sPortSBE37SM.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643");
                         if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
                     }
@@ -261,11 +272,17 @@ namespace ComTest
                     }
                     else if (dataRev.Contains("tsr"))
                     {
+                        System.Threading.Thread.Sleep(20);
+                        sPortSBE37SM.WriteLine("tsr");
+                        System.Threading.Thread.Sleep(800);
                         sPortSBE37SMP.WriteLine("579859,  5410.043, 528099, 1420, ");
                         if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
                     }
                     else if (dataRev.Contains("ts"))
                     {
+                        System.Threading.Thread.Sleep(20);
+                        sPortSBE37SM.WriteLine("tsr");
+                        System.Threading.Thread.Sleep(800);
                         sPortSBE37SMP.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643");
                         if (this.checkBox_flag.Checked) { sPortSBE37SMP.WriteLine("<Executed/>"); }
                     }

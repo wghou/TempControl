@@ -278,9 +278,17 @@ namespace InstDevice
             if (Enable == false) return;
 
             // 解析收到的字符串，看是否是指令，如果是指令（cmd）则返回
-            // 如果不是，则表明是数据，需要进一步解析
+            // 如果不是，则需要进一步解析
             bool rlt1 = ResolveStr2Cmd(str);
             if(rlt1 == true)
+            {
+                return;
+            }
+
+            // 解析字符串，看是否是结束符号，如果是结束符（Executed）则返回
+            // 如果不是，则需要进一步解析
+            bool rlt2 = ResolveStr2ExecutedFlag(str);
+            if(rlt2 == true)
             {
                 return;
             }
@@ -315,6 +323,12 @@ namespace InstDevice
         /// <param name="str"> 串口接收到的字符串 </param>
         /// <returns> 是否成功解析为指令 </returns>
         protected abstract bool ResolveStr2Cmd(string str);
+        /// <summary>
+        /// 由接收到的字符串解析为结束符 Executed
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        protected virtual bool ResolveStr2ExecutedFlag(string str) { return false; }
         /// <summary>
         /// 由收到的字符串解析为数据。
         /// 根据不同的传感器/配置，进行数据的解析

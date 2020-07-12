@@ -20,7 +20,7 @@
       "BaudRate": 9600
     },
     "RelayS": {
-      "Enable": true,
+      "Enable": false,
       "PortName": "COM7",
       "BaudRate": 9600
     }

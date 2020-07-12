@@ -222,6 +222,7 @@
             this.MaximizeBox = false;
             this.Name = "FormInst";
             this.Text = "FormInst";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormInst_FormClosing);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -31,17 +31,35 @@ namespace TempControl
             comboBox_baudRate.DisplayMember = "Name";
             comboBox_baudRate.SelectedValue = 1;
 
-            spIntervalList.Add(new SampleIntervalItem() { Id = 0, interval = 2 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 1, interval = 3 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 2, interval = 4 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 3, interval = 5 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 4, interval = 6 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 0, interval = 6 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 1, interval = 7 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 2, interval = 8 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 3, interval = 9 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 4, interval = 10 });
             comboBox_spInterval.DataSource = spIntervalList;
             comboBox_spInterval.ValueMember = "Id";
             comboBox_spInterval.DisplayMember = "Name";
-            comboBox_spInterval.SelectedValue = 3;
+            comboBox_spInterval.SelectedValue = 2;
 
             loadInstInfo();
+
+            _device.InstDeviceInitedEvent += _device_InstDeviceInitedEvent;
+        }
+
+        /// <summary>
+        /// 事件处理函数
+        /// </summary>
+        /// <param name="confOK"></param>
+        private void _device_InstDeviceInitedEvent(bool confOK)
+        {
+            if (confOK == false)
+            {
+                MessageBox.Show("配置仪器端口过程中发生错误！");
+            }
+            else
+            {
+                MessageBox.Show("配置仪器成功！");
+            }
         }
 
         /// <summary>
@@ -292,23 +310,18 @@ namespace TempControl
                     confOK &= _device._instDevices[itm.Id].InitWithInfo();
 
                     // todo: 初始化并配置仪器
-                    if(_device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Undefined &&
-                        _device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Standard)
-                    {
-                        confOK &= (_device._instDevices[itm.Id] as InstSBE).SetupSBE37();
-                    }
+                    //if(_device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Undefined &&
+                    //    _device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Standard)
+                    //{
+                    //    confOK &= (_device._instDevices[itm.Id] as InstSBE).SetupSBE37();
+                    //}
                 }
             }
 
             // 写入采样时间间隔
             InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalHalfSec = spIntervalList[(int)comboBox_spInterval.SelectedValue].interval * 2;
-            // Iot 发布仪器信息
-            _device.iotPublishMessage(IotCS.Client.IotTopic.InstState);
 
-            if (confOK == false)
-            {
-                MessageBox.Show("配置端口过程总发生错误！");
-            }
+            _device.InitInstDevice();
         }
 
         /// <summary>
@@ -337,6 +350,11 @@ namespace TempControl
                 textBox_instID.Text = (comboBox_inst.SelectedItem as InstInfoItem).instrumentID;
             }
             catch { }
+        }
+
+        private void FormInst_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _device.InstDeviceInitedEvent -= _device_InstDeviceInitedEvent;
         }
     }
 }

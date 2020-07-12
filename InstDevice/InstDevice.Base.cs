@@ -237,8 +237,19 @@ namespace InstDevice
             // 如有特殊情况，比如需要连续接收多行数据，再另行考虑
             try
             {
-                string data = sPort.ReadLine();
-                internalProceedReceivedData(data);
+                while(sPort.BytesToRead != 0)
+                {
+                    string data = sPort.ReadLine();
+                    if (!string.IsNullOrEmpty(data))
+                    {
+                        internalProceedReceivedData(data);
+                    }
+                    else
+                    {
+                        nlogger.Error("sPort.ReadLine() return null or empty string.");
+                    }
+                    nlogger.Error("read line from sPort: " + data);
+                }
             }
             catch (Exception ex)
             {

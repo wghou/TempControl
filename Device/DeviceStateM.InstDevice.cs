@@ -67,6 +67,29 @@ namespace Device
             return true;
         }
 
+        //20200401-220155
+        public void InitInstDevice()
+        {
+            var t1 = new Task(()=> {
+                bool confOk = true;
+                foreach(var ist in _instDevices)
+                {
+                    if (ist.Enable == true &&
+                    ist.GetBasicInfo().InstType != TypeInst.Undefined &&
+                    ist.GetBasicInfo().InstType != TypeInst.Standard)
+                    {
+                        confOk &= (ist as InstSBE).SetupSBE37();
+                    }
+                }
+
+                // Iot 发布仪器信息
+                iotPublishMessage(IotCS.Client.IotTopic.InstState);
+
+                InstDeviceInitedEvent?.Invoke(confOk);
+            });
+
+            t1.Start();
+        }
 
         /// <summary>
         /// 从数据库中，读取仪器信息

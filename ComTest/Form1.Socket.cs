@@ -76,7 +76,7 @@ namespace ComTest
 
                 case SocketCmd.TestId:
                     SocketTestIdxMessage msg2 = new SocketTestIdxMessage();
-                    msg2.TestIdx = "20200401-220155";
+                    msg2.TestIdx = textBox_testId.Text;
                     _socketClient.pushMessage(JObject.FromObject(msg2));
                     break;
 

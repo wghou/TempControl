@@ -157,8 +157,10 @@ namespace ComTest
             Color[] ryS_clr = new Color[16];
             for(int i = 0; i < 16; i++)
             {
-                ryM_clr[i] = ryDeviceM.DataStore.CoilDiscretes[i + 1] ? Color.FromArgb(1, 111, 1) : Color.FromArgb(111, 1, 1);
-                ryS_clr[i] = ryDeviceS.DataStore.CoilDiscretes[i + 1] ? Color.FromArgb(1, 111, 1) : Color.FromArgb(111, 1, 1);
+                if (SportRyM_enable) { ryM_clr[i] = ryDeviceM.DataStore.CoilDiscretes[i + 1] ? Color.FromArgb(1, 111, 1) : Color.FromArgb(111, 1, 1); }
+
+                if (SportRyS_enable) { ryS_clr[i] = ryDeviceS.DataStore.CoilDiscretes[i + 1] ? Color.FromArgb(1, 111, 1) : Color.FromArgb(111, 1, 1); }
+                
             }
 
             hslStatusManagement_ryM.SetColorAll(ryM_clr);

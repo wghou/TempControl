@@ -77,5 +77,12 @@ namespace Device
         /// 标准器设备接收到消息事件
         /// </summary>
         public event SensorSDReceiveDataEventHandler InstSDReceiveDataEvent;
+
+        //
+        public delegate void InstDeviceInitedEventHandler(bool ok);
+        /// <summary>
+        /// 仪器设备是否配置成功
+        /// </summary>
+        public event InstDeviceInitedEventHandler InstDeviceInitedEvent;
     }
 }

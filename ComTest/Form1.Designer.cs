@@ -104,6 +104,7 @@
             this.checkBox_Stop = new System.Windows.Forms.CheckBox();
             this.checkBox_DeviceState = new System.Windows.Forms.CheckBox();
             this.richTextBox_log = new System.Windows.Forms.RichTextBox();
+            this.textBox_testId = new System.Windows.Forms.TextBox();
             this.groupBox_Sr.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Sr)).BeginInit();
             this.groupBox_Ry.SuspendLayout();
@@ -967,15 +968,24 @@
             // 
             this.richTextBox_log.Location = new System.Drawing.Point(803, 14);
             this.richTextBox_log.Name = "richTextBox_log";
-            this.richTextBox_log.Size = new System.Drawing.Size(174, 359);
+            this.richTextBox_log.Size = new System.Drawing.Size(174, 313);
             this.richTextBox_log.TabIndex = 49;
             this.richTextBox_log.Text = "";
+            // 
+            // textBox_testId
+            // 
+            this.textBox_testId.Location = new System.Drawing.Point(817, 342);
+            this.textBox_testId.Name = "textBox_testId";
+            this.textBox_testId.Size = new System.Drawing.Size(148, 23);
+            this.textBox_testId.TabIndex = 50;
+            this.textBox_testId.Text = "20200706-151451";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(989, 502);
+            this.Controls.Add(this.textBox_testId);
             this.Controls.Add(this.richTextBox_log);
             this.Controls.Add(this.checkBox_DeviceState);
             this.Controls.Add(this.checkBox_Stop);
@@ -1004,6 +1014,7 @@
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_TempS)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -1085,6 +1096,7 @@
         private System.Windows.Forms.CheckBox checkBox_Stop;
         private System.Windows.Forms.CheckBox checkBox_DeviceState;
         private System.Windows.Forms.RichTextBox richTextBox_log;
+        private System.Windows.Forms.TextBox textBox_testId;
     }
 }
 
