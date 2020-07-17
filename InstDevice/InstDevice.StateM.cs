@@ -72,7 +72,7 @@ namespace InstDevice
         /// <summary>
         /// 采样时间 - 秒
         /// </summary>
-        public static int sampleIntervalHalfSec = 5;
+        public static int sampleIntervalSec = 10;
 
 
 
@@ -186,7 +186,7 @@ namespace InstDevice
         {
             currentTemptPoint = temptPoint;
 
-            if (!Enable) return  false;
+            if (!Enable) return  true;
 
             if (_instState != StateInst.Idle)
             {
@@ -204,7 +204,7 @@ namespace InstDevice
         /// <returns></returns>
         public override bool StartStore(double temptPoint = 0)
         {
-            if (!Enable) return false;
+            if (!Enable) return true;
 
             if (_instState != StateInst.Measure)
             {

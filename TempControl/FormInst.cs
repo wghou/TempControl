@@ -31,11 +31,11 @@ namespace TempControl
             comboBox_baudRate.DisplayMember = "Name";
             comboBox_baudRate.SelectedValue = 1;
 
-            spIntervalList.Add(new SampleIntervalItem() { Id = 0, interval = 6 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 1, interval = 7 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 2, interval = 8 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 3, interval = 9 });
-            spIntervalList.Add(new SampleIntervalItem() { Id = 4, interval = 10 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 0, interval = 10 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 1, interval = 11 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 2, interval = 12 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 3, interval = 13 });
+            spIntervalList.Add(new SampleIntervalItem() { Id = 4, interval = 14 });
             comboBox_spInterval.DataSource = spIntervalList;
             comboBox_spInterval.ValueMember = "Id";
             comboBox_spInterval.DisplayMember = "Name";
@@ -89,7 +89,7 @@ namespace TempControl
             public int Id { get; internal set; } = -1;
             public string Name { get { return interval.ToString(); } }
 
-            public int interval = 5;
+            public int interval = 10;
 
             public int CompareTo(object obj)
             {
@@ -182,7 +182,7 @@ namespace TempControl
                 }
             }
 
-            var rlt3 = spIntervalList.Where(p => (p.interval * 2) == InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalHalfSec);
+            var rlt3 = spIntervalList.Where(p => p.interval == InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalSec);
             comboBox_spInterval.SelectedValue = (rlt3.Count() == 0) ? 4 : rlt3.First().Id;
 
             foreach (var itm in _device._instDevices)
@@ -319,7 +319,7 @@ namespace TempControl
             }
 
             // 写入采样时间间隔
-            InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalHalfSec = spIntervalList[(int)comboBox_spInterval.SelectedValue].interval * 2;
+            InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalSec = spIntervalList[(int)comboBox_spInterval.SelectedValue].interval;
 
             _device.InitInstDevice();
         }

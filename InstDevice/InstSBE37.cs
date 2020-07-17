@@ -26,12 +26,7 @@ namespace InstDevice
         /// <summary>
         /// 当前发送的指令，是否已返回结果
         /// </summary>
-        private bool CmdExecuted = false;
-        /// <summary>
-        /// 是否使用 OutputExecutedFlag
-        /// 暂时不考虑用这个
-        /// </summary>
-        private readonly bool UseExecutedFlag = false;
+        private bool CmdExecuted = true;
         /// <summary>
         /// 指令执行完成返回标志位
         /// </summary>
@@ -65,7 +60,7 @@ namespace InstDevice
 
             // todo: 
             _tickTimerInst = new System.Timers.Timer();
-            _tickTimerInst.Interval = sampleIntervalHalfSec * 500;
+            _tickTimerInst.Interval = sampleIntervalSec * 500;
             _tickTimerInst.AutoReset = true;
             _tickTimerInst.Elapsed += _tickTimerSample_Elapsed;
             //_tickTimerInst.Start(); 
@@ -81,7 +76,9 @@ namespace InstDevice
         {
             Enable = true;
 
-            _tickTimerInst.Interval = sampleIntervalHalfSec * 500;
+            _tickTimerInst.Interval = sampleIntervalSec * 500;
+            //nlogger.Error("wghou sampleIntervalSec: " + sampleIntervalSec.ToString());
+            //_tickTimerInst.Interval = 10000;
 
             // 读取 calibration coefficients
             //currentCmd = SBE37Cmd.GetCC;
@@ -164,9 +161,17 @@ namespace InstDevice
                     //System.Threading.Thread.Sleep(10);
                     //rlt3 &= sendCMD("AUTORUN=N");
                     //System.Threading.Thread.Sleep(10);
+                    currentCmd = SBE37Cmd.WakeUp;
+                    CmdExecuted = false;
                     rlt3 &= sendCMD("OUTPUTFORMAT=1");
                     int ii = 0;
-                    while (ii < 15) { System.Threading.Thread.Sleep(100); ii++; }
+                    while (!CmdExecuted && ii < 20) { System.Threading.Thread.Sleep(50); ii++; }
+
+                    currentCmd = SBE37Cmd.Cfg;
+                    CmdExecuted = false;
+                    rlt3 &= sendCMD("OUTPUTFORMAT=1");
+                    ii = 0;
+                    while (!CmdExecuted && ii < 30) { System.Threading.Thread.Sleep(50); ii++; }
                     outputFormat = SBE37OutputFormat.Format_1;
                     break;
 
@@ -235,6 +240,8 @@ namespace InstDevice
         /// </summary>
         protected override void internalEnterMeasureStep()
         {
+            //nlogger.Error("wghou enter measure step.");
+
             base.internalEnterMeasureStep();
 
             // 确保打开了串口，确保清空串口中的数据
@@ -245,7 +252,7 @@ namespace InstDevice
                 case InstSampleMode.AutoSample_Fmt0:
                 case InstSampleMode.AutoSample_Fmt1:
                     currentCmd = SBE37Cmd.Start;
-                    CmdExecuted = false;
+                    CmdExecuted = true;
                     bool rlt = sendCMD("Start");
                     if (rlt == false)
                     {
@@ -257,21 +264,22 @@ namespace InstDevice
                 case InstSampleMode.PolledSample_Fmt10:
                     // 此处为前一个指令
                     currentCmd = SBE37Cmd.Tsr;
-                    CmdExecuted = false;
+                    CmdExecuted = true;
+                    sendCMD("OutputFormat=1");
                     _tickTimerInst.Start();
                     break;
                 case InstSampleMode.PolledSample_Fmt0:
                     currentCmd = SBE37Cmd.Ts;
-                    CmdExecuted = false;
-                    // todo:
-
+                    CmdExecuted = true;
+                    sendCMD("OutputFormat=1");
+                    _tickTimerInst.Start();
                     break;
 
                 case InstSampleMode.PolledSample_Fmt1:
                     currentCmd = SBE37Cmd.Tsr;
-                    CmdExecuted = false;
-                    // todo:
-
+                    CmdExecuted = true;
+                    sendCMD("OutputFormat=1");
+                    _tickTimerInst.Start();
                     break;
 
                 default:
@@ -283,19 +291,7 @@ namespace InstDevice
         /// </summary>
         protected override void internalMeasureStep()
         {
-            if (sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
-            {
-
-            }
-            else
-            {
-                if(UseExecutedFlag == true && CmdExecuted == false)
-                {
-                    nlogger.Error("the CmdExecuted flag is not been flap to true before send cmd again.");
-                    OnErrorOccur(Err_sr.Error);
-                }
-            }
-
+            //nlogger.Error("wghou internal measure step.");
 
             if (sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
             {
@@ -304,56 +300,112 @@ namespace InstDevice
             else if(sampleMode == InstSampleMode.PolledSample_Fmt0)
             {
                 currentCmd = SBE37Cmd.Tsr;
-                CmdExecuted = false;
-                bool rlt = sendCMD("tsr");
-                if (rlt == false)
-                {
-                    nlogger.Error("error in sendCmd with internalMeasureStep");
-                    OnErrorOccur(Err_sr.Error);
-                }
+                sendSampleCmd(currentCmd);
             }
             else if(sampleMode == InstSampleMode.PolledSample_Fmt1)
             {
                 currentCmd = SBE37Cmd.Ts;
-                CmdExecuted = false;
-                bool rlt = sendCMD("ts");
-                if (rlt == false)
-                {
-                    nlogger.Error("error in sendCmd with internalMeasureStep");
-                    OnErrorOccur(Err_sr.Error);
-                }
+                sendSampleCmd(currentCmd);
             }
             else if(sampleMode == InstSampleMode.PolledSample_Fmt10)
             {
+                // 上一个指令未成功返回结果
+                // todo:
+                if(CmdExecuted == false)
+                {
+                    nlogger.Error("error in sendCmd with internalMeasureStep");
+                    OnErrorOccur(Err_sr.Error);
+                    CmdExecuted = true;
+                    return;
+                }
+
                 // 判断前一个指令
                 if(currentCmd == SBE37Cmd.Ts)
                 {
                     currentCmd = SBE37Cmd.Tsr;
-                    CmdExecuted = false;
-                    bool rlt = sendCMD("tsr");
-                    if (rlt == false)
-                    {
-                        nlogger.Error("error in sendCmd with internalMeasureStep");
-                        OnErrorOccur(Err_sr.Error);
-                    }
+                    sendSampleCmd(currentCmd);
                 }
                 // 判断前一个指令
                 else if(currentCmd == SBE37Cmd.Tsr)
                 {
                     currentCmd = SBE37Cmd.Ts;
-                    CmdExecuted = false;
-                    bool rlt = sendCMD("ts");
-                    if (rlt == false)
-                    {
-                        nlogger.Error("error in sendCmd with internalMeasureStep");
-                        OnErrorOccur(Err_sr.Error);
-                    }
+                    sendSampleCmd(currentCmd);
                 }
-                else{
+                else
+                {
+                    nlogger.Error("code error");
                     OnErrorOccur(Err_sr.Error);
                 }     
             }
         }
+
+        /// <summary>
+        /// 依据指令，发送对应的指令字符串
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
+        private bool sendSampleCmd(SBE37Cmd cmd)
+        {
+            bool rlt = true;
+            CmdExecuted = false;
+
+            switch (Info.InstType)
+            {
+                case TypeInst.SBE37SM:
+                    if (cmd == SBE37Cmd.Ts)
+                    {
+                        rlt &= sendCMD("OutputFormat=1");
+                        System.Threading.Thread.Sleep(200);
+                        rlt &= sendCMD("ts");
+                    }
+                    else if (cmd == SBE37Cmd.Tsr)
+                    {
+                        rlt &= sendCMD("OutputFormat=0");
+                        System.Threading.Thread.Sleep(200);
+                        rlt &= sendCMD("ts");
+                    }
+                    break;
+
+                case TypeInst.SBE37SMP:
+                    if (cmd == SBE37Cmd.Ts)
+                    {
+                        rlt &= sendCMD("ts");
+                    }
+                    else if (cmd == SBE37Cmd.Tsr)
+                    {
+                        rlt &= sendCMD("tsr");
+                    }
+                    break;
+
+                case TypeInst.SBE37SI:
+                case TypeInst.SBE37SIP:
+                case TypeInst.SBE37SMPODO:
+                    if (cmd == SBE37Cmd.Ts)
+                    {
+                        rlt &= sendCMD("ts");
+                    }
+                    else if (cmd == SBE37Cmd.Tsr)
+                    {
+                        rlt &= sendCMD("tsr");
+                    }
+                    break;
+
+                default:
+                    nlogger.Error("code error xxison");
+                    break;
+            }
+            
+
+            
+            if (rlt == false)
+            {
+                nlogger.Error("error in sendCmd with internalMeasureStep");
+                OnErrorOccur(Err_sr.Error);
+            }
+
+            return rlt;
+        }
+
         /// <summary>
         /// 进入 Store 步骤
         /// </summary>
@@ -384,13 +436,6 @@ namespace InstDevice
         /// <returns> 是否成功解析为指令 </returns>
         protected override bool ResolveStr2Cmd(string str)
         {
-            // 是否要判断行数呢？
-            //if(str.Split('\r').Length != 1)
-            //{
-            //    OnErrorOccur(Err_sr.Error);
-            //    return true;
-            //}
-
             switch (currentCmd)
             {
                 case SBE37Cmd.GetCD:
@@ -418,43 +463,33 @@ namespace InstDevice
                     break;
 
                 case SBE37Cmd.Ts:
-                    if (str.ToUpper().Contains("TS")) {
+                    if (str.ToUpper().Contains("TS") ||
+                        str.ToUpper().Contains("OUTPUTFORMAT")) {
                         nlogger.Error("elimate cmd: " + str);
                         return true; }
                     break;
                 case SBE37Cmd.Tsr:
-                    if (str.ToUpper().Contains("TSR")) {
+                    if (str.ToUpper().Contains("TS") ||
+                        str.ToUpper().Contains("OUTPUTFORMAT")) {
                         nlogger.Error("elimate cmd:" + str);
                         return true; }
+                    break;
+
+                case SBE37Cmd.Cfg:
+                    if (str.ToUpper().Contains("OUTPUTFORMAT")) {
+                        nlogger.Error("elimate cmd: " + str);
+                        CmdExecuted = true;
+                        return true; }
+                    break;
+
+                case SBE37Cmd.WakeUp:
+                    nlogger.Error("elimate cmd: wakeup + " + str);
+                    return true;
                     break;
 
                 default:
                     break;
             }
-
-            // set output format
-            if (str.ToUpper().Contains("OUTPUTFORMAT"))
-            {
-                nlogger.Error("elimate cmd: " + str);
-                return true;
-            }
-
-            // 如果当前字符串是返回标志位
-            //if (str.Contains(OutputFlag))
-            //{
-            //    if(CmdExecuted == false)
-            //    {
-            //        CmdExecuted = true;
-            //    }
-            //    else if(UseExecutedFlag == true)
-            //    {
-            //        nlogger.Error("received the executed flag agin.");
-            //        // 重复接收到 ExecutedFlag
-            //        OnErrorOccur(Err_sr.Error);
-            //    }
-
-            //    return true;
-            //}
 
             return false;
         }
@@ -465,20 +500,21 @@ namespace InstDevice
         /// <returns></returns>
         protected override bool ResolveStr2ExecutedFlag(string str)
         {
-            // 在不是 tc 和 tcr 的情况下，数据后面都会跟随有 <Executed/>
-            bool rlt = false;
-            if (str.Contains(OutputFlag))
-            {
-                rlt = true;
-                nlogger.Info("receive executed flag at the end of ts / tsr.");
-            }
-
-            if (UseExecutedFlag == true && (currentCmd == SBE37Cmd.Ts && currentCmd == SBE37Cmd.Tsr))
+            if(currentCmd == SBE37Cmd.Cfg)
             {
                 CmdExecuted = true;
             }
 
-            return rlt;
+            // 在不是 tc 和 tcr 的情况下，数据后面都有可能会跟随有 <Executed/>
+            if (str.Contains(OutputFlag))
+            {
+                nlogger.Info("receive executed flag at the end of ts / tsr.");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         /// <summary>
         /// 由收到的字符串解析为数据。
@@ -524,6 +560,12 @@ namespace InstDevice
 
                 case SBE37Cmd.Tsr:
                     rlt = SBE37ResolveStr2Value(str, out data);
+                    break;
+
+                case SBE37Cmd.Cfg:
+                    CmdExecuted = true;
+                    rlt = true;
+                    data = null;
                     break;
 
                 default:
@@ -649,7 +691,7 @@ namespace InstDevice
             data = new InstSBE37Data();
             string[] strSplit = str.Split(',');
 
-            nlogger.Error("SBE37ResolveStr2ValueFmt0: " + str);
+            //nlogger.Error("wghou SBE37ResolveStr2ValueFmt0: " + str);
 
             int idx = 0;
             try
@@ -698,6 +740,8 @@ namespace InstDevice
                 //    dt = DateTime.Parse(strSplit[idx++]);
                 //    dt = DateTime.Parse(strSplit[idx++]);
                 //}
+
+                CmdExecuted = true;
             }
             catch(Exception ex)
             {
@@ -722,7 +766,7 @@ namespace InstDevice
             data = new InstSBE37Data();
             string[] strSplit = str.Split(',');
 
-            //nlogger.Error("SBE37ResolveStr2ValueFmt1: " + str);
+            //nlogger.Error("wghou SBE37ResolveStr2ValueFmt1: " + str);
 
             int idx = 0;
             try
@@ -779,7 +823,7 @@ namespace InstDevice
                 instData1Cache.vTemperature = ttt;
                 instData1Cache.vConductivity = ccc;
                 instData1Cache.vSalinity = sss;
-                
+
 
                 //// vvvv.vvv = sound velocity (meters/second); 
                 //// sent only if OutputSV=Y
@@ -816,6 +860,8 @@ namespace InstDevice
                 //{
                 //    nn = int.Parse(strSplit[idx++]);
                 //}
+
+                CmdExecuted = true;
             }
             catch (Exception ex)
             {

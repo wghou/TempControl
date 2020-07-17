@@ -484,6 +484,8 @@ namespace Device
             {
                 // 电桥自检正常。。。
                 bool steady = sdDeviceRef.CheckFluc(_runningParameters.bridgeSteadyTimeSec, _runningParameters.flucValue);
+                if(sdDeviceRef.Enable == false) { steady = true; }
+                //steady = true;
                 if (steady)
                 {
 #if false

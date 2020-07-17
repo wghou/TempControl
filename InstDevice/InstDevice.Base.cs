@@ -91,7 +91,7 @@ namespace InstDevice
                 ReadTimeout = 500,
                 WriteTimeout = 200,
                 BaudRate = 9600,
-                //NewLine = "\r\n"
+                NewLine = "\r\n"
             };
 
             // 串口接收到数据 - 事件处理函数
@@ -210,7 +210,7 @@ namespace InstDevice
                 // 打开串口
                 if (!sPort.IsOpen) this.sPort.Open();
                 // 写入指令
-                this.sPort.WriteLine(cmd + "\r\n");
+                this.sPort.WriteLine(cmd);
             }
             catch (Exception ex)
             {
@@ -240,15 +240,18 @@ namespace InstDevice
                 while(sPort.BytesToRead != 0)
                 {
                     string data = sPort.ReadLine();
+
+                    //nlogger.Error("wghou read line from sPort: " + data);
+
                     if (!string.IsNullOrEmpty(data))
                     {
                         internalProceedReceivedData(data);
                     }
                     else
                     {
-                        nlogger.Error("sPort.ReadLine() return null or empty string.");
+                        nlogger.Error("wghou sPort.ReadLine() return null or empty string.");
                     }
-                    nlogger.Error("read line from sPort: " + data);
+                    
                 }
             }
             catch (Exception ex)

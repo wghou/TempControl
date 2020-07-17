@@ -69,7 +69,11 @@ namespace InstDevice
         /// <summary> xx </summary>
         Ts,
         /// <summary> xx </summary>
-        Tsr
+        Tsr,
+        /// <summary> 设置环节 </summary>
+        Cfg,
+        /// <summary> 唤醒指令 </summary>
+        WakeUp
     }
 
     
@@ -311,21 +315,27 @@ namespace InstDevice
         {
             // 更新设备类型
             // todo: 如何辨识设备类型
-            if(vSpecification.Contains("SMP"))
+            if(vSpecification.ToUpper().Contains("SMP"))
             {
                 InstType = TypeInst.SBE37SMP;
             }
-            else if(vSpecification.Contains("SM"))
+            else if(vSpecification.ToUpper().Contains("SM"))
             {
                 InstType = TypeInst.SBE37SM;
+            }
+            else if (vSpecification.ToUpper().Contains("SIP"))
+            {
+                InstType = TypeInst.SBE37SIP;
+            }
+            else if (vSpecification.ToUpper().Contains("SI"))
+            {
+                InstType = TypeInst.SBE37SI;
             }
             else
             {
                 InstType = TypeInst.Undefined;
             }
 
-            // todo: 从数据库中读取 instType
-            InstType = TypeInst.SBE37SI;
 
             // 更新传感器类型
             foreach(var itm in sensors)

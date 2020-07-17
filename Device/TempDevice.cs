@@ -167,6 +167,7 @@ namespace Device
 
                     // 向设备写入参数
                     err = tpDevice.SendData((TempProtocol.Cmd_t)i, tpParamToSet[i]);
+                    Thread.Sleep(10);
 
                     // 调试信息
                     if (err != TempProtocol.Err_t.NoError) nlogger.Error("温控设备参数设置失败!  " + tpParamNames[i] + ": " + err.ToString());
