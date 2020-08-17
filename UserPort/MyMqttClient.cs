@@ -258,7 +258,8 @@ namespace UserPort
                 {
                     foreach (string topic in topicsSubs)
                     {
-                        var topicFilterBulder = new TopicFilterBuilder().WithTopic(topic).Build();
+                        var topicFilterBulder = new TopicFilter();
+                        topicFilterBulder.Topic = topic;
                         listTopic.Add(topicFilterBulder);
                         Console.WriteLine("Connected >>Subscribe " + topic);
                     }

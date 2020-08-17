@@ -51,12 +51,10 @@ namespace TempControl
             // check box
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryM0;
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryM4;
-            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryM5;
 
             // picture box
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryM0);
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_4, pictureBox_ryM4);
-            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_5, pictureBox_ryM5);
 
             // 曲线
             TempControl.ChartConfig cfg = new ChartConfig();
@@ -65,6 +63,7 @@ namespace TempControl
             cfg.dataIntervalSec = _device._runningParameters.readTempIntervalSec;
             cfg.column = 6;
             cfg.row = 7;
+            cfg.digits = 4;
 
             mDrawChart = new DrawChart(cfg, TempPic.Height, TempPic.Width);
 
@@ -119,7 +118,7 @@ namespace TempControl
             pictureBoxM.Image = mBmpM;
 
             System.TimeSpan tmSpan = System.DateTime.Now - _device.startTime;
-            this.label_time.Text = "控温时间： " + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
+            this.label_time.Text = "控温时间：\r\n" + tmSpan.Hours.ToString("00") + " h " + tmSpan.Minutes.ToString("00") + " m " + tmSpan.Seconds.ToString("00") + " s";
         }
 
 
@@ -187,9 +186,9 @@ namespace TempControl
                 fm.Show();
             }
         }
-
         void SetAutoButton(bool st)
         {
+#if false
             this.BeginInvoke(new EventHandler(delegate
             {
                 if (st == true)
@@ -221,7 +220,7 @@ namespace TempControl
                     }
                 }
             }));
-
+#endif
         }
 
         private void checkBox_exit_Click(object sender, EventArgs e)
