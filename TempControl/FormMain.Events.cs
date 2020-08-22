@@ -27,18 +27,18 @@ namespace TempControl
             {
                 // 波动度
                 float fluc = 0.0f;
-                _device.tpDeviceM.GetFlucDurCountOrLess(_device._runningParameters.steadyTimeSec / _device._runningParameters.readTempIntervalSec, out fluc);
-                this.label_fluc.Text = "波动度: " + fluc.ToString("0.0000") + "℃/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
+                _device.tpDeviceS.GetFlucDurCountOrLess(_device._runningParameters.steadyTimeSec / _device._runningParameters.readTempIntervalSec, out fluc);
+                this.label_fluc.Text = "波动度: " + fluc.ToString("0.000") + "℃/" + (_device._runningParameters.steadyTimeSec / 60).ToString("0") + "分钟";
 
                 // 主槽功率系数
                 label_powerM.Text = this._device.tpDeviceM.tpPowerShow.ToString("0") + "%";
 
                 // 主槽温度显示值
                 if (this._device.tpDeviceM.temperatures.Count != 0)
-                    label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.0000") + "℃";
+                    label_tempM.Text = this._device.tpDeviceM.temperatures.Last().ToString("0.000") + "℃";
 
                 // 主槽温度设定值
-                label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.0000") + "℃";
+                label_tempSetM.Text = this._device.tpDeviceM.tpParam[0].ToString("0.000") + "℃";
 
                 // 辅槽功率系数
                 label_powerS.Text = this._device.tpDeviceS.tpPowerShow.ToString("0") + "%";
@@ -190,14 +190,6 @@ namespace TempControl
                 // 指示灯状态
                 foreach (var pic in this.pictureBoxRyM) pictureBoxRyM[pic.Key].Image = ryStatus[(int)pic.Key] ? mBmpRelayGreen : mBmpRelayRed;
 
-                // 如果禁用 ry2 ，则将全部 16 个按键作为 ry1 使用
-                if (this.checkBox_ryEn2.Checked == false)
-                {
-                    // 按钮状态
-                    foreach (var chk in this.dictCheckBoxsRyS) chk.Value.Checked = ryStatus[(int)chk.Key + 8];
-                    // 指示灯状态
-                    foreach ( var pic in this.pictureBoxRyM) pictureBoxRyS[pic.Key].Image = ryStatus[(int)pic.Key + 8] ? mBmpRelayGreen : mBmpRelayRed;
-                }
             }));
 
             if(err != Device.RelayDevice.Err_r.NoError)
@@ -208,7 +200,7 @@ namespace TempControl
 
         private void _device_RelayDeviceSStatusUpdatedEvent(Device.RelayDevice.Err_r err, bool[] ryStatus)
         {
-            if (this.checkBox_ryEn2.Checked == false) return;
+             return;
 
             this.BeginInvoke(new EventHandler(delegate
             {

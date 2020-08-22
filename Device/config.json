@@ -20,7 +20,7 @@
       "BaudRate": 9600
     },
     "RelayS": {
-      "Enable": true,
+      "Enable": false,
       "PortName": "COM7",
       "BaudRate": 9600
     }
@@ -41,7 +41,7 @@
   "?IotPort": "关于用户接口的配置信息",
   "IotPort": {
     "MqttCloud": {
-      "Enable": true,
+      "Enable": false,
       "ServerUrl": "172.26.12.68",
       "Port": 5001,
       "ApiKey": "public",
@@ -49,7 +49,7 @@
       "DeviceId": "mydeviceId"
     },
     "?MqttCloud": {
-      "Enable": true,
+      "Enable": false,
       "ServerUrl": "183.230.40.39",
       "Port": 6002,
       "ApiKey": "123123123",

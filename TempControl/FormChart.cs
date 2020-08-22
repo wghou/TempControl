@@ -13,7 +13,7 @@ namespace TempControl
     {
         Device.DeviceStateM _device;
         private ChartDeviceType _deviceType;
-        private List<float> dataCache = new List<float>();
+        private List<float> dataCache;
 
         public FormChart(Device.DeviceStateM dev, ChartDeviceType type)
         {
@@ -27,6 +27,7 @@ namespace TempControl
             timer1.Interval = 200;
             timer1.Tick += Timer1_Tick;
             timer1.Start();
+
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
@@ -44,12 +45,45 @@ namespace TempControl
             {
                 this.Text = "主槽温度曲线";
                 _device.TempDeviceMReadTemptEvent += _device_TempDeviceReadTemptEvent;
+
+                dataCache = _device.tpDeviceM.temperaturesShow;
             }
             else
             {
                 this.Text = "辅槽温度曲线";
                 _device.TempDeviceSReadTemptEvent += _device_TempDeviceReadTemptEvent;
+
+                dataCache = _device.tpDeviceS.temperaturesShow;
             }
+
+            setChartRange();
+
+            foreach(var itm in dataCache)
+            {
+                hslCurve1.AddCurveData("A", itm);
+            }
+        }
+
+        private void setChartRange()
+        {
+            // 用于计算曲线图的上下界限
+            if (dataCache.Count >= hslCurve1.StrechDataCountMax) dataCache.RemoveAt(0);
+
+            double ValCent, valPhase;
+
+            if (_deviceType == ChartDeviceType.MainDevice)
+            {
+                ValCent = Math.Round((dataCache.Max() + dataCache.Min()) / 2, 3);
+                valPhase = Math.Round((dataCache.Max() - dataCache.Min()) / 6, 3) + 0.001;
+            }
+            else
+            {
+                ValCent = Math.Round((dataCache.Max() + dataCache.Min()) / 2, 3);
+                valPhase = Math.Round((dataCache.Max() - dataCache.Min()) / 6, 3) + 0.001;
+            }
+
+            hslCurve1.ValueMaxLeft = (float)(ValCent + valPhase * 3);
+            hslCurve1.ValueMinLeft = (float)(ValCent - valPhase * 3);
         }
 
         private void _device_TempDeviceReadTemptEvent(float tempt, float fluc, bool isError)
@@ -57,30 +91,11 @@ namespace TempControl
             // 如果发生了错误，则暂时不更新曲线
             if (isError == true) return;
 
-            // 用于计算曲线图的上下界限
-            dataCache.Add(tempt);
-            if (dataCache.Count >= hslCurve1.StrechDataCountMax) dataCache.RemoveAt(0);
-
-            double ValCent, valPhase;
-
-            if(_deviceType == ChartDeviceType.MainDevice)
-            {
-                ValCent = Math.Round((dataCache.Max() + dataCache.Min()) / 2, 4);
-                valPhase = Math.Round((dataCache.Max() - dataCache.Min()) / 6, 4) + 0.001;
-            }
-            else
-            {
-                ValCent = Math.Round((dataCache.Max() + dataCache.Min()) / 2, 3);
-                valPhase = Math.Round((dataCache.Max() - dataCache.Min()) / 6, 3) + 0.001;
-            }
-            
-
             // 只要是定时器函数执行了，不管有没有正确的从下位机读取到参数，都会重新绘制
             // 也就是说，不处理错误
             this.BeginInvoke(new EventHandler(delegate
             {
-                hslCurve1.ValueMaxLeft = (float)(ValCent + valPhase * 3);
-                hslCurve1.ValueMinLeft = (float)(ValCent - valPhase * 3);
+                setChartRange();
 
                 hslCurve1.AddCurveData("A", tempt);
 

@@ -50,39 +50,12 @@ namespace TempControl
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryM0;
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryM1;
             dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryM2;
-            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryM3;
-            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryM4;
-            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryM5;
-            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryM6;
-            dictCheckBoxsRyM[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryM7;
-
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_0] = this.checkBox_ryS0;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_1] = this.checkBox_ryS1;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_2] = this.checkBox_ryS2;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_3] = this.checkBox_ryS3;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_4] = this.checkBox_ryS4;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_5] = this.checkBox_ryS5;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_6] = this.checkBox_ryS6;
-            dictCheckBoxsRyS[Device.RelayDevice.Cmd_r.OUT_7] = this.checkBox_ryS7;
-
+            
             // picture box
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryM0);
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_1, pictureBox_ryM1);
             pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_2, pictureBox_ryM2);
-            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_3, pictureBox_ryM3);
-            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_4, pictureBox_ryM4);
-            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_5, pictureBox_ryM5);
-            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_6, pictureBox_ryM6);
-            pictureBoxRyM.Add(Device.RelayDevice.Cmd_r.OUT_7, pictureBox_ryM7);
-
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_0, pictureBox_ryS0);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_1, pictureBox_ryS1);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_2, pictureBox_ryS2);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_3, pictureBox_ryS3);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_4, pictureBox_ryS4);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_5, pictureBox_ryS5);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_6, pictureBox_ryS6);
-            pictureBoxRyS.Add(Device.RelayDevice.Cmd_r.OUT_7, pictureBox_ryS7);
+            
 
             // 用于继电器的指示灯
             mBmpRelayRed = new Bitmap(this.pictureBox_ryM0.Width, pictureBox_ryM0.Height);
@@ -95,7 +68,7 @@ namespace TempControl
             // 用于状态指示灯
             mBmpM = new Bitmap(pictureBoxM.Width, pictureBoxM.Height);
             mBmpS = new Bitmap(pictureBoxS.Width, pictureBoxS.Height);
-            mBmpIot = new Bitmap(pictureBox_iot.Width, pictureBox_iot.Height);
+            //mBmpIot = new Bitmap(pictureBox_iot.Width, pictureBox_iot.Height);
             timPic.Interval = 500;
             timPic.Tick += TimPic_Tick;
             timPic.Start();
@@ -114,8 +87,7 @@ namespace TempControl
             timer1.Tick += Timer1_Tick;
             timer1.Start();
 
-            _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
-            _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
+            _device.ryDeviceM.DisconnectProtect = false;
         }
 
         ///////////////////////////////////////////////////
@@ -124,26 +96,26 @@ namespace TempControl
         {
             Graphics mGhpM = Graphics.FromImage(mBmpM);
             Graphics mGhpS = Graphics.FromImage(mBmpS);
-            Graphics mGhpIot = Graphics.FromImage(mBmpIot);
+            //Graphics mGhpIot = Graphics.FromImage(mBmpIot);
             mGhpM.Clear(SystemColors.Control);
             if (flp)
             {
                 mGhpM.Clear(SystemColors.Control);
                 mGhpS.Clear(SystemColors.Control);
-                mGhpIot.Clear(SystemColors.Control);
+                //mGhpIot.Clear(SystemColors.Control);
                 flp = false;
             }
             else
             {
                 mGhpM.Clear(this._device.tpDeviceM.currentComStatus ? Color.Green : Color.Red);
                 mGhpS.Clear(this._device.tpDeviceS.currentComStatus ? Color.Green : Color.Red);
-                mGhpIot.Clear(this._device.isUserPortConnected ? Color.Green : Color.Red);
+                //mGhpIot.Clear(this._device.isUserPortConnected ? Color.Green : Color.Red);
                 flp = true;
             }
 
             pictureBoxM.Image = mBmpM;
             pictureBoxS.Image = mBmpS;
-            pictureBox_iot.Image = mBmpIot;
+            //pictureBox_iot.Image = mBmpIot;
         }
 
 
@@ -159,20 +131,11 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                _device.tpDeviceS.Enable = checkBox_tempS.Checked;
-                this.groupBox_tempS.Enabled = checkBox_tempS.Checked;
+                _device.tpDeviceS.Enable = true;
+                this.groupBox_tempS.Enabled = true;
 
                 _device.ryDeviceM.Enable = true;
-                _device.ryDeviceS.Enable = this.checkBox_ryEn2.Checked;
-                if (this.checkBox_ryEn2.Checked) {
-                    this.groupBox_ry2.Text = "继电器模块 2";
-                }
-                else {
-                    this.groupBox_ry2.Text = "继电器模块 1 (备用)";
-                }
-
-                _device.ryDeviceM.DisconnectProtect = this.checkBox_protect.Checked;
-                _device.ryDeviceS.DisconnectProtect = this.checkBox_protect.Checked;
+                _device.ryDeviceS.Enable = false;
             }));
 
             bool confDevice = _device.Configure();

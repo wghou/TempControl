@@ -38,6 +38,7 @@ namespace Device
         /// </summary>
         public float tpPowerShow = 0.0f;
         public List<float> temperatures = new List<float>();
+        public List<float> temperaturesShow = new List<float>();
         private int tempMaxLen = 1000;
 
         /// <summary>
@@ -448,6 +449,12 @@ namespace Device
                 temperatures.RemoveAt(0);
             }
             temperatures.Add(val);
+
+            if (temperaturesShow.Count == tempMaxLen)
+            {
+                temperaturesShow.RemoveAt(0);
+            }
+            temperaturesShow.Add(val);
         }
         #endregion
     }
