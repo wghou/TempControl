@@ -41,6 +41,35 @@ namespace TempControl
             comboBox_spInterval.DisplayMember = "Name";
             comboBox_spInterval.SelectedValue = 2;
 
+            formatList.Add(new OutputFormatItem() { Id = 0, format = SBE37OutputFormat.NoneData });
+            formatList.Add(new OutputFormatItem() { Id = 1, format = SBE37OutputFormat.Format_0 });
+            formatList.Add(new OutputFormatItem() { Id = 2, format = SBE37OutputFormat.Format_1 });
+            //
+            comboBox_userCmd1_3.DataSource = formatList;
+            comboBox_userCmd1_3.ValueMember = "Id";
+            comboBox_userCmd1_3.DisplayMember = "Name";
+            comboBox_userCmd1_3.SelectedValue = 0;
+            //
+            comboBox_userCmd2_3.DataSource = formatList;
+            comboBox_userCmd2_3.ValueMember = "Id";
+            comboBox_userCmd2_3.DisplayMember = "Name";
+            comboBox_userCmd2_3.SelectedValue = 0;
+            //
+            comboBox_userCmd3_3.DataSource = formatList;
+            comboBox_userCmd3_3.ValueMember = "Id";
+            comboBox_userCmd3_3.DisplayMember = "Name";
+            comboBox_userCmd3_3.SelectedValue = 0;
+            //
+            comboBox_userCmd4_3.DataSource = formatList;
+            comboBox_userCmd4_3.ValueMember = "Id";
+            comboBox_userCmd4_3.DisplayMember = "Name";
+            comboBox_userCmd4_3.SelectedValue = 0;
+            //
+            cmdBox.Add(new Tuple<TextBox, TextBox, ComboBox>(textBox_userCmd1_1, textBox_userCmd1_2, comboBox_userCmd1_3));
+            cmdBox.Add(new Tuple<TextBox, TextBox, ComboBox>(textBox_userCmd2_1, textBox_userCmd2_2, comboBox_userCmd2_3));
+            cmdBox.Add(new Tuple<TextBox, TextBox, ComboBox>(textBox_userCmd3_1, textBox_userCmd3_2, comboBox_userCmd3_3));
+            cmdBox.Add(new Tuple<TextBox, TextBox, ComboBox>(textBox_userCmd4_1, textBox_userCmd4_2, comboBox_userCmd4_3));
+
             loadInstInfo();
 
             _device.InstDeviceInitedEvent += _device_InstDeviceInitedEvent;
@@ -100,6 +129,22 @@ namespace TempControl
             }
         }
 
+        public class OutputFormatItem : IComparable
+        {
+            public int Id { get; internal set; } = -1;
+            public string Name { get { return format.ToString(); } }
+
+            public SBE37OutputFormat format = SBE37OutputFormat.NoneData;
+
+            public int CompareTo(object obj)
+            {
+                OutputFormatItem other = obj as OutputFormatItem;
+                if(other.format == format) { return 0; }
+                else if(other.format > format) { return 1; }
+                else { return -1; }
+            }
+        }
+
         /// <summary>
         /// 端口号 类
         /// </summary>
@@ -150,12 +195,16 @@ namespace TempControl
             public int brId = -1;
             public bool initialized = false;
             public string instrumentID = "null";
+            public bool userCmdEnable = false;
+            public List<Tuple<string, string, SBE37OutputFormat, int>> userCmds = new List<Tuple<string, string, SBE37OutputFormat, int>>();
         }
 
         List<PortInfoItem> portList = new List<PortInfoItem>();
         List<InstInfoItem> instList = new List<InstInfoItem>();
         List<BaudRateItem> baudList = new List<BaudRateItem>();
         List<SampleIntervalItem> spIntervalList = new List<SampleIntervalItem>();
+        List<OutputFormatItem> formatList = new List<OutputFormatItem>();
+        List<Tuple<TextBox, TextBox, ComboBox>> cmdBox = new List<Tuple<TextBox, TextBox, ComboBox>>();
 
         /// <summary>
         /// 从设备中读取最新的配置相关信息
@@ -206,6 +255,14 @@ namespace TempControl
                 
                 pt.initialized = itm.Enable;
                 pt.instrumentID = itm.GetBasicInfo().instrumentId;
+
+                if(itm.GetBasicInfo().InstType!= TypeInst.Standard
+                    && itm.GetBasicInfo().InstType != TypeInst.Undefined)
+                {
+                    pt.userCmds.AddRange((itm as InstSBE).userDefinedCmds);
+                    if (pt.userCmds.Capacity != 0) pt.userCmdEnable = true;
+                }
+
                 instList.Add(pt);
             }
 
@@ -244,11 +301,29 @@ namespace TempControl
                 comboBox_baudRate.SelectedValue = (comboBox_inst.SelectedItem as InstInfoItem).brId;
                 comboBox_port.Enabled = false;
                 comboBox_baudRate.Enabled = false;
+
+                if((comboBox_inst.SelectedItem as InstInfoItem).userCmdEnable == true)
+                {
+                    checkBox_userCmd.Checked = true;
+                    for(int i = 0; i < 4; i++)
+                    {
+                        if (i == (comboBox_inst.SelectedItem as InstInfoItem).userCmds.Capacity) break;
+                        cmdBox[i].Item1.Text = (comboBox_inst.SelectedItem as InstInfoItem).userCmds[i].Item1;
+                        cmdBox[i].Item2.Text = (comboBox_inst.SelectedItem as InstInfoItem).userCmds[i].Item2;
+                        cmdBox[i].Item3.SelectedValue = (int)(comboBox_inst.SelectedItem as InstInfoItem).userCmds[i].Item3;
+                    }
+                }
+                else
+                {
+                    checkBox_userCmd.Checked = false;
+                }
             }
             else
             {
                 comboBox_port.Enabled = true;
                 comboBox_baudRate.Enabled = true;
+
+                checkBox_userCmd.Checked = false;
             }
         }
 
@@ -308,6 +383,14 @@ namespace TempControl
                     _device._instDevices[itm.Id].GetBasicInfo().PortName = portList[itm.portId].portName;
                     _device._instDevices[itm.Id].GetBasicInfo().BaudRate = baudList[itm.brId].baudRate;
                     confOK &= _device._instDevices[itm.Id].InitWithInfo();
+                    if(_device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Standard 
+                        && _device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Undefined)
+                    {
+                        (_device._instDevices[itm.Id] as InstSBE).userDefinedCmds.Clear();
+                        (_device._instDevices[itm.Id] as InstSBE).userDefinedCmds.AddRange(itm.userCmds);
+                    }
+
+
 
                     // todo: 初始化并配置仪器
                     //if(_device._instDevices[itm.Id].GetBasicInfo().InstType != TypeInst.Undefined &&
@@ -355,6 +438,28 @@ namespace TempControl
         private void FormInst_FormClosing(object sender, FormClosingEventArgs e)
         {
             _device.InstDeviceInitedEvent -= _device_InstDeviceInitedEvent;
+        }
+
+        private void checkBox_userCmd_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBox_userCmd.Checked == false)
+            {
+                foreach(var itm in cmdBox)
+                {
+                    itm.Item1.Text = ""; itm.Item1.Enabled = false;
+                    itm.Item2.Text = ""; itm.Item2.Enabled = false;
+                    itm.Item3.SelectedValue = 0; itm.Item3.Enabled = false;
+                }
+            }
+            else
+            {
+                foreach (var itm in cmdBox)
+                {
+                    itm.Item1.Enabled = true;
+                    itm.Item2.Enabled = true;
+                    itm.Item3.Enabled = true;
+                }
+            }
         }
     }
 }

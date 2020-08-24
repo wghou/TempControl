@@ -51,6 +51,14 @@ namespace InstDevice
         /// calibration coefficients
         /// </summary>
         private SBE37CalibCoeff calibCCoeff = new SBE37CalibCoeff();
+        /// <summary>
+        /// 当前发送的用户指令位置
+        /// </summary>
+        private int currentUserCmd = 0;
+        /// <summary>
+        /// 存放用户定义的指令 - （指令字符串1 - 指令字符串2 - 数据输出格式 - 时间间隔/ms）
+        /// </summary>
+        public List<Tuple<string, string, SBE37OutputFormat, int>> userDefinedCmds = new List<Tuple<string, string, SBE37OutputFormat, int>>();
 
 
         public InstSBE(InstSqlrd info) : base(info)
@@ -74,6 +82,11 @@ namespace InstDevice
         /// <returns></returns>
         public bool SetupSBE37(InstSampleMode mode = InstSampleMode.PolledSample_Fmt10)
         {
+            if(userDefinedCmds.Capacity != 0)
+            {
+                mode = InstSampleMode.PolledSample_UserCmd;
+            }
+
             Enable = true;
 
             _tickTimerInst.Interval = sampleIntervalSec * 500;
@@ -175,6 +188,23 @@ namespace InstDevice
                     outputFormat = SBE37OutputFormat.Format_1;
                     break;
 
+                case InstSampleMode.PolledSample_UserCmd:
+                    if (userDefinedCmds.Capacity == 0) return false;
+                    currentUserCmd = 0;
+                    currentCmd = SBE37Cmd.WakeUp;
+                    CmdExecuted = false;
+                    rlt3 &= sendCMD("OUTPUTFORMAT=1");
+                    int ii2 = 0;
+                    while (!CmdExecuted && ii2 < 20) { System.Threading.Thread.Sleep(50); ii2++; }
+
+                    currentCmd = SBE37Cmd.Cfg;
+                    CmdExecuted = false;
+                    rlt3 &= sendCMD("OUTPUTFORMAT=1");
+                    ii2 = 0;
+                    while (!CmdExecuted && ii2 < 30) { System.Threading.Thread.Sleep(50); ii2++; }
+                    //outputFormat = SBE37OutputFormat.Format_1;
+                    break;
+
                 default:
                     break;
             }
@@ -266,19 +296,30 @@ namespace InstDevice
                     currentCmd = SBE37Cmd.Tsr;
                     CmdExecuted = true;
                     sendCMD("OutputFormat=1");
+                    outputFormat = SBE37OutputFormat.Format_1;
                     _tickTimerInst.Start();
                     break;
                 case InstSampleMode.PolledSample_Fmt0:
-                    currentCmd = SBE37Cmd.Ts;
+                    currentCmd = SBE37Cmd.Tsr;
                     CmdExecuted = true;
-                    sendCMD("OutputFormat=1");
+                    sendCMD("OutputFormat=0");
+                    outputFormat = SBE37OutputFormat.Format_0;
                     _tickTimerInst.Start();
                     break;
 
                 case InstSampleMode.PolledSample_Fmt1:
-                    currentCmd = SBE37Cmd.Tsr;
+                    currentCmd = SBE37Cmd.Ts;
                     CmdExecuted = true;
                     sendCMD("OutputFormat=1");
+                    outputFormat = SBE37OutputFormat.Format_1;
+                    _tickTimerInst.Start();
+                    break;
+
+                case InstSampleMode.PolledSample_UserCmd:
+                    currentCmd = SBE37Cmd.UserDefine;
+                    CmdExecuted = true;
+                    sendCMD("OutputFormat=1");
+                    outputFormat = SBE37OutputFormat.Format_1;
                     _tickTimerInst.Start();
                     break;
 
@@ -293,50 +334,59 @@ namespace InstDevice
         {
             //nlogger.Error("wghou internal measure step.");
 
-            if (sampleMode == InstSampleMode.AutoSample_Fmt0 || sampleMode == InstSampleMode.AutoSample_Fmt1)
+            switch (sampleMode)
             {
-                
-            }
-            else if(sampleMode == InstSampleMode.PolledSample_Fmt0)
-            {
-                currentCmd = SBE37Cmd.Tsr;
-                sendSampleCmd(currentCmd);
-            }
-            else if(sampleMode == InstSampleMode.PolledSample_Fmt1)
-            {
-                currentCmd = SBE37Cmd.Ts;
-                sendSampleCmd(currentCmd);
-            }
-            else if(sampleMode == InstSampleMode.PolledSample_Fmt10)
-            {
-                // 上一个指令未成功返回结果
-                // todo:
-                if(CmdExecuted == false)
-                {
-                    nlogger.Error("error in sendCmd with internalMeasureStep");
-                    OnErrorOccur(Err_sr.Error);
-                    CmdExecuted = true;
-                    return;
-                }
+                case InstSampleMode.AutoSample_Fmt0:
+                case InstSampleMode.AutoSample_Fmt1:
+                    break;
 
-                // 判断前一个指令
-                if(currentCmd == SBE37Cmd.Ts)
-                {
+                case InstSampleMode.PolledSample_Fmt0:
                     currentCmd = SBE37Cmd.Tsr;
-                    sendSampleCmd(currentCmd);
-                }
-                // 判断前一个指令
-                else if(currentCmd == SBE37Cmd.Tsr)
-                {
+                    break;
+
+                case InstSampleMode.PolledSample_Fmt1:
                     currentCmd = SBE37Cmd.Ts;
-                    sendSampleCmd(currentCmd);
-                }
-                else
-                {
-                    nlogger.Error("code error");
-                    OnErrorOccur(Err_sr.Error);
-                }     
+                    break;
+
+                case InstSampleMode.PolledSample_Fmt10:
+                    // 上一个指令未成功返回结果
+                    // todo:
+                    if (CmdExecuted == false)
+                    {
+                        nlogger.Error("error in sendCmd with internalMeasureStep");
+                        OnErrorOccur(Err_sr.Error);
+                        CmdExecuted = true;
+                        return;
+                    }
+
+                    // 判断前一个指令
+                    if (currentCmd == SBE37Cmd.Ts)
+                    {
+                        currentCmd = SBE37Cmd.Tsr;
+                    }
+                    // 判断前一个指令
+                    else if (currentCmd == SBE37Cmd.Tsr)
+                    {
+                        currentCmd = SBE37Cmd.Ts;
+                    }
+                    else
+                    {
+                        nlogger.Error("code error");
+                        OnErrorOccur(Err_sr.Error);
+                        return;
+                    }
+                    break;
+
+                case InstSampleMode.PolledSample_UserCmd:
+                    currentCmd = SBE37Cmd.UserDefine;
+                    break;
+
+                default:
+                    break;
             }
+
+            // 发送指令
+            sendSampleCmd(currentCmd);
         }
 
         /// <summary>
@@ -349,54 +399,74 @@ namespace InstDevice
             bool rlt = true;
             CmdExecuted = false;
 
-            switch (Info.InstType)
+            // 如果是用户定义指令，则不区分型号
+            if(cmd == SBE37Cmd.UserDefine)
             {
-                case TypeInst.SBE37SM:
-                    if (cmd == SBE37Cmd.Ts)
-                    {
-                        rlt &= sendCMD("OutputFormat=1");
-                        System.Threading.Thread.Sleep(200);
-                        rlt &= sendCMD("ts");
-                    }
-                    else if (cmd == SBE37Cmd.Tsr)
-                    {
-                        rlt &= sendCMD("OutputFormat=0");
-                        System.Threading.Thread.Sleep(200);
-                        rlt &= sendCMD("ts");
-                    }
-                    break;
+                rlt &= sendCMD(userDefinedCmds[currentUserCmd].Item1);
+                outputFormat = userDefinedCmds[currentUserCmd].Item3;
+                System.Threading.Thread.Sleep(200);
+                rlt &= sendCMD(userDefinedCmds[currentUserCmd].Item2);
 
-                case TypeInst.SBE37SMP:
-                    if (cmd == SBE37Cmd.Ts)
-                    {
-                        rlt &= sendCMD("ts");
-                    }
-                    else if (cmd == SBE37Cmd.Tsr)
-                    {
-                        rlt &= sendCMD("tsr");
-                    }
-                    break;
-
-                case TypeInst.SBE37SI:
-                case TypeInst.SBE37SIP:
-                case TypeInst.SBE37SMPODO:
-                    if (cmd == SBE37Cmd.Ts)
-                    {
-                        rlt &= sendCMD("ts");
-                    }
-                    else if (cmd == SBE37Cmd.Tsr)
-                    {
-                        rlt &= sendCMD("tsr");
-                    }
-                    break;
-
-                default:
-                    nlogger.Error("code error xxison");
-                    break;
+                if(++currentUserCmd >= userDefinedCmds.Capacity)
+                {
+                    currentUserCmd = 0;
+                }
             }
-            
+            else
+            {
+                switch (Info.InstType)
+                {
+                    case TypeInst.SBE37SM:
+                        if (cmd == SBE37Cmd.Ts)
+                        {
+                            rlt &= sendCMD("OutputFormat=1");
+                            outputFormat = SBE37OutputFormat.Format_1;
+                            System.Threading.Thread.Sleep(200);
+                            rlt &= sendCMD("ts");
+                        }
+                        else if (cmd == SBE37Cmd.Tsr)
+                        {
+                            rlt &= sendCMD("OutputFormat=0");
+                            outputFormat = SBE37OutputFormat.Format_0;
+                            System.Threading.Thread.Sleep(200);
+                            rlt &= sendCMD("ts");
+                        }
+                        break;
 
-            
+                    case TypeInst.SBE37SMP:
+                        if (cmd == SBE37Cmd.Ts)
+                        {
+                            rlt &= sendCMD("ts");
+                            outputFormat = SBE37OutputFormat.Format_1;
+                        }
+                        else if (cmd == SBE37Cmd.Tsr)
+                        {
+                            rlt &= sendCMD("tsr");
+                            outputFormat = SBE37OutputFormat.Format_0;
+                        }
+                        break;
+
+                    case TypeInst.SBE37SI:
+                    case TypeInst.SBE37SIP:
+                    case TypeInst.SBE37SMPODO:
+                        if (cmd == SBE37Cmd.Ts)
+                        {
+                            rlt &= sendCMD("ts");
+                            outputFormat = SBE37OutputFormat.Format_1;
+                        }
+                        else if (cmd == SBE37Cmd.Tsr)
+                        {
+                            rlt &= sendCMD("tsr");
+                            outputFormat = SBE37OutputFormat.Format_0;
+                        }
+                        break;
+
+                    default:
+                        nlogger.Error("code error xxison");
+                        break;
+                }
+            }
+
             if (rlt == false)
             {
                 nlogger.Error("error in sendCmd with internalMeasureStep");
@@ -487,6 +557,16 @@ namespace InstDevice
                     return true;
                     break;
 
+                case SBE37Cmd.UserDefine:
+                    if (str.ToUpper().Contains(userDefinedCmds[currentUserCmd].Item1.ToUpper()) ||
+                        str.ToUpper().Contains(userDefinedCmds[currentUserCmd].Item2.ToUpper()) || 
+                        str.ToUpper().Contains("OUTPUTFORMAT"))
+                    {
+                        nlogger.Error("elimate cmd: " + str);
+                        return true;
+                    }
+                    break;
+
                 default:
                     break;
             }
@@ -568,6 +648,24 @@ namespace InstDevice
                     data = null;
                     break;
 
+                case SBE37Cmd.UserDefine:
+                    if(userDefinedCmds[currentUserCmd].Item3 != SBE37OutputFormat.NoneData)
+                    {
+                        rlt = SBE37ResolveStr2Value(str, out data);
+                    }
+                    else
+                    {
+                        data = null;
+                    }
+                    
+                    // 所有指令都发送完成之后，形成一组数据
+                    if((currentUserCmd + 1) == userDefinedCmds.Capacity)
+                    {
+                        data = null;
+                    }
+                    
+                    break;
+
                 default:
                     // 这里就产生了错误
                     // 因为现有的指令中，不会有其他的指令会返回数据
@@ -640,41 +738,34 @@ namespace InstDevice
             instData1Cache.updateTime = instData1Cache.measureTime;
 
             bool rlt = true;
-            if (currentCmd == SBE37Cmd.Tsr)
+            // 解析数据
+            switch (outputFormat)
             {
-                rlt = SBE37ResolveStr2ValueFmt0(str, out data);
-            }
-            else
-            {
-                // 解析数据
-                switch (outputFormat)
-                {
-                    case SBE37OutputFormat.Format_0:
-                        rlt = SBE37ResolveStr2ValueFmt0(str, out data);
-                        break;
+                case SBE37OutputFormat.Format_0:
+                    rlt = SBE37ResolveStr2ValueFmt0(str, out data);
+                    break;
 
-                    case SBE37OutputFormat.Format_1:
-                        rlt = SBE37ResolveStr2ValueFmt1(str, out data);
-                        break;
+                case SBE37OutputFormat.Format_1:
+                    rlt = SBE37ResolveStr2ValueFmt1(str, out data);
+                    break;
 
-                    case SBE37OutputFormat.Format_2:
-                        data = null;
-                        rlt = false;
-                        nlogger.Error("error of output format: Format_2");
-                        break;
+                case SBE37OutputFormat.Format_2:
+                    data = null;
+                    rlt = false;
+                    nlogger.Error("error of output format: Format_2");
+                    break;
 
-                    case SBE37OutputFormat.Format_3:
-                        data = null;
-                        rlt = false;
-                        nlogger.Error("error of output format: Format_3");
-                        break;
+                case SBE37OutputFormat.Format_3:
+                    data = null;
+                    rlt = false;
+                    nlogger.Error("error of output format: Format_3");
+                    break;
 
-                    default:
-                        data = null;
-                        rlt = false;
-                        nlogger.Error("error of output format: unknown");
-                        break;
-                }
+                default:
+                    data = null;
+                    rlt = false;
+                    nlogger.Error("error of output format: unknown");
+                    break;
             }
             return rlt;
         }

@@ -36,7 +36,9 @@ namespace InstDevice
         /// <summary> 轮询采样 - 格式 1 </summary>
         PolledSample_Fmt1,
         /// <summary> 轮询采样 - 格式 1 + 格式 0 </summary>
-        PolledSample_Fmt10
+        PolledSample_Fmt10,
+        /// <summary> 轮询采样 - 用户定义指令 </summary>
+        PolledSample_UserCmd
     }
 
 
@@ -45,10 +47,11 @@ namespace InstDevice
     /// </summary>
     public enum SBE37OutputFormat : int
     {
-        Format_0 = 0,
-        Format_1 = 1,
-        Format_2 = 2,
-        Format_3 = 3
+        NoneData = 0,
+        Format_0 = 1,
+        Format_1 = 2,
+        Format_2 = 3,
+        Format_3 = 4
     }
 
     /// <summary>
@@ -73,7 +76,9 @@ namespace InstDevice
         /// <summary> 设置环节 </summary>
         Cfg,
         /// <summary> 唤醒指令 </summary>
-        WakeUp
+        WakeUp,
+        /// <summary> 用户自定义指令 </summary>
+        UserDefine
     }
 
     

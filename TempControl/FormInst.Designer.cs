@@ -42,7 +42,25 @@
             this.comboBox_spInterval = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox_instID = new System.Windows.Forms.TextBox();
+            this.checkBox_userCmd = new System.Windows.Forms.CheckBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textBox_userCmd1_1 = new System.Windows.Forms.TextBox();
+            this.textBox_userCmd1_2 = new System.Windows.Forms.TextBox();
+            this.comboBox_userCmd1_3 = new System.Windows.Forms.ComboBox();
+            this.textBox_userCmd2_1 = new System.Windows.Forms.TextBox();
+            this.comboBox_userCmd2_3 = new System.Windows.Forms.ComboBox();
+            this.textBox_userCmd2_2 = new System.Windows.Forms.TextBox();
+            this.textBox_userCmd3_1 = new System.Windows.Forms.TextBox();
+            this.comboBox_userCmd3_3 = new System.Windows.Forms.ComboBox();
+            this.textBox_userCmd3_2 = new System.Windows.Forms.TextBox();
+            this.textBox_userCmd4_1 = new System.Windows.Forms.TextBox();
+            this.comboBox_userCmd4_3 = new System.Windows.Forms.ComboBox();
+            this.textBox_userCmd4_2 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboBox_inst
@@ -209,11 +227,175 @@
             this.textBox_instID.Size = new System.Drawing.Size(252, 21);
             this.textBox_instID.TabIndex = 5;
             // 
+            // checkBox_userCmd
+            // 
+            this.checkBox_userCmd.AutoSize = true;
+            this.checkBox_userCmd.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_userCmd.Location = new System.Drawing.Point(530, 20);
+            this.checkBox_userCmd.Name = "checkBox_userCmd";
+            this.checkBox_userCmd.Size = new System.Drawing.Size(116, 18);
+            this.checkBox_userCmd.TabIndex = 6;
+            this.checkBox_userCmd.Text = "用户定义指令";
+            this.checkBox_userCmd.UseVisualStyleBackColor = true;
+            this.checkBox_userCmd.CheckedChanged += new System.EventHandler(this.checkBox_userCmd_CheckedChanged);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.checkBox_userCmd);
+            this.groupBox2.Controls.Add(this.textBox_userCmd4_2);
+            this.groupBox2.Controls.Add(this.textBox_userCmd3_2);
+            this.groupBox2.Controls.Add(this.textBox_userCmd2_2);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.textBox_userCmd1_2);
+            this.groupBox2.Controls.Add(this.comboBox_userCmd4_3);
+            this.groupBox2.Controls.Add(this.textBox_userCmd4_1);
+            this.groupBox2.Controls.Add(this.comboBox_userCmd3_3);
+            this.groupBox2.Controls.Add(this.textBox_userCmd3_1);
+            this.groupBox2.Controls.Add(this.comboBox_userCmd2_3);
+            this.groupBox2.Controls.Add(this.textBox_userCmd2_1);
+            this.groupBox2.Controls.Add(this.comboBox_userCmd1_3);
+            this.groupBox2.Controls.Add(this.textBox_userCmd1_1);
+            this.groupBox2.Location = new System.Drawing.Point(18, 227);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(718, 160);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "高级选项";
+            // 
+            // textBox_userCmd1_1
+            // 
+            this.textBox_userCmd1_1.Location = new System.Drawing.Point(6, 43);
+            this.textBox_userCmd1_1.Name = "textBox_userCmd1_1";
+            this.textBox_userCmd1_1.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd1_1.TabIndex = 5;
+            // 
+            // textBox_userCmd1_2
+            // 
+            this.textBox_userCmd1_2.Location = new System.Drawing.Point(186, 43);
+            this.textBox_userCmd1_2.Name = "textBox_userCmd1_2";
+            this.textBox_userCmd1_2.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd1_2.TabIndex = 5;
+            // 
+            // comboBox_userCmd1_3
+            // 
+            this.comboBox_userCmd1_3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_userCmd1_3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comboBox_userCmd1_3.FormattingEnabled = true;
+            this.comboBox_userCmd1_3.Location = new System.Drawing.Point(366, 42);
+            this.comboBox_userCmd1_3.Name = "comboBox_userCmd1_3";
+            this.comboBox_userCmd1_3.Size = new System.Drawing.Size(126, 22);
+            this.comboBox_userCmd1_3.TabIndex = 4;
+            // 
+            // textBox_userCmd2_1
+            // 
+            this.textBox_userCmd2_1.Location = new System.Drawing.Point(6, 71);
+            this.textBox_userCmd2_1.Name = "textBox_userCmd2_1";
+            this.textBox_userCmd2_1.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd2_1.TabIndex = 5;
+            // 
+            // comboBox_userCmd2_3
+            // 
+            this.comboBox_userCmd2_3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_userCmd2_3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comboBox_userCmd2_3.FormattingEnabled = true;
+            this.comboBox_userCmd2_3.Location = new System.Drawing.Point(366, 70);
+            this.comboBox_userCmd2_3.Name = "comboBox_userCmd2_3";
+            this.comboBox_userCmd2_3.Size = new System.Drawing.Size(126, 22);
+            this.comboBox_userCmd2_3.TabIndex = 4;
+            // 
+            // textBox_userCmd2_2
+            // 
+            this.textBox_userCmd2_2.Location = new System.Drawing.Point(186, 71);
+            this.textBox_userCmd2_2.Name = "textBox_userCmd2_2";
+            this.textBox_userCmd2_2.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd2_2.TabIndex = 5;
+            // 
+            // textBox_userCmd3_1
+            // 
+            this.textBox_userCmd3_1.Location = new System.Drawing.Point(6, 99);
+            this.textBox_userCmd3_1.Name = "textBox_userCmd3_1";
+            this.textBox_userCmd3_1.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd3_1.TabIndex = 5;
+            // 
+            // comboBox_userCmd3_3
+            // 
+            this.comboBox_userCmd3_3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_userCmd3_3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comboBox_userCmd3_3.FormattingEnabled = true;
+            this.comboBox_userCmd3_3.Location = new System.Drawing.Point(366, 98);
+            this.comboBox_userCmd3_3.Name = "comboBox_userCmd3_3";
+            this.comboBox_userCmd3_3.Size = new System.Drawing.Size(126, 22);
+            this.comboBox_userCmd3_3.TabIndex = 4;
+            // 
+            // textBox_userCmd3_2
+            // 
+            this.textBox_userCmd3_2.Location = new System.Drawing.Point(186, 99);
+            this.textBox_userCmd3_2.Name = "textBox_userCmd3_2";
+            this.textBox_userCmd3_2.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd3_2.TabIndex = 5;
+            // 
+            // textBox_userCmd4_1
+            // 
+            this.textBox_userCmd4_1.Location = new System.Drawing.Point(6, 127);
+            this.textBox_userCmd4_1.Name = "textBox_userCmd4_1";
+            this.textBox_userCmd4_1.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd4_1.TabIndex = 5;
+            // 
+            // comboBox_userCmd4_3
+            // 
+            this.comboBox_userCmd4_3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_userCmd4_3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.comboBox_userCmd4_3.FormattingEnabled = true;
+            this.comboBox_userCmd4_3.Location = new System.Drawing.Point(366, 126);
+            this.comboBox_userCmd4_3.Name = "comboBox_userCmd4_3";
+            this.comboBox_userCmd4_3.Size = new System.Drawing.Size(126, 22);
+            this.comboBox_userCmd4_3.TabIndex = 4;
+            // 
+            // textBox_userCmd4_2
+            // 
+            this.textBox_userCmd4_2.Location = new System.Drawing.Point(186, 127);
+            this.textBox_userCmd4_2.Name = "textBox_userCmd4_2";
+            this.textBox_userCmd4_2.Size = new System.Drawing.Size(162, 21);
+            this.textBox_userCmd4_2.TabIndex = 5;
+            // 
+            // label5
+            // 
+            this.label5.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label5.Location = new System.Drawing.Point(25, 17);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(126, 23);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "指令1";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Location = new System.Drawing.Point(204, 17);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(126, 23);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "指令2";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label7
+            // 
+            this.label7.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(366, 17);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(126, 23);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "数据输出格式";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormInst
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(750, 396);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.textBox_instID);
             this.Controls.Add(this.comboBox_spInterval);
             this.Controls.Add(this.groupBox1);
@@ -224,6 +406,8 @@
             this.Text = "FormInst";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormInst_FormClosing);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -245,5 +429,22 @@
         private System.Windows.Forms.ComboBox comboBox_spInterval;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBox_instID;
+        private System.Windows.Forms.CheckBox checkBox_userCmd;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox textBox_userCmd1_2;
+        private System.Windows.Forms.TextBox textBox_userCmd1_1;
+        private System.Windows.Forms.ComboBox comboBox_userCmd1_3;
+        private System.Windows.Forms.TextBox textBox_userCmd4_2;
+        private System.Windows.Forms.TextBox textBox_userCmd3_2;
+        private System.Windows.Forms.TextBox textBox_userCmd2_2;
+        private System.Windows.Forms.ComboBox comboBox_userCmd4_3;
+        private System.Windows.Forms.TextBox textBox_userCmd4_1;
+        private System.Windows.Forms.ComboBox comboBox_userCmd3_3;
+        private System.Windows.Forms.TextBox textBox_userCmd3_1;
+        private System.Windows.Forms.ComboBox comboBox_userCmd2_3;
+        private System.Windows.Forms.TextBox textBox_userCmd2_1;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
     }
 }
