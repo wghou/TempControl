@@ -55,6 +55,7 @@ namespace InstDevice
 
         public InstSBE(InstSqlrd info) : base(info)
         {
+            this.Info.FreshFromSql2Info();
             // 配置仪器相关状态机
             ConfigInstStateless();
 
