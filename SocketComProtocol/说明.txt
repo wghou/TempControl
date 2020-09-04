@@ -1,0 +1,10 @@
+1、将 DeviceStateM.Socket.Type.cs  MySocket.Client.cs  MySocket.Protocol.cs 放入代码目录下，参照 Exapmle.cs 修改程序部分
+2、配置文件为 config.json
+3、项目依赖：
+Nlog
+SuperSocket
+SuperSocket.ClientEngine
+SuperSocket.Engine
+SuperSocket.WebSocket
+Newtonsoft.Json
+等
