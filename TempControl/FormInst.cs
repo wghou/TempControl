@@ -209,6 +209,8 @@ namespace TempControl
                 instList.Add(pt);
             }
 
+            textBox_testID.Text = _device._instDevices.Count <= 1 ? "null" : _device._instDevices[1].GetBasicInfo().testId;
+
             updateComboboxShow();
         }
 
@@ -231,6 +233,12 @@ namespace TempControl
             comboBox_spInterval.DataSource = spIntervalList;
             comboBox_spInterval.ValueMember = "Id";
             comboBox_spInterval.DisplayMember = "Name";
+
+            textBox_instID.Text = "";
+            foreach(var itm in instList)
+            {
+                textBox_instID.Text += itm.instType + " : " + (itm.initialized ? portList[itm.portId].portName : "未配置") + " : " + baudList[itm.brId].baudRate.ToString() + "\r\n";
+            }
         }
 
         /// <summary>
@@ -345,11 +353,11 @@ namespace TempControl
 
             linkedInst2Port();
 
-            try
-            {
-                textBox_instID.Text = (comboBox_inst.SelectedItem as InstInfoItem).instrumentID;
-            }
-            catch { }
+            //try
+            //{
+            //    textBox_instID.Text = (comboBox_inst.SelectedItem as InstInfoItem).instrumentID;
+            //}
+            //catch { }
         }
 
         private void FormInst_FormClosing(object sender, FormClosingEventArgs e)

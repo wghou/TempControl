@@ -106,6 +106,8 @@ namespace Device
             //    msgSend.ExecuteSucceed = false;
             //}
 
+            _instDevices.RemoveRange(1, _instDevices.Count - 1);
+
             try
             {
                 // 根据 TestID，从远程数据库查找标准器信息 InstSqlrd，配置 SensorSD
