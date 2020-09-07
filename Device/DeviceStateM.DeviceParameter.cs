@@ -27,7 +27,7 @@ namespace Device
         /// <summary>
         /// 是否自动取样
         /// </summary>
-        public bool autoSample = false;
+        public bool autoSample = true;
         /// <summary>
         /// 当前工作状态下的应达到的温度值
         /// </summary>

@@ -394,7 +394,7 @@ namespace Device
             WriteTempDeviceS(true);
 
             // 自动采样
-#if false
+#if true
             if(currentTemptPointState.autoSample == true)
             {
                 if (_sampleMachine.IsInState(AutoSample.StateSample.Normal)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
@@ -486,7 +486,7 @@ namespace Device
                 bool steady = sdDeviceRef.CheckFluc(_runningParameters.bridgeSteadyTimeSec, _runningParameters.flucValue);
                 if(sdDeviceRef.Enable == false) { steady = true; }
                 //steady = true;
-                if (steady)
+                if (steady && _sampleState == AutoSample.StateSample.Prepare_2)
                 {
 #if false
                     // 温度稳定度达到了要求，进入下一个状态 - 测量
@@ -500,6 +500,7 @@ namespace Device
                         _machine.Fire(Trigger.StartMeasure_Sensor);
                     }
 #else
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
                     _machine.Fire(Trigger.StartMeasure_Sensor);
 #endif
 
@@ -621,6 +622,8 @@ namespace Device
             {
                 return;
             }
+
+            if (_sampleState == AutoSample.StateSample.OnSample) return;
 
             // 开始存储仪器值
             bool rlt = true;
