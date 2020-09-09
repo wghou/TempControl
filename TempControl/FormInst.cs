@@ -329,7 +329,7 @@ namespace TempControl
             // 写入采样时间间隔
             InstDeviceStateM<InstSTDData, InstInfoBase>.sampleIntervalSec = spIntervalList[(int)comboBox_spInterval.SelectedValue].interval;
 
-            _device.InitInstDevice();
+            _device.configInstDeviceInternal();
         }
 
         /// <summary>

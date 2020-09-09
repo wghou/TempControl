@@ -64,6 +64,10 @@ namespace InstDevice
         /// <summary>串口</summary>
         protected SerialPort sPort;
 
+        /// <summary> 用户定义指令 </summary>
+        public static bool userDefinedCmdEnable = false;
+        public static Dictionary<string, string> userDefinedCmd = new Dictionary<string, string>();
+
 
         public delegate void ErrorOccurEventHandler(Err_sr err);
         /// <summary>

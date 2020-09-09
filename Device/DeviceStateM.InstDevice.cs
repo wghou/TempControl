@@ -26,6 +26,37 @@ namespace Device
         public JArray _instPorts = new JArray();
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="child"></param>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
+        private bool initInstDevices(JArray child, JObject cmd)
+        {
+            bool rlt = initInstDevices(child);
+
+            if(rlt == true)
+            {
+                if((cmd.ContainsKey("Enable")?(bool)cmd["Enable"]:false) == false)
+                {
+                    InstDeviceBase.userDefinedCmdEnable = false;
+                    return rlt;
+                }
+
+                if(cmd.ContainsKey("TS1") && cmd.ContainsKey("TS2") 
+                    && cmd.ContainsKey("TSR1") && cmd.ContainsKey("TSR2"))
+                {
+                    InstDeviceBase.userDefinedCmdEnable = true;
+                    InstDeviceBase.userDefinedCmd.Clear();
+                    InstDeviceBase.userDefinedCmd.Add("TS1", (string)cmd["TS1"]);
+                    InstDeviceBase.userDefinedCmd.Add("TS2", (string)cmd["TS2"]);
+                    InstDeviceBase.userDefinedCmd.Add("TSR1", (string)cmd["TSR1"]);
+                    InstDeviceBase.userDefinedCmd.Add("TSR2", (string)cmd["TSR2"]);
+                }
+            }
+            return rlt;
+        }
+        /// <summary>
         /// 初始化仪器设备
         /// </summary>
         /// <param name="child"></param>
@@ -68,7 +99,10 @@ namespace Device
         }
 
         //20200401-220155
-        public void InitInstDevice()
+        /// <summary>
+        /// 根据窗口输入参数，配置仪器
+        /// </summary>
+        public void configInstDeviceInternal()
         {
             var t1 = new Task(()=> {
                 bool confOk = true;

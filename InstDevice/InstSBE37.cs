@@ -350,54 +350,70 @@ namespace InstDevice
             bool rlt = true;
             CmdExecuted = false;
 
-            switch (Info.InstType)
+            if(userDefinedCmdEnable == true)
             {
-                case TypeInst.SBE37SM:
-                    if (cmd == SBE37Cmd.Ts)
-                    {
-                        rlt &= sendCMD("OutputFormat=1");
-                        System.Threading.Thread.Sleep(200);
-                        rlt &= sendCMD("ts");
-                    }
-                    else if (cmd == SBE37Cmd.Tsr)
-                    {
-                        rlt &= sendCMD("OutputFormat=0");
-                        System.Threading.Thread.Sleep(200);
-                        rlt &= sendCMD("ts");
-                    }
-                    break;
-
-                case TypeInst.SBE37SMP:
-                    if (cmd == SBE37Cmd.Ts)
-                    {
-                        rlt &= sendCMD("ts");
-                    }
-                    else if (cmd == SBE37Cmd.Tsr)
-                    {
-                        rlt &= sendCMD("tsr");
-                    }
-                    break;
-
-                case TypeInst.SBE37SI:
-                case TypeInst.SBE37SIP:
-                case TypeInst.SBE37SMPODO:
-                    if (cmd == SBE37Cmd.Ts)
-                    {
-                        rlt &= sendCMD("ts");
-                    }
-                    else if (cmd == SBE37Cmd.Tsr)
-                    {
-                        rlt &= sendCMD("tsr");
-                    }
-                    break;
-
-                default:
-                    nlogger.Error("code error xxison");
-                    break;
+                if (cmd == SBE37Cmd.Ts)
+                {
+                    rlt &= sendCMD(userDefinedCmd["TS1"]);
+                    System.Threading.Thread.Sleep(200);
+                    rlt &= sendCMD(userDefinedCmd["TS2"]);
+                }
+                else if (cmd == SBE37Cmd.Tsr)
+                {
+                    rlt &= sendCMD(userDefinedCmd["TSR1"]);
+                    System.Threading.Thread.Sleep(200);
+                    rlt &= sendCMD(userDefinedCmd["TSR2"]);
+                }
             }
-            
+            else
+            {
+                switch (Info.InstType)
+                {
+                    case TypeInst.SBE37SM:
+                        if (cmd == SBE37Cmd.Ts)
+                        {
+                            rlt &= sendCMD("OutputFormat=1");
+                            System.Threading.Thread.Sleep(200);
+                            rlt &= sendCMD("ts");
+                        }
+                        else if (cmd == SBE37Cmd.Tsr)
+                        {
+                            rlt &= sendCMD("OutputFormat=0");
+                            System.Threading.Thread.Sleep(200);
+                            rlt &= sendCMD("ts");
+                        }
+                        break;
 
-            
+                    case TypeInst.SBE37SMP:
+                        if (cmd == SBE37Cmd.Ts)
+                        {
+                            rlt &= sendCMD("ts");
+                        }
+                        else if (cmd == SBE37Cmd.Tsr)
+                        {
+                            rlt &= sendCMD("tsr");
+                        }
+                        break;
+
+                    case TypeInst.SBE37SI:
+                    case TypeInst.SBE37SIP:
+                    case TypeInst.SBE37SMPODO:
+                        if (cmd == SBE37Cmd.Ts)
+                        {
+                            rlt &= sendCMD("ts");
+                        }
+                        else if (cmd == SBE37Cmd.Tsr)
+                        {
+                            rlt &= sendCMD("tsr");
+                        }
+                        break;
+
+                    default:
+                        nlogger.Error("code error xxison");
+                        break;
+                }
+            }
+
             if (rlt == false)
             {
                 nlogger.Error("error in sendCmd with internalMeasureStep");

@@ -43,6 +43,13 @@
       "BaudRate": 9600
     }
   ],
+  "InstDeviceCmd": {
+    "Enable": true,
+    "TS1": "OutputFormat=1",
+    "TS2": "ts",
+    "TSR1": "OutputFormat=0",
+    "TSR2": "ts"
+  },
   "?IotPort": "关于用户接口的配置信息",
   "IotPort": {
     "MqttCloud": {
