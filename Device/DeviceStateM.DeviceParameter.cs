@@ -127,6 +127,8 @@ namespace Device
         /// </summary>
         public bool shutDownComputer = false;
 
+        public bool srDeviceEnable = false;
+
         /// <summary>
         /// 控温板 1 端口
         /// </summary>
@@ -184,6 +186,7 @@ namespace Device
                 sort = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "sort", sort);
                 ryElecEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "ryElecEnable", "Disable") == "Enable" ? true : false;
                 shutDownComputer = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "shutDownComputer", "Disable") == "Enable" ? true : false;
+                srDeviceEnable = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "srDeviceEnable", "Disable") == "Enable" ? true : false;
 
                 // 端口
                 portTp1 = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Port", "portTp1", portTp1);
@@ -230,6 +233,7 @@ namespace Device
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "sort", sort);
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "ryElecEnable", ryElecEnable ? "Enable" : "Disable");
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "shutDownComputer", shutDownComputer ? "Enable" : "Disable");
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "srDeviceEnable", srDeviceEnable ? "Enable" : "Disable");
 
                 // 端口
                 Utils.IniReadWrite.INIWriteValue(configFilePath, "Port", "portTp1", portTp1);
@@ -338,10 +342,13 @@ namespace Device
             }
 
             // 检查辅槽/传感器错误状态
-            bool st = srDevice.CheckStatus();
-            if(st == false)
+            if(srDevice.Enable == true)
             {
-                SetErrorStatus(ErrorCode.SensorError);
+                bool st = srDevice.CheckStatus();
+                if (st == false)
+                {
+                    SetErrorStatus(ErrorCode.SensorError);
+                }
             }
         }
     }

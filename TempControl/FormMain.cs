@@ -125,7 +125,7 @@ namespace TempControl
         {
             this.BeginInvoke(new EventHandler(delegate
             {
-                _device.srDevice.Enable = true;
+                //_device.srDevice.Enable = true;
 
                 _device.ryDeviceM.Enable = true;
                 _device.ryDeviceS.Enable = false;
