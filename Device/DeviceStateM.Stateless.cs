@@ -23,10 +23,8 @@ namespace Device
         Control,
         /// <summary> 稳定 </summary>
         Stable,
-        /// <summary> 测量_采样 </summary>
-        Measure_Sample,
-        /// <summary> 测量_读取仪器 </summary>
-        Measure_Sensor,
+        /// <summary> 测量 </summary>
+        Measure,
         /// <summary> 停止 </summary>
         ShutdownPC,
         /// <summary> 空闲 </summary>
@@ -48,10 +46,8 @@ namespace Device
         StartControl,
         /// <summary> 到达稳定 </summary>
         AchieveSteady,
-        /// <summary> 开始测量_采样 </summary>
-        StartMeasure_Sample,
-        /// <summary> 开始测量_读取仪器 </summary>
-        StartMeasure_Sensor,
+        /// <summary> 开始测量 </summary>
+        StartMeasure,
         /// <summary> 暂停自动控温 </summary>
         SuspendAutoControl,
         /// <summary> 测量完成 </summary>
@@ -163,26 +159,16 @@ namespace Device
                 .OnEntry(t => StableEntry())
                 .OnExit(t => StableExit())
                 .InternalTransition(_TickTrigger, (tic, t) => StableTick(tic))
-                .Permit(Trigger.StartMeasure_Sample, State.Measure_Sample)
-                .Permit(Trigger.StartMeasure_Sensor, State.Measure_Sensor)
+                .Permit(Trigger.StartMeasure, State.Measure)
                 .Permit(Trigger.SuspendAutoControl, State.Idle)
                 .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
 
 
-            // state Measure_Sample
-            _machine.Configure(State.Measure_Sample)
-                .OnEntry(t => Measure_SampleEntry())
-                .OnExit(t => Measure_SampleExit())
-                .InternalTransition(_TickTrigger, (tic, t) => Measure_SampleTick(tic))
-                .Permit(Trigger.StartMeasure_Sensor, State.Measure_Sensor)
-                .Permit(Trigger.SuspendAutoControl, State.Idle)
-                .Permit(Trigger.ForceShutdownPC, State.ShutdownPC);
-
-            // state Measure_Sensor
-            _machine.Configure(State.Measure_Sensor)
-                .OnEntry(t => Measure_SensorEntry())
-                .OnExit(t => Measure_SensorExit())
-                .InternalTransition(_TickTrigger, (tic, t) => Measure_SensorTick(tic))
+            // state Measure
+            _machine.Configure(State.Measure)
+                .OnEntry(t => MeasureEntry())
+                .OnExit(t => MeasureExit())
+                .InternalTransition(_TickTrigger, (tic, t) => MeasureTick(tic))
                 .PermitIf<float>(_nextPointTrigger, State.TempUp, tp => !nextPointDown(tp))
                 .PermitIf<float>(_nextPointTrigger, State.TempDown, tp => nextPointDown(tp))
                 .Permit(Trigger.FinishedAll, State.Idle)

@@ -67,12 +67,14 @@ namespace TempControl
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             List<bool> finishedStatus = new List<bool>();
+            List<bool> autoSampleStatus = new List<bool>();
             lock (devicesAll.stepLocker)
             {
                 // 获取当前温度点列表中的完成状态
                 for (int i = 0; i < devicesAll.temperaturePointList.Count; i++)
                 {
                     finishedStatus.Add(devicesAll.temperaturePointList[i].finished);
+                    autoSampleStatus.Add(devicesAll.temperaturePointList[i].autoSample);
                 }
             }
             if (finishedStatus.Count != paramList.Count)
@@ -87,6 +89,7 @@ namespace TempControl
                     // 更新状态
                     changed = true;
                     paramList[i].finished = finishedStatus[i];
+                    paramList[i].autoSample = autoSampleStatus[i];
                 }
             }
             // 如果有改变，则更新显示
@@ -124,6 +127,14 @@ namespace TempControl
                     ps1.editSave = "已测量";
                 else
                     ps1.editSave = "未测量";
+                if(paramList[i].autoSample == true)
+                {
+                    ps1.autoSample = "是";
+                }
+                else
+                {
+                    ps1.autoSample = "否";
+                }
                 paramList[i].paramM.CopyTo(ps1.param, 0);
                 BList.Add(ps1);
                 ParamShow ps2 = new ParamShow();
@@ -149,6 +160,7 @@ namespace TempControl
             integration.DataPropertyName = "Integration";
             power.DataPropertyName = "Power";
             edit.DataPropertyName = "Edit";
+            autoSample.DataPropertyName = "AutoSample";
 
 
             dataGridView1.AutoGenerateColumns = false;
@@ -167,6 +179,7 @@ namespace TempControl
                         st.paramM.CopyTo(ts.paramM, 0);
                         st.paramS.CopyTo(ts.paramS, 0);
                         ts.finished = st.finished;
+                        ts.autoSample = st.autoSample;
                         paramList.Add(ts);
                     }
                 }
@@ -183,7 +196,7 @@ namespace TempControl
                             TempParam ts = new TempParam();
                             i++;
                             string[] parmM = line1.Split(' ');
-                            if (parmM.Length == 7)
+                            if (parmM.Length == 8)
                             {
                                 float vl;
                                 if (float.TryParse(parmM[0], out vl)) ts.paramM[0] = vl;
@@ -199,6 +212,9 @@ namespace TempControl
                                 if (float.TryParse(parmM[5], out vl)) ts.paramM[5] = vl;
                                 else break;
                                 if (float.TryParse(parmM[6], out vl)) ts.paramM[6] = vl;
+                                else break;
+                                bool at = false;
+                                if (bool.TryParse(parmM[7], out at)) ts.autoSample = at;
                                 else break;
                             }
                             else
@@ -249,7 +265,7 @@ namespace TempControl
                         devicesAll._state == Device.State.TempUp ||
                         devicesAll._state == Device.State.Control ||
                         devicesAll._state == Device.State.Stable ||
-                        devicesAll._state == Device.State.Measure_Sample)
+                        devicesAll._state == Device.State.Measure)
                 {
                     // 正在自动控温
                     this.checkBox_start.Checked = true;
@@ -330,6 +346,7 @@ namespace TempControl
                         paramList[i].paramM.CopyTo(tp.paramM, 0);
                         paramList[i].paramS.CopyTo(tp.paramS, 0);
                         tp.finished = paramList[i].finished;
+                        tp.autoSample = paramList[i].autoSample;
                         devicesAll.temperaturePointList.Add(tp);
                     }
 
@@ -388,6 +405,7 @@ namespace TempControl
                             st.paramM.CopyTo(ts.paramM, 0);
                             st.paramS.CopyTo(ts.paramS, 0);
                             ts.finished = st.finished;
+                            ts.autoSample = st.autoSample;
                             paramList.Add(ts);
                         }
                     }
@@ -617,6 +635,14 @@ namespace TempControl
                     updateDataGridView();
                 }
 
+            }
+            else if(dataGridView1.Columns[e.ColumnIndex].Name == "autoSample")
+            {
+                if (e.RowIndex % 2 == 0)
+                {
+                    paramList[e.RowIndex / 2].autoSample = !paramList[e.RowIndex / 2].autoSample;
+                    updateDataGridView();
+                }
             }
         }
 
@@ -1310,6 +1336,7 @@ namespace TempControl
             public string tpName;
             public string _finish;
             public string editSave;
+            public string autoSample;
             /// <summary>
             /// 温控设备的参数值
             /// </summary>
@@ -1362,6 +1389,8 @@ namespace TempControl
             public string TempThr { get { return param[8].ToString("0.000"); } }
 
             public string Edit { get { return editSave; } }
+
+            public string AutoSample { get { return autoSample; } }
         }
 
         /// <summary>
@@ -1370,6 +1399,7 @@ namespace TempControl
         internal class TempParam : IComparable
         {
             public bool finished = false;
+            public bool autoSample = false;
             /// <summary>
             /// 主槽温控设备的参数值
             /// </summary>
@@ -1413,7 +1443,8 @@ namespace TempControl
                     {
                         sw.Write(paramList[i].paramM[j].ToString() + " ");
                     }
-                    sw.Write(paramList[i].paramM[paramList[i].paramM.Length - 1].ToString());
+                    sw.Write(paramList[i].paramM[paramList[i].paramM.Length - 1].ToString() + " ");
+                    sw.Write(paramList[i].autoSample.ToString());
                     sw.WriteLine();
                     for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
                     {

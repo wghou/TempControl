@@ -394,7 +394,6 @@ namespace Device
             WriteTempDeviceS(true);
 
             // 自动采样
-#if true
             if(currentTemptPointState.autoSample == true)
             {
                 if (_sampleMachine.IsInState(AutoSample.StateSample.Normal)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
@@ -407,7 +406,6 @@ namespace Device
                     SetErrorStatus(ErrorCode.CodeError);
                 }
             }
-#endif
         }
 
         /// <summary>
@@ -482,27 +480,34 @@ namespace Device
             // 判断 - 测温电桥温度值的波动度满足条件（2 分钟 0.001），则进入测量状态
             if (currentTemptPointState.stateCounts > _runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec)
             {
-                // 电桥自检正常。。。
-                bool steady = sdDeviceRef.CheckFluc(_runningParameters.bridgeSteadyTimeSec, _runningParameters.flucValue);
-                if(sdDeviceRef.Enable == false) { steady = true; }
-                //steady = true;
-                if (steady && _sampleState == AutoSample.StateSample.Prepare_2)
+                // 判断温度是否稳定
+                bool steady = false;
+                if (sdDeviceRef.Enable == false)
                 {
-#if false
-                    // 温度稳定度达到了要求，进入下一个状态 - 测量
-                    // 如果支持自动采样，则进入 Measure_Sample，否则进入 Measure_Sensor
-                    if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
+                    steady = tpDeviceM.checkFlucCount(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                }
+                else
+                {
+                    steady = sdDeviceRef.CheckFluc(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                }
+
+                // 如果稳定
+                if (steady)
+                {
+                    // 是否需要自动取样
+                    if(currentTemptPointState.autoSample == true)
                     {
-                        _machine.Fire(Trigger.StartMeasure_Sample);
+                        // 此时已执行完第一阶段
+                        if (_sampleState == AutoSample.StateSample.Prepare_2)
+                        {
+                            _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
+                            _machine.Fire(Trigger.StartMeasure);
+                        }
                     }
                     else
                     {
-                        _machine.Fire(Trigger.StartMeasure_Sensor);
+                        _machine.Fire(Trigger.StartMeasure);
                     }
-#else
-                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
-                    _machine.Fire(Trigger.StartMeasure_Sensor);
-#endif
 
                     nlogger.Info((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
                 }
@@ -522,63 +527,9 @@ namespace Device
         /// <summary>
         /// Measure_Sample Entry
         /// </summary>
-        private void Measure_SampleEntry()
+        private void MeasureEntry()
         {
-            nlogger.Debug("Measure_Sample Entry.");
-        }
-
-        /// <summary>
-        /// Measure_Sample Tick
-        /// </summary>
-        /// <param name="tic"> 时间步长 </param>
-        private void Measure_SampleTick(int tic)
-        {
-            nlogger.Debug("Measure_Sample Tick: " + tic.ToString() + " ms");
-
-
-            switch (_sampleState)
-            {
-                case AutoSample.StateSample.Prepare_1:
-                    // wait
-                    break;
-
-                case AutoSample.StateSample.Prepare_2:
-                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
-                    break;
-
-                case AutoSample.StateSample.OnSample:
-                    _machine.Fire(Trigger.StartMeasure_Sensor);
-                    break;
-
-                case AutoSample.StateSample.Normal:
-                case AutoSample.StateSample.Stop:
-                default:
-                    // error
-                    // todo: 错误处理
-                    nlogger.Error("自动控温中，自动采样出现错误：_sampleMachine.IsInState(OnSample or Normal)");
-                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
-                    // 停止控温流程
-                    _machine.Fire(Trigger.SuspendAutoControl);
-                    // todo: 标记自动采样错误
-                    SetErrorStatus(ErrorCode.CodeError);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Measure_Sample Exit
-        /// </summary>
-        private void Measure_SampleExit()
-        {
-            nlogger.Debug("Measure_Sample Exit.");
-        }
-
-        /// <summary>
-        /// Measure_Sensor Entry
-        /// </summary>
-        private void Measure_SensorEntry()
-        {
-            nlogger.Debug("Measure_Sensor Entry.");
+            nlogger.Debug("Measure Entry.");
 
             // 开始仪器测量温度
             bool rlt = true;
@@ -595,35 +546,47 @@ namespace Device
         }
 
         /// <summary>
-        /// Measure_Sensor Tick
+        /// Measure Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
-        private void Measure_SensorTick(int tic)
+        private void MeasureTick(int tic)
         {
-            nlogger.Debug("Measure_Sensor Tick: " + tic.ToString() + " ms");
+            nlogger.Debug("Measure_Sample Tick: " + tic.ToString() + " ms");
 
-#if false
-            // 等待 xx 分钟后，第二次点击
-            if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
-            {
-                // 停止自动采样
-                if (_sampleMachine.IsInState(AutoSample.StateSample.OnSample)) return;
-                else if (!_sampleMachine.IsInState(AutoSample.StateSample.Normal))
-                {
-                    nlogger.Error("自动控温中，自动采样出现错误：_sampleMachine.IsInState(OnSample or Normal)");
-                    _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
-                    // todo: 标记自动采样错误
-                    SetErrorStatus(ErrorCode.CodeError);
-                }
-            }
-#endif
             // 测量满两分钟
-            if(currentTemptPointState.stateCounts < _runningParameters.measureTimeSec / _runningParameters.readTempIntervalSec)
+            if (currentTemptPointState.stateCounts < _runningParameters.measureTimeSec / _runningParameters.readTempIntervalSec)
             {
                 return;
             }
 
-            if (_sampleState == AutoSample.StateSample.OnSample) return;
+            // 是否需要自动采样
+            if (currentTemptPointState.autoSample == true)
+            {
+                switch(_sampleState)
+                {
+                    // 还未执行完采样，则返回
+                    case AutoSample.StateSample.OnFlush:
+                    case AutoSample.StateSample.OnSample:
+                        return;
+
+                    // 已经执行完采样，继续流程
+                    case AutoSample.StateSample.Normal:
+                        break;
+
+                    // 其他情况均为异常
+                    default:
+                        // error
+                        // todo: 错误处理
+                        nlogger.Error("自动控温中，自动采样出现错误：_sampleMachine.IsInState(OnSample or Normal)");
+                        _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+                        // 停止控温流程
+                        _machine.Fire(Trigger.SuspendAutoControl);
+                        // todo: 标记自动采样错误
+                        SetErrorStatus(ErrorCode.CodeError);
+                        return;
+                        break;
+                }
+            }
 
             // 开始存储仪器值
             bool rlt = true;
@@ -681,12 +644,13 @@ namespace Device
         }
 
         /// <summary>
-        /// Measure_Sensor Exit
+        /// Measure_Sample Exit
         /// </summary>
-        private void Measure_SensorExit()
+        private void MeasureExit()
         {
-            nlogger.Debug("Measure_Sensor Exit.");
+            nlogger.Debug("Measure Exit.");
         }
+
 
         /// <summary>
         /// ShutdownPC Entry

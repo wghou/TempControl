@@ -205,7 +205,7 @@ namespace TempControl
                         devicesAll._state == Device.State.TempUp ||
                         devicesAll._state == Device.State.Control ||
                         devicesAll._state == Device.State.Stable ||
-                        devicesAll._state == Device.State.Measure_Sample)
+                        devicesAll._state == Device.State.Measure)
                 {
                     // 正在自动控温
                     this.checkBox_start.Checked = true;

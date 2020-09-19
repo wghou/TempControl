@@ -29,9 +29,13 @@ namespace Device
             /// </summary>
             Prepare_2,
             /// <summary>
+            /// 冲洗阶段 - 取样中：关 3-4，开 1-2，一分钟（可调）后关闭，并回到常态
+            /// </summary>
+			OnFlush,
+            /// <summary>
             /// 自动取样 - 取样中：关 3-4，开 1-2，一分钟（可调）后关闭，并回到常态
             /// </summary>
-			OnSample,
+            OnSample,
             /// <summary>
             /// 强制停止
             /// </summary>
@@ -50,15 +54,19 @@ namespace Device
             /// <summary>
             /// 5分钟后，从 Prepare_1 进入 Prepare_2
             /// </summary>
-            ClickFist_5m = 1,
+            ClickFist_5m,
             /// <summary>
             /// 第二次按键：进入 OnSample
             /// </summary>
-            ClickSecond = 2,
+            ClickSecond,
+            /// <summary>
+            /// 冲洗一分钟
+            /// </summary>
+            FlushEnd,
             /// <summary>
             /// 一分钟（可调）取样之后，回到常态 Normal
             /// </summary>
-			End = 3,
+			End,
             /// <summary>
             /// 时钟事件
             /// </summary>
@@ -88,6 +96,11 @@ namespace Device
             public int tim_prepare = 5 * 60;
 
             /// <summary>
+            /// 冲洗时长 - 1 分钟
+            /// </summary>
+            public int tim_flush = 1 * 60;
+
+            /// <summary>
             /// 取样时长 - 1 分钟
             /// </summary>
             public int tim_onsample = 1 * 60;
@@ -114,6 +127,7 @@ namespace Device
                     timer_interval = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "timer_interval", timer_interval.ToString()));
                     tim_prepare = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_1", tim_prepare.ToString()));
                     tim_onsample = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_onsample", tim_onsample.ToString()));
+                    tim_flush = int.Parse(Utils.IniReadWrite.INIGetStringValue(configFilePath, "SampleParam", "tim_flush", tim_flush.ToString()));
                 }
                 catch (Exception ex)
                 {
@@ -137,6 +151,7 @@ namespace Device
                     Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "timer_interval", timer_interval.ToString());
                     Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_1", tim_prepare.ToString());
                     Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_onsample", tim_onsample.ToString());
+                    Utils.IniReadWrite.INIWriteValue(configFilePath, "SampleParam", "tim_flush", tim_flush.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -203,9 +218,16 @@ namespace Device
                 .OnEntry(t => samplePrepare_2Entry())
                 .OnExit(t => samplePrepare_2Exit())
                 .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepare_2Tick(tic))
-                .Permit(AutoSample.TriggerSample.ClickSecond, AutoSample.StateSample.OnSample)
+                .Permit(AutoSample.TriggerSample.ClickSecond, AutoSample.StateSample.OnFlush)
                 .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
+            // StateSample.OnFlush
+            _sampleMachine.Configure(AutoSample.StateSample.OnFlush)
+                .OnEntry(t => sampleFlushEntry())
+                .OnExit(t => sampleFlushExit())
+                .InternalTransition(_sampleTickTrigger, (tic, t) => sampleFlushTick(tic))
+                .Permit(AutoSample.TriggerSample.FlushEnd, AutoSample.StateSample.OnSample)
+                .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
             // StateSample.OnSample
             _sampleMachine.Configure(AutoSample.StateSample.OnSample)
@@ -421,9 +443,9 @@ namespace Device
         /// <summary>
         /// OnSample Entry
         /// </summary>
-        private void sampleStartEntry()
+        private void sampleFlushEntry()
         {
-            nlogger.Debug("Sample Start Entry.");
+            nlogger.Debug("Sample Flush Entry.");
 
             // 关闭 3-4 ，打开 1-2 ，一分钟后结束
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
@@ -432,6 +454,45 @@ namespace Device
             ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
 
             WriteRelayDeviceS2();
+        }
+
+        /// <summary>
+        /// OnSample Tick
+        /// </summary>
+        /// <param name="tic"> 时间步长 </param>
+        private void sampleFlushTick(int tic)
+        {
+            nlogger.Debug("Sample Flush Tick: " + tic.ToString() + " ms");
+
+            // 1 分钟后，结束采样
+            if (sampleStateCounts >= _runningParameters.sampleParam.tim_flush / _runningParameters.sampleParam.timer_interval)
+            {
+                _sampleMachine.Fire(AutoSample.TriggerSample.FlushEnd);
+            }
+        }
+
+        /// <summary>
+        /// OnSample Exit
+        /// </summary>
+        private void sampleFlushExit()
+        {
+            nlogger.Debug("Sample Flush Exit.");
+        }
+
+        /// <summary>
+        /// OnSample Entry
+        /// </summary>
+        private void sampleStartEntry()
+        {
+            nlogger.Debug("Sample Start Entry.");
+
+            // 关闭 3-4 ，打开 1-2 ，一分钟后结束
+            //ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
+            //ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
+            //ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
+            //ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+
+            //WriteRelayDeviceS2();
         }
 
         /// <summary>

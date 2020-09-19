@@ -24,6 +24,10 @@ namespace Device
         /// 仪器设备的端口
         /// </summary>
         public JArray _instPorts = new JArray();
+        /// <summary>
+        /// 当前标准仪器值的缓存
+        /// </summary>
+        private InstSTDData _stdDataCache = new InstSTDData();
 
         /// <summary>
         /// 
@@ -212,6 +216,8 @@ namespace Device
         /// <param name="data"></param>
         private void SdDevice_DataReceivedEvent(InstSTDData data)
         {
+            _stdDataCache = data;
+
             InstSDReceiveDataEvent?.Invoke(data);
 
             IotInstValueMessage istVal = new IotInstValueMessage();

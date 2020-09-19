@@ -578,6 +578,8 @@ namespace InstDevice
         public DateTime addTime = DateTime.Now;
         /// <summary> </summary>
         public DateTime updateTime = DateTime.Now;
+        /// <summary> 标准盐度值 </summary>
+        public double vStandardS = 0.0;
 
         /// <summary>
         /// 根据 Data 数据（一般为成员变量）刷新 Sql 数据（一般为属性）

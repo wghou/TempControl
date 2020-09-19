@@ -157,13 +157,9 @@ namespace TempControl
                         // 系统流程
                         this.label_controlState.Text = "稳定";
                         break;
-                    case Device.State.Measure_Sample:
+                    case Device.State.Measure:
                         // 系统流程
                         this.label_controlState.Text = "测量-采样";
-                        break;
-                    case Device.State.Measure_Sensor:
-                        // 系统流程
-                        this.label_controlState.Text = "测量-取值";
                         break;
                     case Device.State.ShutdownPC:
                         // 系统流程
@@ -227,6 +223,14 @@ namespace TempControl
                             itm.Value.Enabled = false;
                         }
                         break;
+                    case Device.AutoSample.StateSample.OnFlush:
+                        this.checkBox_data.Text = "自动采样\n冲洗中";
+                        // 继电器状态 S
+                        foreach (var itm in dictCheckBoxsRyS)
+                        {
+                            itm.Value.Enabled = false;
+                        }
+                        break;
                     case Device.AutoSample.StateSample.OnSample:
                         this.checkBox_data.Text = "自动采样\n采样中";
                         // 继电器状态 S
@@ -234,6 +238,7 @@ namespace TempControl
                         {
                             itm.Value.Enabled = false;
                         }
+                        MessageBox.Show("冲洗完成，开始采样！");
                         break;
                     case Device.AutoSample.StateSample.Stop:
                         this.checkBox_data.Text = "自动采样";

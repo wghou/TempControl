@@ -90,11 +90,59 @@ namespace Device
                 case SocketCmd.DeviceState:
                     // 返回收到的指令
                     SocketStateMessage msgSend2 = message.ToObject<SocketStateMessage>();
-                    SuspendAutoControl();
+                    //SuspendAutoControl();
                     msgSend2.ExecuteSucceed = true;
                     msgSend2.devSt = _state;
                     msgSend2.ErrorSt = (CheckErrorStatus() != 0);
                     _socketServer.pushMessage(JObject.FromObject(msgSend2));
+                    break;
+
+                case SocketCmd.DeviceStatus:
+                    SocketStatusMessage msgSend3 = message.ToObject<SocketStatusMessage>();
+                    msgSend3.ExecuteSucceed = true;
+                    //
+                    // add all the parameters
+                    // 主槽设定值
+                    msgSend3.ZhucaoTemperature = tpDeviceM.tpParam[0];
+                    // 主槽当前温度值
+                    if (this.tpDeviceM.temperatures.Count != 0) msgSend3.ZhucaoTemperatureReal = tpDeviceM.temperatures.Last();
+                    // 主槽加热功率
+                    msgSend3.ZhucaoPower = (int)tpDeviceM.tpPowerShow;
+                    // 辅槽设定值
+                    msgSend3.FucaoTemperature = tpDeviceS.tpParam[0];
+                    // 辅槽当前温度值
+                    if (this.tpDeviceS.temperatures.Count != 0) msgSend3.FucaoTemperatureReal = tpDeviceS.temperatures.Last();
+                    // 辅槽加热功率
+                    msgSend3.FucaoPower = (int)tpDeviceS.tpPowerShow;
+
+                    // 总电源开关
+                    msgSend3.Zongdianyuan = ryDeviceM.ryStatus[0];
+                    // 主槽制冷开关
+                    msgSend3.Zhucaozhileng = ryDeviceM.ryStatus[1];
+                    // 主槽控温开关
+                    msgSend3.Zhucaokongwen = ryDeviceM.ryStatus[2];
+                    // 辅槽控温开关
+                    msgSend3.Fucaokongwen = ryDeviceM.ryStatus[3];
+                    // 辅槽制冷开关
+                    msgSend3.Fucaozhileng = ryDeviceM.ryStatus[4];
+                    // 辅槽循环开关
+                    msgSend3.Fucaoxunhuan = ryDeviceM.ryStatus[5];
+                    // 辅槽快冷开关
+                    msgSend3.Fucaokuaileng = ryDeviceM.ryStatus[6];
+                    // 主槽快冷开关
+                    msgSend3.Zhucaokuaileng = ryDeviceM.ryStatus[7];
+
+                    // 数据采集时间
+                    msgSend3.DataTime = _stdDataCache.addTime;
+                    // 标准温度
+                    msgSend3.Temperature = _stdDataCache.vStandardT;
+                    // 标准电导率
+                    msgSend3.Conductivity = _stdDataCache.vStandardC;
+                    // 标准盐度
+                    msgSend3.Salinity = _stdDataCache.vStandardS;
+
+
+                    _socketServer.pushMessage(JObject.FromObject(msgSend3));
                     break;
 
                 default:

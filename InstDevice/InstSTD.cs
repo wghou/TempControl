@@ -95,8 +95,9 @@ namespace InstDevice
                 data.InstIdx = Info.InstIdx_NotUsed;
                 data.InstType = Info.InstType;
                 data.vTitularValue = currentTemptPoint;
-                data.vStandardC = double.Parse(valStrs[4]);
-                data.vStandardT = double.Parse(valStrs[5]);
+                data.vStandardC = double.Parse(valStrs[2]);
+                data.vStandardT = double.Parse(valStrs[4]);
+                data.vStandardS = double.Parse(valStrs[5]);
                 data.measureTime = DateTime.ParseExact(valStrs[0], "yyyy:MM:dd:HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
                 data.addTime = data.measureTime;
                 data.updateTime = data.measureTime;

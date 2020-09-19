@@ -21,6 +21,8 @@ namespace Device
         TestId,
         /// <summary> 设备状态 </summary>
         DeviceState,
+        /// <summary> 传感器部件状态 </summary>
+        DeviceStatus,
         /// <summary> 未知 </summary>
         Unknown
     }
@@ -60,6 +62,30 @@ namespace Device
         public State devSt { set; get; } = State.Idle;
         /// <summary> 是否发生了错误：true 表示发生了错误 </summary>
         public bool ErrorSt { set; get; } = false;
+    }
+
+    public class SocketStatusMessage : SocketCmdMessage
+    {
+        public SocketStatusMessage() : base(SocketCmd.DeviceStatus) { }
+
+        public float ZhucaoTemperature = 35.0000f;//主槽设定温度
+        public float ZhucaoTemperatureReal = 35.0000f;//主槽当前温度
+        public int ZhucaoPower = 0; //主槽加热功率
+        public float FucaoTemperature = 34.0000f; //辅槽设定温度
+        public float FucaoTemperatureReal = 34.0000f; //辅槽当前温度
+        public int FucaoPower = 0; //辅槽加热功率
+        public bool Zongdianyuan = false; //总电源开关
+        public bool Zhucaozhileng = false; //主槽制冷开关
+        public bool Zhucaokongwen = false; //主槽控温开关
+        public bool Fucaokongwen = false; //辅槽控温开关
+        public bool Fucaozhileng = false; //辅槽制冷开关
+        public bool Fucaoxunhuan = false; //辅槽循环开关
+        public bool Fucaokuaileng = false; //辅槽快冷开关
+        public bool Zhucaokuaileng = false; //主槽快冷开关
+        public DateTime DataTime = DateTime.Now;//数据采集时间
+        public double Temperature = double.NaN;//标准温度
+        public double Conductivity = double.NaN;//标准电导率
+        public double Salinity = double.NaN;//标准盐度
     }
 
     /*
