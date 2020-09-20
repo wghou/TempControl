@@ -87,46 +87,4 @@ namespace Device
         public double Conductivity = double.NaN;//标准电导率
         public double Salinity = double.NaN;//标准盐度
     }
-
-    /*
-    Example:
-    private MySocketClient _socketClient = new MySocketClient();
-
-    // 初始化
-    bool confOK = _socketClient.Init(cfg);
-    _socketClient.MessageReceievedEvent += _socketClient_MessageReceievedEvent;
-     
-    // 发送指令
-    SocketCmdMessage msg1 = new SocketCmdMessage(cmd);
-    _socketClient.pushMessage(JObject.FromObject(msg1));
-
-    // 解析收到的指令
-    SocketCmdMessage msg = message.ToObject<SocketCmdMessage>();
-    switch (msg.cmdType)
-    {
-             
-        // 开始控温流程
-        case SocketCmd.AutoStart:
-            break;
-                
-        // 停止控温流程
-        case SocketCmd.Stop:
-            break;
-
-        // 读取仪器信息
-        case SocketCmd.TestId:
-            // 解析数据
-            SocketTestIdxMessage msgSend1 = message.ToObject<SocketTestIdxMessage>();
-            break;
-
-        case SocketCmd.DeviceState:
-            // 解析数据
-            SocketStateMessage msgSend2 = message.ToObject<SocketStateMessage>();
-            break;
-
-        default:
-            nlogger.Error("unknow socket cmd: " + msg.cmdType.ToString());
-            break;
-    }
-     */
 }
