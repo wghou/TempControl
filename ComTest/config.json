@@ -17,7 +17,7 @@
   "RelayS": {
     "PortName": "COM8",
     "BaudRate": 9600,
-    "Enable": false
+    "Enable": true
   },
   "SensorSTD": {
     "PortName": "COM10",

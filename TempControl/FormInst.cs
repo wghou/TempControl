@@ -105,7 +105,7 @@ namespace TempControl
         /// </summary>
         public class PortInfoItem : IComparable
         {
-            public int Id { get; internal set; }
+            public int Id { get; internal set; } = -1;
             public string Name {
                 get {
                     if(obtained == true)
@@ -135,17 +135,18 @@ namespace TempControl
         /// </summary>
         public class InstInfoItem
         {
-            public int Id { get; internal set; }
+            public int Id { get; internal set; } = -1;
             public string Name
             {
                 get
                 {
-                    if (initialized == true) { return instType + ":已配置"; }
-                    else { return instType + ":未配置"; }
+                    if (initialized == true) { return instType + "-" + v_sn + ":已配置"; }
+                    else { return instType + "-" + v_sn + ":未配置"; }
                 }
             }
 
             public string instType = "Undefined";
+            public string v_sn = "000";
             public int portId = -1;
             public int brId = -1;
             public bool initialized = false;
@@ -190,6 +191,7 @@ namespace TempControl
                 InstInfoItem pt = new InstInfoItem();
                 pt.Id = itm.InstIdx;
                 pt.instType = itm.GetBasicInfo().InstType.ToString();
+                pt.v_sn = itm.GetBasicInfo().v_sn;
                 var rlt = portList.Where(p => p.portName == itm.GetBasicInfo().PortName);
                 if(rlt.Count() == 0)
                 {
@@ -210,6 +212,8 @@ namespace TempControl
             }
 
             textBox_testID.Text = _device._instDevices.Count <= 1 ? "null" : _device._instDevices[1].GetBasicInfo().testId;
+
+            this.Text = _device._instDevices.Count <= 1 ? "null" : _device._instDevices[1].GetBasicInfo().testId;
 
             updateComboboxShow();
         }
@@ -237,7 +241,7 @@ namespace TempControl
             textBox_instID.Text = "";
             foreach(var itm in instList)
             {
-                textBox_instID.Text += itm.instType + " : " + (itm.initialized ? portList[itm.portId].portName : "未配置") + " : " + baudList[itm.brId].baudRate.ToString() + "\r\n";
+                textBox_instID.Text += itm.instType + "-" + itm.v_sn + " : " + (itm.initialized ? portList[itm.portId].portName : "未配置") + " : " + baudList[itm.brId].baudRate.ToString() + "\r\n";
             }
         }
 

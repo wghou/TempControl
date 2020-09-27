@@ -183,81 +183,6 @@ namespace TempControl
                         paramList.Add(ts);
                     }
                 }
-                else
-                {
-                    // 从缓存文本中读取温度点
-                    try
-                    {
-                        string[] lines = File.ReadAllLines(@"./params.cache", Encoding.UTF8);
-                        for (int i = 0; i < lines.Length; i++)
-                        {
-                            // 主槽参数
-                            string line1 = lines[i];
-                            TempParam ts = new TempParam();
-                            i++;
-                            string[] parmM = line1.Split(' ');
-                            if (parmM.Length == 8)
-                            {
-                                float vl;
-                                if (float.TryParse(parmM[0], out vl)) ts.paramM[0] = vl;
-                                else break;
-                                if (float.TryParse(parmM[1], out vl)) ts.paramM[1] = vl;
-                                else break;
-                                if (float.TryParse(parmM[2], out vl)) ts.paramM[2] = vl;
-                                else break;
-                                if (float.TryParse(parmM[3], out vl)) ts.paramM[3] = vl;
-                                else break;
-                                if (float.TryParse(parmM[4], out vl)) ts.paramM[4] = vl;
-                                else break;
-                                if (float.TryParse(parmM[5], out vl)) ts.paramM[5] = vl;
-                                else break;
-                                if (float.TryParse(parmM[6], out vl)) ts.paramM[6] = vl;
-                                else break;
-                                bool at = false;
-                                if (bool.TryParse(parmM[7], out at)) ts.autoSample = at;
-                                else break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                            // 辅槽参数
-                            if (i >= lines.Length) { break; }
-                            string line2 = lines[i];
-                            string[] parmS = line2.Split(' ');
-                            if (parmS.Length == 7)
-                            {
-                                float vl;
-                                if (float.TryParse(parmS[0], out vl)) ts.paramS[0] = vl;
-                                else break;
-                                if (float.TryParse(parmS[1], out vl)) ts.paramS[1] = vl;
-                                else break;
-                                if (float.TryParse(parmS[2], out vl)) ts.paramS[2] = vl;
-                                else break;
-                                if (float.TryParse(parmS[3], out vl)) ts.paramS[3] = vl;
-                                else break;
-                                if (float.TryParse(parmS[4], out vl)) ts.paramS[4] = vl;
-                                else break;
-                                if (float.TryParse(parmS[5], out vl)) ts.paramS[5] = vl;
-                                else break;
-                                if (float.TryParse(parmS[6], out vl)) ts.paramS[6] = vl;
-                                else break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-
-                            // 装入列表中
-                            paramList.Add(ts);
-                        }
-                    }
-                    catch(Exception ex)
-                    {
-                        
-                    }
-                }
 
                 // 判断是否已开始自动控温流程
                 if (this.devicesAll._state == Device.State.Start ||
@@ -348,6 +273,11 @@ namespace TempControl
                         tp.finished = paramList[i].finished;
                         tp.autoSample = paramList[i].autoSample;
                         devicesAll.temperaturePointList.Add(tp);
+                    }
+
+                    if (devicesAll.writeTempPointList() == false)
+                    {
+                        MessageBox.Show("向缓存文件中写入温度点列表失败！");
                     }
 
                     if (devicesAll._state == Device.State.Idle)
@@ -1429,39 +1359,26 @@ namespace TempControl
 
         private void FormAutoSet_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // 将温度点数据保存到缓存中
-            try
-            {
-                // 清空原有文件
-                FileStream fs = File.Open(@"./params.cache", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                if (fs != null) fs.Close();
+            if (flowStart == true) return;
 
-                StreamWriter sw = new StreamWriter(@"./params.cache", false, Encoding.UTF8);
-                for (int i = 0; i < paramList.Count; i++)
-                {
-                    for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
-                    {
-                        sw.Write(paramList[i].paramM[j].ToString() + " ");
-                    }
-                    sw.Write(paramList[i].paramM[paramList[i].paramM.Length - 1].ToString() + " ");
-                    sw.Write(paramList[i].autoSample.ToString());
-                    sw.WriteLine();
-                    for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
-                    {
-                        sw.Write(paramList[i].paramS[j].ToString() + " ");
-                    }
-                    sw.Write(paramList[i].paramS[paramList[i].paramM.Length - 1].ToString());
-                    sw.WriteLine();
-                }
-                sw.Flush();
-                sw.Close();
-            }
-            catch (Exception ex)
+            // 清空原有的温度点数据
+            devicesAll.temperaturePointList.Clear();
+            // 将实验流程数据写入 Devices 类中
+            for (int i = 0; i < paramList.Count; i++)
             {
-                nlogger.Warn("存储温度点缓存时，发生异常：" + ex.Message);
-                MessageBox.Show("存储温度点缓存时，发生异常：" + ex.Message);
-                this.checkBox_start.Checked = false;
-                return;
+                // deviceAll.controlFlowList 中的 StateFlow.flowState 必须设置为 Undefine
+                // 只保存温度点，不再保存
+                Device.TemptPointStruct tp = new Device.TemptPointStruct();
+                paramList[i].paramM.CopyTo(tp.paramM, 0);
+                paramList[i].paramS.CopyTo(tp.paramS, 0);
+                tp.finished = paramList[i].finished;
+                tp.autoSample = paramList[i].autoSample;
+                devicesAll.temperaturePointList.Add(tp);
+            }
+
+            if (devicesAll.writeTempPointList() == false)
+            {
+                MessageBox.Show("向缓存文件中写入温度点列表失败！");
             }
         }
     }

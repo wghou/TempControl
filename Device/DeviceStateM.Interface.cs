@@ -147,6 +147,13 @@ namespace Device
                     else nlogger.Debug("配置 Socket 接口成功!");
                     confOK &= rlt;
                 }
+
+                {
+                    bool rlt = readTempPointList();
+                    if(!rlt) nlogger.Error("读取温度点列表失败!");
+                    else nlogger.Debug("读取温度点列表成功!");
+                    confOK &= rlt;
+                }
             }
             catch(Exception ex)
             {

@@ -145,6 +145,7 @@ namespace Device
             //}
 
             _instDevices.RemoveRange(1, _instDevices.Count - 1);
+            InstDeviceBase.DeviceIdxRecount(1);
 
             try
             {

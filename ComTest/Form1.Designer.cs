@@ -978,7 +978,7 @@
             this.textBox_testId.Name = "textBox_testId";
             this.textBox_testId.Size = new System.Drawing.Size(148, 23);
             this.textBox_testId.TabIndex = 50;
-            this.textBox_testId.Text = "20200706-151451";
+            this.textBox_testId.Text = "20200401-220155";
             // 
             // Form1
             // 

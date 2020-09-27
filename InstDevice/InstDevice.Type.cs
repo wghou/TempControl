@@ -145,6 +145,10 @@ namespace InstDevice
         /// </summary>
         public string testId = "";
         /// <summary>
+        /// 仪器的型号 - 字符串
+        /// </summary>
+        public string v_sn = "001";
+        /// <summary>
         /// 仪器 id
         /// </summary>
         public string instrumentId = "standard device";
@@ -344,6 +348,7 @@ namespace InstDevice
             }
 
             testId = vTestID;
+            v_sn = vSN;
             instrumentId = vInstrumentID;
 
             return true;

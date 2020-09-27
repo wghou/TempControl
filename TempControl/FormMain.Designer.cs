@@ -84,7 +84,6 @@
             this.label_powerS = new System.Windows.Forms.Label();
             this.checkBox_paramS = new System.Windows.Forms.CheckBox();
             this.checkBox_logS = new System.Windows.Forms.CheckBox();
-            this.pictureBox_logo = new System.Windows.Forms.PictureBox();
             this.pictureBox_iot = new System.Windows.Forms.PictureBox();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -93,6 +92,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label_vStandardC = new System.Windows.Forms.Label();
             this.checkBox_inst = new System.Windows.Forms.CheckBox();
+            this.pictureBox_logo = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryS3)).BeginInit();
@@ -110,9 +110,9 @@
             this.groupBox_tempM.SuspendLayout();
             this.groupBox_tempS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).BeginInit();
             this.SuspendLayout();
             // 
             // label_tempM
@@ -737,17 +737,6 @@
             this.checkBox_logS.UseVisualStyleBackColor = true;
             this.checkBox_logS.Click += new System.EventHandler(this.checkBox_logS_Click);
             // 
-            // pictureBox_logo
-            // 
-            this.pictureBox_logo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox_logo.Image = global::TempControl.Properties.Resources.company_logo;
-            this.pictureBox_logo.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox_logo.Name = "pictureBox_logo";
-            this.pictureBox_logo.Size = new System.Drawing.Size(984, 612);
-            this.pictureBox_logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox_logo.TabIndex = 37;
-            this.pictureBox_logo.TabStop = false;
-            // 
             // pictureBox_iot
             // 
             this.pictureBox_iot.Location = new System.Drawing.Point(240, 579);
@@ -831,6 +820,17 @@
             this.checkBox_inst.UseVisualStyleBackColor = true;
             this.checkBox_inst.Click += new System.EventHandler(this.checkBox_inst_Click);
             // 
+            // pictureBox_logo
+            // 
+            this.pictureBox_logo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox_logo.Image = global::TempControl.Properties.Resources.company_logo;
+            this.pictureBox_logo.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox_logo.Name = "pictureBox_logo";
+            this.pictureBox_logo.Size = new System.Drawing.Size(984, 612);
+            this.pictureBox_logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox_logo.TabIndex = 37;
+            this.pictureBox_logo.TabStop = false;
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -851,7 +851,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "FormMain";
-            this.Text = "自动控温系统 -- 北京三原兆兴";
+            this.Text = "自动控温系统 -- V 1.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).EndInit();
@@ -873,9 +873,9 @@
             this.groupBox_tempS.ResumeLayout(false);
             this.groupBox_tempS.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxS)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_iot)).EndInit();
             this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_logo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -933,7 +933,6 @@
         private System.Windows.Forms.PictureBox pictureBox_ryS1;
         private System.Windows.Forms.PictureBox pictureBox_ryS0;
         private System.Windows.Forms.CheckBox checkBox_data;
-        private System.Windows.Forms.PictureBox pictureBox_logo;
         private System.Windows.Forms.PictureBox pictureBox_ryS3;
         private System.Windows.Forms.CheckBox checkBox_ryS3;
         private System.Windows.Forms.PictureBox pictureBox_ryS2;
@@ -946,5 +945,6 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label_vStandardC;
         private System.Windows.Forms.CheckBox checkBox_inst;
+        private System.Windows.Forms.PictureBox pictureBox_logo;
     }
 }

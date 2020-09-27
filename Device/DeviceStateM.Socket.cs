@@ -59,7 +59,7 @@ namespace Device
                     if (_state == State.Idle)
                     {
                         // todo: 这里如何载入温度点
-                        loadTempPointList();
+                        readTempPointList();
 
                         StartAutoControl();
                         msg.ExecuteSucceed = true;
@@ -168,90 +168,6 @@ namespace Device
             msg.ExecuteSucceed = true;
             _socketServer.pushMessage(JObject.FromObject(msg));
             return true;
-        }
-
-        private void loadTempPointList()
-        {
-            temperaturePointList.Clear();
-
-            // 从缓存文本中读取温度点
-            try
-            {
-                string[] lines = File.ReadAllLines(@"./params.cache", Encoding.UTF8);
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    // 主槽参数
-                    string line1 = lines[i];
-                    TemptPointStruct ts = new TemptPointStruct();
-                    i++;
-                    string[] parmM = line1.Split(' ');
-                    if (parmM.Length == 7)
-                    {
-                        float vl;
-                        if (float.TryParse(parmM[0], out vl)) ts.paramM[0] = vl;
-                        else break;
-                        if (float.TryParse(parmM[1], out vl)) ts.paramM[1] = vl;
-                        else break;
-                        if (float.TryParse(parmM[2], out vl)) ts.paramM[2] = vl;
-                        else break;
-                        if (float.TryParse(parmM[3], out vl)) ts.paramM[3] = vl;
-                        else break;
-                        if (float.TryParse(parmM[4], out vl)) ts.paramM[4] = vl;
-                        else break;
-                        if (float.TryParse(parmM[5], out vl)) ts.paramM[5] = vl;
-                        else break;
-                        if (float.TryParse(parmM[6], out vl)) ts.paramM[6] = vl;
-                        else break;
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    // 辅槽参数
-                    if (i >= lines.Length) { break; }
-                    string line2 = lines[i];
-                    string[] parmS = line2.Split(' ');
-                    if (parmS.Length == 7)
-                    {
-                        float vl;
-                        if (float.TryParse(parmS[0], out vl)) ts.paramS[0] = vl;
-                        else break;
-                        if (float.TryParse(parmS[1], out vl)) ts.paramS[1] = vl;
-                        else break;
-                        if (float.TryParse(parmS[2], out vl)) ts.paramS[2] = vl;
-                        else break;
-                        if (float.TryParse(parmS[3], out vl)) ts.paramS[3] = vl;
-                        else break;
-                        if (float.TryParse(parmS[4], out vl)) ts.paramS[4] = vl;
-                        else break;
-                        if (float.TryParse(parmS[5], out vl)) ts.paramS[5] = vl;
-                        else break;
-                        if (float.TryParse(parmS[6], out vl)) ts.paramS[6] = vl;
-                        else break;
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    // 装入列表中
-                    temperaturePointList.Add(ts);
-                }
-
-                // 排序
-                temperaturePointList.Sort();
-                if (_runningParameters.sort != "ascend")
-                {
-                    // 降序
-                    temperaturePointList.Reverse();
-                }
- 
-            }
-            catch (Exception ex)
-            {
-
-            }
         }
     }
 }

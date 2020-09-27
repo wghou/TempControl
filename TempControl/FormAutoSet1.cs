@@ -155,49 +155,6 @@ namespace TempControl
                         paramList.Add(ts);
                     }
                 }
-                else
-                {
-                    // 从缓存文本中读取温度点
-                    try
-                    {
-                        string[] lines = File.ReadAllLines(@"./params.cache", Encoding.UTF8);
-                        for (int i = 0; i < lines.Length; i++)
-                        {
-                            // 主槽参数
-                            string line1 = lines[i];
-                            TempParam ts = new TempParam();
-                            string[] parmM = line1.Split(' ');
-                            if (parmM.Length == 7)
-                            {
-                                float vl;
-                                if (float.TryParse(parmM[0], out vl)) ts.paramM[0] = vl;
-                                else break;
-                                if (float.TryParse(parmM[1], out vl)) ts.paramM[1] = vl;
-                                else break;
-                                if (float.TryParse(parmM[2], out vl)) ts.paramM[2] = vl;
-                                else break;
-                                if (float.TryParse(parmM[3], out vl)) ts.paramM[3] = vl;
-                                else break;
-                                if (float.TryParse(parmM[4], out vl)) ts.paramM[4] = vl;
-                                else break;
-                                if (float.TryParse(parmM[5], out vl)) ts.paramM[5] = vl;
-                                else break;
-                                if (float.TryParse(parmM[6], out vl)) ts.paramM[6] = vl;
-                                else break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                            // 装入列表中
-                            paramList.Add(ts);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
 
                 // 判断是否已开始自动控温流程
                 if (this.devicesAll._state == Device.State.Start ||
@@ -268,38 +225,6 @@ namespace TempControl
                     return;
                 }
 
-
-                // 将温度点数据保存到缓存中
-                try
-                {
-                    // 清空原有文件
-                    FileStream fs = File.Open(@"./params.cache", FileMode.OpenOrCreate, FileAccess.Write);
-                    if (fs != null)
-                    {
-                        fs.Close();
-                    }
-
-                    StreamWriter sw = new StreamWriter(@"./params.cache", false, Encoding.UTF8);
-                    for (int i = 0; i < paramList.Count; i++)
-                    {
-                        for (int j = 0; j < paramList[i].paramM.Length - 1; j++)
-                        {
-                            sw.Write(paramList[i].paramM[j].ToString() + " ");
-                        }
-                        sw.Write(paramList[i].paramM[paramList[i].paramM.Length - 1].ToString());
-                        sw.WriteLine();
-                    }
-                    sw.Flush();
-                    sw.Close();
-                }
-                catch (Exception ex)
-                {
-                    Utils.Logger.Sys("存储温度点缓存时，发生异常！");
-                    MessageBox.Show("存储温度点缓存时，发生异常！");
-                    this.checkBox_start.Checked = false;
-                    return;
-                }
-
                 // 开始自动控温流程
                 lock (devicesAll.stepLocker)
                 {
@@ -314,6 +239,11 @@ namespace TempControl
                         paramList[i].paramM.CopyTo(tp.paramM, 0);
                         tp.finished = paramList[i].finished;
                         devicesAll.temperaturePointList.Add(tp);
+                    }
+
+                    if(devicesAll.writeTempPointList() == false)
+                    {
+                        MessageBox.Show("向缓存文件中写入温度点列表失败！");
                     }
 
                     if (devicesAll._state == Device.State.Idle)
@@ -1147,6 +1077,14 @@ namespace TempControl
                     if (paramM[0] == otherState.paramM[0]) { return 0; }
                     else { return -1; }
                 }
+            }
+        }
+
+        private void FormAutoSet1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (devicesAll.writeTempPointList() == false)
+            {
+                MessageBox.Show("向缓存文件中写入温度点列表失败！");
             }
         }
     }

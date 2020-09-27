@@ -111,6 +111,13 @@ namespace InstDevice
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 重新计数
+        /// </summary>
+        public static void DeviceIdxRecount(int idx)
+        {
+            InstDeviceBase.InstCount = idx;
+        }
 
         /// <summary>
         /// 开始测量数据
