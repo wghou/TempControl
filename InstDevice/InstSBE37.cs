@@ -237,6 +237,28 @@ namespace InstDevice
         }
 
         /// <summary>
+        /// 事件传递函数
+        /// </summary>
+        /// <param name="err"></param>
+        protected override void OnErrorOccur(Err_sr err)
+        {
+            if (!Enable) return;
+
+            // 只有在这四种命令格式下，才会触发错误
+            switch (currentCmd)
+            {
+                case SBE37Cmd.Start:
+                case SBE37Cmd.Stop:
+                case SBE37Cmd.Ts:
+                case SBE37Cmd.Tsr:
+                    base.OnErrorOccur(err);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
         /// 进入 Measure 步骤
         /// </summary>
         protected override void internalEnterMeasureStep()

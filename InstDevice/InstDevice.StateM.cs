@@ -299,7 +299,7 @@ namespace InstDevice
             if (rlt == false)
             {
                 nlogger.Error("Error in ResolveData");
-                base.OnErrorOccur(Err_sr.Error);
+                OnErrorOccur(Err_sr.Error);
                 return;
             }
             // 由字符串解析为数据，暂时未解析成一组数据（有时可能要两组数据）
