@@ -230,7 +230,13 @@ namespace InstDevice
         /// <returns></returns>
         public override bool DisableInstDevice()
         {
-            sendCMD("QS");
+            if (!Enable) return true;
+            try
+            {
+                // 这里的串口可能都没有初始化
+                sendCMD("QS");
+            }
+            catch(Exception ex) { }
 
             base.DisableInstDevice();
             return true;
