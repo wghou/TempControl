@@ -103,7 +103,7 @@ namespace Others
 
                 //_sqlDB.CodeFirst.InitTables(typeof(StudentMoel));
 
-                nlogger.Info("Init the database successfully.");
+                nlogger.Trace("Init the database successfully.");
             }
             catch(Exception ex)
             {
@@ -134,7 +134,7 @@ namespace Others
             {
                 _sqlDB.Insertable(data).ExecuteCommand();
 
-                nlogger.Info("Insert value to the data base successfully.");
+                nlogger.Trace("Insert value to the data base successfully.");
             }
             catch(Exception ex)
             {
@@ -158,12 +158,14 @@ namespace Others
                 if (Init() == false) return false;
             }
 
+            nlogger.Warn("step 4 : Insert value to the data base. data len = " + datas.Count.ToString());
+
             // todo: 如果有重复，怎么办？
             try
             {
                 _sqlDB.Insertable(datas).ExecuteCommand();
 
-                nlogger.Info("Insert value to the data base successfully.");
+                nlogger.Trace("Insert value to the data base successfully.");
             }
             catch (Exception ex)
             {

@@ -426,7 +426,7 @@ namespace Device
             {
                 // 进入下一个状态，下一个状态应该是 稳定
                 _machine.Fire(Trigger.AchieveSteady);
-                nlogger.Info((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
+                nlogger.Trace((_runningParameters.steadyTimeSec / 60).ToString("0") + " 分钟温度波动度满足波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃");
             }
         }
 
@@ -509,7 +509,7 @@ namespace Device
                         _machine.Fire(Trigger.StartMeasure);
                     }
 
-                    nlogger.Info((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
+                    nlogger.Trace((_runningParameters.bridgeSteadyTimeSec / 60).ToString("0") + " 分钟电桥温度波动度小于 " + _runningParameters.flucValue.ToString("0.0000") + "℃，可以测量电导率等数据");
                 }
             }
         }
@@ -588,10 +588,12 @@ namespace Device
                 }
             }
 
+            nlogger.Warn("Start store data into data base.");
             // 开始存储仪器值
             bool rlt = true;
             foreach (var itm in _instDevices)
             {
+                nlogger.Warn("step 1 : store data from: " + itm.GetBasicInfo().InstType.ToString() + "-" + itm.GetBasicInfo().v_sn);
                 rlt &= itm.StartStore();
             }
 
@@ -616,8 +618,8 @@ namespace Device
                     currentTemptPointState.tempPointIndex = i;
                     _machine.Fire(_nextPointTrigger, currentTemptPointState.stateTemp);
 
-                    nlogger.Info("开始下一个温度点的控温 - 稳定 - 测量流程...");
-                    nlogger.Info("查找到了下一个未测量的温度点 " + currentTemptPointState.stateTemp.ToString());
+                    nlogger.Trace("开始下一个温度点的控温 - 稳定 - 测量流程...");
+                    nlogger.Trace("查找到了下一个未测量的温度点 " + currentTemptPointState.stateTemp.ToString());
 
                     break;
                 }
@@ -639,7 +641,7 @@ namespace Device
                 // 通过 socket 发送 finished 指令
                 socketSendFinished();
 
-                nlogger.Info("所有温度点均已测量完成...");
+                nlogger.Trace("所有温度点均已测量完成...");
             }
         }
 

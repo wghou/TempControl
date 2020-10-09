@@ -151,6 +151,7 @@
             // label_controlState
             // 
             this.label_controlState.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_controlState.ForeColor = System.Drawing.Color.Red;
             this.label_controlState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_controlState.Location = new System.Drawing.Point(6, 27);
             this.label_controlState.Name = "label_controlState";
@@ -774,7 +775,7 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(138, 19);
             this.label10.TabIndex = 34;
-            this.label10.Text = "StandardT";
+            this.label10.Text = "标准温度";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label_vStandardT
@@ -794,7 +795,7 @@
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(138, 19);
             this.label12.TabIndex = 34;
-            this.label12.Text = "StandardC";
+            this.label12.Text = "标准电导率";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label_vStandardC

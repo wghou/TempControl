@@ -295,17 +295,17 @@ namespace TempControl
                 }
 
                 Utils.Logger.Op("点击自动控温设置界面 开始 按键，开始执行自动控温流程...");
-                nlogger.Info("点击自动控温设置界面 开始 按键，开始执行自动控温流程...");
+                nlogger.Trace("点击自动控温设置界面 开始 按键，开始执行自动控温流程...");
 
                 Utils.Logger.Op("设定的温度点有：");
-                nlogger.Info("设定的温度点有：");
+                nlogger.Trace("设定的温度点有：");
 
                 foreach (var st in paramList)
                 {
                     Utils.Logger.Op(st.paramM[0].ToString("0.0000"));
-                    nlogger.Info(st.paramM[0].ToString("0.0000"));
+                    nlogger.Trace(st.paramM[0].ToString("0.0000"));
                     Utils.Logger.Op("是否已测量：" + st.finished.ToString());
-                    nlogger.Info("是否已测量：" + st.finished.ToString());
+                    nlogger.Trace("是否已测量：" + st.finished.ToString());
                 }
 
                 // 自动控温流程已开始
@@ -458,7 +458,7 @@ namespace TempControl
             textBox_tpSetS.Text = "";
 
             Utils.Logger.Op("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
-            nlogger.Info("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
+            nlogger.Trace("添加温度设定点: " + ts.paramM[0].ToString("0.0000"));
 
         }
 
@@ -481,7 +481,7 @@ namespace TempControl
                 if (dataGridView1.Rows[i - 1].Selected == true)
                 {
                     Utils.Logger.Op("删除了温度设定点: " + BList[i - 1].TemptSet);
-                    nlogger.Info("删除了温度设定点: " + BList[i - 1].TemptSet);
+                    nlogger.Trace("删除了温度设定点: " + BList[i - 1].TemptSet);
 
                     if (i % 2 == 0)
                     {

@@ -137,7 +137,7 @@ namespace TempControl
             getTempParam.BeginInvoke(false, null, null);
 
             Utils.Logger.Op("点击 查询参数 按键，从 " + tpDev.tpDeviceName + " 中读取温控设备的参数!");
-            nlogger.Info("点击 查询参数 按键，从 " + tpDev.tpDeviceName + " 中读取温控设备的参数!");
+            nlogger.Trace("点击 查询参数 按键，从 " + tpDev.tpDeviceName + " 中读取温控设备的参数!");
         }
 
 
@@ -185,7 +185,7 @@ namespace TempControl
             setTempParam.BeginInvoke(false, null, null);
 
             Utils.Logger.Op("点击 更新参数 按键，向 " + tpDev.tpDeviceName + " 中写入温控设备的参数!");
-            nlogger.Info("点击 更新参数 按键，向 " + tpDev.tpDeviceName + " 中写入温控设备的参数!");
+            nlogger.Trace("点击 更新参数 按键，向 " + tpDev.tpDeviceName + " 中写入温控设备的参数!");
         }
 
 

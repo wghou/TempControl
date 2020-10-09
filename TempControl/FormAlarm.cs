@@ -145,7 +145,7 @@ namespace TempControl
         private void button1_Click_1(object sender, EventArgs e)
         {
             _device.ResetErrorStatus();
-            nlogger.Info("用户点击关闭了报警窗口");
+            nlogger.Trace("用户点击关闭了报警窗口");
             this.Close();
         }
     }

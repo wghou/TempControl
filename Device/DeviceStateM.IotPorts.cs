@@ -90,16 +90,16 @@ namespace Device
         /// <param name="message"></param>
         private void _userPorts_UserPortMsgRvSetEvent(IotTopic topic, JObject message)
         {
-            nlogger.Info("the message topic is " + topic.ToString() + ", and the message is: " + message);
+            nlogger.Trace("the message topic is " + topic.ToString() + ", and the message is: " + message);
 
             switch (topic)
             {
                 case IotTopic.ParamT:
-                    nlogger.Info("Receive message from mqtt with topic Topic.ParamT");
+                    nlogger.Trace("Receive message from mqtt with topic Topic.ParamT");
                     break;
 
                 case IotTopic.Relay:
-                    nlogger.Info("Receive message from mqtt with topic Topic.Relay");
+                    nlogger.Trace("Receive message from mqtt with topic Topic.Relay");
                     break;
 
                 case IotTopic.DeviceCmd:

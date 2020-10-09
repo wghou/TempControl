@@ -43,7 +43,7 @@ namespace Others
                 {
                     if (_ipaddress.AddressFamily.ToString() == "InterNetwork")
                     {
-                        nlogger.Info("get the local ip address: " + _ipaddress.ToString());
+                        nlogger.Trace("get the local ip address: " + _ipaddress.ToString());
                         ip = _ipaddress.ToString();
                     }
                 }
@@ -115,7 +115,7 @@ namespace Others
         /// client connected
         private void _appClient_Connected(object sender, EventArgs e)
         {
-            nlogger.Info("client connected to the server: " + e.ToString());
+            nlogger.Trace("client connected to the server: " + e.ToString());
         }
     }
 }

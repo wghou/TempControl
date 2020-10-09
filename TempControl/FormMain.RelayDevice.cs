@@ -38,12 +38,12 @@ namespace TempControl
 
             if ((sender as CheckBox).Checked == true)
             {
-                nlogger.Info("打开电源: " + (sender as CheckBox).Text);
+                nlogger.Trace("打开电源: " + (sender as CheckBox).Text);
                 Utils.Logger.Op("打开电源: " + (sender as CheckBox).Text);
             }
             else
             {
-                nlogger.Info("关闭电源 M6!");
+                nlogger.Trace("关闭电源 M6!");
                 Utils.Logger.Op("关闭电源 M6!");
             }
         }
@@ -73,7 +73,7 @@ namespace TempControl
                 fm.Show();
             }
 
-            nlogger.Info("打开主槽控温设备参数设置界面!");
+            nlogger.Trace("打开主槽控温设备参数设置界面!");
             Utils.Logger.Op("打开主槽控温设备参数设置界面!");
         }
 
@@ -101,7 +101,7 @@ namespace TempControl
                 fm.Show();
             }
 
-            nlogger.Info("打开辅槽控温设备参数设置界面!");
+            nlogger.Trace("打开辅槽控温设备参数设置界面!");
             Utils.Logger.Op("打开辅槽控温设备参数设置界面!");
         }
 

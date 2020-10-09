@@ -553,7 +553,7 @@ namespace InstDevice
             // 在不是 tc 和 tcr 的情况下，数据后面都有可能会跟随有 <Executed/>
             if (str.Contains(OutputFlag))
             {
-                nlogger.Info("receive executed flag at the end of ts / tsr.");
+                nlogger.Trace("receive executed flag at the end of ts / tsr.");
                 return true;
             }
             else

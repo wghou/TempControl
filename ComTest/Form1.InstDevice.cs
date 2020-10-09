@@ -204,7 +204,7 @@ namespace ComTest
                         System.Threading.Thread.Sleep(20);
                         sPortSBE37SM.WriteLine("ts");
                         System.Threading.Thread.Sleep(800);
-                        sPortSBE37SM.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643 \r S>");
+                        sPortSBE37SM.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643");
                         if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
                     }
                     else

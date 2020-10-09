@@ -211,6 +211,8 @@ namespace InstDevice
                 return false;
             }
 
+            nlogger.Warn("step 2 : start store");
+
             // 停止测量，并进入存储数据
             _instMachine.Fire(TriggerInst.StartStore);
             // 执行一次步骤
@@ -256,6 +258,7 @@ namespace InstDevice
         /// 执行 Store 步骤
         /// </summary>
         protected virtual void internalStoreStep() {
+            nlogger.Warn("step 3 : internal store step.");
             // 设备未启用
             if (Enable == false) return;
 

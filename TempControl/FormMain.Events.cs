@@ -123,7 +123,7 @@ namespace TempControl
             this.BeginInvoke(new EventHandler(delegate
             {
                 this.ErrorAskForClose = true;
-                nlogger.Info("出现错误，用户未做处理，关闭系统软件！");
+                nlogger.Trace("出现错误，用户未做处理，关闭系统软件！");
 
                 _device.ShutdownComputer();
 

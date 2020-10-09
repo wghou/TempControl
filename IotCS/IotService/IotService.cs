@@ -46,7 +46,7 @@ namespace IotCS.Service
         protected override void OnStart(string[] args)
         {
             // todo: 引入记录服务的 nlogger file
-            nlogger.Info("IotService OnStart..");
+            nlogger.Trace("IotService OnStart..");
             try
             {
                 // get local ip address
@@ -61,7 +61,7 @@ namespace IotCS.Service
 
                 if (mqttServer == null)
                 {
-                    nlogger.Info("create new mqttServer. IP:" + mqttServerUrl.ToString() + " port:" + mqttPort.ToString());
+                    nlogger.Trace("create new mqttServer. IP:" + mqttServerUrl.ToString() + " port:" + mqttPort.ToString());
 
                     var factory = new MqttFactory();
                     mqttServer = factory.CreateMqttServer() as MqttServer;
@@ -99,7 +99,7 @@ namespace IotCS.Service
         /// </summary>
         protected override void OnStop()
         {
-            nlogger.Info("IotService OnStop..");
+            nlogger.Trace("IotService OnStop..");
 
             mqttServer.StopAsync();
         }
@@ -137,12 +137,12 @@ namespace IotCS.Service
 
         private async Task Connected(MqttServerClientConnectedEventArgs arg)
         {
-            nlogger.Info("client connected. cientID: " + arg.ClientId);
+            nlogger.Trace("client connected. cientID: " + arg.ClientId);
         }
 
         private async Task DisConnected(MqttServerClientDisconnectedEventArgs arg)
         {
-            nlogger.Info("client disconnected. cientID: " + arg.ClientId);
+            nlogger.Trace("client disconnected. cientID: " + arg.ClientId);
         }
 
         private void MqttApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs message)
@@ -163,12 +163,12 @@ namespace IotCS.Service
 
         private void Started(EventArgs e)
         {
-            nlogger.Info("mqqt started. ");
+            nlogger.Trace("mqqt started. ");
         }
 
         private void Stopped(EventArgs e)
         {
-            nlogger.Info("mqqt stopped. ");
+            nlogger.Trace("mqqt stopped. ");
         }
     }
 }
