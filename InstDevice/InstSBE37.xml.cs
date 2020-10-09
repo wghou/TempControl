@@ -99,6 +99,22 @@ namespace InstDevice
         {
             XmlDocument xmlDoc = new XmlDocument();
 
+            string xmlString2 = "";
+            string[] lines = xmlString.Split(new char[] { '\r', '\n' });
+            if (lines.Length <= 2) return false;
+
+            xmlString2 = lines[0] + "\r";
+
+            for (int i = 1; i < lines.Length; i++)
+            {
+                xmlString2 += lines[i] + "\r";
+
+                if (lines[i].ToLower().Contains("configurationdata"))
+                {
+                    break;
+                }
+            }
+
             try
             {
                 string _pathLog = "Logs";
@@ -116,7 +132,7 @@ namespace InstDevice
                     string fileP = confFile + i.ToString() + ".txt";
                     if (!File.Exists(fileP))
                     {
-                        File.WriteAllText(fileP, xmlString);
+                        File.WriteAllText(fileP, xmlString2);
                         break;
                     }
                 }
@@ -126,7 +142,7 @@ namespace InstDevice
 
             try
             {
-                xmlDoc.LoadXml(xmlString);
+                xmlDoc.LoadXml(xmlString2);
 
                 XmlNode node = xmlDoc.SelectSingleNode("ConfigurationData");
 

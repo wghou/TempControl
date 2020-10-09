@@ -648,7 +648,7 @@ namespace InstDevice
                     }
                     else
                     {
-                        xmlStr += str;
+                        xmlStr += str + "\r";
                     }
                         
                     //xmlStr += str + "\r";

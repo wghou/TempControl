@@ -90,7 +90,8 @@ namespace ComTest
                             + "<OutputOxygen>no</OutputOxygen>\r"
                             + "<OutputDepth>yes</OutputDepth>\r"
                             + "<OutputSalinity>yes</OutputSalinity>\r"
-                            + "</ConfigurationData>";
+                            + "</ConfigurationData>\r"
+                            + "S>";
 
         string cdString2 = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r"
                             + "<PressureInstalled>no</PressureInstalled>\r"
@@ -109,7 +110,8 @@ namespace ComTest
                             + "<OutputTime>no</OutputTime>\r"
                             + "<AutoRun>no</AutoRun>\r"
                             + "<StoreData>yes</StoreData>\r"
-                            + "</ConfigurationData>";
+                            + "</ConfigurationData>"
+                            + "S>";
 
         /// <summary>
         /// 标准仪器发送数据
@@ -202,7 +204,7 @@ namespace ComTest
                         System.Threading.Thread.Sleep(20);
                         sPortSBE37SM.WriteLine("ts");
                         System.Threading.Thread.Sleep(800);
-                        sPortSBE37SM.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643");
+                        sPortSBE37SM.WriteLine("0.4909,  2.92555,    0.512,   0.509,  34.7317,1451.028, 27.8643 \r S>");
                         if (this.checkBox_flag.Checked) { sPortSBE37SM.WriteLine("<Executed/>"); }
                     }
                     else
