@@ -95,7 +95,7 @@ namespace InstDevice
                 ReadTimeout = 500,
                 WriteTimeout = 200,
                 BaudRate = 9600,
-                //NewLine = "\r\n"
+                NewLine = "\r\n"
             };
 
             // 串口接收到数据 - 事件处理函数
