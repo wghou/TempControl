@@ -92,6 +92,8 @@ namespace Device
             currentTemptPointState.stateCounts = 0;
 
             StateChangedEvent?.Invoke(dest);
+
+            publishCurrentDeviceStatus();
         }
 
         /// <summary>

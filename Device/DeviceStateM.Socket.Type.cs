@@ -67,7 +67,7 @@ namespace Device
     public class SocketStatusMessage : SocketCmdMessage
     {
         public SocketStatusMessage() : base(SocketCmd.DeviceStatus) { }
-
+        public State Kongwenzhuangtai = State.Idle; // 当前控温状态
         public float ZhucaoTemperature = 35.0000f;//主槽设定温度
         public float ZhucaoTemperatureReal = 35.0000f;//主槽当前温度
         public int ZhucaoPower = 0; //主槽加热功率
@@ -82,6 +82,11 @@ namespace Device
         public bool Fucaoxunhuan = false; //辅槽循环开关
         public bool Fucaokuaileng = false; //辅槽快冷开关
         public bool Zhucaokuaileng = false; //主槽快冷开关
+        //
+        public bool Quyangbeng = false; // 取样泵
+        public bool Quyangdiancifa = false; // 取样电磁阀
+        public bool Chuyebeng = false; // 除液泵
+        public bool Chuyediancifa = false; // 除液电磁阀
         public DateTime DataTime = DateTime.Now;//数据采集时间
         public double Temperature = double.NaN;//标准温度
         public double Conductivity = double.NaN;//标准电导率
