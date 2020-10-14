@@ -4,13 +4,13 @@
     "TempM": {
       "Enable": true,
       "？PortName": "主槽端口号",
-      "PortName": "COM3",
+      "PortName": "COM1",
       "BaudRate": 2400
     },
     "TempS": {
       "Enable": true,
       "？PortName": "辅槽端口号",
-      "PortName": "COM5",
+      "PortName": "COM3",
       "BaudRate": 2400
     }
   },
@@ -19,26 +19,26 @@
     "RelayM": {
       "Enable": true,
       "？PortName": "继电器 1 端口号",
-      "PortName": "COM7",
+      "PortName": "COM5",
       "BaudRate": 9600
     },
     "RelayS": {
       "Enable": true,
       "？PortName": "继电器 2 端口号",
-      "PortName": "COM9",
+      "PortName": "COM7",
       "BaudRate": 9600
     }
   },
   "?SensorDev": "关于其他传感器的配置信息",
   "SensorDev": {
     "Sensor": {
-      "Enable": true,
-      "PortName": "COM11",
+      "Enable": false,
+      "PortName": "COM9",
       "BaudRate": 9600
     },
     "Bridge": {
       "Enable": false,
-      "PortName": "COM5",
+      "PortName": "COM11",
       "BaudRate": 9600
     }
   },
@@ -46,7 +46,7 @@
   "UserPort": {
     "Serial": {
       "Enable": false,
-      "PortName": "COM5",
+      "PortName": "COM13",
       "BaudRate": 9600
     },
     "Socket": {
@@ -73,5 +73,28 @@
       "ProductId": "270595",
       "DeviceId": "542169339"
     }
+  },
+  "?AutoSample": "用于设置自动采样步骤",
+  "AutoSample": {
+    "Prepare": [
+      {
+        "Relay": [ true, false, false, false ],
+        "Time": 10
+      },
+      {
+        "Relay": [ false, true, false, false ],
+        "Time": 10
+      }
+    ],
+    "OnSample": [
+      {
+        "Relay": [ false, false, true, false ],
+        "Time": 10
+      },
+      {
+        "Relay": [ false, false, false, true ],
+        "Time": 10
+      }
+    ]
   }
 }

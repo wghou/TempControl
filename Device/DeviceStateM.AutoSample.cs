@@ -7,6 +7,8 @@ using Stateless;
 using System.Timers;
 using System.IO;
 using NLog;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Device
 {
@@ -21,15 +23,15 @@ namespace Device
             /// </summary>
 			Normal = 0,
             /// <summary>
-            /// 自动取样 - 准备中 - 第一阶段：开电磁阀 1，5分钟后关闭电磁阀 1
+            /// 自动取样 - 准备中
             /// </summary>
-			Prepare_1,
+			Prepare,
             /// <summary>
-            /// 自动取样准备中 - 第二阶段：开电磁阀 4-3-2
+            /// 就绪
             /// </summary>
-            Prepare_2,
+            Ready,
             /// <summary>
-            /// 自动取样 - 取样中：关 3-4，开 1-2，一分钟（可调）后关闭，并回到常态
+            /// 自动取样 - 取样中
             /// </summary>
 			OnSample,
             /// <summary>
@@ -48,9 +50,9 @@ namespace Device
             /// </summary>
 			ClickFist = 0,
             /// <summary>
-            /// 5分钟后，从 Prepare_1 进入 Prepare_2
+            /// 5分钟后，从 Prepare 进入 Ready
             /// </summary>
-            ClickFist_5m = 1,
+            ClickFist_ready = 1,
             /// <summary>
             /// 第二次按键：进入 OnSample
             /// </summary>
@@ -80,7 +82,7 @@ namespace Device
             /// <summary>
             /// 定时器时间间隔
             /// </summary>
-            public int timer_interval = 5;
+            public int timer_interval = 1;
 
             /// <summary>
             /// 继电器 1 通电时长 - 5 分钟
@@ -92,8 +94,6 @@ namespace Device
             /// </summary>
             public int tim_onsample = 1 * 60;
 
-
-
             /// <summary>
             /// 从配置文件读取参数值
             /// </summary>
@@ -101,6 +101,7 @@ namespace Device
             /// <returns></returns>
             public bool ReadValueConfig(string configFilePath)
             {
+                
                 try
                 {
                     // 如果配置文件不存在，则新建
@@ -169,8 +170,16 @@ namespace Device
         /// </summary>
         uint sampleStateCounts = 0;
 
+        /// <summary>
+        /// 两个状态下的继电器值
+        /// </summary>
+        protected List<Tuple<uint, bool, bool, bool, bool>> stageStatus_1 = new List<Tuple<uint, bool, bool, bool, bool>>();
+        protected int stageCount_1 = 0;
+        protected List<Tuple<uint, bool, bool, bool, bool>> stageStatus_2 = new List<Tuple<uint, bool, bool, bool, bool>>();
+        protected int stageCount_2 = 0;
 
-		private void ConfigStatelessSample()
+
+        private void ConfigStatelessSample()
         {
             _sampleMachine = new StateMachine<AutoSample.StateSample, AutoSample.TriggerSample>(() => _sampleState, s => _sampleState = s);
             _sampleTickTrigger = _sampleMachine.SetTriggerParameters<int>(AutoSample.TriggerSample.TimerTick);
@@ -186,23 +195,23 @@ namespace Device
                 .OnEntry(t => sampleNormalEntry())
                 .OnExit(t => sampleNormalExit())
                 .InternalTransition(_sampleTickTrigger, (tic, t) => sampleNormalTick(tic))
-                .Permit(AutoSample.TriggerSample.ClickFist, AutoSample.StateSample.Prepare_1)
+                .Permit(AutoSample.TriggerSample.ClickFist, AutoSample.StateSample.Prepare)
                 .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
 
-            // StateSample.Prepare_1
-            _sampleMachine.Configure(AutoSample.StateSample.Prepare_1)
-                .OnEntry(t => samplePrepare_1Entry())
-                .OnExit(t => samplePrepare_1Exit())
-                .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepare_1Tick(tic))
-                .Permit(AutoSample.TriggerSample.ClickFist_5m, AutoSample.StateSample.Prepare_2)
+            // StateSample.Prepare
+            _sampleMachine.Configure(AutoSample.StateSample.Prepare)
+                .OnEntry(t => samplePrepareEntry())
+                .OnExit(t => samplePrepareExit())
+                .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepareTick(tic))
+                .Permit(AutoSample.TriggerSample.ClickFist_ready, AutoSample.StateSample.Ready)
                 .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
-            // StateSample.Prepare_2
-            _sampleMachine.Configure(AutoSample.StateSample.Prepare_2)
-                .OnEntry(t => samplePrepare_2Entry())
-                .OnExit(t => samplePrepare_2Exit())
-                .InternalTransition(_sampleTickTrigger, (tic, t) => samplePrepare_2Tick(tic))
+            // StateSample.Ready
+            _sampleMachine.Configure(AutoSample.StateSample.Ready)
+                .OnEntry(t => sampleReadyEntry())
+                .OnExit(t => sampleReadyExit())
+                .InternalTransition(_sampleTickTrigger, (tic, t) => sampleReadyTick(tic))
                 .Permit(AutoSample.TriggerSample.ClickSecond, AutoSample.StateSample.OnSample)
                 .Permit(AutoSample.TriggerSample.ForceStop, AutoSample.StateSample.Stop);
 
@@ -238,6 +247,40 @@ namespace Device
 
 
         /// <summary>
+        /// 从配置文件中，读取采样配置时间
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public bool ReadSampleConfig(JObject obj)
+        {
+            stageStatus_1.Clear();
+            stageStatus_2.Clear();
+
+            try
+            {
+                JArray jPrepare = (JArray)obj["Prepare"];
+                foreach (JObject itm in jPrepare)
+                {
+                    bool[] ry = itm["Relay"].ToObject<bool[]>();
+                    stageStatus_1.Add(new Tuple<uint, bool, bool, bool, bool>((uint)itm["Time"], ry[0], ry[1], ry[2], ry[3]));
+                }
+
+                JArray jSample = (JArray)obj["OnSample"];
+                foreach (JObject itm in jSample)
+                {
+                    bool[] ry = itm["Relay"].ToObject<bool[]>();
+                    stageStatus_2.Add(new Tuple<uint, bool, bool, bool, bool>((uint)itm["Time"], ry[0], ry[1], ry[2], ry[3]));
+                }
+            }
+            catch(Exception ex)
+            {
+                nlogger.Error(ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 自动采样，按键
         /// </summary>
         public void SampleButtonClick()
@@ -248,7 +291,7 @@ namespace Device
                     // 当处于常态时，按一次按键，则进入下一状态
                     _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist);
                     break;
-                case AutoSample.StateSample.Prepare_2:
+                case AutoSample.StateSample.Ready:
                     // 当处于 准备二时，则进入采样
                     _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
                     break;
@@ -321,10 +364,10 @@ namespace Device
             nlogger.Debug("Sample Idle Entry.");
 
             // 1-2-3-4 全部关闭
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = false;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = false;
 
             WriteRelayDeviceS(true);
         }
@@ -347,72 +390,96 @@ namespace Device
         }
 
         /// <summary>
-        /// Prepare_1 Entry
+        /// Prepare Entry
         /// </summary>
-        private void samplePrepare_1Entry()
+        private void samplePrepareEntry()
         {
-            nlogger.Debug("Sample Prepare_1 Entry.");
+            nlogger.Debug("Sample Prepare Entry.");
 
-            // 开 1 ，并关闭 2-3-4
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+            if(stageStatus_1.Count <=0)
+            {
+                SetErrorStatus(ErrorCode.CodeError);
+                nlogger.Error("stageStatus_1.Count <=0");
+                _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+            }
+
+            stageCount_1 = 0;
+            var itm = stageStatus_1[stageCount_1];
+            sampleStateCounts = 0;
+
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = itm.Item2;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = itm.Item3;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = itm.Item4;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = itm.Item5;
 
             WriteRelayDeviceS2();
         }
 
         /// <summary>
-        /// Prepare_1 Tick
+        /// Prepare Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
-        private void samplePrepare_1Tick(int tic)
+        private void samplePrepareTick(int tic)
         {
-            nlogger.Debug("Sample Prepare_1 Tick: " + tic.ToString() + " ms");
+            nlogger.Debug("Sample Prepare Tick: " + tic.ToString() + " ms");
 
-            // 5 分钟后，进入 SampleState.Prepare_2
-            if (sampleStateCounts >= _runningParameters.sampleParam.tim_prepare / _runningParameters.sampleParam.timer_interval) _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_5m);
+            var itm = stageStatus_1[stageCount_1];
+
+            if (sampleStateCounts > itm.Item1)
+            {
+                if(++stageCount_1 >= stageStatus_1.Count)
+                {
+                    // 下一状态
+                    _sampleMachine.Fire(AutoSample.TriggerSample.ClickFist_ready);
+                }
+                else
+                {
+                    // 下一组继电器指令
+                    var itm2 = stageStatus_1[stageCount_1];
+                    sampleStateCounts = 0;
+
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = itm2.Item2;
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = itm2.Item3;
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = itm2.Item4;
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = itm2.Item5;
+
+                    WriteRelayDeviceS2();
+                }
+            }
+
         }
 
         /// <summary>
-        /// Prepare_1 Exit
+        /// Prepare Exit
         /// </summary>
-        private void samplePrepare_1Exit()
+        private void samplePrepareExit()
         {
-            nlogger.Debug("Sample Prepare_1 Exit.");
+            nlogger.Debug("Sample Prepare Exit.");
         }
 
         /// <summary>
-        /// Prepare_2 Entry
+        /// Ready Entry
         /// </summary>
-        private void samplePrepare_2Entry()
+        private void sampleReadyEntry()
         {
-            nlogger.Debug("Sample Prepare_2 Entry.");
-
-            // 5分钟后，关闭 1，开 4-3-2
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = true;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = true;
-
-            WriteRelayDeviceS2();
+            nlogger.Debug("Sample Ready Entry.");
         }
 
         /// <summary>
-        /// Prepare_2 Tick
+        /// Ready Tick
         /// </summary>
         /// <param name="tic"> 时间步长 </param>
-        private void samplePrepare_2Tick(int tic)
+        private void sampleReadyTick(int tic)
         {
-            nlogger.Debug("Sample Prepare_2 Tick: " + tic.ToString() + " ms");
+            nlogger.Debug("Sample Ready Tick: " + tic.ToString() + " ms");
         }
 
         /// <summary>
-        /// Prepare_2 Exit
+        /// Ready Exit
         /// </summary>
-        private void samplePrepare_2Exit()
+        private void sampleReadyExit()
         {
-            nlogger.Debug("Sample Prepare_2 Exit.");
+            nlogger.Debug("Sample Ready Exit.");
         }
 
         /// <summary>
@@ -422,11 +489,21 @@ namespace Device
         {
             nlogger.Debug("Sample Start Entry.");
 
-            // 关闭 3-4 ，打开 1-2 ，一分钟后结束
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_0] = true;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_1] = true;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_2] = false;
-            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_3] = false;
+            if (stageStatus_2.Count <= 0)
+            {
+                SetErrorStatus(ErrorCode.CodeError);
+                nlogger.Error("stageStatus_1.Count <=0");
+                _sampleMachine.Fire(AutoSample.TriggerSample.ForceStop);
+            }
+
+            stageCount_2 = 0;
+            var itm = stageStatus_2[stageCount_2];
+            sampleStateCounts = 0;
+
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = itm.Item2;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = itm.Item3;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = itm.Item4;
+            ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = itm.Item5;
 
             WriteRelayDeviceS2();
         }
@@ -439,9 +516,28 @@ namespace Device
         {
             nlogger.Debug("Sample Start Tick: " + tic.ToString() + " ms");
 
-            // 1 分钟后，结束采样
-            if (sampleStateCounts >= _runningParameters.sampleParam.tim_onsample / _runningParameters.sampleParam.timer_interval) {
-                _sampleMachine.Fire(AutoSample.TriggerSample.End);
+            var itm = stageStatus_2[stageCount_2];
+
+            if (sampleStateCounts > itm.Item1)
+            {
+                if (++stageCount_2 >= stageStatus_2.Count)
+                {
+                    // 下一状态
+                    _sampleMachine.Fire(AutoSample.TriggerSample.End);
+                }
+                else
+                {
+                    // 下一组继电器指令
+                    var itm2 = stageStatus_2[stageCount_2];
+                    sampleStateCounts = 0;
+
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_4] = itm2.Item2;
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_5] = itm2.Item3;
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_6] = itm2.Item4;
+                    ryDeviceS.ryStatusToSet[(int)RelayDevice.Cmd_r.OUT_7] = itm2.Item5;
+
+                    WriteRelayDeviceS2();
+                }
             }
         }
 

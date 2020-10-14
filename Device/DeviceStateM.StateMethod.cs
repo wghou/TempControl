@@ -31,7 +31,7 @@ namespace Device
             ErrorCheckOutRange();   // 温度超出界限
 
             // 检查传感器设备的错误状态
-            if (srDevice.FetchErrorStatus() != SensorDevice.Err_s.NoError) SetErrorStatus(ErrorCode.SensorError);
+            if (srDevice.Enable == true && srDevice.FetchErrorStatus() != SensorDevice.Err_s.NoError) SetErrorStatus(ErrorCode.SensorError);
 
             // 驱动状态机执行流程
             currentTemptPointState.stateCounts++;
@@ -509,7 +509,7 @@ namespace Device
             // 如果需要自动采样
             if (temperaturePointList[currentTemptPointState.tempPointIndex].autoSample == true)
             {
-                if (_sampleMachine.IsInState(AutoSample.StateSample.Prepare_2)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
+                if (_sampleMachine.IsInState(AutoSample.StateSample.Ready)) _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
                 else
                 {
                     nlogger.Error("自动控温流程中，自动采样失败： _sampleMachine.IsInState(Normal)");

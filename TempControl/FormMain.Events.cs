@@ -195,7 +195,7 @@ namespace TempControl
                             itm.Value.Enabled = true;
                         }
                         break;
-                    case Device.AutoSample.StateSample.Prepare_1:
+                    case Device.AutoSample.StateSample.Prepare:
                         this.checkBox_data.Text = "自动采样\n准备中";
                         // 继电器状态 S
                         foreach (var itm in dictCheckBoxsRyS)
@@ -203,8 +203,8 @@ namespace TempControl
                             itm.Value.Enabled = false;
                         }
                         break;
-                    case Device.AutoSample.StateSample.Prepare_2:
-                        this.checkBox_data.Text = "自动采样\n准备中";
+                    case Device.AutoSample.StateSample.Ready:
+                        this.checkBox_data.Text = "自动采样\n就绪";
                         // 继电器状态 S
                         foreach (var itm in dictCheckBoxsRyS)
                         {

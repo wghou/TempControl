@@ -127,6 +127,15 @@ namespace Device
 
                     _userPorts.UserPortMsgRvEvent += _userPorts_UserPortMsgRvEvent;
                 }
+
+                if(obj.ContainsKey("AutoSample"))
+                {
+                    JObject child = (JObject)obj["AutoSample"];
+
+                    confOK &= ReadSampleConfig(child);
+                    if (!confOK) nlogger.Error("配置 AutoSample 失败");
+                    else nlogger.Debug("配置 AutoSample 失败");
+                }
             }
             catch(Exception ex)
             {
