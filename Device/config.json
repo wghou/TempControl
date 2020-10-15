@@ -79,21 +79,41 @@
     "Prepare": [
       {
         "Relay": [ true, false, false, false ],
-        "Time": 10
+        "Time": 30
       },
       {
-        "Relay": [ false, true, false, false ],
-        "Time": 10
+        "Relay": [ true, true, false, true ],
+        "Time": 2
+      },
+      {
+        "Relay": [ true, true, true, true ],
+        "Time": 0
       }
     ],
     "OnSample": [
       {
-        "Relay": [ false, false, true, false ],
-        "Time": 10
+        "Relay": [ true, true, false, true ],
+        "Time": 56
       },
       {
-        "Relay": [ false, false, false, true ],
-        "Time": 10
+        "Relay": [ true, true, true, true ],
+        "Time": 2
+      },
+      {
+        "Relay": [ true, false, true, true ],
+        "Time": 20
+      },
+      {
+        "Relay": [ true, false, false, true ],
+        "Time": 2
+      },
+      {
+        "Relay": [ true, false, false, false ],
+        "Time": 2
+      },
+      {
+        "Relay": [ false, false, false, false ],
+        "Time": 0
       }
     ]
   }
