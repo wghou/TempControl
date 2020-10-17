@@ -72,5 +72,54 @@
   "Socket": {
     "Enable": true,
     "Port": 6003
+  },
+  "?AutoSample": "用于设置自动采样步骤",
+  "AutoSample": {
+    "Prepare": [
+      {
+        "Relay": [ true, false, false, false ],
+        "Time": 30
+      },
+      {
+        "Relay": [ true, true, false, true ],
+        "Time": 2
+      },
+      {
+        "Relay": [ true, true, true, true ],
+        "Time": 0
+      }
+    ],
+    "OnFlush": [
+      {
+        "Relay": [ true, true, false, true ],
+        "Time": 56
+      }
+    ],
+    "OnSample": [
+      {
+        "Relay": [ true, true, false, true ],
+        "Time": 56
+      },
+      {
+        "Relay": [ true, true, true, true ],
+        "Time": 2
+      },
+      {
+        "Relay": [ true, false, true, true ],
+        "Time": 20
+      },
+      {
+        "Relay": [ true, false, false, true ],
+        "Time": 2
+      },
+      {
+        "Relay": [ true, false, false, false ],
+        "Time": 2
+      },
+      {
+        "Relay": [ false, false, false, false ],
+        "Time": 0
+      }
+    ]
   }
 }

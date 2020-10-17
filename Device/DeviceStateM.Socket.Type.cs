@@ -69,6 +69,7 @@ namespace Device
         public SocketStatusMessage() : base(SocketCmd.DeviceStatus) { }
         public State Kongwenzhuangtai = State.Idle; // 当前控温状态
         public float ZhucaoTemperature = 35.0000f;//主槽设定温度
+        public float Bodongdu = 0.0f; // 波动度
         public float ZhucaoTemperatureReal = 35.0000f;//主槽当前温度
         public int ZhucaoPower = 0; //主槽加热功率
         public float FucaoTemperature = 34.0000f; //辅槽设定温度

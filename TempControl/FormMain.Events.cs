@@ -207,7 +207,7 @@ namespace TempControl
                             itm.Value.Enabled = true;
                         }
                         break;
-                    case Device.AutoSample.StateSample.Prepare_1:
+                    case Device.AutoSample.StateSample.Prepare:
                         this.checkBox_data.Text = "自动采样\n准备中";
                         // 继电器状态 S
                         foreach (var itm in dictCheckBoxsRyS)
@@ -215,7 +215,7 @@ namespace TempControl
                             itm.Value.Enabled = false;
                         }
                         break;
-                    case Device.AutoSample.StateSample.Prepare_2:
+                    case Device.AutoSample.StateSample.Ready:
                         this.checkBox_data.Text = "自动采样\n准备完毕";
                         // 继电器状态 S
                         foreach (var itm in dictCheckBoxsRyS)
@@ -230,6 +230,7 @@ namespace TempControl
                         {
                             itm.Value.Enabled = false;
                         }
+                        MessageBox.Show("外部管路冲洗！");
                         break;
                     case Device.AutoSample.StateSample.OnSample:
                         this.checkBox_data.Text = "自动采样\n采样中";
@@ -238,7 +239,7 @@ namespace TempControl
                         {
                             itm.Value.Enabled = false;
                         }
-                        MessageBox.Show("冲洗完成，开始采样！");
+                        MessageBox.Show("冲洗完成，取水样！");
                         break;
                     case Device.AutoSample.StateSample.Stop:
                         this.checkBox_data.Text = "自动采样";

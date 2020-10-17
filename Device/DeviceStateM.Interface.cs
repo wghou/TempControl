@@ -154,6 +154,15 @@ namespace Device
                     else nlogger.Debug("读取温度点列表成功!");
                     confOK &= rlt;
                 }
+
+                if (obj.ContainsKey("AutoSample"))
+                {
+                    JObject child = (JObject)obj["AutoSample"];
+
+                    confOK &= ReadSampleConfig(child);
+                    if (!confOK) nlogger.Error("配置 AutoSample 失败");
+                    else nlogger.Debug("配置 AutoSample 失败");
+                }
             }
             catch(Exception ex)
             {

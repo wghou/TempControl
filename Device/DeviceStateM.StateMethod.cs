@@ -500,7 +500,7 @@ namespace Device
                     if(currentTemptPointState.autoSample == true)
                     {
                         // 此时已执行完第一阶段
-                        if (_sampleState == AutoSample.StateSample.Prepare_2)
+                        if (_sampleState == AutoSample.StateSample.Ready)
                         {
                             _sampleMachine.Fire(AutoSample.TriggerSample.ClickSecond);
                             _machine.Fire(Trigger.StartMeasure);

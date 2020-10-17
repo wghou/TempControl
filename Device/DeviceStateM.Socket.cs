@@ -117,6 +117,11 @@ namespace Device
             msgSend3.Kongwenzhuangtai = _state;
             // 主槽设定值
             msgSend3.ZhucaoTemperature = tpDeviceM.tpParam[0];
+            // 波动度
+            // 波动度
+            float fluc = 0.0f;
+            tpDeviceM.GetFlucDurCountOrLess(_runningParameters.steadyTimeSec / _runningParameters.readTempIntervalSec, out fluc);
+            msgSend3.Bodongdu = fluc;
             // 主槽当前温度值
             if (this.tpDeviceM.temperatures.Count != 0) msgSend3.ZhucaoTemperatureReal = tpDeviceM.temperatures.Last();
             // 主槽加热功率
@@ -146,13 +151,13 @@ namespace Device
             msgSend3.Zhucaokuaileng = ryDeviceM.ryStatus[7];
 
             // 取样泵
-            msgSend3.Quyangbeng = ryDeviceS.ryStatus[0];
+            msgSend3.Quyangbeng = ryDeviceS.ryStatus[4];
             // 取样电磁阀
-            msgSend3.Quyangdiancifa = ryDeviceS.ryStatus[1];
+            msgSend3.Quyangdiancifa = ryDeviceS.ryStatus[5];
             // 除液泵
-            msgSend3.Chuyebeng = ryDeviceS.ryStatus[2];
+            msgSend3.Chuyebeng = ryDeviceS.ryStatus[6];
             // 除液电磁阀
-            msgSend3.Chuyediancifa = ryDeviceS.ryStatus[3];
+            msgSend3.Chuyediancifa = ryDeviceS.ryStatus[7];
 
             // 数据采集时间
             msgSend3.DataTime = _stdDataCache.addTime;
