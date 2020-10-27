@@ -745,6 +745,7 @@
             this.pictureBox_iot.Size = new System.Drawing.Size(40, 14);
             this.pictureBox_iot.TabIndex = 38;
             this.pictureBox_iot.TabStop = false;
+            this.pictureBox_iot.Visible = false;
             // 
             // label8
             // 
@@ -755,6 +756,7 @@
             this.label8.Size = new System.Drawing.Size(35, 14);
             this.label8.TabIndex = 39;
             this.label8.Text = "Iot:";
+            this.label8.Visible = false;
             // 
             // groupBox1
             // 
