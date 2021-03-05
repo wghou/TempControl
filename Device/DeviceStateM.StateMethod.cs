@@ -484,13 +484,14 @@ namespace Device
             {
                 // 判断温度是否稳定
                 bool steady = false;
-                if (sdDeviceRef.Enable == false)
+                // 当使用标准器的值判断波动度，且已正确配置标准器
+                if (_runningParameters.useSdDeviceFluc == true && sdDeviceRef.Enable == true)
                 {
-                    steady = tpDeviceM.checkFlucCount(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                    steady = sdDeviceRef.CheckFluc(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
                 }
                 else
                 {
-                    steady = sdDeviceRef.CheckFluc(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
+                    steady = tpDeviceM.checkFlucCount(_runningParameters.bridgeSteadyTimeSec / _runningParameters.readTempIntervalSec, _runningParameters.flucValue);
                 }
 
                 // 如果稳定

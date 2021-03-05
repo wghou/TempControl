@@ -162,6 +162,11 @@ namespace Device
         /// </summary>
         public AutoSample.SampleParam sampleParam = new AutoSample.SampleParam();
 
+        /// <summary>
+        /// 使用标准器判断波动度
+        /// </summary>
+        public bool useSdDeviceFluc = false;
+
 
         public bool ReadValueConfig(string configFilePath)
         {
@@ -204,6 +209,9 @@ namespace Device
 
                 // 读取自动采样参数
                 sampleParam.ReadValueConfig(configFilePath);
+
+                // 是否使用标准器的值判断波动度
+                useSdDeviceFluc = Utils.IniReadWrite.INIGetStringValue(configFilePath, "Others", "useSdDeviceFluc", "Disable") == "Enable" ? true : false;
             }
             catch (Exception ex)
             {
@@ -247,6 +255,7 @@ namespace Device
 
                 // 读取自动采样参数
                 sampleParam.WriteValueConfig(configFilePath);
+                Utils.IniReadWrite.INIWriteValue(configFilePath, "Others", "useSdDeviceFluc", useSdDeviceFluc ? "Enable" : "Disable");
             }
             catch (Exception ex)
             {

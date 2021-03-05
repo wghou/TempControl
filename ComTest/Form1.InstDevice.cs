@@ -15,14 +15,14 @@ namespace ComTest
         /// <summary>
         /// 标准仪器 - 通信端口
         /// </summary>
-        private SerialPort sPortSTD = new SerialPort();
+        private SerialPort sPortSTD = new SerialPort() { NewLine = "\r\n" };
         private bool SportSTD_enable = false;
         private Timer _stdTimer = new Timer();
 
         /// <summary>
         /// SBE37SM仪器 - 通信端口
         /// </summary>
-        private SerialPort sPortSBE37SM = new SerialPort();
+        private SerialPort sPortSBE37SM = new SerialPort() { NewLine = "\r\n" };
         private bool SportSBE37SM_enable = false;
 
         /// <summary>
@@ -82,36 +82,36 @@ namespace ComTest
         // 端口数据传输函数
         ////////////////////////////////////
 
-        string cdString = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r"
-                            + "<PressureInstalled>yes</PressureInstalled>\r"
-                            + "<OutputTemperature>yes</OutputTemperature>\r"
-                            + "<OutputConductivity>yes</OutputConductivity>\r"
-                            + "<OutputPressure>yes</OutputPressure>\r"
-                            + "<OutputOxygen>no</OutputOxygen>\r"
-                            + "<OutputDepth>yes</OutputDepth>\r"
-                            + "<OutputSalinity>yes</OutputSalinity>\r"
-                            + "</ConfigurationData>\r"
-                            + "S>";
+        string cdString = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r\n"
+                            + "<PressureInstalled>yes</PressureInstalled>\r\n"
+                            + "<OutputTemperature>yes</OutputTemperature>\r\n"
+                            + "<OutputConductivity>yes</OutputConductivity>\r\n"
+                            + "<OutputPressure>yes</OutputPressure>\r\n"
+                            + "<OutputOxygen>no</OutputOxygen>\r\n"
+                            + "<OutputDepth>yes</OutputDepth>\r\n"
+                            + "<OutputSalinity>yes</OutputSalinity>\r\n"
+                            + "</ConfigurationData>\r\n"
+                            + "S>\r\n";
 
-        string cdString2 = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r"
-                            + "<PressureInstalled>no</PressureInstalled>\r"
-                            + "<ReferencePressure>0.000000e+00</ReferencePressure>\r"
-                            + "<PumpInstalled>No</PumpInstalled>\r"
-                            + "<SampleMode>single sample</SampleMode>\r"
-                            + "<SampleDataFormat>XML</SampleDataFormat>\r"
-                            + "<ConductivityUnits>S/m</ConductivityUnits>\r"
-                            + "<OutputSalinity>yes</OutputSalinity>\r"
-                            + "<OutputSV>no</OutputSV>\r"
-                            + "<OutputDepth>yes</OutputDepth>\r"
-                            + "<Latitude>10.0</Latitude>\r"
-                            + "<OutputDensity>yes</OutputDensity>\r"
-                            + "<TxSampleNumber>yes</TxSampleNumber>\r"
-                            + "<SampleInterval>6</SampleInterval>\r"
-                            + "<OutputTime>no</OutputTime>\r"
-                            + "<AutoRun>no</AutoRun>\r"
-                            + "<StoreData>yes</StoreData>\r"
-                            + "</ConfigurationData>"
-                            + "S>";
+        string cdString2 = "<ConfigurationData DeviceType='SBE37SI-RS232' SerialNumber='03730050'>\r\n"
+                            + "<PressureInstalled>no</PressureInstalled>\r\n"
+                            + "<ReferencePressure>0.000000e+00</ReferencePressure>\r\n"
+                            + "<PumpInstalled>No</PumpInstalled>\r\n"
+                            + "<SampleMode>single sample</SampleMode>\r\n"
+                            + "<SampleDataFormat>XML</SampleDataFormat>\r\n"
+                            + "<ConductivityUnits>S/m</ConductivityUnits>\r\n"
+                            + "<OutputSalinity>yes</OutputSalinity>\r\n"
+                            + "<OutputSV>no</OutputSV>\r\n"
+                            + "<OutputDepth>yes</OutputDepth>\r\n"
+                            + "<Latitude>10.0</Latitude>\r\n"
+                            + "<OutputDensity>yes</OutputDensity>\r\n"
+                            + "<TxSampleNumber>yes</TxSampleNumber>\r\n"
+                            + "<SampleInterval>6</SampleInterval>\r\n"
+                            + "<OutputTime>no</OutputTime>\r\n"
+                            + "<AutoRun>no</AutoRun>\r\n"
+                            + "<StoreData>yes</StoreData>\r\n"
+                            + "</ConfigurationData>\r\n"
+                            + "S>\r\n";
 
         /// <summary>
         /// 标准仪器发送数据
