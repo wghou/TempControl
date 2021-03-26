@@ -7,8 +7,8 @@
       "BaudRate": 2400
     },
     "TempS": {
-      "Enable": false,
-      "PortName": "COM",
+      "Enable": true,
+      "PortName": "COM3",
       "BaudRate": 2400
     }
   },
@@ -16,58 +16,42 @@
   "RelayDev": {
     "RelayM": {
       "Enable": true,
-      "PortName": "COM2",
+      "PortName": "COM5",
       "BaudRate": 9600
     },
     "RelayS": {
-      "Enable": false,
-      "PortName": "COM",
-      "BaudRate": 9600
-    }
-  },
-  "?SensorDev": "关于其他传感器的配置信息",
-  "SensorDev": {
-    "Sensor": {
-      "Enable": false,
-      "PortName": "COM",
-      "BaudRate": 9600
-    },
-    "Bridge": {
-      "Enable": false,
-      "PortName": "COM",
-      "BaudRate": 9600
-    }
-  },
-  "?UserPort": "关于用户接口的配置信息",
-  "UserPort": {
-    "Serial": {
-      "Enable": false,
-      "PortName": "COM",
-      "BaudRate": 9600
-    },
-    "Socket": {
-      "Enable": false,
-      "ServerUrl": "192.168.1.101",
-      "Port": 5002,
-      "ApiKey": "",
-      "ProductId": "admin",
-      "DeviceId": "public"
-    },
-    "MqttLocal": {
-      "Enable": false,
-      "ServerUrl": "192.168.1.105",
-      "Port": 5001,
-      "ApiKey": "public",
-      "ProductId": "admin",
-      "DeviceId": "mydeviceId"
-    },
-    "MqttCloud": {
       "Enable": true,
-      "ServerUrl": "183.230.40.39",
-      "Port": 6002,
-      "ApiKey": "123123123",
-      "ProductId": "270595",
-      "DeviceId": "542169339"
+      "PortName": "COM7",
+      "BaudRate": 9600
     }
+  },
+  "?InstDev": "仪器设备接口的配置信息",
+  "InstDev": [
+    {
+      "?InstDev_1": "仪器接口 1",
+      "PortName": "COM9",
+      "BaudRate": 9600
+    },
+    {
+      "?InstDev_2": "仪器接口 2",
+      "PortName": "COM11",
+      "BaudRate": 9600
+    },
+    {
+      "?InstDev_3": "仪器接口 3",
+      "PortName": "COM13",
+      "BaudRate": 9600
+    }
+  ],
+  "InstDeviceCmd": {
+    "Enable": true,
+    "TS1": "OutputFormat=1",
+    "TS2": "ts",
+    "TSR1": "OutputFormat=0",
+    "TSR2": "ts"
+  },
+  "Socket": {
+    "Enable": true,
+    "Port": 6003
   }
 }

@@ -106,16 +106,36 @@ namespace Device
 
                 }
 
-                // 设置接口
-                if (obj.ContainsKey("UserPort"))
+                // 设置仪器
+                if (obj.ContainsKey("InstDev"))
                 {
-                    JObject child = (JObject)obj["UserPort"];
+                    bool rlt = false;
+                    JArray child = (JArray)obj["InstDev"];
 
-                    confOK &= _userPorts.configUserPorts(child);
-                    if (!confOK) nlogger.Error("配置 UserPort 失败");
-                    else nlogger.Debug("配置 UserPort 失败");
+                    if (obj.ContainsKey("InstDeviceCmd"))
+                    {
+                        JObject cmd = (JObject)obj["InstDeviceCmd"];
+                        rlt = instDevice.initInstDevices(child, cmd);
+                    }
+                    else
+                    {
+                        rlt = instDevice.initInstDevices(child);
+                    }
 
-                    _userPorts.UserPortMsgRvEvent += _userPorts_UserPortMsgRvEvent;
+                    if (!rlt) nlogger.Error("配置仪器失败!");
+                    else nlogger.Debug("配置仪器成功!");
+                    confOK &= rlt;
+                }
+
+                // 设置 socket 接口
+                if (obj.ContainsKey("Socket"))
+                {
+                    JObject child = (JObject)obj["Socket"];
+
+                    bool rlt = instDevice.InitSocketServer(child);
+                    if (!rlt) nlogger.Error("配置 Socket 接口失败!");
+                    else nlogger.Debug("配置 Socket 接口成功!");
+                    confOK &= rlt;
                 }
             }
             catch(Exception ex)
@@ -176,9 +196,6 @@ namespace Device
         {
             ryDeviceM.closeDevice();
             ryDeviceS.closeDevice();
-
-            // 向 mqtt server 发布主题信息
-            _userPorts.PublishMessage(UserPort.SubTopic.Data, packageDataJson(), true, UserPort.UserPortType.All);
         }
 
 

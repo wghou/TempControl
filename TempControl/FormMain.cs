@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Brushes = System.Windows.Media.Brushes;
 using NLog;
-using System.Diagnostics;
-using System.Data;
 
 namespace TempControl
 {

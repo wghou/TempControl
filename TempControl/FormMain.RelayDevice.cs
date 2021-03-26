@@ -90,5 +90,31 @@ namespace TempControl
             }
             TempPic.Image = mDrawChart.Draw();
         }
+
+        private void checkBox_inst_Click(object sender, EventArgs e)
+        {
+            bool formExist = false;
+            foreach (Form fm in Application.OpenForms)
+            {
+                if (fm.Name == "FormInst")
+                {
+                    // Avoid form being minimized
+                    fm.WindowState = FormWindowState.Normal;
+
+                    fm.BringToFront();
+                    formExist = true;
+                }
+            }
+
+            if (!formExist)
+            {
+                FormInst fm = new FormInst(_device);
+                fm.Location = new System.Drawing.Point(10, 12);
+                fm.Name = "FormInst";
+                fm.Show();
+            }
+
+            Utils.Logger.Op("打开仪器配置界面!");
+        }
     }
 }

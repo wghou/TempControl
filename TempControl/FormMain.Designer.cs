@@ -59,6 +59,11 @@
             this.checkBox_clear = new System.Windows.Forms.CheckBox();
             this.label_time = new System.Windows.Forms.Label();
             this.pictureBox_logo = new System.Windows.Forms.PictureBox();
+            this.checkBox_inst = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label_vStandardT = new System.Windows.Forms.Label();
+            this.label_vStandardC = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxM)).BeginInit();
             this.groupBox_ry1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_ryM5)).BeginInit();
@@ -72,7 +77,7 @@
             // label_tempM
             // 
             this.label_tempM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_tempM.Font = new System.Drawing.Font("宋体", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_tempM.Font = new System.Drawing.Font("SimSun", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_tempM.Location = new System.Drawing.Point(6, 17);
             this.label_tempM.Name = "label_tempM";
             this.label_tempM.Size = new System.Drawing.Size(321, 60);
@@ -83,7 +88,7 @@
             // label_tempSetM
             // 
             this.label_tempSetM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_tempSetM.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_tempSetM.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_tempSetM.Location = new System.Drawing.Point(6, 113);
             this.label_tempSetM.Name = "label_tempSetM";
             this.label_tempSetM.Size = new System.Drawing.Size(150, 35);
@@ -94,7 +99,7 @@
             // label_powerM
             // 
             this.label_powerM.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label_powerM.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_powerM.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_powerM.Location = new System.Drawing.Point(216, 113);
             this.label_powerM.Name = "label_powerM";
             this.label_powerM.Size = new System.Drawing.Size(111, 35);
@@ -112,7 +117,7 @@
             // 
             // label_controlState
             // 
-            this.label_controlState.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_controlState.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_controlState.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_controlState.Location = new System.Drawing.Point(369, 22);
             this.label_controlState.Name = "label_controlState";
@@ -122,7 +127,7 @@
             // 
             // label_fluc
             // 
-            this.label_fluc.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_fluc.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label_fluc.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_fluc.Location = new System.Drawing.Point(369, 66);
             this.label_fluc.Name = "label_fluc";
@@ -134,7 +139,7 @@
             // 
             this.checkBox_logM.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_logM.AutoCheck = false;
-            this.checkBox_logM.Location = new System.Drawing.Point(262, 464);
+            this.checkBox_logM.Location = new System.Drawing.Point(200, 464);
             this.checkBox_logM.Name = "checkBox_logM";
             this.checkBox_logM.Size = new System.Drawing.Size(79, 37);
             this.checkBox_logM.TabIndex = 16;
@@ -147,7 +152,7 @@
             // 
             this.checkBox_paramM.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_paramM.AutoCheck = false;
-            this.checkBox_paramM.Location = new System.Drawing.Point(137, 464);
+            this.checkBox_paramM.Location = new System.Drawing.Point(106, 464);
             this.checkBox_paramM.Name = "checkBox_paramM";
             this.checkBox_paramM.Size = new System.Drawing.Size(79, 37);
             this.checkBox_paramM.TabIndex = 15;
@@ -321,7 +326,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label5.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.Location = new System.Drawing.Point(8, 44);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 19);
@@ -332,7 +337,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.Location = new System.Drawing.Point(242, 89);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(85, 19);
@@ -343,7 +348,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label4.Font = new System.Drawing.Font("SimSun", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.Location = new System.Drawing.Point(6, 89);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(104, 19);
@@ -364,7 +369,7 @@
             this.checkBox_clear.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBox_clear.AutoCheck = false;
             this.checkBox_clear.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.checkBox_clear.Location = new System.Drawing.Point(387, 464);
+            this.checkBox_clear.Location = new System.Drawing.Point(294, 463);
             this.checkBox_clear.Name = "checkBox_clear";
             this.checkBox_clear.Size = new System.Drawing.Size(79, 38);
             this.checkBox_clear.TabIndex = 35;
@@ -376,8 +381,8 @@
             // label_time
             // 
             this.label_time.AutoSize = true;
-            this.label_time.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_time.Location = new System.Drawing.Point(506, 473);
+            this.label_time.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_time.Location = new System.Drawing.Point(376, 137);
             this.label_time.Name = "label_time";
             this.label_time.Size = new System.Drawing.Size(88, 16);
             this.label_time.TabIndex = 36;
@@ -395,11 +400,70 @@
             this.pictureBox_logo.TabIndex = 37;
             this.pictureBox_logo.TabStop = false;
             // 
+            // checkBox_inst
+            // 
+            this.checkBox_inst.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox_inst.AutoCheck = false;
+            this.checkBox_inst.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.checkBox_inst.Location = new System.Drawing.Point(388, 463);
+            this.checkBox_inst.Name = "checkBox_inst";
+            this.checkBox_inst.Size = new System.Drawing.Size(79, 38);
+            this.checkBox_inst.TabIndex = 35;
+            this.checkBox_inst.Text = "配置仪器";
+            this.checkBox_inst.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox_inst.UseVisualStyleBackColor = true;
+            this.checkBox_inst.Click += new System.EventHandler(this.checkBox_inst_Click);
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(502, 450);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(88, 16);
+            this.label1.TabIndex = 36;
+            this.label1.Text = "标准温度";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Location = new System.Drawing.Point(639, 450);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(88, 16);
+            this.label6.TabIndex = 36;
+            this.label6.Text = "标准电导率";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_vStandardT
+            // 
+            this.label_vStandardT.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_vStandardT.Location = new System.Drawing.Point(502, 476);
+            this.label_vStandardT.Name = "label_vStandardT";
+            this.label_vStandardT.Size = new System.Drawing.Size(88, 16);
+            this.label_vStandardT.TabIndex = 36;
+            this.label_vStandardT.Text = "0.00";
+            this.label_vStandardT.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label_vStandardC
+            // 
+            this.label_vStandardC.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_vStandardC.Location = new System.Drawing.Point(639, 476);
+            this.label_vStandardC.Name = "label_vStandardC";
+            this.label_vStandardC.Size = new System.Drawing.Size(88, 16);
+            this.label_vStandardC.TabIndex = 36;
+            this.label_vStandardC.Text = "0.00";
+            this.label_vStandardC.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormMain
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(764, 515);
+            this.Controls.Add(this.label_vStandardC);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label_vStandardT);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.label_time);
+            this.Controls.Add(this.checkBox_inst);
             this.Controls.Add(this.checkBox_clear);
             this.Controls.Add(this.TempPic);
             this.Controls.Add(this.groupBox_tempM);
@@ -462,5 +526,10 @@
         private System.Windows.Forms.CheckBox checkBox_clear;
         private System.Windows.Forms.Label label_time;
         private System.Windows.Forms.PictureBox pictureBox_logo;
+        private System.Windows.Forms.CheckBox checkBox_inst;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label_vStandardT;
+        private System.Windows.Forms.Label label_vStandardC;
     }
 }

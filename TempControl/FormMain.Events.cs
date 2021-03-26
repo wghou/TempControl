@@ -18,6 +18,16 @@ namespace TempControl
             _device.StateChangedEvent += _device_StateChangedEvent;
             _device.ErrorStatusChangedEvent += _device_ErrorStatusChangedEvent;
             _device.TimerTickEvent += _device_TimerTickEvent;
+            _device.instDevice.InstSDReceiveDataEvent += InstDevice_InstSDReceiveDataEvent;
+        }
+
+        private void InstDevice_InstSDReceiveDataEvent(ATControl.SeaBirdInst.InstSTDData data)
+        {
+            this.BeginInvoke(new EventHandler(delegate
+            {
+                this.label_vStandardC.Text = data.vStandardC.ToString("0.000");
+                this.label_vStandardT.Text = data.vStandardT.ToString("0.000");
+            }));
         }
 
         public delegate void mainFormTimeTickEvent();

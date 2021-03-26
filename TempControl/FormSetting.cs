@@ -205,51 +205,6 @@ namespace TempControl
                 MessageBox.Show("温度设定值不正确，请重新输入");
                 return;
             }
-
-            Utils.CTempSets tpSet = null;
-            if (this.Name == "FormSettingM")
-            {
-                tpSet = Utils.DataBase.checkTempSetM(val, 2.0f);
-            }
-            else
-            {
-                tpSet = Utils.DataBase.checkTempSetS(val, 2.0f);
-            }
-
-            // 解析结果
-            if (tpSet == null)
-            {
-                // 数据库操作发生错误
-                MessageBox.Show("数据库操作发生错误，请重试或联系开发人员");
-                return;
-            }
-            else if (tpSet.Count == 0)
-            {
-                MessageBox.Show("从数据库中未查询到温度设定点在 " + val.ToString() + " ±2 范围内的参数");
-                return;
-            }
-            else
-            {
-                float[] parm = { 0, 0, 0, 0, 0, 0, 0 };
-                for (int i = 0; i < tpSet.Count; i++)
-                {
-                    for (int j = 1; j < 7; j++)
-                    {
-                        parm[j] += tpSet[i][j];
-                    }
-                }
-
-                // 在数据库中，温度修正值始终为 0
-                parm[1] = 0;
-
-                for (int i = 1; i < 7; i++)
-                {
-                    tpParam[i].Text = (parm[i] / tpSet.Count).ToString();
-                }
-
-                nlogger.Debug("读取到了 " + tpSet.Count.ToString() + " 个参数集，已作平均");
-
-            }
         }
 
         // 向数据库写入预留参数
@@ -265,28 +220,6 @@ namespace TempControl
                     return;
                 }
                 tpSet[i] = val;
-            }
-
-            // 在数据库中，温度修正值始终为 0
-            tpSet[1] = 0;
-
-            bool result = true;
-            if (this.Name == "FormSettingM")
-            {
-                result = Utils.DataBase.writeTempSetM(tpSet);
-            }
-            else
-            {
-                result = Utils.DataBase.writeTempSetS(tpSet);
-            }
-
-            if (result == false)
-            {
-                MessageBox.Show("向数据库中写入参数集失败，请重试或联系开发人员");
-            }
-            else
-            {
-                MessageBox.Show("向数据库中写入参数集成功");
             }
         }
 

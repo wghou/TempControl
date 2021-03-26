@@ -652,30 +652,7 @@ namespace TempControl
         /// <param name="e"></param>
         private void button_chk_Click(object sender, EventArgs e)
         {
-            float val = 0.0f;
-            // 从数据库中查询主槽温度设定参数
-            if (float.TryParse(textBox_tpSetM.Text, out val))
-            {
-                Utils.CTempSets tpSet = null;
-                tpSet = Utils.DataBase.checkTempSetM(val, 2.0f);
 
-                if (tpSet != null && tpSet.Count != 0)
-                {
-                    float[] parm = { 0, 0, 0, 0, 0, 0, 0 };
-                    for (int i = 0; i < tpSet.Count; i++)
-                    {
-                        for (int j = 1; j < 7; j++)
-                        {
-                            parm[j] += tpSet[i][j];
-                        }
-                    }
-
-                    for (int i = 2; i < 7; i++)
-                    {
-                        paramMTextBox[i].Text = (parm[i] / tpSet.Count).ToString();
-                    }
-                }
-            }
         }
 
 
