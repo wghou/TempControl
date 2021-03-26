@@ -48,15 +48,6 @@ namespace Device
                         confOK &= tpDeviceM.ConfigSyn(child2.ContainsKey("PortName") ? child2["PortName"].ToString() : "COM0");
                         if (!confOK) nlogger.Error("配置主槽控温设备失败! 端口号: " + tpDeviceM.tpDevicePortName);
                         else nlogger.Debug("配置主槽控温设备成功! 端口号: " + tpDeviceM.tpDevicePortName);
-
-                        //sPortTm.PortName = child.ContainsKey("PortName") ? child["PortName"].ToString() : "COM0";
-                        //sPortTm.BaudRate = child.ContainsKey("BaudRate") ? (int)child["BaudRate"] : 2400;
-                        //sPortTm.DataBits = 8;
-                        //sPortTm.StopBits = StopBits.One;
-                        //sPortTm.Parity = Parity.None;
-                        //sPortTm.ReadBufferSize = 64;
-                        //sPortTm.WriteBufferSize = 64;
-                        //SportTm_enable = child.ContainsKey("Enable") ? (bool)child["Enable"] : true;
                     }
 
                     // 设置辅控温表
