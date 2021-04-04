@@ -47,6 +47,9 @@
     <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
     </Reference>
+    <Reference Include="SqlSugar, Version=5.0.2.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SqlSugar.5.0.2.8\lib\SqlSugar.dll</HintPath>
+    </Reference>
     <Reference Include="stateless, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93038f0927583c9a, processorArchitecture=MSIL">
       <HintPath>..\packages\stateless.5.10.1\lib\net45\stateless.dll</HintPath>
     </Reference>
@@ -101,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ATControl\ATControl\ATControl.csproj">
-      <Project>{e9a02523-288d-46e7-9bfa-56533e46c388}</Project>
+      <Project>{466d4078-3f92-4f3c-9c62-d274932778e7}</Project>
       <Name>ATControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">

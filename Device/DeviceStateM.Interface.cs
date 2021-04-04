@@ -97,37 +97,9 @@ namespace Device
 
                 }
 
-                // 设置仪器
-                if (obj.ContainsKey("InstDev"))
-                {
-                    bool rlt = false;
-                    JArray child = (JArray)obj["InstDev"];
+                // 配置仪器设备和 socket
+                confOK &= init_InstDevice(obj);
 
-                    if (obj.ContainsKey("InstDeviceCmd"))
-                    {
-                        JObject cmd = (JObject)obj["InstDeviceCmd"];
-                        rlt = instDevice.initInstDevices(child, cmd);
-                    }
-                    else
-                    {
-                        rlt = instDevice.initInstDevices(child);
-                    }
-
-                    if (!rlt) nlogger.Error("配置仪器失败!");
-                    else nlogger.Debug("配置仪器成功!");
-                    confOK &= rlt;
-                }
-
-                // 设置 socket 接口
-                if (obj.ContainsKey("Socket"))
-                {
-                    JObject child = (JObject)obj["Socket"];
-
-                    bool rlt = instDevice.InitSocketServer(child);
-                    if (!rlt) nlogger.Error("配置 Socket 接口失败!");
-                    else nlogger.Debug("配置 Socket 接口成功!");
-                    confOK &= rlt;
-                }
             }
             catch(Exception ex)
             {
@@ -159,19 +131,23 @@ namespace Device
         /// <summary>
         /// _stateM 开始自动控温流程
         /// </summary>
-        public void StartAutoControl()
+        public bool StartAutoControl()
         {
-            if (_state != State.Idle) return;
+            if (_state != State.Idle) return false;
+
             _machine.Fire(Trigger.StartAutoStep);
+            return true;
         }
 
 
         /// <summary>
         /// _stateM 暂停自动控温流程，进入 空闲 状态
         /// </summary>
-        public void SuspendAutoControl()
+        public bool SuspendAutoControl()
         {
             _machine.Fire(Trigger.SuspendAutoControl);
+
+            return true;
         }
 
 
