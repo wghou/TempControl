@@ -21,7 +21,7 @@ namespace TempControl
             _device.instDevice.InstSDReceiveDataEvent += InstDevice_InstSDReceiveDataEvent;
         }
 
-        private void InstDevice_InstSDReceiveDataEvent(ATControl.SeaBirdInst.InstSTDData data)
+        private void InstDevice_InstSDReceiveDataEvent(ATControl.SeaBirdInst.InstSTD37Data data)
         {
             this.BeginInvoke(new EventHandler(delegate
             {
